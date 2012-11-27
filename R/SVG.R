@@ -1,5 +1,4 @@
-devSVG <- function (file = "Rplots.svg", width = 10, height = 8,
-    bg = "white", fg = "black", onefile = TRUE, xmlHeader = TRUE)
+devSVG <- function (file = "Rplots.svg", width = 10, height = 8, bg = "white", fg = "black", onefile = TRUE, xmlHeader = TRUE)
 {
       dev <- .C("do_SVG", as.character(file),
              as.character(bg),as.character(fg),
@@ -56,13 +55,3 @@ devSVG <- function (file = "Rplots.svg", width = 10, height = 8,
 #
 #       str <- paste(str,buf,"</MetaSvg>",sep="")
 #}
-
-
-
-
-
-
-
-
-
-
