@@ -1,5 +1,5 @@
 Package: RSvgDevice
-Version: 0.6.4.1
+Version: 0.6.4.2
 Date:    2009-01-04
 Title:   An R SVG graphics device.
 Author:  T Jake Luciani <jakeluciani@yahoo.com>, MAtthieu Decorde <matthieu.decorde@ens-lyon.fr>
