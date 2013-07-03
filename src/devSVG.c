@@ -642,8 +642,8 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 	dd->locator = SVG_Locator;
 	dd->mode = SVG_Mode;
 	dd->metricInfo = SVG_MetricInfo;
-    dd->cap = SVG_Cap; // not implemented
-    dd->raster = SVG_Raster; // not implemented
+	dd->cap = SVG_Cap; // not implemented
+	dd->raster = SVG_Raster; // not implemented
 	
 	/* UTF-8 support */
 	dd->wantSymbolUTF8 = 1;

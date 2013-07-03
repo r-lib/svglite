@@ -1,7 +1,8 @@
 \name{devSVG}
 \encoding{UTF-8}
 \title{A SVG Graphics Driver}
-\usage{devSVG(file = "Rplots.svg", width = 10, height = 8, bg = "white", fg = "black", onefile=TRUE, xmlHeader=TRUE)
+\usage{devSVG(file = "Rplots.svg", width = 10, height = 8, 
+bg = "white", fg = "black", onefile=TRUE, xmlHeader=TRUE)
 }
 \alias{devSVG}
 \arguments{
@@ -14,7 +15,7 @@
   \item{xmlHeader}{Print XML header or not.}
 }
 \description{
-  This function produces graphics suitable teh current w3 svg XML standard
+  This function produces graphics suitable the current w3 svg XML standard
 }
 \details{
   This driver currently does not have any font metric information,
@@ -39,7 +40,7 @@
 \examples{
 library(RSvgDevice)
 devSVG()
-plot(1:11,(-5:5)^2, type='b', main="Simple Example Plot with XML-reserved and UTF-8 chars like & é à ç and <.")
+plot(1:11,(-5:5)^2, type='b', main="Simple Example")
 dev.off()
 }
 \keyword{device}
