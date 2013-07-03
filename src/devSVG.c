@@ -296,7 +296,7 @@ static void SetFont(int face, int size, SVGDesc *ptd) {
 	if (lsize < 1 || lsize > 24)
 		lsize = 10;
 
-	fprintf(ptd->texfp, " style=\"font-size:%d\" ", lsize);
+	fprintf(ptd->texfp, " style=\"font-size:%dpt\" ", lsize);
 	ptd->fontsize = lsize;
 	ptd->fontface = lface;
 
