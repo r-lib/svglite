@@ -56,7 +56,7 @@ typedef R_GE_gcontext* pGEcontext;
 
 typedef struct {
 	FILE *texfp;
-	char filename[128];
+	char filename[1024];
 	int pageno;
 	int landscape;
 	double width;
