@@ -36,21 +36,10 @@ typedef struct {
 	FILE *texfp;
 	char filename[1024];
 	int pageno;
-	int landscape;
 	double width;
 	double height;
-	double pagewidth;
-	double pageheight;
-	double xlast;
-	double ylast;
 	double clipleft, clipright, cliptop, clipbottom;
-	double clippedx0, clippedy0, clippedx1, clippedy1;
 
-	double cex;
-	double srt;
-	int lty;
-	int lwd;
-	int col;
 	int fg;
 	int bg;
 	int fontsize;
@@ -199,8 +188,6 @@ static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col)
 
 	int i, dashleft;;
 	double fillop, strokeop;
-	ptd->lty = newlty;
-	ptd->lwd = newlwd;
 
 	/*Set line size + color*/
 	fprintf(ptd->texfp, "style=\"stroke-width:%d;", newlwd);
@@ -214,11 +201,11 @@ static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col)
 
 	/*Set line pattern type*/
 	// ADD: mdecorde from SVGTips device, (C) 2008 Tony Plate
-	dashleft = ptd->lty;
+	dashleft = newlty;
 	if (dashleft) {
 		fprintf(ptd->texfp, ";stroke-dasharray:");
 
-		dashleft = ptd->lty;
+		dashleft = newlty;
 		for(i=0 ; i<8 && dashleft & 15 ; i++) {
 			/* dashlen is dashleft & 15 */
 			if (i>0)
@@ -290,7 +277,6 @@ static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
 
 	ptd->fg = dd->startcol;
 	ptd->bg = dd->startfill;
-	ptd->col = ptd->fg;
 
 	if (!(ptd->texfp = (FILE *) fopen(R_ExpandFileName(ptd->filename), "w")))
 		return FALSE;
@@ -309,11 +295,6 @@ static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
 	fprintf(ptd->texfp,
 			"<rect width=\"100%%\" height=\"100%%\" style=\"fill:%s\"/>\n",
 			col2RGBname(ptd->bg));
-
-	/* ensure that line drawing is set up at the first */
-	/* graphics call */
-	ptd->lty = -1;
-	ptd->lwd = -1;
 
 	ptd->pageno++;
 	return TRUE;
@@ -647,7 +628,6 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 	dd->canHAdj = 0;
 	dd->canChangeGamma = FALSE;
 
-	ptd->lty = 1;
 	ptd->pageno = 0;
 	ptd->debug = debug;
 
