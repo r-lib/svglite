@@ -7,7 +7,7 @@ Authors@R: c(
   person("Matthieu", "Decorde", , "matthieu.decorde@ens-lyon.fr", c("aut", "cre")),
   person("Vaudor", "Lise", , "lise.vaudor@ens-lyon.fr", "aut")
   )
-Depends: R (>= 2.6.0)
+Depends: R (>= 3.0.0)
 License: GPL (>= 2)
 URL: https://github.com/mdecorde/RSvgDevice
 BugReports: https://github.com/mdecorde/RSvgDevice/issues

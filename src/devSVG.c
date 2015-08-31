@@ -1,8 +1,8 @@
 /*
  *  UTF-8 support, XML reserved characters and XML encoding header : (C) 2012 Matthieu Decorde
- * 
+ *
  *  Line type support : (C) 2008 Tony Plate from RSVGTipsDevice package
- * 
+ *
  *  SVG device, (C) 2002 T Jake Luciani, Based on PicTex device, for
  *  R : A Computer Language for Statistical Data Analysis
  *  Copyright (C) 1995, 1996  Robert Gentleman and Ross Ihaka
@@ -22,32 +22,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 #include <string.h>
- 
-#include "R.h"
-#include "Rversion.h"
 
+#include "R.h"
 #include "Rinternals.h"
 #include "R_ext/GraphicsEngine.h"
-
-#if R_VERSION < R_Version(2,7,0)
-# include "Rgraphics.h"
-# include "Rdevices.h"
-# include "R_ext/GraphicsDevice.h"
-typedef GEDevDesc* pGEDevDesc;
-typedef NewDevDesc* pDevDesc;
-typedef R_GE_gcontext* pGEcontext;
-#endif
-
-#if R_VERSION >= R_Version(2,8,0)
-#ifndef NewDevDesc
-#define NewDevDesc DevDesc
-#endif
-#endif
-
-#ifndef BEGIN_SUSPEND_INTERRUPTS
-# define BEGIN_SUSPEND_INTERRUPTS
-# define END_SUSPEND_INTERRUPTS
-#endif
 
 /* device-specific information per SVG device */
 
@@ -85,7 +63,8 @@ typedef struct {
 
 /* Global device information */
 
-static double charwidth[4][128] = { { 0.5416690, 0.8333360, 0.7777810,
+static double charwidth[4][128] = {
+  { 0.5416690, 0.8333360, 0.7777810,
 		0.6111145, 0.6666690, 0.7083380, 0.7222240, 0.7777810, 0.7222240,
 		0.7777810, 0.7222240, 0.5833360, 0.5361130, 0.5361130, 0.8138910,
 		0.8138910, 0.2388900, 0.2666680, 0.5000020, 0.5000020, 0.5000020,
@@ -106,7 +85,8 @@ static double charwidth[4][128] = { { 0.5416690, 0.8333360, 0.7777810,
 		0.2388900, 0.2666680, 0.4888920, 0.2388900, 0.7944470, 0.5166680,
 		0.5000020, 0.5166680, 0.5166680, 0.3416690, 0.3833340, 0.3611120,
 		0.5166680, 0.4611130, 0.6833360, 0.4611130, 0.4611130, 0.4347230,
-		0.5000020, 1.0000030, 0.5000020, 0.5000020, 0.5000020 }, { 0.5805590,
+		0.5000020, 1.0000030, 0.5000020, 0.5000020, 0.5000020 },
+	{ 0.5805590,
 				0.9166720, 0.8555600, 0.6722260, 0.7333370, 0.7944490, 0.7944490,
 				0.8555600, 0.7944490, 0.8555600, 0.7944490, 0.6416700, 0.5861150,
 				0.5861150, 0.8916720, 0.8916720, 0.2555570, 0.2861130, 0.5500030,
@@ -310,7 +290,7 @@ static void SVG_Deactivate(pDevDesc dd) {
 
 static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
 		double* descent, double* width, pDevDesc dd) {
-		
+
 	//	Rboolean Unicode = mbcslocale && (gc->fontface != 5);
     //     if (c < 0) { Unicode = TRUE; c = -c; }
     //     if(Unicode) UniCharMetric(c, ...); else CharMetric(c, ...);
@@ -372,7 +352,7 @@ static void SVG_Clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
 static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
 	SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
-	
+
 	if (ptd->onefile) {
 
 	} else if (ptd->pageno) {
@@ -530,7 +510,7 @@ static void textext(const char *str, SVGDesc *ptd) {
       char *newstr = NULL;
       char *oldstr = NULL;
       char *head = NULL;
-     
+
       /* if either substr or replacement is NULL, duplicate string a let caller handle it */
       if ( substr == NULL || replacement == NULL ) return strdup (string);
       newstr = strdup (string);
@@ -563,7 +543,7 @@ static void SVG_Text(double x, double y, const char *str, double rot,
 	str = replace_str(str, "&", "&amp;");
 	str = replace_str(str, "<", "&lt;");
 	str = replace_str(str, ">", "&gt;");
-	
+
 	SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
 	size = gc->cex * gc->ps + 0.5;
@@ -644,11 +624,11 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 	dd->metricInfo = SVG_MetricInfo;
 	dd->cap = SVG_Cap; // not implemented
 	dd->raster = SVG_Raster; // not implemented
-	
+
 	/* UTF-8 support */
 	dd->wantSymbolUTF8 = 1;
 	dd->hasTextUTF8 = 1;
-	
+
 	/* Screen Dimensions in Pixels */
 
 	dd->left = 0; /* left */
@@ -706,8 +686,8 @@ static pGEDevDesc RSvgDevice(char **file, char **bg, char **fg, double *width,
 	R_GE_checkVersionOrDie(R_GE_version);
 	R_CheckDeviceAvailable();
 	BEGIN_SUSPEND_INTERRUPTS {
-		if (!(dev = (pDevDesc) Calloc(1, NewDevDesc)))
-			error("unable to allocate memory for NewDevDesc");
+		if (!(dev = (pDevDesc) Calloc(1, DevDesc)))
+			error("unable to allocate memory for DevDesc");
 
 		if (!SVGDeviceDriver(dev, file[0], bg[0], fg[0], width[0], height[0],
 				debug[0], xmlHeader[0], onefile[0])) {
@@ -716,12 +696,7 @@ static pGEDevDesc RSvgDevice(char **file, char **bg, char **fg, double *width,
 		}
 		dd = GEcreateDevDesc(dev);
 
-#if R_VERSION < R_Version(2,7,0)
-		gsetVar(install(".Device"), mkString("devSVG"), R_NilValue);
-		Rf_addDevice((DevDesc*) dd);
-#else
 		GEaddDevice2(dd, "devSVG");
-#endif
 		GEinitDisplayList(dd);
 	}END_SUSPEND_INTERRUPTS;
 
