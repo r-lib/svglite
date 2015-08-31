@@ -154,12 +154,10 @@ static double charwidth[4][128] = {
 
 /* Device driver actions */
 
-static void SVG_Activate( pDevDesc);
 static void SVG_Circle(double x, double y, double r, const pGEcontext gc,
 		pDevDesc dd);
 static void SVG_Clip(double, double, double, double, pDevDesc);
 static void SVG_Close( pDevDesc);
-static void SVG_Deactivate( pDevDesc);
 static void SVG_Line(double x1, double y1, double x2, double y2,
 		const pGEcontext gc, pDevDesc dd);
 static Rboolean SVG_Locator(double*, double*, pDevDesc);
@@ -172,8 +170,6 @@ static void SVG_Polyline(int n, double *x, double *y, const pGEcontext gc,
 		pDevDesc dd);
 static void SVG_Rect(double x0, double y0, double x1, double y1,
 		const pGEcontext gc, pDevDesc dd);
-static void SVG_Size(double *left, double *right, double *bottom, double *top,
-		pDevDesc dd);
 
 static double SVG_StrWidth(const char *str, const pGEcontext gc, pDevDesc dd);
 static void SVG_Text(double x, double y, const char *str, double rot,
@@ -196,15 +192,6 @@ char *col2RGBname(unsigned int col) {
 	MyColBuf[6] = HexDigits[(col >> 16) & 15];
 	MyColBuf[7] = '\0';
 	return &MyColBuf[0];
-}
-
-/*Thanks Paul*/
-static void SVG_Size(double *left, double *right, double *bottom, double *top,
-		pDevDesc dd) {
-	*left = dd->left;
-	*right = dd->right;
-	*bottom = dd->bottom;
-	*top = dd->top;
 }
 
 static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col) {
@@ -280,12 +267,6 @@ static void SetFont(int face, int size, SVGDesc *ptd) {
 	ptd->fontsize = lsize;
 	ptd->fontface = lface;
 
-}
-
-static void SVG_Activate(pDevDesc dd) {
-}
-
-static void SVG_Deactivate(pDevDesc dd) {
 }
 
 static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
@@ -604,11 +585,11 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 	dd->startfont = 1;
 	dd->startgamma = 1;
 
-	dd->activate = SVG_Activate;
-	dd->deactivate = SVG_Deactivate;
+	dd->activate = NULL;
+	dd->deactivate = NULL;
 	dd->close = SVG_Close;
 	dd->clip = SVG_Clip;
-	dd->size = SVG_Size;
+	dd->size = NULL;
 	dd->newPage = SVG_NewPage;
 	dd->line = SVG_Line;
 	dd->text = SVG_Text;
