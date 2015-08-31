@@ -10,7 +10,4 @@ Description: A graphics device for R that uses the w3.org xml standard
         for Scalable Vector Graphics.
 License: GPL (>= 2)
 URL: https://github.com/mdecorde/RSvgDevice
-Packaged: 2013-02-11 09:02:21 UTC; mdecorde
-OS_type: unix
 Repository: CRAN
-Date/Publication: 2013-02-11 19:32:15
