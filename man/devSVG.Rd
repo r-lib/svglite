@@ -39,7 +39,8 @@ This driver was written by T Jake Luciani
   \email{matthieu.decorde@ens-lyon.fr}
 }
 \references{
-\emph{W3C Scalable Vector Graphics (SVG)} \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
+\emph{W3C Scalable Vector Graphics (SVG)}:
+  \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
 }
 \seealso{
 \code{\link{pictex}}, \code{\link{postscript}}, \code{\link{Devices}}
