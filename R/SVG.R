@@ -24,6 +24,7 @@
 #' dev.off()
 #' @keywords device
 #' @useDynLib RSvgDevice do_SVG
+#' @export
 devSVG <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
                    fg = "black", onefile = TRUE, xmlHeader = TRUE) {
 
