@@ -290,8 +290,6 @@ static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
 	fprintf(ptd->texfp, "viewBox=\"0,0,%.2f,%.2f\">\n", in2dots(ptd->width),
 			in2dots(ptd->height));
 
-	fprintf(ptd->texfp, "<desc>R SVG Plot!</desc>\n");
-
 	fprintf(ptd->texfp,
 			"<rect width=\"100%%\" height=\"100%%\" style=\"fill:%s\"/>\n",
 			col2RGBname(ptd->bg));
