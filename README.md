@@ -1,5 +1,7 @@
 # RSvgDevice
 
+[![Travis-CI Build Status](https://travis-ci.org/mdecorde/RSvgDevice.svg?branch=master)](https://travis-ci.org/mdecorde/RSvgDevice)
+
 A graphics device that produces clean svg output, suitable for use on the web, and to be edited by hand. Compared to the built-in svg device, this leaves text as is, rather than producing vectorised glyphs.
 
 ## Installation
