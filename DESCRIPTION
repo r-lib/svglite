@@ -1,5 +1,5 @@
 Package: RSvgDevice
-Version: 0.6.4.3
+Version: 0.6.4.9000
 Title: A SVG Graphics Device
 Description: A graphics device for R that produces "Scalable Vector Graphics".
 Authors@R: c(
