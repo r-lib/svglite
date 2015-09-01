@@ -273,7 +273,7 @@ static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
 
 	fprintf(ptd->texfp, "<svg ");
 	if (ptd->useNS)
-	  fprintf(ptd->texfp, "xmlns=\"http://www.w3.org/2000/svg\"");
+	  fprintf(ptd->texfp, "xmlns=\"http://www.w3.org/2000/svg\" ");
 
 	fprintf(ptd->texfp, "width=\"%.2f\" height=\"%.2f\" ",
 			in2dots(ptd->width), in2dots(ptd->height));
