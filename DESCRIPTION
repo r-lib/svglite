@@ -10,6 +10,7 @@ Authors@R: c(
   person("RStudio", role = "cph")
   )
 Depends: R (>= 3.0.0)
+Suggests: xml2
 License: GPL (>= 2)
 URL: https://github.com/mdecorde/RSvgDevice
 BugReports: https://github.com/mdecorde/RSvgDevice/issues
