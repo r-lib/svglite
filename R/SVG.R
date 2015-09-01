@@ -12,6 +12,8 @@
 #' @param fg the foreground color for the plot.
 #' @param onefile merge plot calls into onefile or separate them to separate pages.
 #' @param xmlHeader Print XML header or not.
+#' @param useNS Include svg namespace? Not including it makes extracting
+#'   elements with xpath much easier.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
 #'   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
 #' @author This driver was written by T Jake Luciani
@@ -26,7 +28,8 @@
 #' @useDynLib RSvgDevice do_SVG
 #' @export
 devSVG <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-                   fg = "black", onefile = TRUE, xmlHeader = TRUE) {
+                   fg = "black", onefile = TRUE, xmlHeader = TRUE,
+                   useNS = TRUE) {
 
   dev <- .C(do_SVG,
     as.character(file),
@@ -36,7 +39,8 @@ devSVG <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
     as.double(height),
     as.logical(FALSE),
     as.logical(xmlHeader),
-    as.logical(onefile)
+    as.logical(onefile),
+    as.logical(useNS)
   )
 
   invisible(dev)

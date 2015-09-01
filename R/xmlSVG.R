@@ -9,11 +9,11 @@
 #' if (require("xml2")) {
 #'   x <- xmlSVG(plot(1, axes = FALSE))
 #'   x
-#'   xml_find_all(x, ".//svg")
+#'   xml_find_all(x, ".//text")
 #' }
 xmlSVG <- function(code) {
   tmp <- tempfile()
-  devSVG(tmp, width = 5, height = 5)
+  devSVG(tmp, width = 5, height = 5, useNS = FALSE)
   tryCatch(code,
     finally = dev.off()
   )

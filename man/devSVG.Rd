@@ -5,7 +5,7 @@
 \title{A SVG Graphics Driver}
 \usage{
 devSVG(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-  fg = "black", onefile = TRUE, xmlHeader = TRUE)
+  fg = "black", onefile = TRUE, xmlHeader = TRUE, useNS = TRUE)
 }
 \arguments{
 \item{file}{the file where output will appear.}
@@ -21,6 +21,9 @@ devSVG(file = "Rplots.svg", width = 10, height = 8, bg = "white",
 \item{onefile}{merge plot calls into onefile or separate them to separate pages.}
 
 \item{xmlHeader}{Print XML header or not.}
+
+\item{useNS}{Include svg namespace? Not including it makes extracting
+elements with xpath much easier.}
 }
 \description{
 This function produces graphics suitable the current w3 svg XML standard.

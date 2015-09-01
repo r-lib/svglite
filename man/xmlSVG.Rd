@@ -19,7 +19,7 @@ This is useful primarily for testing. Requires the \code{xml2} package.
 if (require("xml2")) {
   x <- xmlSVG(plot(1, axes = FALSE))
   x
-  xml_find_all(x, ".//svg")
+  xml_find_all(x, ".//text")
 }
 }
 

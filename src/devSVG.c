@@ -47,6 +47,7 @@ typedef struct {
 	Rboolean debug;
 	Rboolean xmlHeader;
 	Rboolean onefile; /* drop headers etc*/
+  Rboolean useNS;
 
 } SVGDesc;
 
@@ -284,8 +285,11 @@ static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
 	if (ptd->xmlHeader)
 		fprintf(ptd->texfp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
 
-	fprintf(ptd->texfp,
-			"<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%.2f\" height=\"%.2f\" ",
+	fprintf(ptd->texfp, "<svg ");
+	if (ptd->useNS)
+	  fprintf(ptd->texfp, "xmlns=\"http://www.w3.org/2000/svg\"");
+
+	fprintf(ptd->texfp, "width=\"%.2f\" height=\"%.2f\" ",
 			in2dots(ptd->width), in2dots(ptd->height));
 	fprintf(ptd->texfp, "viewBox=\"0,0,%.2f,%.2f\">\n", in2dots(ptd->width),
 			in2dots(ptd->height));
@@ -549,7 +553,7 @@ static void SVG_Raster(unsigned int *raster, int w, int h,
 
 Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 		double width, double height, Rboolean debug, Rboolean xmlHeader,
-		Rboolean onefile) {
+		Rboolean onefile, Rboolean useNS) {
 	SVGDesc *ptd;
 
 	if (!(ptd = (SVGDesc *) malloc(sizeof(SVGDesc))))
@@ -599,6 +603,7 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 	ptd->height = height;
 	ptd->xmlHeader = xmlHeader;
 	ptd->onefile = onefile;
+	ptd->useNS = useNS;
 
 	if (!SVG_Open(dd, ptd))
 		return FALSE;
@@ -635,7 +640,7 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 }
 
 static pGEDevDesc RSvgDevice(char **file, char **bg, char **fg, double *width,
-		double *height, int *debug, int *xmlHeader, int *onefile) {
+		double *height, int *debug, int *xmlHeader, int *onefile, int *useNS) {
 	pGEDevDesc dd;
 	pDevDesc dev;
 
@@ -649,7 +654,7 @@ static pGEDevDesc RSvgDevice(char **file, char **bg, char **fg, double *width,
 			error("unable to allocate memory for DevDesc");
 
 		if (!SVGDeviceDriver(dev, file[0], bg[0], fg[0], width[0], height[0],
-				debug[0], xmlHeader[0], onefile[0])) {
+				debug[0], xmlHeader[0], onefile[0], useNS[0])) {
 			free(dev);
 			error("unable to start device SVG");
 		}
@@ -663,12 +668,12 @@ static pGEDevDesc RSvgDevice(char **file, char **bg, char **fg, double *width,
 }
 
 void do_SVG(char **file, char **bg, char **fg, double *width, double *height,
-		int *debug, int *xmlHeader, int *onefile) {
+		int *debug, int *xmlHeader, int *onefile, int *useNS) {
 	char *vmax;
 
 	vmax = vmaxget();
 
-	RSvgDevice(file, bg, fg, width, height, debug, xmlHeader, onefile);
+	RSvgDevice(file, bg, fg, width, height, debug, xmlHeader, onefile, useNS);
 
 	vmaxset(vmax);
 }
