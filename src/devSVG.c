@@ -261,7 +261,8 @@ static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
 static void SVG_Close(pDevDesc dd) {
   SVGDesc *ptd = dd->deviceSpecific;
 
-  fprintf(ptd->texfp, "</svg>\n");
+  if (ptd->pageno > 0)
+    fprintf(ptd->texfp, "</svg>\n");
 
   fclose(ptd->texfp);
 
