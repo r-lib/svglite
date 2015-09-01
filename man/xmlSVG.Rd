@@ -4,10 +4,12 @@
 \alias{xmlSVG}
 \title{Run plotting code and return svg}
 \usage{
-xmlSVG(code)
+xmlSVG(code, ...)
 }
 \arguments{
 \item{code}{Plotting code to execute.}
+
+\item{...}{Other arguments passed on to \code{\link{devSVG}}.}
 }
 \value{
 A \code{xml2::xml_document} object.

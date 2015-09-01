@@ -4,6 +4,7 @@
 #'
 #' @return A \code{xml2::xml_document} object.
 #' @param code Plotting code to execute.
+#' @param ... Other arguments passed on to \code{\link{devSVG}}.
 #' @export
 #' @examples
 #' if (require("xml2")) {
@@ -11,9 +12,9 @@
 #'   x
 #'   xml_find_all(x, ".//text")
 #' }
-xmlSVG <- function(code) {
+xmlSVG <- function(code, ...) {
   tmp <- tempfile()
-  devSVG(tmp, width = 5, height = 5, useNS = FALSE)
+  devSVG(tmp, width = 5, height = 5, useNS = FALSE, ...)
   tryCatch(code,
     finally = dev.off()
   )
