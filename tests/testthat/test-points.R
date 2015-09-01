@@ -19,3 +19,13 @@ test_that("points get alpha stroke and fill given stroke and fill", {
   expect_equal(xml_attr(circle, "stroke"), "rgba(255, 0, 0, 0.10)")
   expect_equal(xml_attr(circle, "fill"), "rgba(0, 0, 255, 0.10)")
 })
+
+test_that("points are given stroke and fill", {
+  x <- xmlSVG({
+    plot.new()
+    points(0.5, 0.5, pch = 21, col = "red", bg = NA, cex = 20)
+  })
+  circle <- xml_find_all(x, ".//circle")
+  expect_equal(xml_attr(circle, "fill"), "none")
+})
+

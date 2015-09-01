@@ -146,7 +146,11 @@ void write_escaped(FILE* f, const char* text) {
 
 void write_colour(FILE* f, unsigned int col) {
   int alpha = R_ALPHA(col);
-  if (alpha == 255) {
+
+  if (col == NA_INTEGER || alpha == 0) {
+    fprintf(f, "none");
+    return;
+  } else if (alpha == 255) {
     fprintf(f, "#%02X%02X%02X", R_RED(col), R_GREEN(col), R_BLUE(col));
   } else {
     fprintf(f, "rgba(%i, %i, %i, %0.2f)", R_RED(col), R_GREEN(col), R_BLUE(col),
@@ -336,7 +340,7 @@ static void SVG_Line(double x1, double y1, double x2, double y2,
 }
 
 static void SVG_Polyline(int n, double *x, double *y, const pGEcontext gc,
-		pDevDesc dd) {
+		  pDevDesc dd) {
 	int i;
 	SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 	fprintf(ptd->texfp, "<polyline points=\"");
