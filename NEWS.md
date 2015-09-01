@@ -11,3 +11,6 @@
   `rgba()` rather than using `stroke-opacity` and `fill-opacity` styles. (#16)
 
 * NA fills and colours are translated to "none"
+
+* You can now only produce a single page per device - previously this worked
+  but produced incorrect output (#5)

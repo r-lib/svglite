@@ -5,7 +5,7 @@
 \title{A SVG Graphics Driver}
 \usage{
 devSVG(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-  fg = "black", onefile = TRUE, xmlHeader = TRUE, useNS = TRUE)
+  fg = "black", xmlHeader = TRUE, useNS = TRUE)
 }
 \arguments{
 \item{file}{the file where output will appear.}
@@ -17,8 +17,6 @@ devSVG(file = "Rplots.svg", width = 10, height = 8, bg = "white",
 \item{bg}{the background color for the plot.}
 
 \item{fg}{the foreground color for the plot.}
-
-\item{onefile}{merge plot calls into onefile or separate them to separate pages.}
 
 \item{xmlHeader}{Print XML header or not.}
 

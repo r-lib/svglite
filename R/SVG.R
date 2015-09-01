@@ -10,7 +10,6 @@
 #' @param height the height of the plot in inches.
 #' @param bg the background color for the plot.
 #' @param fg the foreground color for the plot.
-#' @param onefile merge plot calls into onefile or separate them to separate pages.
 #' @param xmlHeader Print XML header or not.
 #' @param useNS Include svg namespace? Not including it makes extracting
 #'   elements with xpath much easier.
@@ -28,8 +27,7 @@
 #' @useDynLib RSvgDevice do_SVG
 #' @export
 devSVG <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-                   fg = "black", onefile = TRUE, xmlHeader = TRUE,
-                   useNS = TRUE) {
+                   fg = "black", xmlHeader = TRUE, useNS = TRUE) {
 
   dev <- .C(do_SVG,
     as.character(file),
@@ -38,7 +36,6 @@ devSVG <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
     as.double(width),
     as.double(height),
     as.logical(xmlHeader),
-    as.logical(onefile),
     as.logical(useNS)
   )
 

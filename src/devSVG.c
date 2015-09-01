@@ -35,7 +35,6 @@ typedef struct {
   double clipleft, clipright, cliptop, clipbottom;
 
   Rboolean xmlHeader;
-  Rboolean onefile;
   Rboolean useNS;
 
 } SVGDesc;
@@ -239,9 +238,23 @@ static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
   *width = 0.0;
 }
 
-static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
-  if (!(ptd->texfp = (FILE *) fopen(R_ExpandFileName(ptd->filename), "w")))
-    return FALSE;
+static void SVG_Clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
+  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
+
+  ptd->clipleft = x0;
+  ptd->clipright = x1;
+  ptd->clipbottom = y0;
+  ptd->cliptop = y1;
+}
+
+// Start a new page
+
+static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
+  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
+
+  if (ptd->pageno > 0) {
+    Rf_error("RSvgDevice only supports one page");
+  }
 
   if (ptd->xmlHeader)
     fprintf(ptd->texfp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
@@ -260,41 +273,6 @@ static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
   fprintf(ptd->texfp, "' />\n");
 
   ptd->pageno++;
-  return TRUE;
-}
-
-static void SVG_Clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
-  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
-
-  ptd->clipleft = x0;
-  ptd->clipright = x1;
-  ptd->clipbottom = y0;
-  ptd->cliptop = y1;
-}
-
-// Start a new page
-
-static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
-  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
-
-
-  if (ptd->onefile) {
-
-  } else if (ptd->pageno) {
-
-    fprintf(ptd->texfp, "</svg>\n");
-    if (ptd->xmlHeader)
-      fprintf(ptd->texfp, "<?xml version=\"1.0\"?>\n");
-    fprintf(ptd->texfp,
-        "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"%.2f\" height=\"%.2f\" ",
-        in2dots(ptd->width), in2dots(ptd->height));
-    fprintf(ptd->texfp, "viewBox=\"0,0,%.2f,%.2f\">\n", in2dots(ptd->width),
-        in2dots(ptd->height));
-    fprintf(ptd->texfp, "<desc>R SVG Plot!</desc>\n");
-    ptd->pageno++;
-
-  } else
-    ptd->pageno++;
 }
 
 // Close down the driver
@@ -435,14 +413,7 @@ static void SVG_Size(double *left, double *right, double *bottom, double *top,
 }
 
 Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
-    double width, double height, Rboolean xmlHeader, Rboolean onefile,
-    Rboolean useNS) {
-  SVGDesc *ptd;
-
-  if (!(ptd = (SVGDesc *) malloc(sizeof(SVGDesc))))
-    return FALSE;
-
-  strcpy(ptd->filename, filename);
+    double width, double height, Rboolean xmlHeader, Rboolean useNS) {
 
   dd->startfill = R_GE_str2col(bg);
   dd->startcol = R_GE_str2col(fg);
@@ -481,14 +452,20 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
   dd->top = 0;
   dd->right = in2dots(width);
   dd->bottom = in2dots(height);
+
+  SVGDesc *ptd = malloc(sizeof(SVGDesc));
+  if (ptd == NULL)
+    return FALSE;
+
+  strcpy(ptd->filename, filename);
+  ptd->texfp = fopen(R_ExpandFileName(ptd->filename), "w");
+  if (ptd->texfp == NULL)
+    return FALSE;
+
   ptd->width = width;
   ptd->height = height;
   ptd->xmlHeader = xmlHeader;
-  ptd->onefile = onefile;
   ptd->useNS = useNS;
-
-  if (!SVG_Open(dd, ptd))
-    return FALSE;
 
   // Base Pointsize: Nominal Character Sizes in Pixels
 
@@ -518,7 +495,7 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 
 
 void do_SVG(char **file, char **bg, char **fg, double *width, double *height,
-    int *xmlHeader, int *onefile, int *useNS) {
+            int *xmlHeader, int *useNS) {
   pGEDevDesc dd;
   pDevDesc dev;
 
@@ -529,7 +506,7 @@ void do_SVG(char **file, char **bg, char **fg, double *width, double *height,
       error("unable to allocate memory for DevDesc");
 
     if (!SVGDeviceDriver(dev, file[0], bg[0], fg[0], width[0], height[0],
-        xmlHeader[0], onefile[0], useNS[0])) {
+        xmlHeader[0], useNS[0])) {
       free(dev);
       error("unable to start device SVG");
     }
