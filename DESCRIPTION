@@ -3,7 +3,7 @@ Version: 0.6.4.9000
 Title: A SVG Graphics Device
 Description: A graphics device for R that produces "Scalable Vector Graphics".
 Authors@R: c(
-  person("T Jake", "Luciani", , "jakeluciani@yahoo.com", "aut"),
+  person("T Jake", "Luciani", , "jake@apache.org", "aut"),
   person("Matthieu", "Decorde", , "matthieu.decorde@ens-lyon.fr", c("aut", "cre")),
   person("Vaudor", "Lise", , "lise.vaudor@ens-lyon.fr", "aut"),
   person("Hadley", "Wickham", , "hadley@rstudio.com", "aut"),
