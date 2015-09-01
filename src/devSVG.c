@@ -495,7 +495,7 @@ SEXP devSVG_(SEXP file_, SEXP bg_, SEXP width_, SEXP height_,
   R_GE_checkVersionOrDie(R_GE_version);
   R_CheckDeviceAvailable();
   BEGIN_SUSPEND_INTERRUPTS {
-    pDevDesc dev = Calloc(1, DevDesc);
+    pDevDesc dev = calloc(1, sizeof(DevDesc));
     if (dev == NULL)
       error("unable to allocate memory for DevDesc");
 
