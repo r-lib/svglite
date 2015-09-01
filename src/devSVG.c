@@ -160,6 +160,17 @@ static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
 static char MyColBuf[8];
 static char HexDigits[] = "0123456789ABCDEF";
 
+void write_escaped(FILE* f, const char* text) {
+  for(const char* cur = text; *cur != '\0'; ++cur) {
+    switch(*cur) {
+    case '&': fprintf(f, "&amp;"); break;
+    case '<': fprintf(f, "&lt;"); break;
+    case '>': fprintf(f, "&gt;"); break;
+    default: fputc(*cur, f);
+    }
+  }
+}
+
 char *col2RGBname(unsigned int col) {
 	MyColBuf[0] = '#';
 	MyColBuf[1] = HexDigits[(col >> 4) & 15];
@@ -438,71 +449,21 @@ static void SVG_Polygon(int n, double *x, double *y, const pGEcontext gc,
 	fprintf(ptd->texfp, " />\n");
 }
 
-static void textext(const char *str, SVGDesc *ptd) {
-	for (; *str; str++)
-		switch (*str) {
-
-		default:
-			fputc(*str, ptd->texfp);
-			break;
-		}
-
-}
-
-    char * replace_str ( const char *string, const char *substr, const char *replacement ){
-      char *tok = NULL;
-      char *newstr = NULL;
-      char *oldstr = NULL;
-      char *head = NULL;
-
-      // if either substr or replacement is NULL, duplicate string a let caller handle it
-      if ( substr == NULL || replacement == NULL ) return strdup (string);
-      newstr = strdup (string);
-      head = newstr;
-      while ( (tok = strstr ( head, substr ))){
-        oldstr = newstr;
-        newstr = malloc ( strlen ( oldstr ) - strlen ( substr ) + strlen ( replacement ) + 1 );
-        // failed to alloc mem, free old string and return NULL
-        if ( newstr == NULL ){
-          free (oldstr);
-          return NULL;
-        }
-        memcpy ( newstr, oldstr, tok - oldstr );
-        memcpy ( newstr + (tok - oldstr), replacement, strlen ( replacement ) );
-        memcpy ( newstr + (tok - oldstr) + strlen( replacement ), tok + strlen ( substr ), strlen ( oldstr ) - strlen ( substr ) - ( tok - oldstr ) );
-        memset ( newstr + strlen ( oldstr ) - strlen ( substr ) + strlen ( replacement ) , 0, 1 );
-        // move back head right after the last replacement */
-        head = newstr + (tok - oldstr) + strlen( replacement );
-        free (oldstr);
-      }
-      return newstr;
-    }
-
 // Rotated Text
 static void SVG_Text(double x, double y, const char *str, double rot,
 		double hadj, const pGEcontext gc, pDevDesc dd) {
-	int size;
-
-	// replace XML reserved characters with their entities
-	str = replace_str(str, "&", "&amp;");
-	str = replace_str(str, "<", "&lt;");
-	str = replace_str(str, ">", "&gt;");
 
 	SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
-	size = gc->cex * gc->ps + 0.5;
-
 	fprintf(ptd->texfp, "<text transform=\"translate(%.2f,%.2f)", x, y);
 	if (rot != 0)
-		fprintf(ptd->texfp, " rotate(%0.0f)\" ", -1.0 * rot);
-	else
-		fprintf(ptd->texfp, "\" ");
-
+		fprintf(ptd->texfp, " rotate(%0.0f)", -1.0 * rot);
+	fprintf(ptd->texfp, "\" ");
+	int size = gc->cex * gc->ps + 0.5;
 	SetFont(gc->fontface, size, ptd);
-
 	fprintf(ptd->texfp, ">");
 
-	textext(str, ptd);
+  write_escaped(ptd->texfp, str);
 
 	fprintf(ptd->texfp, "</text>\n");
 }
