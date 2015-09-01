@@ -1,16 +1,15 @@
 Package: RSvgDevice
 Version: 0.6.4.3
-Date: 2013-07-02
-Title: An R SVG graphics device.
-Author: T Jake Luciani <jakeluciani@yahoo.com>, Matthieu Decorde
-        <matthieu.decorde@ens-lyon.fr>, Vaudor Lise <lise.vaudor@ens-lyon.fr>
-Maintainer: Matthieu Decorde <matthieu.decorde@ens-lyon.fr>
-Depends: R (>= 2.6.0)
-Description: A graphics device for R that uses the w3.org xml standard
-        for Scalable Vector Graphics.
+Title: A SVG Graphics Device
+Description: A graphics device for R that produces "Scalable Vector Graphics".
+Authors@R: c(
+  person("T Jake", "Luciani", , "jakeluciani@yahoo.com", "aut"),
+  person("Matthieu", "Decorde", , "matthieu.decorde@ens-lyon.fr", c("aut", "cre")),
+  person("Vaudor", "Lise", , "lise.vaudor@ens-lyon.fr", "aut"),
+  person("Hadley", "Wickham", , "hadley@rstudio.com", "aut"),
+  person("RStudio", role = "cph")
+  )
+Depends: R (>= 3.0.0)
 License: GPL (>= 2)
 URL: https://github.com/mdecorde/RSvgDevice
-Packaged: 2013-02-11 09:02:21 UTC; mdecorde
-OS_type: unix
-Repository: CRAN
-Date/Publication: 2013-02-11 19:32:15
+BugReports: https://github.com/mdecorde/RSvgDevice/issues
