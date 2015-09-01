@@ -145,7 +145,7 @@ void write_escaped(FILE* f, const char* text) {
 }
 
 void write_colour(FILE* f, unsigned int col) {
-  fprintf(f, "#%X%X%X", R_RED(col), R_GREEN(col), R_BLUE(col));
+  fprintf(f, "#%02X%02X%02X", R_RED(col), R_GREEN(col), R_BLUE(col));
 }
 
 static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col) {
