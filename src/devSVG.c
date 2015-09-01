@@ -34,10 +34,6 @@ typedef struct {
 	double height;
 	double clipleft, clipright, cliptop, clipbottom;
 
-	int fg;
-	int bg;
-	int fontsize;
-	int fontface;
 	Rboolean xmlHeader;
 	Rboolean onefile;
   Rboolean useNS;
@@ -229,10 +225,6 @@ static void SetFont(int face, int size, unsigned int col, SVGDesc *ptd) {
   fprintf(ptd->texfp, " fill='");
 	write_colour(ptd->texfp, col);
 	fprintf(ptd->texfp, "'");
-
-	ptd->fontsize = lsize;
-	ptd->fontface = lface;
-
 }
 
 static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
@@ -248,12 +240,6 @@ static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
 }
 
 static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
-	ptd->fontsize = 0;
-	ptd->fontface = 0;
-
-	ptd->fg = dd->startcol;
-	ptd->bg = dd->startfill;
-
 	if (!(ptd->texfp = (FILE *) fopen(R_ExpandFileName(ptd->filename), "w")))
 		return FALSE;
 
@@ -270,7 +256,7 @@ static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
 			in2dots(ptd->height));
 
 	fprintf(ptd->texfp, "<rect width=\"100%%\" height=\"100%%\" fill='");
-	write_colour(ptd->texfp, ptd->bg);
+	write_colour(ptd->texfp, dd->startfill);
 	fprintf(ptd->texfp, "' />\n");
 
 	ptd->pageno++;
@@ -309,9 +295,6 @@ static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
 
 	} else
 		ptd->pageno++;
-
-	ptd->fontface = 0;
-	ptd->fontsize = 0;
 }
 
 // Close down the driver
@@ -356,16 +339,13 @@ static void SVG_Polyline(int n, double *x, double *y, const pGEcontext gc,
 }
 
 static double SVG_StrWidth(const char *str, const pGEcontext gc, pDevDesc dd) {
-	SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
+	int fontface = gc->fontface == NA_INTEGER ? 0 : gc->fontface;
 
-	const char *p;
-	int size;
-	double sum;
-	size = gc->cex * gc->ps + 0.5;
-	sum = 0;
-	for (p = str; *p; p++)
-		sum += charwidth[ptd->fontface][(int) *p];
+	double sum = 0;
+	for (const char *p = str; *p; p++)
+		sum += charwidth[fontface][(int) *p];
 
+	int size = gc->cex * gc->ps + 0.5;
 	return sum * size;
 }
 
@@ -497,10 +477,10 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 
 	// Screen Dimensions in Pixels
 
-	dd->left = 0; // left
-	dd->right = in2dots(width);// right
-	dd->bottom = in2dots(height); // bottom
-	dd->top = 0; // top
+	dd->left = 0;
+	dd->top = 0;
+	dd->right = in2dots(width);
+	dd->bottom = in2dots(height);
 	ptd->width = width;
 	ptd->height = height;
 	ptd->xmlHeader = xmlHeader;

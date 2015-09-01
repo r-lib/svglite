@@ -1,6 +1,19 @@
 context("text")
 library(xml2)
 
+test_that("par(cex) affects strwidth", {
+  devSVG(tempfile())
+  on.exit(dev.off())
+
+  plot.new()
+  w1 <- strwidth("abc")
+
+  par(cex = 4)
+  w4 <- strwidth("abc")
+
+  expect_equal(w4 / w1, 4)
+})
+
 test_that("special characters are escaped", {
   x <- xmlSVG({
     plot.new()
