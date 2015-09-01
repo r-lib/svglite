@@ -3,3 +3,5 @@
 * Compiles on Windows
 
 * Output no longer contains dummy `<desc>` element (#4)
+
+* Text is now coloured.

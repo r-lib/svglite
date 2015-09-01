@@ -133,9 +133,6 @@ static double charwidth[4][128] = {
 								0.5611140, 0.5000030, 0.7444490, 0.5000030, 0.5000030, 0.4763920,
 								0.5500030, 1.1000060, 0.5500030, 0.5500030, 0.550003 } };
 
-static char MyColBuf[8];
-static char HexDigits[] = "0123456789ABCDEF";
-
 void write_escaped(FILE* f, const char* text) {
   for(const char* cur = text; *cur != '\0'; ++cur) {
     switch(*cur) {
@@ -147,16 +144,8 @@ void write_escaped(FILE* f, const char* text) {
   }
 }
 
-char *col2RGBname(unsigned int col) {
-	MyColBuf[0] = '#';
-	MyColBuf[1] = HexDigits[(col >> 4) & 15];
-	MyColBuf[2] = HexDigits[(col) & 15];
-	MyColBuf[3] = HexDigits[(col >> 12) & 15];
-	MyColBuf[4] = HexDigits[(col >> 8) & 15];
-	MyColBuf[5] = HexDigits[(col >> 20) & 15];
-	MyColBuf[6] = HexDigits[(col >> 16) & 15];
-	MyColBuf[7] = '\0';
-	return &MyColBuf[0];
+void write_colour(FILE* f, unsigned int col) {
+  fprintf(f, "#%X%X%X", R_RED(col), R_GREEN(col), R_BLUE(col));
 }
 
 static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col) {
@@ -165,13 +154,20 @@ static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col)
 	int i, dashleft;;
 	double fillop, strokeop;
 
+
+	fprintf(ptd->texfp, "stroke='");
+	write_colour(ptd->texfp, col);
+	fprintf(ptd->texfp, "' ");
+
+	fprintf(ptd->texfp, "fill='");
+	write_colour(ptd->texfp, fgcol);
+	fprintf(ptd->texfp, "' ");
+
 	// Set line size + color
 	fprintf(ptd->texfp, "style=\"stroke-width:%d;", newlwd);
 
 	strokeop = ((double) ((col >> 24) & 127)) / 127;
 	fillop = ((double) ((fgcol >> 24) & 127)) / 127;
-	fprintf(ptd->texfp, "stroke:%s", col2RGBname(col));
-	fprintf(ptd->texfp, ";fill:%s", col2RGBname(fgcol));
 	fprintf(ptd->texfp, ";stroke-opacity:%f", strokeop);
 	fprintf(ptd->texfp, ";fill-opacity:%f", fillop);
 
@@ -219,14 +215,19 @@ static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col)
 	fprintf(ptd->texfp, "\"");
 }
 
-static void SetFont(int face, int size, SVGDesc *ptd) {
+static void SetFont(int face, int size, unsigned int col, SVGDesc *ptd) {
 	int lface = face, lsize = size;
 	if (lface < 1 || lface > 4)
 		lface = 1;
 	if (lsize < 1 || lsize > 24)
 		lsize = 10;
 
-	fprintf(ptd->texfp, " style=\"font-size:%dpt\" ", lsize);
+	fprintf(ptd->texfp, " font-size='%d'", lsize);
+
+  fprintf(ptd->texfp, " fill='");
+	write_colour(ptd->texfp, col);
+	fprintf(ptd->texfp, "'");
+
 	ptd->fontsize = lsize;
 	ptd->fontface = lface;
 
@@ -266,9 +267,9 @@ static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
 	fprintf(ptd->texfp, "viewBox=\"0,0,%.2f,%.2f\">\n", in2dots(ptd->width),
 			in2dots(ptd->height));
 
-	fprintf(ptd->texfp,
-			"<rect width=\"100%%\" height=\"100%%\" fill=\"%s\"/>\n",
-			col2RGBname(ptd->bg));
+	fprintf(ptd->texfp, "<rect width=\"100%%\" height=\"100%%\" fill='");
+	write_colour(ptd->texfp, ptd->bg);
+	fprintf(ptd->texfp, "' />\n");
 
 	ptd->pageno++;
 	return TRUE;
@@ -426,7 +427,7 @@ static void SVG_Polygon(int n, double *x, double *y, const pGEcontext gc,
 
 // Rotated Text
 static void SVG_Text(double x, double y, const char *str, double rot,
-		double hadj, const pGEcontext gc, pDevDesc dd) {
+		                 double hadj, const pGEcontext gc, pDevDesc dd) {
 
 	SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
@@ -435,7 +436,7 @@ static void SVG_Text(double x, double y, const char *str, double rot,
 		fprintf(ptd->texfp, " rotate(%0.0f)", -1.0 * rot);
 	fprintf(ptd->texfp, "\" ");
 	int size = gc->cex * gc->ps + 0.5;
-	SetFont(gc->fontface, size, ptd);
+	SetFont(gc->fontface, size, gc->col, ptd);
 	fprintf(ptd->texfp, ">");
 
   write_escaped(ptd->texfp, str);
