@@ -157,22 +157,22 @@ static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col)
   SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
   int i, dashleft;;
 
-  fprintf(ptd->texfp, "stroke='");
+  fprintf(ptd->texfp, " stroke='");
   write_colour(ptd->texfp, col);
-  fprintf(ptd->texfp, "' ");
+  fprintf(ptd->texfp, "'");
 
-  fprintf(ptd->texfp, "fill='");
+  fprintf(ptd->texfp, " fill='");
   write_colour(ptd->texfp, fgcol);
-  fprintf(ptd->texfp, "' ");
+  fprintf(ptd->texfp, "'");
 
   // Set line size + color
-  fprintf(ptd->texfp, "style='stroke-width:%d;", newlwd);
+  fprintf(ptd->texfp, " stroke-width='%d'", newlwd);
 
   // Set line pattern type
   // ADD: mdecorde from SVGTips device, (C) 2008 Tony Plate
   dashleft = newlty;
   if (dashleft) {
-    fprintf(ptd->texfp, ";stroke-dasharray:");
+    fprintf(ptd->texfp, " stroke-dasharray='");
 
     dashleft = newlty;
     for(i=0 ; i<8 && dashleft & 15 ; i++) {
@@ -208,8 +208,8 @@ static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col)
     //      fprintf(ptd->texfp, ";stroke-dasharray %d", ptd->lty);
     //      break;
     //    }
+    fprintf(ptd->texfp, "'");
   }
-  fprintf(ptd->texfp, "'");
 }
 
 static void SetFont(int face, int size, unsigned int col, SVGDesc *ptd) {
@@ -291,13 +291,11 @@ static void SVG_Line(double x1, double y1, double x2, double y2,
     const pGEcontext gc, pDevDesc dd) {
   SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
-  fprintf(ptd->texfp, "<line x1='%.2f' y1='%.2f' x2='%.2f' ", x1, y1,
-      x2);
-
-  fprintf(ptd->texfp, "y2='%.2f' ", y2);
+  fprintf(ptd->texfp, "<line x1='%.2f' y1='%.2f' x2='%.2f' y2='%.2f'",
+    x1, y1, x2, y2);
 
   SetLinetype(gc->lty, gc->lwd, dd, NA_INTEGER, gc->col);
-  fprintf(ptd->texfp, "/>\n");
+  fprintf(ptd->texfp, " />\n");
 }
 
 static void SVG_Polyline(int n, double *x, double *y, const pGEcontext gc,
@@ -307,13 +305,13 @@ static void SVG_Polyline(int n, double *x, double *y, const pGEcontext gc,
   fprintf(ptd->texfp, "<polyline points='");
 
   for (i = 0; i < n; i++) {
-    fprintf(ptd->texfp, "%.2f , %.2f ", x[i], y[i]);
+    fprintf(ptd->texfp, "%.2f,%.2f ", x[i], y[i]);
   }
-  fprintf(ptd->texfp, "' ");
+  fprintf(ptd->texfp, "'");
 
   SetLinetype(gc->lty, gc->lwd, dd, NA_INTEGER, gc->col);
 
-  fprintf(ptd->texfp, "/>\n");
+  fprintf(ptd->texfp, " />\n");
 }
 
 static double SVG_StrWidth(const char *str, const pGEcontext gc, pDevDesc dd) {
@@ -346,8 +344,8 @@ static void SVG_Rect(double x0, double y0, double x1, double y1,
   }
 
   fprintf(ptd->texfp,
-      "<rect x='%.2f' y='%.2f' width='%.2f' height='%.2f' ", x0,
-      y0, x1 - x0, y1 - y0);
+      "<rect x='%.2f' y='%.2f' width='%.2f' height='%.2f'",
+      x0, y0, x1 - x0, y1 - y0);
 
   SetLinetype(gc->lty, gc->lwd, dd, gc->fill, gc->col);
   fprintf(ptd->texfp, " />\n");
@@ -357,7 +355,7 @@ static void SVG_Circle(double x, double y, double r, const pGEcontext gc,
     pDevDesc dd) {
   SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
-  fprintf(ptd->texfp, "<circle cx='%.2f' cy='%.2f' r='%.2f' ", x, y,
+  fprintf(ptd->texfp, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y,
       r * 1.5);
 
   SetLinetype(gc->lty, gc->lwd, dd, gc->fill, gc->col);
@@ -373,12 +371,10 @@ static void SVG_Polygon(int n, double *x, double *y, const pGEcontext gc,
   SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
   fprintf(ptd->texfp, "<polygon points='");
-
   for (i = 0; i < n; i++) {
-    fprintf(ptd->texfp, "%.2f , %.2f ", x[i], y[i]);
+    fprintf(ptd->texfp, "%.2f,%.2f ", x[i], y[i]);
   }
-
-  fprintf(ptd->texfp, "' ");
+  fprintf(ptd->texfp, "'");
 
   SetLinetype(gc->lty, gc->lwd, dd, gc->fill, gc->col);
 
