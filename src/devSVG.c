@@ -154,8 +154,8 @@ void write_colour(FILE* f, unsigned int col) {
 }
 
 static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col) {
-  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
-  int i, dashleft;;
+  SVGDesc *ptd = dd->deviceSpecific;
+  int i, dashleft;
 
   fprintf(ptd->texfp, " stroke='");
   write_colour(ptd->texfp, col);
@@ -239,7 +239,7 @@ static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
 }
 
 static void SVG_Clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
-  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
+  SVGDesc *ptd = dd->deviceSpecific;
 
   ptd->clipleft = x0;
   ptd->clipright = x1;
@@ -250,7 +250,7 @@ static void SVG_Clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
 // Start a new page
 
 static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
-  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
+  SVGDesc *ptd = dd->deviceSpecific;
 
   if (ptd->pageno > 0) {
     Rf_error("RSvgDevice only supports one page");
@@ -278,7 +278,7 @@ static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
 // Close down the driver
 
 static void SVG_Close(pDevDesc dd) {
-  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
+  SVGDesc *ptd = dd->deviceSpecific;
 
   fprintf(ptd->texfp, "</svg>\n");
 
@@ -289,7 +289,7 @@ static void SVG_Close(pDevDesc dd) {
 
 static void SVG_Line(double x1, double y1, double x2, double y2,
     const pGEcontext gc, pDevDesc dd) {
-  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
+  SVGDesc *ptd = dd->deviceSpecific;
 
   fprintf(ptd->texfp, "<line x1='%.2f' y1='%.2f' x2='%.2f' y2='%.2f'",
     x1, y1, x2, y2);
@@ -301,7 +301,7 @@ static void SVG_Line(double x1, double y1, double x2, double y2,
 static void SVG_Polyline(int n, double *x, double *y, const pGEcontext gc,
       pDevDesc dd) {
   int i;
-  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
+  SVGDesc *ptd = dd->deviceSpecific;
   fprintf(ptd->texfp, "<polyline points='");
 
   for (i = 0; i < n; i++) {
@@ -328,7 +328,7 @@ static double SVG_StrWidth(const char *str, const pGEcontext gc, pDevDesc dd) {
 static void SVG_Rect(double x0, double y0, double x1, double y1,
     const pGEcontext gc, pDevDesc dd) {
   double tmp;
-  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
+  SVGDesc *ptd = dd->deviceSpecific;
 
   // Make sure width and height are positive
   if (x0 >= x1) {
@@ -353,7 +353,7 @@ static void SVG_Rect(double x0, double y0, double x1, double y1,
 
 static void SVG_Circle(double x, double y, double r, const pGEcontext gc,
     pDevDesc dd) {
-  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
+  SVGDesc *ptd = dd->deviceSpecific;
 
   fprintf(ptd->texfp, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y,
       r * 1.5);
@@ -368,7 +368,7 @@ static void SVG_Polygon(int n, double *x, double *y, const pGEcontext gc,
     pDevDesc dd) {
   int i;
 
-  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
+  SVGDesc *ptd = dd->deviceSpecific;
 
   fprintf(ptd->texfp, "<polygon points='");
   for (i = 0; i < n; i++) {
@@ -385,7 +385,7 @@ static void SVG_Polygon(int n, double *x, double *y, const pGEcontext gc,
 static void SVG_Text(double x, double y, const char *str, double rot,
                      double hadj, const pGEcontext gc, pDevDesc dd) {
 
-  SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
+  SVGDesc *ptd = dd->deviceSpecific;
 
   fprintf(ptd->texfp, "<text transform='translate(%.2f,%.2f)", x, y);
   if (rot != 0)
@@ -449,22 +449,6 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
   dd->right = in2dots(width);
   dd->bottom = in2dots(height);
 
-  SVGDesc *ptd = malloc(sizeof(SVGDesc));
-  if (ptd == NULL)
-    return FALSE;
-
-  strncpy(ptd->filename, filename, 1024);
-  ptd->texfp = fopen(R_ExpandFileName(ptd->filename), "w");
-  if (ptd->texfp == NULL) {
-    free(ptd);
-    return FALSE;
-  }
-
-  ptd->width = width;
-  ptd->height = height;
-  ptd->xmlHeader = xmlHeader;
-  ptd->useNS = useNS;
-
   // Base Pointsize: Nominal Character Sizes in Pixels
 
   dd->cra[0] = (6.0 / 12.0) * 10.0;
@@ -483,11 +467,27 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
   dd->canClip = FALSE;
   dd->canHAdj = 0;
   dd->canChangeGamma = FALSE;
+  dd->displayListOn = FALSE;
 
+  // Device specific setup
+  SVGDesc *ptd = malloc(sizeof(SVGDesc));
+  if (ptd == NULL)
+    return FALSE;
+
+  strncpy(ptd->filename, filename, 1024);
+  ptd->texfp = fopen(R_ExpandFileName(ptd->filename), "w");
+  if (ptd->texfp == NULL) {
+    free(ptd);
+    return FALSE;
+  }
+
+  ptd->width = width;
+  ptd->height = height;
+  ptd->xmlHeader = xmlHeader;
+  ptd->useNS = useNS;
   ptd->pageno = 0;
 
-  dd->deviceSpecific = (void *) ptd;
-  dd->displayListOn = FALSE;
+  dd->deviceSpecific = ptd;
   return TRUE;
 }
 
