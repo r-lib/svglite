@@ -1,33 +1,32 @@
-/*
- *  UTF-8 support, XML reserved characters and XML encoding header : (C) 2012 Matthieu Decorde
- *
- *  Line type support : (C) 2008 Tony Plate from RSVGTipsDevice package
- *
- *  SVG device, (C) 2002 T Jake Luciani, Based on PicTex device, for
- *  R : A Computer Language for Statistical Data Analysis
- *  Copyright (C) 1995, 1996  Robert Gentleman and Ross Ihaka
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+//
+//  UTF-8 support, XML reserved characters and XML encoding header : (C) 2012 Matthieu Decorde
+//
+//  Line type support : (C) 2008 Tony Plate from RSVGTipsDevice package
+//
+//  SVG device, (C) 2002 T Jake Luciani, Based on PicTex device, for
+//  R : A Computer Language for Statistical Data Analysis
+//  Copyright (C) 1995, 1996  Robert Gentleman and Ross Ihaka
+//
+//  This program is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation; either version 2 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <string.h>
 
 #include "R.h"
 #include "Rinternals.h"
 #include "R_ext/GraphicsEngine.h"
 
-/* device-specific information per SVG device */
+// device-specific information per SVG device //
 
 #define DOTSperIN       72.27
 #define in2dots(x)      (DOTSperIN * x)
@@ -46,12 +45,10 @@ typedef struct {
 	int fontface;
 	Rboolean debug;
 	Rboolean xmlHeader;
-	Rboolean onefile; /* drop headers etc*/
+	Rboolean onefile;
   Rboolean useNS;
 
 } SVGDesc;
-
-/* Global device information */
 
 static double charwidth[4][128] = {
   { 0.5416690, 0.8333360, 0.7777810,
@@ -142,8 +139,6 @@ static double charwidth[4][128] = {
 								0.5611140, 0.5000030, 0.7444490, 0.5000030, 0.5000030, 0.4763920,
 								0.5500030, 1.1000060, 0.5500030, 0.5500030, 0.550003 } };
 
-/* Device driver actions */
-
 static void SVG_Circle(double x, double y, double r, const pGEcontext gc,
 		pDevDesc dd);
 static void SVG_Clip(double, double, double, double, pDevDesc);
@@ -167,8 +162,6 @@ static void SVG_Text(double x, double y, const char *str, double rot,
 static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
 		double* descent, double* width, pDevDesc dd);
 
-/* Support routines */
-
 static char MyColBuf[8];
 static char HexDigits[] = "0123456789ABCDEF";
 
@@ -190,7 +183,7 @@ static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col)
 	int i, dashleft;;
 	double fillop, strokeop;
 
-	/*Set line size + color*/
+	// Set line size + color
 	fprintf(ptd->texfp, "style=\"stroke-width:%d;", newlwd);
 
 	strokeop = ((double) ((col >> 24) & 127)) / 127;
@@ -200,7 +193,7 @@ static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col)
 	fprintf(ptd->texfp, ";stroke-opacity:%f", strokeop);
 	fprintf(ptd->texfp, ";fill-opacity:%f", fillop);
 
-	/*Set line pattern type*/
+	// Set line pattern type
 	// ADD: mdecorde from SVGTips device, (C) 2008 Tony Plate
 	dashleft = newlty;
 	if (dashleft) {
@@ -208,7 +201,7 @@ static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col)
 
 		dashleft = newlty;
 		for(i=0 ; i<8 && dashleft & 15 ; i++) {
-			/* dashlen is dashleft & 15 */
+			// dashlen is dashleft & 15
 			if (i>0)
 				fprintf(ptd->texfp, ", ");
 			fprintf(ptd->texfp, "%d", dashleft & 15);
@@ -263,13 +256,11 @@ static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
 	//	Rboolean Unicode = mbcslocale && (gc->fontface != 5);
     //     if (c < 0) { Unicode = TRUE; c = -c; }
     //     if(Unicode) UniCharMetric(c, ...); else CharMetric(c, ...);
-	/* metric information not available => return 0,0,0 */
+	// metric information not available => return 0,0,0 */
 	*ascent = 0.0;
 	*descent = 0.0;
 	*width = 0.0;
 }
-
-/* Initialize the device */
 
 static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
 	ptd->fontsize = 0;
@@ -311,7 +302,7 @@ static void SVG_Clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
 	ptd->cliptop = y1;
 }
 
-/* Start a new page */
+// Start a new page
 
 static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
 	SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
@@ -337,10 +328,9 @@ static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
 
 	ptd->fontface = 0;
 	ptd->fontsize = 0;
-	/*SetFont(face, size, ptd);*/
 }
 
-/* Close down the driver */
+// Close down the driver
 
 static void SVG_Close(pDevDesc dd) {
 	SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
@@ -381,9 +371,6 @@ static void SVG_Polyline(int n, double *x, double *y, const pGEcontext gc,
 	fprintf(ptd->texfp, "/>\n");
 }
 
-/* String Width in Rasters */
-/* For the current font in pointsize fontsize */
-
 static double SVG_StrWidth(const char *str, const pGEcontext gc, pDevDesc dd) {
 	SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
@@ -391,7 +378,6 @@ static double SVG_StrWidth(const char *str, const pGEcontext gc, pDevDesc dd) {
 	int size;
 	double sum;
 	size = gc->cex * gc->ps + 0.5;
-	/*SetFont(font, size, ptd);*/
 	sum = 0;
 	for (p = str; *p; p++)
 		sum += charwidth[ptd->fontface][(int) *p];
@@ -399,13 +385,12 @@ static double SVG_StrWidth(const char *str, const pGEcontext gc, pDevDesc dd) {
 	return sum * size;
 }
 
-/* Possibly Filled Rectangle */
 static void SVG_Rect(double x0, double y0, double x1, double y1,
 		const pGEcontext gc, pDevDesc dd) {
 	double tmp;
 	SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
-	/*Make sure width and height are positive*/
+	// Make sure width and height are positive
 	if (x0 >= x1) {
 		tmp = x0;
 		x0 = x1;
@@ -475,14 +460,14 @@ static void textext(const char *str, SVGDesc *ptd) {
       char *oldstr = NULL;
       char *head = NULL;
 
-      /* if either substr or replacement is NULL, duplicate string a let caller handle it */
+      // if either substr or replacement is NULL, duplicate string a let caller handle it
       if ( substr == NULL || replacement == NULL ) return strdup (string);
       newstr = strdup (string);
       head = newstr;
       while ( (tok = strstr ( head, substr ))){
         oldstr = newstr;
         newstr = malloc ( strlen ( oldstr ) - strlen ( substr ) + strlen ( replacement ) + 1 );
-        /*failed to alloc mem, free old string and return NULL */
+        // failed to alloc mem, free old string and return NULL
         if ( newstr == NULL ){
           free (oldstr);
           return NULL;
@@ -491,14 +476,14 @@ static void textext(const char *str, SVGDesc *ptd) {
         memcpy ( newstr + (tok - oldstr), replacement, strlen ( replacement ) );
         memcpy ( newstr + (tok - oldstr) + strlen( replacement ), tok + strlen ( substr ), strlen ( oldstr ) - strlen ( substr ) - ( tok - oldstr ) );
         memset ( newstr + strlen ( oldstr ) - strlen ( substr ) + strlen ( replacement ) , 0, 1 );
-        /* move back head right after the last replacement */
+        // move back head right after the last replacement */
         head = newstr + (tok - oldstr) + strlen( replacement );
         free (oldstr);
       }
       return newstr;
     }
 
-/* Rotated Text */
+// Rotated Text
 static void SVG_Text(double x, double y, const char *str, double rot,
 		double hadj, const pGEcontext gc, pDevDesc dd) {
 	int size;
@@ -527,12 +512,11 @@ static void SVG_Text(double x, double y, const char *str, double rot,
 	fprintf(ptd->texfp, "</text>\n");
 }
 
-/* Pick */
 static Rboolean SVG_Locator(double *x, double *y, pDevDesc dd) {
 	return FALSE;
 }
 
-/* Set Graphics mode - not needed for PS */
+// Set Graphics mode - not needed for PS
 static void SVG_Mode(int mode, pDevDesc dd) {
 }
 
@@ -589,16 +573,16 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 	dd->cap = SVG_Cap; // not implemented
 	dd->raster = SVG_Raster; // not implemented
 
-	/* UTF-8 support */
+	// UTF-8 support
 	dd->wantSymbolUTF8 = 1;
 	dd->hasTextUTF8 = 1;
 
-	/* Screen Dimensions in Pixels */
+	// Screen Dimensions in Pixels
 
-	dd->left = 0; /* left */
-	dd->right = in2dots(width);/* right */
-	dd->bottom = in2dots(height); /* bottom */
-	dd->top = 0; /* top */
+	dd->left = 0; // left
+	dd->right = in2dots(width);// right
+	dd->bottom = in2dots(height); // bottom
+	dd->top = 0; // top
 	ptd->width = width;
 	ptd->height = height;
 	ptd->xmlHeader = xmlHeader;
@@ -608,23 +592,19 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 	if (!SVG_Open(dd, ptd))
 		return FALSE;
 
-	/* Base Pointsize */
-	/* Nominal Character Sizes in Pixels */
+	// Base Pointsize: Nominal Character Sizes in Pixels
 
 	dd->cra[0] = (6.0 / 12.0) * 10.0;
 	dd->cra[1] = (10.0 / 12.0) * 10.0;
 
-	/* Character Addressing Offsets */
-	/* These offsets should center a single */
-	/* plotting character over the plotting point. */
-	/* Pure guesswork and eyeballing ... */
+	// Character Addressing Offsets: These offsets should center a single,
+	// plotting character over the plotting point.
 
-	dd->xCharOffset = 0; /*0.4900;*/
-	dd->yCharOffset = 0; /*0.3333;*/
-	dd->yLineBias = 0; /*0.1;*/
+	dd->xCharOffset = 0; // 0.4900;
+	dd->yCharOffset = 0; // 0.3333;
+	dd->yLineBias = 0; // 0.1;
 
-	/* Inches per Raster Unit */
-	/* We use printer points, i.e. 72.27 dots per inch : */
+	// Inches per Raster Unit: We use printer points, i.e. 72.27 dots per inch :
 	dd->ipr[0] = dd->ipr[1] = 1. / DOTSperIN;
 
 	dd->canClip = FALSE;
