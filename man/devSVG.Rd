@@ -5,7 +5,7 @@
 \title{A SVG Graphics Driver}
 \usage{
 devSVG(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-  fg = "black", xmlHeader = TRUE, useNS = TRUE)
+  xmlHeader = TRUE, useNS = TRUE)
 }
 \arguments{
 \item{file}{the file where output will appear.}
@@ -15,8 +15,6 @@ devSVG(file = "Rplots.svg", width = 10, height = 8, bg = "white",
 \item{height}{the height of the plot in inches.}
 
 \item{bg}{the background color for the plot.}
-
-\item{fg}{the foreground color for the plot.}
 
 \item{xmlHeader}{Print XML header or not.}
 

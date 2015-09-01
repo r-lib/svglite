@@ -2,4 +2,4 @@
 
 export(devSVG)
 export(xmlSVG)
-useDynLib(RSvgDevice,do_SVG)
+useDynLib(RSvgDevice,devSVG_)

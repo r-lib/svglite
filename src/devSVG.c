@@ -408,11 +408,11 @@ static void SVG_Size(double *left, double *right, double *bottom, double *top,
   *top = dd->top;
 }
 
-Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
+Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
     double width, double height, Rboolean xmlHeader, Rboolean useNS) {
 
-  dd->startfill = R_GE_str2col(bg);
-  dd->startcol = R_GE_str2col(fg);
+  dd->startfill = bg;
+  dd->startcol = R_RGB(0, 0, 0);
   dd->startps = 10;
   dd->startlty = 0;
   dd->startfont = 1;
@@ -490,27 +490,32 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 }
 
 
-void do_SVG(char **file, char **bg, char **fg, double *width, double *height,
-            int *xmlHeader, int *useNS) {
-  pGEDevDesc dd;
-  pDevDesc dev;
+SEXP devSVG_(SEXP file_, SEXP bg_, SEXP width_, SEXP height_,
+            SEXP xmlHeader_, SEXP useNS_) {
+
+  const char* file = CHAR(asChar(file_));
+  int bg = R_GE_str2col(CHAR(asChar(bg_)));
+  int width = asInteger(width_), height = asInteger(height_);
+  int xmlHeader = asLogical(xmlHeader_), useNS = asLogical(useNS_);
 
   R_GE_checkVersionOrDie(R_GE_version);
   R_CheckDeviceAvailable();
   BEGIN_SUSPEND_INTERRUPTS {
-    if (!(dev = (pDevDesc) Calloc(1, DevDesc)))
+    pDevDesc dev = Calloc(1, DevDesc);
+    if (dev == NULL)
       error("unable to allocate memory for DevDesc");
 
-    if (!SVGDeviceDriver(dev, file[0], bg[0], fg[0], width[0], height[0],
-        xmlHeader[0], useNS[0])) {
+    if (!SVGDeviceDriver(dev, file, bg, width, height, xmlHeader, useNS)) {
       free(dev);
       error("unable to start device SVG");
     }
-    dd = GEcreateDevDesc(dev);
 
+    pGEDevDesc dd = GEcreateDevDesc(dev);
     GEaddDevice2(dd, "devSVG");
     GEinitDisplayList(dd);
 
   }END_SUSPEND_INTERRUPTS;
+
+  return ScalarLogical(1);
 }
 

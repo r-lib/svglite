@@ -9,7 +9,6 @@
 #' @param width The width of the plot in inches.
 #' @param height the height of the plot in inches.
 #' @param bg the background color for the plot.
-#' @param fg the foreground color for the plot.
 #' @param xmlHeader Print XML header or not.
 #' @param useNS Include svg namespace? Not including it makes extracting
 #'   elements with xpath much easier.
@@ -24,15 +23,14 @@
 #' plot(1:11,(-5:5)^2, type='b', main="Simple Example")
 #' dev.off()
 #' @keywords device
-#' @useDynLib RSvgDevice do_SVG
+#' @useDynLib RSvgDevice devSVG_
 #' @export
 devSVG <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-                   fg = "black", xmlHeader = TRUE, useNS = TRUE) {
+                   xmlHeader = TRUE, useNS = TRUE) {
 
-  dev <- .C(do_SVG,
+  dev <- .Call(devSVG_,
     as.character(file),
     as.character(bg),
-    as.character(fg),
     as.double(width),
     as.double(height),
     as.logical(xmlHeader),
