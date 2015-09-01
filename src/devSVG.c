@@ -23,9 +23,6 @@
 
 // device-specific information per SVG device //
 
-#define DOTSperIN       72.27
-#define in2dots(x)      (DOTSperIN * x)
-
 typedef struct {
   FILE *texfp;
   char filename[1024];
@@ -262,9 +259,9 @@ static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
     fprintf(ptd->texfp, "xmlns='http://www.w3.org/2000/svg' ");
 
   fprintf(ptd->texfp, "width='%.2f' height='%.2f' ",
-      in2dots(ptd->width), in2dots(ptd->height));
-  fprintf(ptd->texfp, "viewBox='0,0,%.2f,%.2f'>\n", in2dots(ptd->width),
-      in2dots(ptd->height));
+      ptd->width * 72.0, ptd->height * 72.0);
+  fprintf(ptd->texfp, "viewBox='0,0,%.2f,%.2f'>\n", ptd->width * 72.0,
+      ptd->height * 72.0);
 
   fprintf(ptd->texfp, "<rect width='100%%' height='100%%' fill='");
   write_colour(ptd->texfp, gc->fill);
@@ -440,12 +437,14 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
   // Screen Dimensions in Pixels
   dd->left = 0;
   dd->top = 0;
-  dd->right = in2dots(width);
-  dd->bottom = in2dots(height);
+  dd->right = width * 72;
+  dd->bottom = height * 72;
 
   // Base Pointsize: Nominal Character Sizes in Pixels
-  dd->cra[0] = (6.0 / 12.0) * 10.0;
-  dd->cra[1] = (10.0 / 12.0) * 10.0;
+  // I'm not sure where these constants come from, but they're used in
+  // the majority of the base grahpics devices
+  dd->cra[0] = 0.9 * 10.0;
+  dd->cra[1] = 1.2 * 10.0;
 
   // Character Addressing Offsets: These offsets should center a single,
   // plotting character over the plotting point.
@@ -453,8 +452,9 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
   dd->yCharOffset = 0; // 0.3333;
   dd->yLineBias = 0; // 0.1;
 
-  // Inches per Raster Unit: We use printer points, i.e. 72.27 dots per inch :
-  dd->ipr[0] = dd->ipr[1] = 1. / DOTSperIN;
+  // Inches per Raster Unit
+  dd->ipr[0] = 1.0 / 72.0;
+  dd->ipr[1] = 1.0 / 72.0;
 
   dd->canClip = FALSE;
   dd->canHAdj = 0;
