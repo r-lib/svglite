@@ -11,6 +11,7 @@ Authors@R: c(
   )
 Depends: R (>= 3.0.0)
 Suggests:
+  htmltools,
   testthat,
   xml2
 License: GPL (>= 2)

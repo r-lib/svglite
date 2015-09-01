@@ -8,17 +8,17 @@
 #' @export
 #' @examples
 #' if (require("htmltools")) {
-#'   htmlSVG(plot(1, axes = FALSE))
+#'   htmlSVG(plot(1:10))
+#'   htmlSVG(hist(rnorm(100)))
 #' }
 htmlSVG <- function(code, ...) {
   tmp <- tempfile()
-  devSVG(tmp, width = 5, height = 5, useNS = FALSE, ...)
+  devSVG(tmp, width = par("din")[1], height = par("din")[2], ...)
   tryCatch(code,
     finally = dev.off()
   )
-
   htmltools::browsable(
-    htmltools::HTML(paste0(readLines(tmp),collapse="\n"))
+    htmltools::HTML(paste0(readLines(tmp), collapse = "\n"))
   )
 }
 
