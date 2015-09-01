@@ -295,7 +295,7 @@ static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
 			in2dots(ptd->height));
 
 	fprintf(ptd->texfp,
-			"<rect width=\"100%%\" height=\"100%%\" style=\"fill:%s\"/>\n",
+			"<rect width=\"100%%\" height=\"100%%\" fill=\"%s\"/>\n",
 			col2RGBname(ptd->bg));
 
 	ptd->pageno++;
