@@ -166,7 +166,7 @@ static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col)
   fprintf(ptd->texfp, "' ");
 
   // Set line size + color
-  fprintf(ptd->texfp, "style=\"stroke-width:%d;", newlwd);
+  fprintf(ptd->texfp, "style='stroke-width:%d;", newlwd);
 
   // Set line pattern type
   // ADD: mdecorde from SVGTips device, (C) 2008 Tony Plate
@@ -209,7 +209,7 @@ static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col)
     //      break;
     //    }
   }
-  fprintf(ptd->texfp, "\"");
+  fprintf(ptd->texfp, "'");
 }
 
 static void SetFont(int face, int size, unsigned int col, SVGDesc *ptd) {
@@ -257,18 +257,18 @@ static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
   }
 
   if (ptd->xmlHeader)
-    fprintf(ptd->texfp, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+    fprintf(ptd->texfp, "<?xml version='1.0' encoding='UTF-8'?>\n");
 
   fprintf(ptd->texfp, "<svg ");
   if (ptd->useNS)
-    fprintf(ptd->texfp, "xmlns=\"http://www.w3.org/2000/svg\" ");
+    fprintf(ptd->texfp, "xmlns='http://www.w3.org/2000/svg' ");
 
-  fprintf(ptd->texfp, "width=\"%.2f\" height=\"%.2f\" ",
+  fprintf(ptd->texfp, "width='%.2f' height='%.2f' ",
       in2dots(ptd->width), in2dots(ptd->height));
-  fprintf(ptd->texfp, "viewBox=\"0,0,%.2f,%.2f\">\n", in2dots(ptd->width),
+  fprintf(ptd->texfp, "viewBox='0,0,%.2f,%.2f'>\n", in2dots(ptd->width),
       in2dots(ptd->height));
 
-  fprintf(ptd->texfp, "<rect width=\"100%%\" height=\"100%%\" fill='");
+  fprintf(ptd->texfp, "<rect width='100%%' height='100%%' fill='");
   write_colour(ptd->texfp, gc->fill);
   fprintf(ptd->texfp, "' />\n");
 
@@ -291,10 +291,10 @@ static void SVG_Line(double x1, double y1, double x2, double y2,
     const pGEcontext gc, pDevDesc dd) {
   SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
-  fprintf(ptd->texfp, "<line x1=\"%.2f\" y1=\"%.2f\" x2=\"%.2f\" ", x1, y1,
+  fprintf(ptd->texfp, "<line x1='%.2f' y1='%.2f' x2='%.2f' ", x1, y1,
       x2);
 
-  fprintf(ptd->texfp, "y2=\"%.2f\" ", y2);
+  fprintf(ptd->texfp, "y2='%.2f' ", y2);
 
   SetLinetype(gc->lty, gc->lwd, dd, NA_INTEGER, gc->col);
   fprintf(ptd->texfp, "/>\n");
@@ -304,12 +304,12 @@ static void SVG_Polyline(int n, double *x, double *y, const pGEcontext gc,
       pDevDesc dd) {
   int i;
   SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
-  fprintf(ptd->texfp, "<polyline points=\"");
+  fprintf(ptd->texfp, "<polyline points='");
 
   for (i = 0; i < n; i++) {
     fprintf(ptd->texfp, "%.2f , %.2f ", x[i], y[i]);
   }
-  fprintf(ptd->texfp, "\" ");
+  fprintf(ptd->texfp, "' ");
 
   SetLinetype(gc->lty, gc->lwd, dd, NA_INTEGER, gc->col);
 
@@ -346,7 +346,7 @@ static void SVG_Rect(double x0, double y0, double x1, double y1,
   }
 
   fprintf(ptd->texfp,
-      "<rect x=\"%.2f\" y=\"%.2f\" width=\"%.2f\" height=\"%.2f\" ", x0,
+      "<rect x='%.2f' y='%.2f' width='%.2f' height='%.2f' ", x0,
       y0, x1 - x0, y1 - y0);
 
   SetLinetype(gc->lty, gc->lwd, dd, gc->fill, gc->col);
@@ -357,7 +357,7 @@ static void SVG_Circle(double x, double y, double r, const pGEcontext gc,
     pDevDesc dd) {
   SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
-  fprintf(ptd->texfp, "<circle cx=\"%.2f\" cy=\"%.2f\" r=\"%.2f\" ", x, y,
+  fprintf(ptd->texfp, "<circle cx='%.2f' cy='%.2f' r='%.2f' ", x, y,
       r * 1.5);
 
   SetLinetype(gc->lty, gc->lwd, dd, gc->fill, gc->col);
@@ -372,13 +372,13 @@ static void SVG_Polygon(int n, double *x, double *y, const pGEcontext gc,
 
   SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
-  fprintf(ptd->texfp, "<polygon points=\"");
+  fprintf(ptd->texfp, "<polygon points='");
 
   for (i = 0; i < n; i++) {
     fprintf(ptd->texfp, "%.2f , %.2f ", x[i], y[i]);
   }
 
-  fprintf(ptd->texfp, "\" ");
+  fprintf(ptd->texfp, "' ");
 
   SetLinetype(gc->lty, gc->lwd, dd, gc->fill, gc->col);
 
@@ -391,10 +391,10 @@ static void SVG_Text(double x, double y, const char *str, double rot,
 
   SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
 
-  fprintf(ptd->texfp, "<text transform=\"translate(%.2f,%.2f)", x, y);
+  fprintf(ptd->texfp, "<text transform='translate(%.2f,%.2f)", x, y);
   if (rot != 0)
     fprintf(ptd->texfp, " rotate(%0.0f)", -1.0 * rot);
-  fprintf(ptd->texfp, "\" ");
+  fprintf(ptd->texfp, "' ");
   int size = gc->cex * gc->ps + 0.5;
   SetFont(gc->fontface, size, gc->col, ptd);
   fprintf(ptd->texfp, ">");
