@@ -150,14 +150,15 @@ void write_colour(FILE* f, unsigned int col) {
   }
 }
 
-
-static void write_linetype(FILE* f, int lty, int lwd, int fgcol, int col) {
-  fprintf(f, " stroke='");
-  write_colour(f, col);
-  fprintf(f, "'");
-
+static void write_fill(FILE* f, int fgcol) {
   fprintf(f, " fill='");
   write_colour(f, fgcol);
+  fprintf(f, "'");
+}
+
+static void write_linetype(FILE* f, int lty, int lwd, int col) {
+  fprintf(f, " stroke='");
+  write_colour(f, col);
   fprintf(f, "'");
 
   fprintf(f, " stroke-width='%d'", lwd);
@@ -278,7 +279,7 @@ static void SVG_Line(double x1, double y1, double x2, double y2,
   fprintf(ptd->texfp, "<line x1='%.2f' y1='%.2f' x2='%.2f' y2='%.2f'",
     x1, y1, x2, y2);
 
-  write_linetype(ptd->texfp, gc->lty, gc->lwd, NA_INTEGER, gc->col);
+  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->col);
   fprintf(ptd->texfp, " />\n");
 }
 
@@ -293,7 +294,8 @@ static void SVG_Polyline(int n, double *x, double *y, const pGEcontext gc,
   }
   fprintf(ptd->texfp, "'");
 
-  write_linetype(ptd->texfp, gc->lty, gc->lwd, NA_INTEGER, gc->col);
+  write_fill(ptd->texfp, NA_INTEGER);
+  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->col);
 
   fprintf(ptd->texfp, " />\n");
 }
@@ -331,7 +333,8 @@ static void SVG_Rect(double x0, double y0, double x1, double y1,
       "<rect x='%.2f' y='%.2f' width='%.2f' height='%.2f'",
       x0, y0, x1 - x0, y1 - y0);
 
-  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->fill, gc->col);
+  write_fill(ptd->texfp, gc->fill);
+  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->col);
   fprintf(ptd->texfp, " />\n");
 }
 
@@ -340,7 +343,8 @@ static void SVG_Circle(double x, double y, double r, const pGEcontext gc,
   SVGDesc *ptd = dd->deviceSpecific;
 
   fprintf(ptd->texfp, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y, r * 1.5);
-  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->fill, gc->col);
+  write_fill(ptd->texfp, gc->fill);
+  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->col);
   fprintf(ptd->texfp, " />\n");
 }
 
@@ -356,7 +360,8 @@ static void SVG_Polygon(int n, double *x, double *y, const pGEcontext gc,
   }
   fprintf(ptd->texfp, "'");
 
-  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->fill, gc->col);
+  write_fill(ptd->texfp, gc->fill);
+  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->col);
 
   fprintf(ptd->texfp, " />\n");
 }
