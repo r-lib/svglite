@@ -442,6 +442,14 @@ static void SVG_Text(double x, double y, const char *str, double rot,
 	fprintf(ptd->texfp, "</text>\n");
 }
 
+static void SVG_Size(double *left, double *right, double *bottom, double *top,
+                     pDevDesc dd) {
+  *left = dd->left;
+  *right = dd->right;
+  *bottom = dd->bottom;
+  *top = dd->top;
+}
+
 Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 		double width, double height, Rboolean xmlHeader, Rboolean onefile,
 		Rboolean useNS) {
@@ -463,7 +471,7 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 	dd->deactivate = NULL;
 	dd->close = SVG_Close;
 	dd->clip = SVG_Clip;
-	dd->size = NULL;
+	dd->size = SVG_Size;
 	dd->newPage = SVG_NewPage;
 	dd->line = SVG_Line;
 	dd->text = SVG_Text;
