@@ -19,3 +19,5 @@
 
 * Set's only the `viewBox` and not the `width` and `height` of `<svg>`.
   I'm reasonably certain this makes it easier to use in more places. (#12)
+
+* Supports all line dashing (#15)

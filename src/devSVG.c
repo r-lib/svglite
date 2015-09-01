@@ -150,78 +150,67 @@ void write_colour(FILE* f, unsigned int col) {
   }
 }
 
-static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col) {
-  SVGDesc *ptd = dd->deviceSpecific;
-  int i, dashleft;
+static void write_fill(FILE* f, int fgcol) {
+  fprintf(f, " fill='");
+  write_colour(f, fgcol);
+  fprintf(f, "'");
+}
 
-  fprintf(ptd->texfp, " stroke='");
-  write_colour(ptd->texfp, col);
-  fprintf(ptd->texfp, "'");
+static void write_linetype(FILE* f, int lty, double lwd, int col) {
+  fprintf(f, " stroke='");
+  write_colour(f, col);
+  fprintf(f, "'");
 
-  fprintf(ptd->texfp, " fill='");
-  write_colour(ptd->texfp, fgcol);
-  fprintf(ptd->texfp, "'");
-
-  // Set line size + color
-  fprintf(ptd->texfp, " stroke-width='%d'", newlwd);
+  fprintf(f, " stroke-width='%.3f'", lwd);
 
   // Set line pattern type
-  // ADD: mdecorde from SVGTips device, (C) 2008 Tony Plate
-  dashleft = newlty;
-  if (dashleft) {
-    fprintf(ptd->texfp, " stroke-dasharray='");
-
-    dashleft = newlty;
-    for(i=0 ; i<8 && dashleft & 15 ; i++) {
-      // dashlen is dashleft & 15
-      if (i>0)
-        fprintf(ptd->texfp, ", ");
-      fprintf(ptd->texfp, "%d", dashleft & 15);
-      dashleft = dashleft >> 4;
-    }
-    //    switch (ptd->lty) {
-    //
-    //    case LTY_BLANK:
-    //      break;
-    //    case LTY_SOLID:
-    //      fprintf(ptd->texfp, ";stroke-dasharray");
-    //      break;
-    //    case LTY_DOTTED:
-    //      fprintf(ptd->texfp, ";stroke-dasharray:1, 3");
-    //      break;
-    //    case LTY_DASHED:
-    //      fprintf(ptd->texfp, ";stroke-dasharray:4, 4");
-    //      break;
-    //    case LTY_LONGDASH:
-    //      fprintf(ptd->texfp, ";stroke-dasharray:6, 6");
-    //      break;
-    //    case LTY_DOTDASH:
-    //      fprintf(ptd->texfp, ";stroke-dasharray:4, 2, 1, 2");
-    //      break;
-    //    case LTY_TWODASH:
-    //      fprintf(ptd->texfp, ";stroke-dasharray:8, 2, 1, 2");
-    //      break;
-    //    default:
-    //      fprintf(ptd->texfp, ";stroke-dasharray %d", ptd->lty);
-    //      break;
-    //    }
-    fprintf(ptd->texfp, "'");
-  }
+	switch (lty) {
+	case LTY_BLANK:
+		break;
+	case LTY_SOLID:
+		break;
+	case LTY_DOTTED:
+		fputs(" stroke-dasharray=\"1,5\"", f);
+		break;
+	case LTY_DASHED:
+		fputs(" stroke-dasharray=\"5,5\"", f);
+		break;
+	case LTY_LONGDASH:
+		fputs(" stroke-dasharray=\"10,5\"", f);
+		break;
+	case LTY_DOTDASH:
+		fputs(" stroke-dasharray=\"1,5,5,5\"", f);
+		break;
+	case LTY_TWODASH:
+		fputs(" stroke-dasharray=\"10,5,5,5\"", f);
+		break;
+	default: {
+		  int newlty = lty;
+    	double newlwd = lwd;
+  		fputs(" stroke-dasharray=\"", f);
+  		for(int i = 0 ; i < 8 && newlty & 15; i++) {
+  			int lwd = (int) newlwd * newlty;
+  			lwd = lwd & 15;
+  			if(i > 0)
+  			  fputc(',', f);
+  			fprintf(f, "%i", lwd);
+  			newlty = newlty >> 4;
+  		}
+  		fputs("\"", f);
+	  	break;
+		}
+	}
 }
 
-static void SetFont(int face, int size, unsigned int col, SVGDesc *ptd) {
-  int lface = face, lsize = size;
-  if (lface < 1 || lface > 4)
-    lface = 1;
-  if (lsize < 1 || lsize > 24)
-    lsize = 10;
+static void write_font(FILE* f, int face, int size, unsigned int col) {
+  fprintf(f, " font-size='%d'", size);
 
-  fprintf(ptd->texfp, " font-size='%d'", lsize);
-
-  fprintf(ptd->texfp, " fill='");
-  write_colour(ptd->texfp, col);
-  fprintf(ptd->texfp, "'");
+  fprintf(f, " fill='");
+  write_colour(f, col);
+  fprintf(f, "'");
 }
+
+// Callback functions for graphics device --------------------------------------
 
 static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
     double* descent, double* width, pDevDesc dd) {
@@ -285,7 +274,7 @@ static void SVG_Line(double x1, double y1, double x2, double y2,
   fprintf(ptd->texfp, "<line x1='%.2f' y1='%.2f' x2='%.2f' y2='%.2f'",
     x1, y1, x2, y2);
 
-  SetLinetype(gc->lty, gc->lwd, dd, NA_INTEGER, gc->col);
+  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->col);
   fprintf(ptd->texfp, " />\n");
 }
 
@@ -300,7 +289,8 @@ static void SVG_Polyline(int n, double *x, double *y, const pGEcontext gc,
   }
   fprintf(ptd->texfp, "'");
 
-  SetLinetype(gc->lty, gc->lwd, dd, NA_INTEGER, gc->col);
+  write_fill(ptd->texfp, NA_INTEGER);
+  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->col);
 
   fprintf(ptd->texfp, " />\n");
 }
@@ -338,25 +328,23 @@ static void SVG_Rect(double x0, double y0, double x1, double y1,
       "<rect x='%.2f' y='%.2f' width='%.2f' height='%.2f'",
       x0, y0, x1 - x0, y1 - y0);
 
-  SetLinetype(gc->lty, gc->lwd, dd, gc->fill, gc->col);
+  write_fill(ptd->texfp, gc->fill);
+  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->col);
   fprintf(ptd->texfp, " />\n");
 }
 
 static void SVG_Circle(double x, double y, double r, const pGEcontext gc,
-    pDevDesc dd) {
+                       pDevDesc dd) {
   SVGDesc *ptd = dd->deviceSpecific;
 
-  fprintf(ptd->texfp, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y,
-      r * 1.5);
-
-  SetLinetype(gc->lty, gc->lwd, dd, gc->fill, gc->col);
-
+  fprintf(ptd->texfp, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y, r * 1.5);
+  write_fill(ptd->texfp, gc->fill);
+  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->col);
   fprintf(ptd->texfp, " />\n");
-
 }
 
 static void SVG_Polygon(int n, double *x, double *y, const pGEcontext gc,
-    pDevDesc dd) {
+                        pDevDesc dd) {
   int i;
 
   SVGDesc *ptd = dd->deviceSpecific;
@@ -367,7 +355,8 @@ static void SVG_Polygon(int n, double *x, double *y, const pGEcontext gc,
   }
   fprintf(ptd->texfp, "'");
 
-  SetLinetype(gc->lty, gc->lwd, dd, gc->fill, gc->col);
+  write_fill(ptd->texfp, gc->fill);
+  write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->col);
 
   fprintf(ptd->texfp, " />\n");
 }
@@ -382,7 +371,7 @@ static void SVG_Text(double x, double y, const char *str, double rot,
     fprintf(ptd->texfp, " rotate(%0.0f)", -1.0 * rot);
   fprintf(ptd->texfp, "' ");
   int size = gc->cex * gc->ps + 0.5;
-  SetFont(gc->fontface, size, gc->col, ptd);
+  write_font(ptd->texfp, gc->fontface, size, gc->col);
   fprintf(ptd->texfp, ">");
 
   write_escaped(ptd->texfp, str);
