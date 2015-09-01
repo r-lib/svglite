@@ -247,8 +247,6 @@ static void SVG_Clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   ptd->cliptop = y1;
 }
 
-// Start a new page
-
 static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
   SVGDesc *ptd = dd->deviceSpecific;
 
@@ -274,8 +272,6 @@ static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
 
   ptd->pageno++;
 }
-
-// Close down the driver
 
 static void SVG_Close(pDevDesc dd) {
   SVGDesc *ptd = dd->deviceSpecific;
@@ -381,7 +377,6 @@ static void SVG_Polygon(int n, double *x, double *y, const pGEcontext gc,
   fprintf(ptd->texfp, " />\n");
 }
 
-// Rotated Text
 static void SVG_Text(double x, double y, const char *str, double rot,
                      double hadj, const pGEcontext gc, pDevDesc dd) {
 
@@ -443,20 +438,17 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
   dd->hasTextUTF8 = 1;
 
   // Screen Dimensions in Pixels
-
   dd->left = 0;
   dd->top = 0;
   dd->right = in2dots(width);
   dd->bottom = in2dots(height);
 
   // Base Pointsize: Nominal Character Sizes in Pixels
-
   dd->cra[0] = (6.0 / 12.0) * 10.0;
   dd->cra[1] = (10.0 / 12.0) * 10.0;
 
   // Character Addressing Offsets: These offsets should center a single,
   // plotting character over the plotting point.
-
   dd->xCharOffset = 0; // 0.4900;
   dd->yCharOffset = 0; // 0.3333;
   dd->yLineBias = 0; // 0.1;
