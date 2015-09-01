@@ -7,6 +7,7 @@ Authors@R: c(
   person("Matthieu", "Decorde", , "matthieu.decorde@ens-lyon.fr", c("aut", "cre")),
   person("Vaudor", "Lise", , "lise.vaudor@ens-lyon.fr", "aut"),
   person("Hadley", "Wickham", , "hadley@rstudio.com", "aut"),
+  person("David", "Gohel", role = "ctb", comment = "Line dashing code"),
   person("RStudio", role = "cph")
   )
 Depends: R (>= 3.0.0)
