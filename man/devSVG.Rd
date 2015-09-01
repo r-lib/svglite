@@ -10,11 +10,9 @@ devSVG(file = "Rplots.svg", width = 10, height = 8, bg = "white",
 \arguments{
 \item{file}{the file where output will appear.}
 
-\item{width}{The width of the plot in inches.}
+\item{height,width}{Height and width in inches.}
 
-\item{height}{the height of the plot in inches.}
-
-\item{bg}{the background color for the plot.}
+\item{bg}{Default background color for the plot (defaults to "white").}
 
 \item{pointsize}{default point size.}
 

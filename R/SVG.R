@@ -6,9 +6,8 @@
 #' specifying a DOCTYPE DTD
 #'
 #' @param file the file where output will appear.
-#' @param width The width of the plot in inches.
-#' @param height the height of the plot in inches.
-#' @param bg the background color for the plot.
+#' @param height,width Height and width in inches.
+#' @param bg Default background color for the plot (defaults to "white").
 #' @param pointsize default point size.
 #' @param xmlHeader Print XML header or not.
 #' @param useNS Include svg namespace? Not including it makes extracting
