@@ -1,11 +1,6 @@
-//
-//  UTF-8 support, XML reserved characters and XML encoding header : (C) 2012 Matthieu Decorde
-//
-//  Line type support : (C) 2008 Tony Plate from RSVGTipsDevice package
-//
-//  SVG device, (C) 2002 T Jake Luciani, Based on PicTex device, for
-//  R : A Computer Language for Statistical Data Analysis
-//  Copyright (C) 1995, 1996  Robert Gentleman and Ross Ihaka
+//  (C) 2012 Matthieu Decorde: UTF-8 support, XML reserved characters and XML header
+//  (C) 2008 Tony Plate: Line type support from RSVGTipsDevice package
+//  (C) 2002 T Jake Luciani: SVG device, based on PicTex device
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
