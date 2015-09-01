@@ -388,11 +388,11 @@ static void SVG_Size(double *left, double *right, double *bottom, double *top,
 }
 
 Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
-    double width, double height, Rboolean xmlHeader, Rboolean useNS) {
+    double width, double height, int pointsize, Rboolean xmlHeader, Rboolean useNS) {
 
   dd->startfill = bg;
   dd->startcol = R_RGB(0, 0, 0);
-  dd->startps = 10;
+  dd->startps = pointsize;
   dd->startlty = 0;
   dd->startfont = 1;
   dd->startgamma = 1;
@@ -430,8 +430,8 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
   // Base Pointsize: Nominal Character Sizes in Pixels
   // I'm not sure where these constants come from, but they're used in
   // the majority of the base grahpics devices
-  dd->cra[0] = 0.9 * 10.0;
-  dd->cra[1] = 1.2 * 10.0;
+  dd->cra[0] = 0.9 * pointsize;
+  dd->cra[1] = 1.2 * pointsize;
 
   // Character Addressing Offsets: These offsets should center a single,
   // plotting character over the plotting point.
@@ -472,11 +472,12 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
 
 
 SEXP devSVG_(SEXP file_, SEXP bg_, SEXP width_, SEXP height_,
-            SEXP xmlHeader_, SEXP useNS_) {
+            SEXP pointsize_, SEXP xmlHeader_, SEXP useNS_) {
 
   const char* file = CHAR(asChar(file_));
   int bg = R_GE_str2col(CHAR(asChar(bg_)));
   int width = asInteger(width_), height = asInteger(height_);
+  int pointsize = asInteger(pointsize_);
   int xmlHeader = asLogical(xmlHeader_), useNS = asLogical(useNS_);
 
   R_GE_checkVersionOrDie(R_GE_version);
@@ -486,7 +487,7 @@ SEXP devSVG_(SEXP file_, SEXP bg_, SEXP width_, SEXP height_,
     if (dev == NULL)
       error("unable to allocate memory for DevDesc");
 
-    if (!SVGDeviceDriver(dev, file, bg, width, height, xmlHeader, useNS)) {
+    if (!SVGDeviceDriver(dev, file, bg, width, height, pointsize, xmlHeader, useNS)) {
       free(dev);
       error("unable to start device SVG");
     }

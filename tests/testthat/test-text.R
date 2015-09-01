@@ -43,3 +43,11 @@ test_that("special characters are escaped", {
   # file parses, which it wouldn't otherwise
   expect_equal(xml_attr(xml_find_one(x, ".//text"), "fill"), "#113399")
 })
+
+test_that("default point size is 12", {
+  x <- xmlSVG({
+    plot.new()
+    text(0.5, 0.5, "a")
+  })
+  expect_equal(xml_attr(xml_find_one(x, ".//text"), "font-size"), "12")
+})
