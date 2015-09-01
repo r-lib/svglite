@@ -258,8 +258,6 @@ static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
   if (ptd->useNS)
     fprintf(ptd->texfp, "xmlns='http://www.w3.org/2000/svg' ");
 
-  fprintf(ptd->texfp, "width='%.2f' height='%.2f' ",
-      ptd->width * 72.0, ptd->height * 72.0);
   fprintf(ptd->texfp, "viewBox='0,0,%.2f,%.2f'>\n", ptd->width * 72.0,
       ptd->height * 72.0);
 
