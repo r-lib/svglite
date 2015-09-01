@@ -37,7 +37,6 @@ devSVG <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
     as.character(fg),
     as.double(width),
     as.double(height),
-    as.logical(FALSE),
     as.logical(xmlHeader),
     as.logical(onefile),
     as.logical(useNS)

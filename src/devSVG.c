@@ -38,7 +38,6 @@ typedef struct {
 	int bg;
 	int fontsize;
 	int fontface;
-	Rboolean debug;
 	Rboolean xmlHeader;
 	Rboolean onefile;
   Rboolean useNS;
@@ -271,7 +270,6 @@ static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
 static Rboolean SVG_Open(pDevDesc dd, SVGDesc *ptd) {
 	ptd->fontsize = 0;
 	ptd->fontface = 0;
-	ptd->debug = FALSE;
 
 	ptd->fg = dd->startcol;
 	ptd->bg = dd->startfill;
@@ -492,8 +490,8 @@ static void SVG_Raster(unsigned int *raster, int w, int h,
 }
 
 Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
-		double width, double height, Rboolean debug, Rboolean xmlHeader,
-		Rboolean onefile, Rboolean useNS) {
+		double width, double height, Rboolean xmlHeader, Rboolean onefile,
+		Rboolean useNS) {
 	SVGDesc *ptd;
 
 	if (!(ptd = (SVGDesc *) malloc(sizeof(SVGDesc))))
@@ -568,7 +566,6 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 	dd->canChangeGamma = FALSE;
 
 	ptd->pageno = 0;
-	ptd->debug = debug;
 
 	dd->deviceSpecific = (void *) ptd;
 	dd->displayListOn = FALSE;
@@ -577,12 +574,9 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 
 
 void do_SVG(char **file, char **bg, char **fg, double *width, double *height,
-		int *debug, int *xmlHeader, int *onefile, int *useNS) {
+		int *xmlHeader, int *onefile, int *useNS) {
 	pGEDevDesc dd;
 	pDevDesc dev;
-
-	if (debug[0] == NA_LOGICAL)
-		debug[0] = FALSE;
 
 	R_GE_checkVersionOrDie(R_GE_version);
 	R_CheckDeviceAvailable();
@@ -591,7 +585,7 @@ void do_SVG(char **file, char **bg, char **fg, double *width, double *height,
 			error("unable to allocate memory for DevDesc");
 
 		if (!SVGDeviceDriver(dev, file[0], bg[0], fg[0], width[0], height[0],
-				debug[0], xmlHeader[0], onefile[0], useNS[0])) {
+				xmlHeader[0], onefile[0], useNS[0])) {
 			free(dev);
 			error("unable to start device SVG");
 		}
