@@ -145,15 +145,18 @@ void write_escaped(FILE* f, const char* text) {
 }
 
 void write_colour(FILE* f, unsigned int col) {
-  fprintf(f, "#%02X%02X%02X", R_RED(col), R_GREEN(col), R_BLUE(col));
+  int alpha = R_ALPHA(col);
+  if (alpha == 255) {
+    fprintf(f, "#%02X%02X%02X", R_RED(col), R_GREEN(col), R_BLUE(col));
+  } else {
+    fprintf(f, "rgba(%i, %i, %i, %0.2f)", R_RED(col), R_GREEN(col), R_BLUE(col),
+      alpha / 255.0);
+  }
 }
 
 static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col) {
 	SVGDesc *ptd = (SVGDesc *) dd->deviceSpecific;
-
 	int i, dashleft;;
-	double fillop, strokeop;
-
 
 	fprintf(ptd->texfp, "stroke='");
 	write_colour(ptd->texfp, col);
@@ -165,11 +168,6 @@ static void SetLinetype(int newlty, int newlwd, pDevDesc dd, int fgcol, int col)
 
 	// Set line size + color
 	fprintf(ptd->texfp, "style=\"stroke-width:%d;", newlwd);
-
-	strokeop = ((double) ((col >> 24) & 127)) / 127;
-	fillop = ((double) ((fgcol >> 24) & 127)) / 127;
-	fprintf(ptd->texfp, ";stroke-opacity:%f", strokeop);
-	fprintf(ptd->texfp, ";fill-opacity:%f", fillop);
 
 	// Set line pattern type
 	// ADD: mdecorde from SVGTips device, (C) 2008 Tony Plate
