@@ -249,6 +249,7 @@ static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
   fprintf(ptd->texfp, "viewBox='0,0,%.2f,%.2f'>\n", ptd->width * 72.0,
       ptd->height * 72.0);
 
+  fputs("<style>text {font-family: sans-serif;}</style>", ptd->texfp);
   fprintf(ptd->texfp, "<rect width='100%%' height='100%%' fill='");
   write_colour(ptd->texfp, gc->fill);
   fprintf(ptd->texfp, "' />\n");

@@ -21,3 +21,5 @@
   I'm reasonably certain this makes it easier to use in more places. (#12)
 
 * Supports all line dashing (#15)
+
+* Defaults to sans-serif font.
