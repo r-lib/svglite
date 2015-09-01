@@ -453,10 +453,12 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
   if (ptd == NULL)
     return FALSE;
 
-  strcpy(ptd->filename, filename);
+  strncpy(ptd->filename, filename, 1024);
   ptd->texfp = fopen(R_ExpandFileName(ptd->filename), "w");
-  if (ptd->texfp == NULL)
+  if (ptd->texfp == NULL) {
+    free(ptd);
     return FALSE;
+  }
 
   ptd->width = width;
   ptd->height = height;
