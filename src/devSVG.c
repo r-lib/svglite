@@ -160,7 +160,8 @@ static void write_linetype(FILE* f, int lty, double lwd, int col) {
   write_colour(f, col);
   fprintf(f, "'");
 
-  fprintf(f, " stroke-width='%.3f'", lwd);
+  // 1 lwd = 1/96", but units in rest of document are points
+  fprintf(f, " stroke-width='%.3f'", lwd / 96 * 72);
 
   // Set line pattern type
 	switch (lty) {
