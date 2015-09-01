@@ -614,13 +614,14 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 	return TRUE;
 }
 
-static pGEDevDesc RSvgDevice(char **file, char **bg, char **fg, double *width,
-		double *height, int *debug, int *xmlHeader, int *onefile, int *useNS) {
+
+void do_SVG(char **file, char **bg, char **fg, double *width, double *height,
+		int *debug, int *xmlHeader, int *onefile, int *useNS) {
 	pGEDevDesc dd;
 	pDevDesc dev;
 
 	if (debug[0] == NA_LOGICAL)
-		debug = FALSE;
+		debug[0] = FALSE;
 
 	R_GE_checkVersionOrDie(R_GE_version);
 	R_CheckDeviceAvailable();
@@ -637,19 +638,7 @@ static pGEDevDesc RSvgDevice(char **file, char **bg, char **fg, double *width,
 
 		GEaddDevice2(dd, "devSVG");
 		GEinitDisplayList(dd);
+
 	}END_SUSPEND_INTERRUPTS;
-
-	return (dd);
-}
-
-void do_SVG(char **file, char **bg, char **fg, double *width, double *height,
-		int *debug, int *xmlHeader, int *onefile, int *useNS) {
-	char *vmax;
-
-	vmax = vmaxget();
-
-	RSvgDevice(file, bg, fg, width, height, debug, xmlHeader, onefile, useNS);
-
-	vmaxset(vmax);
 }
 
