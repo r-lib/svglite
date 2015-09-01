@@ -5,7 +5,7 @@
 \title{A SVG Graphics Driver}
 \usage{
 devSVG(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-  pointsize = 12, xmlHeader = TRUE, useNS = TRUE)
+  pointsize = 12, standalone = TRUE)
 }
 \arguments{
 \item{file}{the file where output will appear.}
@@ -16,10 +16,8 @@ devSVG(file = "Rplots.svg", width = 10, height = 8, bg = "white",
 
 \item{pointsize}{default point size.}
 
-\item{xmlHeader}{Print XML header or not.}
-
-\item{useNS}{Include svg namespace? Not including it makes extracting
-elements with xpath much easier.}
+\item{standalone}{Produce a stand alone svg file? If \code{FALSE}, omits
+xml header and default namespace.}
 }
 \description{
 This function produces graphics suitable the current w3 svg XML standard.

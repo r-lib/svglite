@@ -31,8 +31,7 @@ typedef struct {
   double height;
   double clipleft, clipright, cliptop, clipbottom;
 
-  Rboolean xmlHeader;
-  Rboolean useNS;
+  Rboolean standalone;
 
 } SVGDesc;
 
@@ -240,11 +239,11 @@ static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
     Rf_error("RSvgDevice only supports one page");
   }
 
-  if (ptd->xmlHeader)
+  if (ptd->standalone)
     fprintf(ptd->texfp, "<?xml version='1.0' encoding='UTF-8'?>\n");
 
   fprintf(ptd->texfp, "<svg ");
-  if (ptd->useNS)
+  if (ptd->standalone)
     fprintf(ptd->texfp, "xmlns='http://www.w3.org/2000/svg' ");
 
   fprintf(ptd->texfp, "viewBox='0,0,%.2f,%.2f'>\n", ptd->width * 72.0,
@@ -388,7 +387,7 @@ static void SVG_Size(double *left, double *right, double *bottom, double *top,
 }
 
 Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
-    double width, double height, int pointsize, Rboolean xmlHeader, Rboolean useNS) {
+    double width, double height, int pointsize, Rboolean standalone) {
 
   dd->startfill = bg;
   dd->startcol = R_RGB(0, 0, 0);
@@ -462,8 +461,7 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
 
   ptd->width = width;
   ptd->height = height;
-  ptd->xmlHeader = xmlHeader;
-  ptd->useNS = useNS;
+  ptd->standalone = standalone;
   ptd->pageno = 0;
 
   dd->deviceSpecific = ptd;
@@ -472,13 +470,13 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
 
 
 SEXP devSVG_(SEXP file_, SEXP bg_, SEXP width_, SEXP height_,
-            SEXP pointsize_, SEXP xmlHeader_, SEXP useNS_) {
+            SEXP pointsize_, SEXP standalone_) {
 
   const char* file = CHAR(asChar(file_));
   int bg = R_GE_str2col(CHAR(asChar(bg_)));
   int width = asInteger(width_), height = asInteger(height_);
   int pointsize = asInteger(pointsize_);
-  int xmlHeader = asLogical(xmlHeader_), useNS = asLogical(useNS_);
+  int standalone = asLogical(standalone_);
 
   R_GE_checkVersionOrDie(R_GE_version);
   R_CheckDeviceAvailable();
@@ -487,7 +485,7 @@ SEXP devSVG_(SEXP file_, SEXP bg_, SEXP width_, SEXP height_,
     if (dev == NULL)
       error("unable to allocate memory for DevDesc");
 
-    if (!SVGDeviceDriver(dev, file, bg, width, height, pointsize, xmlHeader, useNS)) {
+    if (!SVGDeviceDriver(dev, file, bg, width, height, pointsize, standalone)) {
       free(dev);
       error("unable to start device SVG");
     }
