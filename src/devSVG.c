@@ -133,29 +133,6 @@ static double charwidth[4][128] = {
 								0.5611140, 0.5000030, 0.7444490, 0.5000030, 0.5000030, 0.4763920,
 								0.5500030, 1.1000060, 0.5500030, 0.5500030, 0.550003 } };
 
-static void SVG_Circle(double x, double y, double r, const pGEcontext gc,
-		pDevDesc dd);
-static void SVG_Clip(double, double, double, double, pDevDesc);
-static void SVG_Close( pDevDesc);
-static void SVG_Line(double x1, double y1, double x2, double y2,
-		const pGEcontext gc, pDevDesc dd);
-static Rboolean SVG_Locator(double*, double*, pDevDesc);
-static void SVG_Mode(int, pDevDesc);
-static void SVG_NewPage(const pGEcontext gc, pDevDesc dd);
-static Rboolean SVG_Open( pDevDesc, SVGDesc*);
-static void SVG_Polygon(int n, double *x, double *y, const pGEcontext gc,
-		pDevDesc dd);
-static void SVG_Polyline(int n, double *x, double *y, const pGEcontext gc,
-		pDevDesc dd);
-static void SVG_Rect(double x0, double y0, double x1, double y1,
-		const pGEcontext gc, pDevDesc dd);
-
-static double SVG_StrWidth(const char *str, const pGEcontext gc, pDevDesc dd);
-static void SVG_Text(double x, double y, const char *str, double rot,
-		double hadj, const pGEcontext gc, pDevDesc dd);
-static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
-		double* descent, double* width, pDevDesc dd);
-
 static char MyColBuf[8];
 static char HexDigits[] = "0123456789ABCDEF";
 
@@ -466,29 +443,6 @@ static void SVG_Text(double x, double y, const char *str, double rot,
 	fprintf(ptd->texfp, "</text>\n");
 }
 
-static Rboolean SVG_Locator(double *x, double *y, pDevDesc dd) {
-	return FALSE;
-}
-
-// Set Graphics mode - not needed for PS
-static void SVG_Mode(int mode, pDevDesc dd) {
-}
-
-static SEXP SVG_Cap(pDevDesc dd)
-{
-    SEXP raster = R_NilValue;
-    return raster;
-}
-
-static void SVG_Raster(unsigned int *raster, int w, int h,
-		       double x, double y,
-		       double width, double height,
-		       double rot,
-		       Rboolean interpolate,
-		       const pGEcontext gc, pDevDesc dd)
-{
-}
-
 Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 		double width, double height, Rboolean xmlHeader, Rboolean onefile,
 		Rboolean useNS) {
@@ -521,11 +475,10 @@ Rboolean SVGDeviceDriver(pDevDesc dd, char *filename, char *bg, char *fg,
 	dd->circle = SVG_Circle;
 	dd->polygon = SVG_Polygon;
 	dd->polyline = SVG_Polyline;
-	dd->locator = SVG_Locator;
-	dd->mode = SVG_Mode;
+	dd->mode = NULL;
 	dd->metricInfo = SVG_MetricInfo;
-	dd->cap = SVG_Cap; // not implemented
-	dd->raster = SVG_Raster; // not implemented
+	dd->cap = NULL;
+	dd->raster = NULL; // not implemented
 
 	// UTF-8 support
 	dd->wantSymbolUTF8 = 1;
