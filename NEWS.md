@@ -14,3 +14,5 @@
 
 * You can now only produce a single page per device - previously this worked
   but produced incorrect output (#5)
+
+* `par(bg)` now affects the background colour (#8)

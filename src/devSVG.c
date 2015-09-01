@@ -269,7 +269,7 @@ static void SVG_NewPage(const pGEcontext gc, pDevDesc dd) {
       in2dots(ptd->height));
 
   fprintf(ptd->texfp, "<rect width=\"100%%\" height=\"100%%\" fill='");
-  write_colour(ptd->texfp, dd->startfill);
+  write_colour(ptd->texfp, gc->fill);
   fprintf(ptd->texfp, "' />\n");
 
   ptd->pageno++;
