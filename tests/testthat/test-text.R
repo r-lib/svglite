@@ -49,5 +49,13 @@ test_that("default point size is 12", {
     plot.new()
     text(0.5, 0.5, "a")
   })
-  expect_equal(xml_attr(xml_find_one(x, ".//text"), "font-size"), "12")
+  expect_equal(xml_attr(xml_find_one(x, ".//text"), "font-size"), "12.00")
+})
+
+test_that("cex generates fractional font sizes", {
+  x <- xmlSVG({
+    plot.new()
+    text(0.5, 0.5, "a", cex = 0.1)
+  })
+  expect_equal(xml_attr(xml_find_one(x, ".//text"), "font-size"), "1.20")
 })
