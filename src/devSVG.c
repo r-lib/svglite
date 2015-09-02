@@ -151,7 +151,7 @@ void write_attr_dbl(FILE* f, const char* attr, double value) {
   fprintf(f, " %s='%.2f'", attr, value);
 }
 
-static void write_linetype(FILE* f, int lty, double lwd, int col) {
+static void write_attrs_linetype(FILE* f, int lty, double lwd, int col) {
   write_attr_col(f, "stroke", col);
 
   // 1 lwd = 1/96", but units in rest of document are 1/72"
@@ -159,40 +159,18 @@ static void write_linetype(FILE* f, int lty, double lwd, int col) {
 
   // Set line pattern type
   switch (lty) {
-  case LTY_BLANK:
-    break; // never called: blank lines never get to this point
-  case LTY_SOLID:
+  case LTY_BLANK: // never called: blank lines never get to this point
+  case LTY_SOLID: // default svg setting, so don't need to write out
     break;
-  case LTY_DASHED:
-    fputs(" stroke-dasharray=\"4,4\"", f);
-    break;
-  case LTY_DOTTED:
-    fputs(" stroke-dasharray=\"1,3\"", f);
-    break;
-  case LTY_DOTDASH:
-    fputs(" stroke-dasharray=\"1,3,4,3\"", f);
-    break;
-  case LTY_LONGDASH:
-    fputs(" stroke-dasharray=\"7,3\"", f);
-    break;
-  case LTY_TWODASH:
-    fputs(" stroke-dasharray=\"2,2,6,2\"", f);
-    break;
-  default: {
-      int newlty = lty;
-      double newlwd = lwd;
-      fputs(" stroke-dasharray=\"", f);
-      for(int i = 0 ; i < 8 && newlty & 15; i++) {
-        int lwd = (int) newlwd * newlty;
-        lwd = lwd & 15;
-        if(i > 0)
-          fputc(',', f);
-        fprintf(f, "%i", lwd);
-        newlty = newlty >> 4;
-      }
-      fputs("\"", f);
-      break;
+  default:
+    // See comment in GraphicsEngine.h for how this works
+    fputs(" stroke-dasharray='", f);
+    for(int i = 0 ; i < 8 && lty & 15; i++) {
+      fprintf(f, "%i ", (int) lwd * (lty & 15));
+      lty = lty >> 4;
     }
+    fputs("'", f);
+    break;
   }
 }
 
@@ -258,7 +236,7 @@ static void svg_line(double x1, double y1, double x2, double y2,
   fprintf(svgd->file, "<line x1='%.2f' y1='%.2f' x2='%.2f' y2='%.2f'",
     x1, y1, x2, y2);
 
-  write_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+  write_attrs_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
   fputs(" />\n", svgd->file);
 }
 
@@ -274,7 +252,7 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   fputs("'", svgd->file);
 
   write_attr_col(svgd->file, "fill", filled ? gc->fill : NA_INTEGER);
-  write_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+  write_attrs_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
 
   fputs(" />\n", svgd->file);
 }
@@ -309,7 +287,7 @@ static void svg_rect(double x0, double y0, double x1, double y1,
       fmin(x0, x1), fmin(y0, y1), fabs(x1 - x0), fabs(y1 - y0));
 
   write_attr_col(svgd->file, "fill", gc->fill);
-  write_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+  write_attrs_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
   fputs(" />\n", svgd->file);
 }
 
@@ -319,7 +297,7 @@ static void svg_circle(double x, double y, double r, const pGEcontext gc,
 
   fprintf(svgd->file, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y, r * 1.5);
   write_attr_col(svgd->file, "fill", gc->fill);
-  write_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+  write_attrs_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
   fputs(" />\n", svgd->file);
 }
 
