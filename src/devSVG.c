@@ -235,7 +235,7 @@ static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   }
 
   if (ptd->standalone)
-    fprintf(ptd->file, "<?xml version='1.0' encoding='UTF-8'?>\n");
+    fprintf(ptd->file, "<?xml version='1.0' encoding='UTF-8' ?>\n");
 
   fprintf(ptd->file, "<svg ");
   if (ptd->standalone)
