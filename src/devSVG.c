@@ -219,74 +219,74 @@ static void svg_metric_info(int c, const pGEcontext gc, double* ascent,
 }
 
 static void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
-  SVGDesc *ptd = dd->deviceSpecific;
+  SVGDesc *svgd = dd->deviceSpecific;
 
-  ptd->clipleft = x0;
-  ptd->clipright = x1;
-  ptd->clipbottom = y0;
-  ptd->cliptop = y1;
+  svgd->clipleft = x0;
+  svgd->clipright = x1;
+  svgd->clipbottom = y0;
+  svgd->cliptop = y1;
 }
 
 static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
-  SVGDesc *ptd = dd->deviceSpecific;
+  SVGDesc *svgd = dd->deviceSpecific;
 
-  if (ptd->pageno > 0) {
+  if (svgd->pageno > 0) {
     Rf_error("RSvgDevice only supports one page");
   }
 
-  if (ptd->standalone)
-    fputs("<?xml version='1.0' encoding='UTF-8' ?>\n", ptd->file);
+  if (svgd->standalone)
+    fputs("<?xml version='1.0' encoding='UTF-8' ?>\n", svgd->file);
 
-  fputs("<svg ", ptd->file);
-  if (ptd->standalone)
-    fputs("xmlns='http://www.w3.org/2000/svg' ", ptd->file);
+  fputs("<svg ", svgd->file);
+  if (svgd->standalone)
+    fputs("xmlns='http://www.w3.org/2000/svg' ", svgd->file);
 
-  fprintf(ptd->file, "viewBox='0 0 %.2f %.2f'>\n", dd->right, dd->bottom);
+  fprintf(svgd->file, "viewBox='0 0 %.2f %.2f'>\n", dd->right, dd->bottom);
 
-  fputs("<style>text {font-family: sans-serif;}</style>", ptd->file);
-  fputs("<rect width='100%' height='100%' fill='", ptd->file);
-  write_colour(ptd->file, gc->fill);
-  fputs("' />\n", ptd->file);
+  fputs("<style>text {font-family: sans-serif;}</style>", svgd->file);
+  fputs("<rect width='100%' height='100%' fill='", svgd->file);
+  write_colour(svgd->file, gc->fill);
+  fputs("' />\n", svgd->file);
 
-  ptd->pageno++;
+  svgd->pageno++;
 }
 
 static void svg_close(pDevDesc dd) {
-  SVGDesc *ptd = dd->deviceSpecific;
+  SVGDesc *svgd = dd->deviceSpecific;
 
-  if (ptd->pageno > 0)
-    fputs("</svg>\n", ptd->file);
+  if (svgd->pageno > 0)
+    fputs("</svg>\n", svgd->file);
 
-  fclose(ptd->file);
+  fclose(svgd->file);
 
-  free(ptd);
+  free(svgd);
 }
 
 static void svg_line(double x1, double y1, double x2, double y2,
                      const pGEcontext gc, pDevDesc dd) {
-  SVGDesc *ptd = dd->deviceSpecific;
+  SVGDesc *svgd = dd->deviceSpecific;
 
-  fprintf(ptd->file, "<line x1='%.2f' y1='%.2f' x2='%.2f' y2='%.2f'",
+  fprintf(svgd->file, "<line x1='%.2f' y1='%.2f' x2='%.2f' y2='%.2f'",
     x1, y1, x2, y2);
 
-  write_linetype(ptd->file, gc->lty, gc->lwd, gc->col);
-  fputs(" />\n", ptd->file);
+  write_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+  fputs(" />\n", svgd->file);
 }
 
 static void svg_polyline(int n, double *x, double *y, const pGEcontext gc,
                          pDevDesc dd) {
-  SVGDesc *ptd = dd->deviceSpecific;
-  fputs("<polyline points='", ptd->file);
+  SVGDesc *svgd = dd->deviceSpecific;
+  fputs("<polyline points='", svgd->file);
 
   for (int i = 0; i < n; i++) {
-    fprintf(ptd->file, "%.2f,%.2f ", x[i], y[i]);
+    fprintf(svgd->file, "%.2f,%.2f ", x[i], y[i]);
   }
-  fputs("'", ptd->file);
+  fputs("'", svgd->file);
 
-  write_fill(ptd->file, NA_INTEGER);
-  write_linetype(ptd->file, gc->lty, gc->lwd, gc->col);
+  write_fill(svgd->file, NA_INTEGER);
+  write_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
 
-  fputs(" />\n", ptd->file);
+  fputs(" />\n", svgd->file);
 }
 
 static double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
@@ -302,60 +302,60 @@ static double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
 
 static void svg_rect(double x0, double y0, double x1, double y1,
                      const pGEcontext gc, pDevDesc dd) {
-  SVGDesc *ptd = dd->deviceSpecific;
+  SVGDesc *svgd = dd->deviceSpecific;
 
   // x and y give top-left position
-  fprintf(ptd->file,
+  fprintf(svgd->file,
       "<rect x='%.2f' y='%.2f' width='%.2f' height='%.2f'",
       fmin(x0, x1), fmin(y0, y1), fabs(x1 - x0), fabs(y1 - y0));
 
-  write_fill(ptd->file, gc->fill);
-  write_linetype(ptd->file, gc->lty, gc->lwd, gc->col);
-  fputs(" />\n", ptd->file);
+  write_fill(svgd->file, gc->fill);
+  write_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+  fputs(" />\n", svgd->file);
 }
 
 static void svg_circle(double x, double y, double r, const pGEcontext gc,
                        pDevDesc dd) {
-  SVGDesc *ptd = dd->deviceSpecific;
+  SVGDesc *svgd = dd->deviceSpecific;
 
-  fprintf(ptd->file, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y, r * 1.5);
-  write_fill(ptd->file, gc->fill);
-  write_linetype(ptd->file, gc->lty, gc->lwd, gc->col);
-  fputs(" />\n", ptd->file);
+  fprintf(svgd->file, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y, r * 1.5);
+  write_fill(svgd->file, gc->fill);
+  write_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+  fputs(" />\n", svgd->file);
 }
 
 static void svg_polygon(int n, double *x, double *y, const pGEcontext gc,
                         pDevDesc dd) {
-  SVGDesc *ptd = dd->deviceSpecific;
+  SVGDesc *svgd = dd->deviceSpecific;
 
-  fputs("<polygon points='", ptd->file);
+  fputs("<polygon points='", svgd->file);
   for (int i = 0; i < n; i++) {
-    fprintf(ptd->file, "%.2f,%.2f ", x[i], y[i]);
+    fprintf(svgd->file, "%.2f,%.2f ", x[i], y[i]);
   }
-  fputs("'", ptd->file);
+  fputs("'", svgd->file);
 
-  write_fill(ptd->file, gc->fill);
-  write_linetype(ptd->file, gc->lty, gc->lwd, gc->col);
+  write_fill(svgd->file, gc->fill);
+  write_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
 
-  fputs(" />\n", ptd->file);
+  fputs(" />\n", svgd->file);
 }
 
 static void svg_text(double x, double y, const char *str, double rot,
                      double hadj, const pGEcontext gc, pDevDesc dd) {
 
-  SVGDesc *ptd = dd->deviceSpecific;
+  SVGDesc *svgd = dd->deviceSpecific;
 
-  fprintf(ptd->file, "<text transform='translate(%.2f,%.2f)", x, y);
+  fprintf(svgd->file, "<text transform='translate(%.2f,%.2f)", x, y);
   if (rot != 0)
-    fprintf(ptd->file, " rotate(%0.0f)", -1.0 * rot);
-  fputs("' ", ptd->file);
+    fprintf(svgd->file, " rotate(%0.0f)", -1.0 * rot);
+  fputs("' ", svgd->file);
   int size = gc->cex * gc->ps + 0.5;
-  write_font(ptd->file, gc->fontface, size, gc->col);
-  fputs(">", ptd->file);
+  write_font(svgd->file, gc->fontface, size, gc->col);
+  fputs(">", svgd->file);
 
-  write_escaped(ptd->file, str);
+  write_escaped(svgd->file, str);
 
-  fputs("</text>\n", ptd->file);
+  fputs("</text>\n", svgd->file);
 }
 
 static void svg_size(double *left, double *right, double *bottom, double *top,
@@ -367,22 +367,22 @@ static void svg_size(double *left, double *right, double *bottom, double *top,
 }
 
 SVGDesc* svg_metadata_new(const char* filename, int standalone) {
-  SVGDesc* ptd = malloc(sizeof(SVGDesc));
-  if (ptd == NULL) {
+  SVGDesc* svgd = malloc(sizeof(SVGDesc));
+  if (svgd == NULL) {
     return NULL;
   }
 
-  strncpy(ptd->filename, filename, 1024);
-  ptd->file = fopen(R_ExpandFileName(ptd->filename), "w");
-  if (ptd->file == NULL) {
-    free(ptd);
+  strncpy(svgd->filename, filename, 1024);
+  svgd->file = fopen(R_ExpandFileName(svgd->filename), "w");
+  if (svgd->file == NULL) {
+    free(svgd);
     return NULL;
   }
 
-  ptd->standalone = standalone;
-  ptd->pageno = 0;
+  svgd->standalone = standalone;
+  svgd->pageno = 0;
 
-  return ptd;
+  return svgd;
 }
 
 pDevDesc svg_driver_new(const char *filename, int bg, double width,
