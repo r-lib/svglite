@@ -133,30 +133,26 @@ void write_escaped(FILE* f, const char* text) {
   }
 }
 
-void write_colour(FILE* f, unsigned int col) {
+void write_colour(FILE* f, const char* attr, unsigned int col) {
   int alpha = R_ALPHA(col);
 
   if (col == NA_INTEGER || alpha == 0) {
-    fputs("none", f);
+    fprintf(f, " %s='none'", attr);
     return;
   } else if (alpha == 255) {
-    fprintf(f, "#%02X%02X%02X", R_RED(col), R_GREEN(col), R_BLUE(col));
+    fprintf(f, " %s='#%02X%02X%02X'", attr, R_RED(col), R_GREEN(col), R_BLUE(col));
   } else {
-    fprintf(f, "rgba(%i, %i, %i, %0.2f)", R_RED(col), R_GREEN(col), R_BLUE(col),
-      alpha / 255.0);
+    fprintf(f, " %s='rgba(%i, %i, %i, %0.2f)'", attr, R_RED(col), R_GREEN(col),
+      R_BLUE(col), alpha / 255.0);
   }
 }
 
 static void write_fill(FILE* f, int fgcol) {
-  fputs(" fill='", f);
-  write_colour(f, fgcol);
-  fputs("'", f);
+  write_colour(f, "fill", fgcol);
 }
 
 static void write_linetype(FILE* f, int lty, double lwd, int col) {
-  fputs(" stroke='", f);
-  write_colour(f, col);
-  fputs("'", f);
+  write_colour(f, "stroke", col);
 
   // 1 lwd = 1/96", but units in rest of document are points
   fprintf(f, " stroke-width='%.3f'", lwd / 96 * 72);
@@ -202,10 +198,7 @@ static void write_linetype(FILE* f, int lty, double lwd, int col) {
 
 static void write_font(FILE* f, int face, int size, unsigned int col) {
   fprintf(f, " font-size='%d'", size);
-
-  fputs(" fill='", f);
-  write_colour(f, col);
-  fputs("'", f);
+  write_colour(f, "fill", col);
 }
 
 // Callback functions for graphics device --------------------------------------
@@ -245,9 +238,9 @@ static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   fprintf(svgd->file, "viewBox='0 0 %.2f %.2f'>\n", dd->right, dd->bottom);
 
   fputs("<style>text {font-family: sans-serif;}</style>", svgd->file);
-  fputs("<rect width='100%' height='100%' fill='", svgd->file);
-  write_colour(svgd->file, gc->fill);
-  fputs("' />\n", svgd->file);
+  fputs("<rect width='100%' height='100%'", svgd->file);
+  write_colour(svgd->file, "fill", gc->fill);
+  fputs("/>\n", svgd->file);
 
   svgd->pageno++;
 }
