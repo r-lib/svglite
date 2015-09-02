@@ -210,7 +210,7 @@ static void write_font(FILE* f, int face, int size, unsigned int col) {
 // Callback functions for graphics device --------------------------------------
 
 static void svg_metric_info(int c, const pGEcontext gc, double* ascent,
-    double* descent, double* width, pDevDesc dd) {
+                            double* descent, double* width, pDevDesc dd) {
 
   // metric information not available => return 0,0,0 */
   *ascent = 0.0;
@@ -263,7 +263,7 @@ static void svg_close(pDevDesc dd) {
 }
 
 static void svg_line(double x1, double y1, double x2, double y2,
-    const pGEcontext gc, pDevDesc dd) {
+                     const pGEcontext gc, pDevDesc dd) {
   SVGDesc *ptd = dd->deviceSpecific;
 
   fprintf(ptd->file, "<line x1='%.2f' y1='%.2f' x2='%.2f' y2='%.2f'",
@@ -274,12 +274,11 @@ static void svg_line(double x1, double y1, double x2, double y2,
 }
 
 static void svg_polyline(int n, double *x, double *y, const pGEcontext gc,
-      pDevDesc dd) {
-  int i;
+                         pDevDesc dd) {
   SVGDesc *ptd = dd->deviceSpecific;
   fputs("<polyline points='", ptd->file);
 
-  for (i = 0; i < n; i++) {
+  for (int i = 0; i < n; i++) {
     fprintf(ptd->file, "%.2f,%.2f ", x[i], y[i]);
   }
   fputs("'", ptd->file);
