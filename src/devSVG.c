@@ -305,26 +305,13 @@ static double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
 }
 
 static void svg_rect(double x0, double y0, double x1, double y1,
-    const pGEcontext gc, pDevDesc dd) {
-  double tmp;
+                     const pGEcontext gc, pDevDesc dd) {
   SVGDesc *ptd = dd->deviceSpecific;
 
-  // Make sure width and height are positive
-  if (x0 >= x1) {
-    tmp = x0;
-    x0 = x1;
-    x1 = tmp;
-  }
-
-  if (y0 >= y1) {
-    tmp = y0;
-    y0 = y1;
-    y1 = tmp;
-  }
-
+  // x and y give top-left position
   fprintf(ptd->texfp,
       "<rect x='%.2f' y='%.2f' width='%.2f' height='%.2f'",
-      x0, y0, x1 - x0, y1 - y0);
+      fmin(x0, x1), fmin(y0, y1), fabs(x1 - x0), fabs(y1 - y0));
 
   write_fill(ptd->texfp, gc->fill);
   write_linetype(ptd->texfp, gc->lty, gc->lwd, gc->col);
