@@ -241,7 +241,7 @@ static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   if (ptd->standalone)
     fprintf(ptd->file, "xmlns='http://www.w3.org/2000/svg' ");
 
-  fprintf(ptd->file, "viewBox='0,0,%.2f,%.2f'>\n", dd->right, dd->bottom);
+  fprintf(ptd->file, "viewBox='0 0 %.2f %.2f'>\n", dd->right, dd->bottom);
 
   fputs("<style>text {font-family: sans-serif;}</style>", ptd->file);
   fprintf(ptd->file, "<rect width='100%%' height='100%%' fill='");
