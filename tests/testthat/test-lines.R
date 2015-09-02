@@ -1,6 +1,8 @@
 context("Lines")
 
 library(xml2)
+library(ggplot2)
+
 test_that("segments don't have fill", {
   x <- xmlSVG({
     plot.new()
@@ -19,6 +21,9 @@ test_that("lines don't have fill", {
 
 
 test_that("lines lty becomes stroke-dasharray", {
+  stroke_dash <- c( "5,5", "1,5", "1,5,5,5", "10,5", "10,5,5,5" )
+
+  # base graphics
   x <- xmlSVG( plot( 1:3, lty = 1, type = "l" ) )
   expect_equal(
     xml_attr(suppressWarnings(xml_find_one(x,"//polyline")), "stroke-dasharray"),
@@ -28,11 +33,38 @@ test_that("lines lty becomes stroke-dasharray", {
   expect_identical(
     sapply(
       2:6,
-      function( x ) {
-        x <- xmlSVG( plot( 1:3, lty = x, type = "l" ) )
+      function( l ) {
+        x <- xmlSVG( plot( 1:3, lty = l, type = "l" ) )
         xml_attr(suppressWarnings(xml_find_one(x,"//polyline")), "stroke-dasharray")
       }
     ),
-    c( "5,5", "1,5", "1,5,5,5", "10,5", "10,5,5,5" )
+    stroke_dash
+  )
+
+  # lattice
+  expect_identical(
+    sapply(
+      2:6,
+      function( l ) {
+        x <- xmlSVG( { print( lattice::xyplot( x~x, data.frame( x = 1:3 ), lty = l, type = "l" ) ) } )
+        xml_attr(suppressWarnings(xml_find_all(x,"//polyline")[2]), "stroke-dasharray")
+      }
+    ),
+    stroke_dash
+  )
+
+  # ggplot2
+  expect_identical(
+    sapply(
+      2:6,
+      function( l ) {
+        x <- xmlSVG({
+          print( ggplot( data.frame( x = 1:3 ), aes( x = x,  y = x ) ) + geom_line( lty = l ) )
+        })
+        # this is brittle
+        xml_attr(suppressWarnings(xml_find_all(x,"//polyline"))[19], "stroke-dasharray" )
+      }
+    ),
+    stroke_dash
   )
 })
