@@ -161,42 +161,42 @@ static void write_linetype(FILE* f, int lty, double lwd, int col) {
   fprintf(f, " stroke-width='%.3f'", lwd / 96 * 72);
 
   // Set line pattern type
-	switch (lty) {
-	case LTY_BLANK:
-		break;
-	case LTY_SOLID:
-		break;
-	case LTY_DOTTED:
-		fputs(" stroke-dasharray=\"1,5\"", f);
-		break;
-	case LTY_DASHED:
-		fputs(" stroke-dasharray=\"5,5\"", f);
-		break;
-	case LTY_LONGDASH:
-		fputs(" stroke-dasharray=\"10,5\"", f);
-		break;
-	case LTY_DOTDASH:
-		fputs(" stroke-dasharray=\"1,5,5,5\"", f);
-		break;
-	case LTY_TWODASH:
-		fputs(" stroke-dasharray=\"10,5,5,5\"", f);
-		break;
-	default: {
-		  int newlty = lty;
-    	double newlwd = lwd;
-  		fputs(" stroke-dasharray=\"", f);
-  		for(int i = 0 ; i < 8 && newlty & 15; i++) {
-  			int lwd = (int) newlwd * newlty;
-  			lwd = lwd & 15;
-  			if(i > 0)
-  			  fputc(',', f);
-  			fprintf(f, "%i", lwd);
-  			newlty = newlty >> 4;
-  		}
-  		fputs("\"", f);
-	  	break;
-		}
-	}
+  switch (lty) {
+  case LTY_BLANK:
+    break;
+  case LTY_SOLID:
+    break;
+  case LTY_DOTTED:
+    fputs(" stroke-dasharray=\"1,5\"", f);
+    break;
+  case LTY_DASHED:
+    fputs(" stroke-dasharray=\"5,5\"", f);
+    break;
+  case LTY_LONGDASH:
+    fputs(" stroke-dasharray=\"10,5\"", f);
+    break;
+  case LTY_DOTDASH:
+    fputs(" stroke-dasharray=\"1,5,5,5\"", f);
+    break;
+  case LTY_TWODASH:
+    fputs(" stroke-dasharray=\"10,5,5,5\"", f);
+    break;
+  default: {
+      int newlty = lty;
+      double newlwd = lwd;
+      fputs(" stroke-dasharray=\"", f);
+      for(int i = 0 ; i < 8 && newlty & 15; i++) {
+        int lwd = (int) newlwd * newlty;
+        lwd = lwd & 15;
+        if(i > 0)
+          fputc(',', f);
+        fprintf(f, "%i", lwd);
+        newlty = newlty >> 4;
+      }
+      fputs("\"", f);
+      break;
+    }
+  }
 }
 
 static void write_font(FILE* f, int face, int size, unsigned int col) {
