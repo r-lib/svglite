@@ -166,20 +166,20 @@ static void write_linetype(FILE* f, int lty, double lwd, int col) {
     break;
   case LTY_SOLID:
     break;
-  case LTY_DOTTED:
-    fputs(" stroke-dasharray=\"1,5\"", f);
-    break;
   case LTY_DASHED:
-    fputs(" stroke-dasharray=\"5,5\"", f);
+    fputs(" stroke-dasharray=\"4,4\"", f);
     break;
-  case LTY_LONGDASH:
-    fputs(" stroke-dasharray=\"10,5\"", f);
+  case LTY_DOTTED:
+    fputs(" stroke-dasharray=\"1,3\"", f);
     break;
   case LTY_DOTDASH:
-    fputs(" stroke-dasharray=\"1,5,5,5\"", f);
+    fputs(" stroke-dasharray=\"1,3,4,3\"", f);
+    break;
+  case LTY_LONGDASH:
+    fputs(" stroke-dasharray=\"7,3\"", f);
     break;
   case LTY_TWODASH:
-    fputs(" stroke-dasharray=\"10,5,5,5\"", f);
+    fputs(" stroke-dasharray=\"2,2,6,2\"", f);
     break;
   default: {
       int newlty = lty;
