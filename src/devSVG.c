@@ -367,6 +367,25 @@ static void svg_size(double *left, double *right, double *bottom, double *top,
   *top = dd->top;
 }
 
+SVGDesc* svg_metadata_new(const char* filename, int standalone) {
+  SVGDesc* ptd = malloc(sizeof(SVGDesc));
+  if (ptd == NULL) {
+    return NULL;
+  }
+
+  strncpy(ptd->filename, filename, 1024);
+  ptd->file = fopen(R_ExpandFileName(ptd->filename), "w");
+  if (ptd->file == NULL) {
+    free(ptd);
+    return NULL;
+  }
+
+  ptd->standalone = standalone;
+  ptd->pageno = 0;
+
+  return ptd;
+}
+
 pDevDesc svg_driver_new(const char *filename, int bg, double width,
                         double height, int pointsize, int standalone) {
 
@@ -437,24 +456,11 @@ pDevDesc svg_driver_new(const char *filename, int bg, double width,
   dd->haveTransparentBg = 2;
 
   // Device specific setup
-  SVGDesc *ptd = malloc(sizeof(SVGDesc));
-  if (ptd == NULL) {
+  dd->deviceSpecific = svg_metadata_new(filename, standalone);
+  if (dd->deviceSpecific == NULL) {
     free(dd);
     return NULL;
   }
-
-  strncpy(ptd->filename, filename, 1024);
-  ptd->file = fopen(R_ExpandFileName(ptd->filename), "w");
-  if (ptd->file == NULL) {
-    free(dd);
-    free(ptd);
-    return NULL;
-  }
-
-  ptd->standalone = standalone;
-  ptd->pageno = 0;
-
-  dd->deviceSpecific = ptd;
   return dd;
 }
 
