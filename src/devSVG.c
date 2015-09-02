@@ -139,11 +139,10 @@ void write_attr_col(FILE* f, const char* attr, unsigned int col) {
   if (col == NA_INTEGER || alpha == 0) {
     fprintf(f, " %s='none'", attr);
     return;
-  } else if (alpha == 255) {
-    fprintf(f, " %s='#%02X%02X%02X'", attr, R_RED(col), R_GREEN(col), R_BLUE(col));
   } else {
-    fprintf(f, " %s='rgba(%i, %i, %i, %0.2f)'", attr, R_RED(col), R_GREEN(col),
-      R_BLUE(col), alpha / 255.0);
+    fprintf(f, " %s='#%02X%02X%02X'", attr, R_RED(col), R_GREEN(col), R_BLUE(col));
+    if (alpha != 255)
+      fprintf(f, " %s-opacity='%0.2f'", attr, alpha / 255.0);
   }
 }
 
