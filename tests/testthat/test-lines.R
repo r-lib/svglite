@@ -18,6 +18,16 @@ test_that("lines don't have fill", {
   expect_equal(xml_attr(xml_find_one(x, ".//polyline"), "fill"), "none")
 })
 
+test_that("polygons do have fill", {
+  x <- xmlSVG({
+    plot.new()
+    polygon(c(0.5, 1, 0.5), c(0.5, 1, 1), col = "red", border = "blue")
+  })
+  polygon <- xml_find_one(x, ".//polygon")
+  expect_equal(xml_attr(polygon, "fill"), rgb(1, 0, 0))
+  expect_equal(xml_attr(polygon, "stroke"), rgb(0, 0, 1))
+})
+
 
 test_that("lines lty becomes stroke-dasharray", {
   dash_array <- function(lty) {
