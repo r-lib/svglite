@@ -430,19 +430,15 @@ pDevDesc svg_driver_new(const char *filename, int bg, double width,
   dd->right = width * 72;
   dd->bottom = height * 72;
 
-  // Base Pointsize: Nominal Character Sizes in Pixels
-  // I'm not sure where these constants come from, but they're used in
-  // the majority of the base graphics devices
+  // Magic constants copied from other graphics devices
+  // nominal character sizes in pixels
   dd->cra[0] = 0.9 * pointsize;
   dd->cra[1] = 1.2 * pointsize;
-
-  // Character Addressing Offsets: These magic constants are copied
-  // from built-in graphics devices
+  // character alignment offsets
   dd->xCharOffset = 0.4900;
   dd->yCharOffset = 0.3333;
   dd->yLineBias = 0.2;
-
-  // Inches per Raster Unit
+  // inches per raster unit
   dd->ipr[0] = 1.0 / 72.0;
   dd->ipr[1] = 1.0 / 72.0;
 
@@ -454,7 +450,6 @@ pDevDesc svg_driver_new(const char *filename, int bg, double width,
   dd->haveTransparency = 2;
   dd->haveTransparentBg = 2;
 
-  // Device specific setup
   dd->deviceSpecific = svg_metadata_new(filename, standalone);
   if (dd->deviceSpecific == NULL) {
     free(dd);
