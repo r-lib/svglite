@@ -28,6 +28,10 @@ test_that("polygons do have fill", {
   expect_equal(xml_attr(polygon, "stroke"), rgb(0, 0, 1))
 })
 
+test_that("blank lines are omitted", {
+  x <- xmlSVG(mini_plot(1:3, lty = "blank", type = "l"))
+  expect_equal(length(xml_find_all(x, "//polyline")), 0)
+})
 
 test_that("lines lty becomes stroke-dasharray", {
   dash_array <- function(lty) {

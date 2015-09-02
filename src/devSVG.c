@@ -164,7 +164,7 @@ static void write_linetype(FILE* f, int lty, double lwd, int col) {
   // Set line pattern type
   switch (lty) {
   case LTY_BLANK:
-    break;
+    break; // never called: blank lines never get to this point
   case LTY_SOLID:
     break;
   case LTY_DASHED:
