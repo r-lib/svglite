@@ -21,8 +21,7 @@
 #include "Rinternals.h"
 #include "R_ext/GraphicsEngine.h"
 
-// device-specific information per SVG device //
-
+// SVG device metadata
 typedef struct {
   FILE *texfp;
   char filename[1024];
@@ -215,9 +214,6 @@ static void write_font(FILE* f, int face, int size, unsigned int col) {
 static void SVG_MetricInfo(int c, const pGEcontext gc, double* ascent,
     double* descent, double* width, pDevDesc dd) {
 
-  //  Rboolean Unicode = mbcslocale && (gc->fontface != 5);
-    //     if (c < 0) { Unicode = TRUE; c = -c; }
-    //     if(Unicode) UniCharMetric(c, ...); else CharMetric(c, ...);
   // metric information not available => return 0,0,0 */
   *ascent = 0.0;
   *descent = 0.0;
@@ -399,6 +395,7 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
   dd->startfont = 1;
   dd->startgamma = 1;
 
+  // Callbacks
   dd->activate = NULL;
   dd->deactivate = NULL;
   dd->close = SVG_Close;
@@ -407,9 +404,7 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
   dd->newPage = SVG_NewPage;
   dd->line = SVG_Line;
   dd->text = SVG_Text;
-  dd->textUTF8 = SVG_Text; // UTF-8 support
   dd->strWidth = SVG_StrWidth;
-  dd->strWidthUTF8 = SVG_StrWidth; // UTF-8 support
   dd->rect = SVG_Rect;
   dd->circle = SVG_Circle;
   dd->polygon = SVG_Polygon;
@@ -417,11 +412,13 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
   dd->mode = NULL;
   dd->metricInfo = SVG_MetricInfo;
   dd->cap = NULL;
-  dd->raster = NULL; // not implemented
+  dd->raster = NULL;
 
   // UTF-8 support
   dd->wantSymbolUTF8 = 1;
   dd->hasTextUTF8 = 1;
+  dd->textUTF8 = SVG_Text;
+  dd->strWidthUTF8 = SVG_StrWidth;
 
   // Screen Dimensions in Pixels
   dd->left = 0;
@@ -431,7 +428,7 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
 
   // Base Pointsize: Nominal Character Sizes in Pixels
   // I'm not sure where these constants come from, but they're used in
-  // the majority of the base grahpics devices
+  // the majority of the base graphics devices
   dd->cra[0] = 0.9 * pointsize;
   dd->cra[1] = 1.2 * pointsize;
 
@@ -445,10 +442,13 @@ Rboolean SVGDeviceDriver(pDevDesc dd, const char *filename, int bg,
   dd->ipr[0] = 1.0 / 72.0;
   dd->ipr[1] = 1.0 / 72.0;
 
+  // Capabilities
   dd->canClip = FALSE;
   dd->canHAdj = 0;
   dd->canChangeGamma = FALSE;
   dd->displayListOn = FALSE;
+  dd->haveTransparency = 2;
+  dd->haveTransparentBg = 2;
 
   // Device specific setup
   SVGDesc *ptd = malloc(sizeof(SVGDesc));
