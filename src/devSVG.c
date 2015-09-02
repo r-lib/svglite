@@ -262,8 +262,9 @@ static void svg_line(double x1, double y1, double x2, double y2,
   fputs(" />\n", svgd->file);
 }
 
-static void svg_polyline(int n, double *x, double *y, const pGEcontext gc,
-                         pDevDesc dd) {
+void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
+              pDevDesc dd) {
+
   SVGDesc *svgd = dd->deviceSpecific;
   fputs("<polyline points='", svgd->file);
 
@@ -272,10 +273,19 @@ static void svg_polyline(int n, double *x, double *y, const pGEcontext gc,
   }
   fputs("'", svgd->file);
 
-  write_attr_col(svgd->file, "fill", NA_INTEGER);
+  write_attr_col(svgd->file, "fill", filled ? gc->fill : NA_INTEGER);
   write_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
 
   fputs(" />\n", svgd->file);
+}
+
+static void svg_polyline(int n, double *x, double *y, const pGEcontext gc,
+                         pDevDesc dd) {
+  svg_poly(n, x, y, 0, gc, dd);
+}
+static void svg_polygon(int n, double *x, double *y, const pGEcontext gc,
+                        pDevDesc dd) {
+  svg_poly(n, x, y, 1, gc, dd);
 }
 
 static double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
@@ -310,22 +320,6 @@ static void svg_circle(double x, double y, double r, const pGEcontext gc,
   fprintf(svgd->file, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y, r * 1.5);
   write_attr_col(svgd->file, "fill", gc->fill);
   write_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
-  fputs(" />\n", svgd->file);
-}
-
-static void svg_polygon(int n, double *x, double *y, const pGEcontext gc,
-                        pDevDesc dd) {
-  SVGDesc *svgd = dd->deviceSpecific;
-
-  fputs("<polygon points='", svgd->file);
-  for (int i = 0; i < n; i++) {
-    fprintf(svgd->file, "%.2f,%.2f ", x[i], y[i]);
-  }
-  fputs("'", svgd->file);
-
-  write_attr_col(svgd->file, "fill", gc->fill);
-  write_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
-
   fputs(" />\n", svgd->file);
 }
 

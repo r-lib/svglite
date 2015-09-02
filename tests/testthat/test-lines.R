@@ -23,9 +23,18 @@ test_that("polygons do have fill", {
     plot.new()
     polygon(c(0.5, 1, 0.5), c(0.5, 1, 1), col = "red", border = "blue")
   })
-  polygon <- xml_find_one(x, ".//polygon")
+  polygon <- xml_find_one(x, ".//polyline")
   expect_equal(xml_attr(polygon, "fill"), rgb(1, 0, 0))
   expect_equal(xml_attr(polygon, "stroke"), rgb(0, 0, 1))
+})
+
+test_that("last point of polygon joined to first point", {
+  x <- xmlSVG({
+    plot.new()
+    polygon(c(0.5, 1, 0.5), c(0, 1, 1))
+  })
+  points <- strsplit(xml_attr(xml_find_one(x, ".//polyline"), "points"), " ")[[1]]
+  expect_equal(length(points), 4)
 })
 
 test_that("blank lines are omitted", {
