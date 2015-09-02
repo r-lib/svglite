@@ -22,4 +22,4 @@ xmlSVG <- function(code, ...) {
   xml2::read_xml(tmp)
 }
 
-
+mini_plot <- function(...) plot(..., axes = FALSE, xlab = "", ylab = "")
