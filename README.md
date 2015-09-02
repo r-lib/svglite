@@ -31,19 +31,46 @@ library(RSvgDevice)
 x <- runif(1e3)
 y <- runif(1e3)
 
+tmp1 <- tempfile()
+tmp2 <- tempfile()
 system.time({
-  devSVG()
+  devSVG(tmp1)
   plot(x, y)
   dev.off()
 })
 #>    user  system elapsed 
-#>   0.003   0.000   0.004
+#>   0.004   0.001   0.004
 
 system.time({
-  svg(onefile = TRUE)
+  svg(tmp2, onefile = TRUE)
   plot(x, y)
   dev.off()
 })
 #>    user  system elapsed 
-#>   0.025   0.004   0.029
+#>   0.025   0.006   0.031
+```
+
+It also produces considerably smaller files:
+
+``` r
+file.size(tmp1) / 1024
+#> [1] 90.49805
+file.size(tmp2) / 1024
+#> [1] 320.9307
+```
+
+In both cases, compressing to make `.svgz` is worthwhile:
+
+``` r
+gz <- function(in_path, out_path = tempfile()) {
+  out <- gzfile(out_path, "w")
+  writeLines(readLines(in_path), out)
+  close(out)
+  
+  invisible(out_path)
+}
+file.size(gz(tmp1)) / 1024
+#> [1] 9.09082
+file.size(gz(tmp2)) / 1024
+#> [1] 38.55566
 ```
