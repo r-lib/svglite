@@ -20,20 +20,16 @@ test_that("lines don't have fill", {
 
 
 test_that("lines lty becomes stroke-dasharray", {
-  # base graphics
-  x <- xmlSVG(mini_plot(1:3, lty = 1, type = "l"))
-  expect_equal(
-    xml_attr(xml_find_one(x,"//polyline"), "stroke-dasharray"),
-    NA_character_
-  )
-
   dash_array <- function(lty) {
     x <- xmlSVG(mini_plot(1:3, lty = lty, type = "l"))
     xml_attr(xml_find_one(x, "//polyline"), "stroke-dasharray")
   }
-  expect_equal(dash_array(2), "5,5")
-  expect_equal(dash_array(3), "1,5")
-  expect_equal(dash_array(4), "1,5,5,5")
-  expect_equal(dash_array(5), "10,5")
-  expect_equal(dash_array(6), "10,5,5,5")
+  expect_equal(dash_array(1), NA_character_)
+  expect_equal(dash_array(2), "4,4")
+  expect_equal(dash_array(3), "1,3")
+  expect_equal(dash_array(4), "1,3,4,3")
+  expect_equal(dash_array(5), "7,3")
+  expect_equal(dash_array(6), "2,2,6,2")
+  expect_equal(dash_array("1F"), "1,15")
+  expect_equal(dash_array("1234"), "1,2,3,4")
 })
