@@ -407,21 +407,21 @@ pDevDesc svg_driver_new(const char *filename, int bg, double width,
   dd->textUTF8 = svg_text;
   dd->strWidthUTF8 = svg_strwidth;
 
-  // Screen Dimensions in Pixels
+  // Screen Dimensions in pts
   dd->left = 0;
   dd->top = 0;
   dd->right = width * 72;
   dd->bottom = height * 72;
 
   // Magic constants copied from other graphics devices
-  // nominal character sizes in pixels
+  // nominal character sizes in pts
   dd->cra[0] = 0.9 * pointsize;
   dd->cra[1] = 1.2 * pointsize;
   // character alignment offsets
   dd->xCharOffset = 0.4900;
   dd->yCharOffset = 0.3333;
   dd->yLineBias = 0.2;
-  // inches per raster unit
+  // inches per pt
   dd->ipr[0] = 1.0 / 72.0;
   dd->ipr[1] = 1.0 / 72.0;
 
