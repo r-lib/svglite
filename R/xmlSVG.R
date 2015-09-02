@@ -14,7 +14,7 @@
 #' }
 xmlSVG <- function(code, ...) {
   tmp <- tempfile()
-  devSVG(tmp, width = 5, height = 5, standalone = FALSE, ...)
+  devSVG(tmp, standalone = FALSE, ...)
   tryCatch(code,
     finally = dev.off()
   )
