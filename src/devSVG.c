@@ -1,6 +1,7 @@
-//  (C) 2012 Matthieu Decorde: UTF-8 support, XML reserved characters and XML header
-//  (C) 2008 Tony Plate: Line type support from RSVGTipsDevice package
 //  (C) 2002 T Jake Luciani: SVG device, based on PicTex device
+//  (C) 2008 Tony Plate: Line type support from RSVGTipsDevice package
+//  (C) 2012 Matthieu Decorde: UTF-8 support, XML reserved characters and XML header
+//  (C) 2015 RStudio (Hadley Wickham): modernisation & refactoring
 //
 //  This program is free software; you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
