@@ -1,4 +1,4 @@
-#' Run plotting code and view svg in RStudio Viewer or web broswer.
+#' Run plotting code and view svg in RStudio Viewer or web browser.
 #'
 #' This is useful primarily for testing. Requires the \code{htmltools}
 #' package.
@@ -21,5 +21,3 @@ htmlSVG <- function(code, ...) {
     htmltools::HTML(paste0(readLines(tmp), collapse = "\n"))
   )
 }
-
-
