@@ -1,4 +1,5 @@
-inlineSVG <- function(code, ..., width = NA, height = NA, path = tempfile()) {
+inlineSVG <- function(code, ..., width = NA, height = NA,
+                      path = tempfile(fileext = ".svg")) {
   dim <- plot_dim(c(width, height))
 
   devSVG(path, width = dim[1], height = dim[2], ...)
