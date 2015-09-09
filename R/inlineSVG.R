@@ -58,7 +58,7 @@ xmlSVG <- function(code, ...) {
 #' @export
 #' @examples
 #' editSVG(plot(1:10))
-#' editSVG(hist(rnorm(100)))
+#' editSVG(contour(volcano))
 
 editSVG <- function(code, ...) {
   tmp <- inlineSVG(code, ...)

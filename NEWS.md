@@ -22,4 +22,5 @@
 * Supports all line dashing (#15)
 
 * Helper functions `xmlSVG()` and `htmlSVG()` make it easier to view generated
-  SVG, either as raw XML or in RStudio/the browser.
+  SVG, either as raw XML or in RStudio/the browser. `editSVG` opens the SVG in
+  the OS/system default SVG viewer or editor.
