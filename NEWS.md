@@ -20,3 +20,6 @@
   I'm reasonably certain this makes it easier to use in more places. (#12)
 
 * Supports all line dashing (#15)
+
+* Helper functions `xmlSVG()` and `htmlSVG()` make it easier to view generated
+  SVG, either as raw XML or in RStudio/the browser.
