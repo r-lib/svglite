@@ -48,3 +48,18 @@ xmlSVG <- function(code, ...) {
   xml2::read_xml(plot)
 }
 
+#' Run plotting code and open svg in OS/system default svg viewer or editor.
+#'
+#' This is useful primarily for testing or post-processing the SVG.
+#'
+#' @param code Plotting code to execute.
+#' @param ... Other arguments passed on to \code{\link{devSVG}}.
+#' @export
+#' @examples
+#' editSVG(plot(1:10))
+#' editSVG(hist(rnorm(100)))
+
+editSVG <- function(code, ...) {
+  tmp <- inlineSVG(code, ...)
+  system(sprintf("open %s", shQuote(tmp)))
+}
