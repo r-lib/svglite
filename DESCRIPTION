@@ -8,9 +8,10 @@ Authors@R: c(
   person("Vaudor", "Lise", , "lise.vaudor@ens-lyon.fr", "aut"),
   person("Hadley", "Wickham", , "hadley@rstudio.com", "aut"),
   person("David", "Gohel", role = "ctb", comment = "Line dashing code"),
-  person("Håkon", "Malmedal", role = "ctb"),
+  person("Håkon", "Malmedal", role = "ctb", comment = "Opacity code"),
   person("RStudio", role = "cph")
   )
+Encoding: UTF-8
 Depends: R (>= 3.0.0)
 Suggests:
   htmltools,
