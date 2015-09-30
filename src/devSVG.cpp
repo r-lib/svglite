@@ -16,20 +16,40 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#include <string.h>
 #include "Rcpp.h"
+#include <string.h>
 #include "R_ext/GraphicsEngine.h"
 
 // SVG device metadata
-typedef struct {
+class SVGDesc {
+public:
   FILE *file;
-  char filename[1024];
+  std::string filename;
   int pageno;
   double clipleft, clipright, cliptop, clipbottom;
 
-  Rboolean standalone;
+  XPtrCairoContext cc;
 
-} SVGDesc;
+  bool standalone;
+
+  SVGDesc(std::string filename_, bool standalone_):
+      filename(filename_),
+      pageno(0),
+      standalone(standalone_),
+      cc(gdtools::context_create()) {
+    file = fopen(R_ExpandFileName(filename.c_str()), "w");
+  }
+
+  bool ok() const {
+    return file != NULL;
+  }
+
+  ~SVGDesc() {
+    if (ok())
+      fclose(file);
+  }
+
+};
 
 static double charwidth[4][128] = {
   { 0.5416690, 0.8333360, 0.7777810,
@@ -221,9 +241,7 @@ static void svg_close(pDevDesc dd) {
   if (svgd->pageno > 0)
     fputs("</svg>\n", svgd->file);
 
-  fclose(svgd->file);
-
-  free(svgd);
+  delete(svgd);
 }
 
 static void svg_line(double x1, double y1, double x2, double y2,
@@ -324,25 +342,6 @@ static void svg_size(double *left, double *right, double *bottom, double *top,
   *top = dd->top;
 }
 
-SVGDesc* svg_metadata_new(std::string filename, bool standalone) {
-  SVGDesc* svgd = (SVGDesc*) malloc(sizeof(SVGDesc));
-  if (svgd == NULL) {
-    return NULL;
-  }
-
-  strncpy(svgd->filename, filename.c_str(), 1024);
-  svgd->file = fopen(R_ExpandFileName(svgd->filename), "w");
-  if (svgd->file == NULL) {
-    free(svgd);
-    return NULL;
-  }
-
-  svgd->standalone = (Rboolean) standalone;
-  svgd->pageno = 0;
-
-  return svgd;
-}
-
 pDevDesc svg_driver_new(std::string filename, int bg, double width,
                         double height, int pointsize, bool standalone) {
 
@@ -408,11 +407,7 @@ pDevDesc svg_driver_new(std::string filename, int bg, double width,
   dd->haveTransparency = 2;
   dd->haveTransparentBg = 2;
 
-  dd->deviceSpecific = svg_metadata_new(filename, standalone);
-  if (dd->deviceSpecific == NULL) {
-    free(dd);
-    return NULL;
-  }
+  dd->deviceSpecific = new SVGDesc(filename, standalone);
   return dd;
 }
 
