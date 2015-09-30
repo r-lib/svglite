@@ -3,4 +3,5 @@
 export(devSVG)
 export(htmlSVG)
 export(xmlSVG)
-useDynLib(RSvgDevice,devSVG_)
+importFrom(Rcpp,sourceCpp)
+useDynLib(RSvgDevice)

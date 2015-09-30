@@ -17,9 +17,7 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <string.h>
-
-#include "R.h"
-#include "Rinternals.h"
+#include "Rcpp.h"
 #include "R_ext/GraphicsEngine.h"
 
 // SVG device metadata
@@ -185,7 +183,7 @@ static void svg_metric_info(int c, const pGEcontext gc, double* ascent,
 }
 
 static void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
-  SVGDesc *svgd = dd->deviceSpecific;
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   svgd->clipleft = x0;
   svgd->clipright = x1;
@@ -194,7 +192,7 @@ static void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
 }
 
 static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
-  SVGDesc *svgd = dd->deviceSpecific;
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   if (svgd->pageno > 0) {
     Rf_error("RSvgDevice only supports one page");
@@ -218,7 +216,7 @@ static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
 }
 
 static void svg_close(pDevDesc dd) {
-  SVGDesc *svgd = dd->deviceSpecific;
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   if (svgd->pageno > 0)
     fputs("</svg>\n", svgd->file);
@@ -230,7 +228,7 @@ static void svg_close(pDevDesc dd) {
 
 static void svg_line(double x1, double y1, double x2, double y2,
                      const pGEcontext gc, pDevDesc dd) {
-  SVGDesc *svgd = dd->deviceSpecific;
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   fprintf(svgd->file, "<line x1='%.2f' y1='%.2f' x2='%.2f' y2='%.2f'",
     x1, y1, x2, y2);
@@ -242,7 +240,7 @@ static void svg_line(double x1, double y1, double x2, double y2,
 void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
               pDevDesc dd) {
 
-  SVGDesc *svgd = dd->deviceSpecific;
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   fputs("<polyline points='", svgd->file);
 
   for (int i = 0; i < n; i++) {
@@ -278,7 +276,7 @@ static double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
 
 static void svg_rect(double x0, double y0, double x1, double y1,
                      const pGEcontext gc, pDevDesc dd) {
-  SVGDesc *svgd = dd->deviceSpecific;
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   // x and y give top-left position
   fprintf(svgd->file,
@@ -292,7 +290,7 @@ static void svg_rect(double x0, double y0, double x1, double y1,
 
 static void svg_circle(double x, double y, double r, const pGEcontext gc,
                        pDevDesc dd) {
-  SVGDesc *svgd = dd->deviceSpecific;
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   fprintf(svgd->file, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y, r * 1.5);
   write_attr_col(svgd->file, "fill", gc->fill);
@@ -302,7 +300,7 @@ static void svg_circle(double x, double y, double r, const pGEcontext gc,
 
 static void svg_text(double x, double y, const char *str, double rot,
                      double hadj, const pGEcontext gc, pDevDesc dd) {
-  SVGDesc *svgd = dd->deviceSpecific;
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   fprintf(svgd->file, "<text transform='translate(%.2f,%.2f)", x, y);
   if (rot != 0)
@@ -326,29 +324,29 @@ static void svg_size(double *left, double *right, double *bottom, double *top,
   *top = dd->top;
 }
 
-SVGDesc* svg_metadata_new(const char* filename, int standalone) {
-  SVGDesc* svgd = malloc(sizeof(SVGDesc));
+SVGDesc* svg_metadata_new(std::string filename, bool standalone) {
+  SVGDesc* svgd = (SVGDesc*) malloc(sizeof(SVGDesc));
   if (svgd == NULL) {
     return NULL;
   }
 
-  strncpy(svgd->filename, filename, 1024);
+  strncpy(svgd->filename, filename.c_str(), 1024);
   svgd->file = fopen(R_ExpandFileName(svgd->filename), "w");
   if (svgd->file == NULL) {
     free(svgd);
     return NULL;
   }
 
-  svgd->standalone = standalone;
+  svgd->standalone = (Rboolean) standalone;
   svgd->pageno = 0;
 
   return svgd;
 }
 
-pDevDesc svg_driver_new(const char *filename, int bg, double width,
-                        double height, int pointsize, int standalone) {
+pDevDesc svg_driver_new(std::string filename, int bg, double width,
+                        double height, int pointsize, bool standalone) {
 
-  pDevDesc dd = calloc(1, sizeof(DevDesc));
+  pDevDesc dd = (DevDesc*) calloc(1, sizeof(DevDesc));
   if (dd == NULL)
     return dd;
 
@@ -379,8 +377,8 @@ pDevDesc svg_driver_new(const char *filename, int bg, double width,
   dd->raster = NULL;
 
   // UTF-8 support
-  dd->wantSymbolUTF8 = 1;
-  dd->hasTextUTF8 = 1;
+  dd->wantSymbolUTF8 = (Rboolean) 1;
+  dd->hasTextUTF8 = (Rboolean) 1;
   dd->textUTF8 = svg_text;
   dd->strWidthUTF8 = svg_strwidth;
 
@@ -418,21 +416,18 @@ pDevDesc svg_driver_new(const char *filename, int bg, double width,
   return dd;
 }
 
-SEXP devSVG_(SEXP file_, SEXP bg_, SEXP width_, SEXP height_, SEXP pointsize_,
-             SEXP standalone_) {
+// [[Rcpp::export]]
+bool devSVG_(std::string file, std::string bg_, int width, int height,
+             int pointsize, bool standalone) {
 
-  const char* file = CHAR(asChar(file_));
-  int bg = R_GE_str2col(CHAR(asChar(bg_)));
-  int width = asInteger(width_), height = asInteger(height_);
-  int pointsize = asInteger(pointsize_);
-  int standalone = asLogical(standalone_);
+  int bg = R_GE_str2col(bg_.c_str());
 
   R_GE_checkVersionOrDie(R_GE_version);
   R_CheckDeviceAvailable();
   BEGIN_SUSPEND_INTERRUPTS {
     pDevDesc dev = svg_driver_new(file, bg, width, height, pointsize, standalone);
     if (dev == NULL)
-      error("Failed to start SVG device");
+      Rcpp::stop("Failed to start SVG device");
 
     pGEDevDesc dd = GEcreateDevDesc(dev);
     GEaddDevice2(dd, "devSVG");
@@ -440,6 +435,6 @@ SEXP devSVG_(SEXP file_, SEXP bg_, SEXP width_, SEXP height_, SEXP pointsize_,
 
   } END_SUSPEND_INTERRUPTS;
 
-  return ScalarLogical(1);
+  return true;
 }
 

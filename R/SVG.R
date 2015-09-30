@@ -22,11 +22,11 @@
 #' plot(1:11,(-5:5)^2, type='b', main="Simple Example")
 #' dev.off()
 #' @keywords device
-#' @useDynLib RSvgDevice devSVG_
+#' @useDynLib RSvgDevice
+#' @importFrom Rcpp sourceCpp
 #' @export
 devSVG <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
                    pointsize = 12, standalone = TRUE) {
 
-  dev <- .Call(devSVG_, file, bg, width, height, pointsize, standalone)
-  invisible(dev)
+  invisible(devSVG_(file, bg, width, height, pointsize, standalone))
 }
