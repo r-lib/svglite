@@ -108,8 +108,17 @@ static void svg_metric_info(int c, const pGEcontext gc, double* ascent,
                             double* descent, double* width, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  gdtools::context_set_font(svgd->cc, "serif", gc->cex * gc->ps, false, false);
-  FontMetric fm = gdtools::context_extents(svgd->cc, std::string(1, (char) c));
+  // Convert to string - negative implies unicode code point
+  char str[16];
+  if (c < 0) {
+    Rf_ucstoutf8(str, (unsigned int) -c);
+  } else {
+    str[0] = (char) c;
+    str[1] = '\0';
+  }
+
+  gdtools::context_set_font(svgd->cc, "Arial", gc->cex * gc->ps, false, false);
+  FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
   *ascent = fm.ascent;
   *descent = fm.descent;
@@ -199,7 +208,7 @@ static double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   int fontface = gc->fontface == NA_INTEGER ? 0 : gc->fontface;
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  gdtools::context_set_font(svgd->cc, "serif", gc->cex * gc->ps, false, false);
+  gdtools::context_set_font(svgd->cc, "Arial", gc->cex * gc->ps, false, false);
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
   return fm.width;
