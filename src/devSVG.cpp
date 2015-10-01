@@ -28,10 +28,8 @@ public:
   std::string filename;
   int pageno;
   double clipleft, clipright, cliptop, clipbottom;
-
-  XPtrCairoContext cc;
-
   bool standalone;
+  XPtrCairoContext cc;
 
   SVGDesc(std::string filename_, bool standalone_):
       filename(filename_),
