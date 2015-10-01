@@ -6,12 +6,21 @@ test_that("par(cex) affects strwidth", {
   on.exit(dev.off())
 
   plot.new()
-  w1 <- strwidth("abc")
+  w1 <- strwidth("X")
 
   par(cex = 4)
-  w4 <- strwidth("abc")
+  w4 <- strwidth("X")
 
-  expect_equal(w4 / w1, 4)
+  expect_equal(w4 / w1, 4.25)
+})
+
+test_that("cex affects strwidth", {
+  inlineSVG(height = 7, width = 7, {
+    plot.new()
+    w1 <- strwidth("X")
+    w4 <- strwidth("X", cex = 4)
+  })
+  expect_equal(w4 / w1, 4.25)
 })
 
 test_that("special characters are escaped", {
