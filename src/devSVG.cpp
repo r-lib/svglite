@@ -268,7 +268,7 @@ static void svg_text(double x, double y, const char *str, double rot,
   fprintf(svgd->file, "<text transform='translate(%.2f,%.2f)", x, y);
   if (rot != 0)
     fprintf(svgd->file, " rotate(%0.0f)", -1.0 * rot);
-  fputs("' ", svgd->file);
+  fputs("'", svgd->file);
 
   write_attr_dbl(svgd->file, "font-size", gc->cex * gc->ps);
   if (is_bold(gc->fontface))
