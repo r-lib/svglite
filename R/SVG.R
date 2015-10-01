@@ -24,6 +24,7 @@
 #' @keywords device
 #' @useDynLib RSvgDevice
 #' @importFrom Rcpp sourceCpp
+#' @importFrom gdtools raster_view
 #' @export
 devSVG <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
                    pointsize = 12, standalone = TRUE) {

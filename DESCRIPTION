@@ -17,7 +17,9 @@ Suggests:
   htmltools,
   testthat,
   xml2
-Imports: Rcpp
+Imports:
+  Rcpp,
+  gdtools
 LinkingTo:
   Rcpp,
   gdtools
