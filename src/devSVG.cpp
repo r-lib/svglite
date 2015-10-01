@@ -265,10 +265,15 @@ static void svg_text(double x, double y, const char *str, double rot,
                      double hadj, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  fprintf(svgd->file, "<text transform='translate(%.2f,%.2f)", x, y);
-  if (rot != 0)
-    fprintf(svgd->file, " rotate(%0.0f)", -1.0 * rot);
-  fputs("'", svgd->file);
+
+  fputs("<text", svgd->file);
+  if (rot == 0) {
+    write_attr_dbl(svgd->file, "x", x);
+    write_attr_dbl(svgd->file, "y", y);
+  } else {
+    fprintf(svgd->file, " transform='translate(%.2f,%.2f) rotate(%0.0f)'", x, y,
+      -1.0 * rot);
+  }
 
   write_attr_dbl(svgd->file, "font-size", gc->cex * gc->ps);
   if (is_bold(gc->fontface))
