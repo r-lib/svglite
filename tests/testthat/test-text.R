@@ -11,7 +11,7 @@ test_that("par(cex) affects strwidth", {
   par(cex = 4)
   w4 <- strwidth("X")
 
-  expect_equal(w4 / w1, 4.25)
+  expect_equal(w4 / w1, 4)
 })
 
 test_that("cex affects strwidth", {
@@ -20,7 +20,7 @@ test_that("cex affects strwidth", {
     w1 <- strwidth("X")
     w4 <- strwidth("X", cex = 4)
   })
-  expect_equal(w4 / w1, 4.25)
+  expect_equal(w4 / w1, 4)
 })
 
 test_that("special characters are escaped", {
@@ -67,4 +67,14 @@ test_that("cex generates fractional font sizes", {
     text(0.5, 0.5, "a", cex = 0.1)
   })
   expect_equal(xml_attr(xml_find_one(x, ".//text"), "font-size"), "1.20")
+})
+
+test_that("font sets weight/style", {
+  x <- xmlSVG({
+    plot.new()
+    text(0.5, seq(0.9, 0.1, length = 4), "a", font = 1:4)
+  })
+  text <- xml_find_all(x, ".//text")
+  expect_equal(xml_attr(text, "font-weight"), c(NA, "bold", NA, "bold"))
+  expect_equal(xml_attr(text, "font-style"), c(NA, NA, "italic", "italic"))
 })

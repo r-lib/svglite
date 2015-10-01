@@ -49,6 +49,13 @@ public:
   }
 };
 
+inline bool is_bold(int face) {
+  return face == 2 || face == 4;
+}
+inline bool is_italic(int face) {
+  return face == 3 || face == 4;
+}
+
 void write_escaped(FILE* f, const char* text) {
   for(const char* cur = text; *cur != '\0'; ++cur) {
     switch(*cur) {
@@ -75,6 +82,10 @@ void write_attr_col(FILE* f, const char* attr, unsigned int col) {
 
 void write_attr_dbl(FILE* f, const char* attr, double value) {
   fprintf(f, " %s='%.2f'", attr, value);
+}
+
+void write_attr_str(FILE* f, const char* attr, const char* value) {
+  fprintf(f, " %s='%s'", attr, value);
 }
 
 static void write_attrs_linetype(FILE* f, int lty, double lwd, int col) {
@@ -115,7 +126,8 @@ static void svg_metric_info(int c, const pGEcontext gc, double* ascent,
     str[1] = '\0';
   }
 
-  gdtools::context_set_font(svgd->cc, "Arial", gc->cex * gc->ps, false, false);
+  gdtools::context_set_font(svgd->cc, "Arial", gc->cex * gc->ps,
+    is_bold(gc->fontface), is_italic(gc->fontface));
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
   *ascent = fm.ascent;
@@ -203,10 +215,10 @@ static void svg_polygon(int n, double *x, double *y, const pGEcontext gc,
 }
 
 static double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
-  int fontface = gc->fontface == NA_INTEGER ? 0 : gc->fontface;
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  gdtools::context_set_font(svgd->cc, "Arial", gc->cex * gc->ps, false, false);
+  gdtools::context_set_font(svgd->cc, "Arial", gc->cex * gc->ps,
+    is_bold(gc->fontface), is_italic(gc->fontface));
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
   return fm.width;
@@ -246,6 +258,10 @@ static void svg_text(double x, double y, const char *str, double rot,
   fputs("' ", svgd->file);
 
   write_attr_dbl(svgd->file, "font-size", gc->cex * gc->ps);
+  if (is_bold(gc->fontface))
+    write_attr_str(svgd->file, "font-weight", "bold");
+  if (is_italic(gc->fontface))
+    write_attr_str(svgd->file, "font-style", "italic");
   write_attr_col(svgd->file, "fill", gc->col);
   fputs(">", svgd->file);
 
