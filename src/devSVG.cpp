@@ -280,7 +280,8 @@ static void svg_text(double x, double y, const char *str, double rot,
     write_attr_str(svgd->file, "font-weight", "bold");
   if (is_italic(gc->fontface))
     write_attr_str(svgd->file, "font-style", "italic");
-  write_attr_col(svgd->file, "fill", gc->col);
+  if (gc->col != -16777216) // black
+    write_attr_col(svgd->file, "fill", gc->col);
 
   std::string font = fontname(gc->fontfamily);
   write_attr_str(svgd->file, "font-family", font.c_str());
