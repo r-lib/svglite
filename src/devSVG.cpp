@@ -56,6 +56,20 @@ inline bool is_italic(int face) {
   return face == 3 || face == 4;
 }
 
+inline std::string fontname(const char* family_) {
+  std::string family(family_);
+
+  if (family == "mono") {
+    return "courier";
+  } else if (family == "serif") {
+    return "Times New Roman";
+  } else if (family == "sans" || family == "") {
+    return "Arial";
+  } else {
+    return family;
+  }
+}
+
 void write_escaped(FILE* f, const char* text) {
   for(const char* cur = text; *cur != '\0'; ++cur) {
     switch(*cur) {
@@ -126,8 +140,8 @@ static void svg_metric_info(int c, const pGEcontext gc, double* ascent,
     str[1] = '\0';
   }
 
-  gdtools::context_set_font(svgd->cc, "Arial", gc->cex * gc->ps,
-    is_bold(gc->fontface), is_italic(gc->fontface));
+  gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily),
+    gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface));
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
   *ascent = fm.ascent;
@@ -160,7 +174,6 @@ static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
 
   fprintf(svgd->file, "viewBox='0 0 %.2f %.2f'>\n", dd->right, dd->bottom);
 
-  fputs("<style>text {font-family: sans-serif;}</style>", svgd->file);
   fputs("<rect width='100%' height='100%'", svgd->file);
   write_attr_col(svgd->file, "fill", gc->fill);
   fputs("/>\n", svgd->file);
@@ -217,8 +230,8 @@ static void svg_polygon(int n, double *x, double *y, const pGEcontext gc,
 static double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  gdtools::context_set_font(svgd->cc, "Arial", gc->cex * gc->ps,
-    is_bold(gc->fontface), is_italic(gc->fontface));
+  gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily),
+    gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface));
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
   return fm.width;
@@ -263,6 +276,10 @@ static void svg_text(double x, double y, const char *str, double rot,
   if (is_italic(gc->fontface))
     write_attr_str(svgd->file, "font-style", "italic");
   write_attr_col(svgd->file, "fill", gc->col);
+
+  std::string font = fontname(gc->fontfamily);
+  write_attr_str(svgd->file, "font-family", font.c_str());
+
   fputs(">", svgd->file);
 
   write_escaped(svgd->file, str);

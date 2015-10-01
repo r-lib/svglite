@@ -78,3 +78,14 @@ test_that("font sets weight/style", {
   expect_equal(xml_attr(text, "font-weight"), c(NA, "bold", NA, "bold"))
   expect_equal(xml_attr(text, "font-style"), c(NA, NA, "italic", "italic"))
 })
+
+test_that("font sets weight/style", {
+  x <- xmlSVG({
+    plot.new()
+    text(0.5, 0.1, "a", family = "serif")
+    text(0.5, 0.5, "a", family = "sans")
+    text(0.5, 0.9, "a", family = "mono")
+  })
+  text <- xml_find_all(x, ".//text")
+  expect_equal(xml_attr(text, "font-family"), c("Times New Roman", "Arial", "courier"))
+})
