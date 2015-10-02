@@ -56,8 +56,9 @@ inline bool is_italic(int face) {
   return face == 3 || face == 4;
 }
 
-inline std::string fontname(const char* family_) {
+inline std::string fontname(const char* family_, int face) {
   std::string family(family_);
+  if( face == 5 ) return "symbol";
 
   if (family == "mono") {
     return "courier";
@@ -140,7 +141,7 @@ static void svg_metric_info(int c, const pGEcontext gc, double* ascent,
     str[1] = '\0';
   }
 
-  gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily),
+  gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily, gc->fontface),
     gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface));
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
@@ -230,7 +231,7 @@ static void svg_polygon(int n, double *x, double *y, const pGEcontext gc,
 static double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily),
+  gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily, gc->fontface),
     gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface));
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
@@ -283,7 +284,7 @@ static void svg_text(double x, double y, const char *str, double rot,
   if (gc->col != -16777216) // black
     write_attr_col(svgd->file, "fill", gc->col);
 
-  std::string font = fontname(gc->fontfamily);
+  std::string font = fontname(gc->fontfamily, gc->fontface);
   write_attr_str(svgd->file, "font-family", font.c_str());
 
   fputs(">", svgd->file);
