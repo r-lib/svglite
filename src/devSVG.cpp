@@ -302,6 +302,39 @@ static void svg_size(double *left, double *right, double *bottom, double *top,
   *top = dd->top;
 }
 
+static void svg_raster(unsigned int *raster, int w, int h,
+                       double x, double y,
+                       double width, double height,
+                       double rot,
+                       Rboolean interpolate,
+                       const pGEcontext gc, pDevDesc dd)
+{
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+
+  if (height < 0)
+    height = -height;
+
+  std::vector<unsigned int> raster_(w*h);
+  for ( int i = 0 ; i < raster_.size(); i++) {
+    raster_[i] = raster[i] ;
+  }
+
+  std::string base64_str = gdtools::raster_to_str(raster_, w, h, width, height, (Rboolean) interpolate);
+
+  fprintf(svgd->file, "<image x='%.2f' y='%.2f' ", x, y - height );
+  fprintf(svgd->file, "width='%.2f' height='%.2f' ", width, height);
+
+  if (fabs(rot)>0.001) {
+    fprintf(svgd->file, "transform='rotate(%0.0f,%0.0f,%0.0f)' ", -1.0 * rot, x, y );
+  }
+  fprintf(svgd->file, "xlink:href='data:image/png;base64,%s'", base64_str.c_str());
+  if (svgd->standalone) fputs( " xmlns:xlink='http://www.w3.org/1999/xlink'", svgd->file);
+  fputs( "/>", svgd->file);
+
+
+}
+
+
 pDevDesc svg_driver_new(std::string filename, int bg, double width,
                         double height, int pointsize, bool standalone) {
 
@@ -333,7 +366,7 @@ pDevDesc svg_driver_new(std::string filename, int bg, double width,
   dd->mode = NULL;
   dd->metricInfo = svg_metric_info;
   dd->cap = NULL;
-  dd->raster = NULL;
+  dd->raster = svg_raster;
 
   // UTF-8 support
   dd->wantSymbolUTF8 = (Rboolean) 1;
