@@ -321,17 +321,19 @@ static void svg_raster(unsigned int *raster, int w, int h,
 
   std::string base64_str = gdtools::raster_to_str(raster_, w, h, width, height, (Rboolean) interpolate);
 
-  fprintf(svgd->file, "<image x='%.2f' y='%.2f' ", x, y - height );
-  fprintf(svgd->file, "width='%.2f' height='%.2f' ", width, height);
-
-  if (fabs(rot)>0.001) {
-    fprintf(svgd->file, "transform='rotate(%0.0f,%0.0f,%0.0f)' ", -1.0 * rot, x, y );
+  fputs("<image", svgd->file);
+  write_attr_dbl(svgd->file, "width", width);
+  write_attr_dbl(svgd->file, "height", height);
+  write_attr_dbl(svgd->file, "x", x);
+  write_attr_dbl(svgd->file, "y", y - height);
+  if( rot != 0 ){
+    fprintf(svgd->file, " transform='rotate(%0.0f,%0.0f,%0.0f)'", -1.0 * rot, x, y);
   }
-  fprintf(svgd->file, "xlink:href='data:image/png;base64,%s'", base64_str.c_str());
+
+  fprintf(svgd->file, " xlink:href='data:image/png;base64,%s'", base64_str.c_str());
   if (svgd->standalone) fputs( " xmlns:xlink='http://www.w3.org/1999/xlink'", svgd->file);
+
   fputs( "/>", svgd->file);
-
-
 }
 
 
