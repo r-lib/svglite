@@ -327,7 +327,7 @@ static void svg_raster(unsigned int *raster, int w, int h,
   write_attr_dbl(svgd->file, "x", x);
   write_attr_dbl(svgd->file, "y", y - height);
   if( rot != 0 ){
-    fprintf(svgd->file, " transform='rotate(%0.0f,%0.0f,%0.0f)'", -1.0 * rot, x, y);
+    fprintf(svgd->file, " transform='rotate(%0.0f,%.2f,%.2f)'", -1.0 * rot, x, y);
   }
 
   fprintf(svgd->file, " xlink:href='data:image/png;base64,%s'", base64_str.c_str());
