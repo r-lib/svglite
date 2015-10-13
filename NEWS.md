@@ -23,3 +23,5 @@
 
 * Helper functions `xmlSVG()` and `htmlSVG()` make it easier to view generated
   SVG, either as raw XML or in RStudio/the browser.
+
+* Supports for rasters (#2)

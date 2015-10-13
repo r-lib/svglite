@@ -4,12 +4,15 @@
 \alias{xmlSVG}
 \title{Run plotting code and return svg}
 \usage{
-xmlSVG(code, ...)
+xmlSVG(code, ..., standalone = FALSE)
 }
 \arguments{
 \item{code}{Plotting code to execute.}
 
 \item{...}{Other arguments passed on to \code{\link{devSVG}}.}
+
+\item{standalone}{Produce a stand alone svg file? If \code{FALSE}, omits
+xml header and default namespace.}
 }
 \value{
 A \code{xml2::xml_document} object.

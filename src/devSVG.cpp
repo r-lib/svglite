@@ -56,8 +56,9 @@ inline bool is_italic(int face) {
   return face == 3 || face == 4;
 }
 
-inline std::string fontname(const char* family_) {
+inline std::string fontname(const char* family_, int face) {
   std::string family(family_);
+  if (face == 5) return "symbol";
 
   if (family == "mono") {
     return "courier";
@@ -70,7 +71,7 @@ inline std::string fontname(const char* family_) {
   }
 }
 
-void write_escaped(FILE* f, const char* text) {
+inline void write_escaped(FILE* f, const char* text) {
   for(const char* cur = text; *cur != '\0'; ++cur) {
     switch(*cur) {
     case '&': fputs("&amp;", f); break;
@@ -81,7 +82,7 @@ void write_escaped(FILE* f, const char* text) {
   }
 }
 
-void write_attr_col(FILE* f, const char* attr, unsigned int col) {
+inline void write_attr_col(FILE* f, const char* attr, unsigned int col) {
   int alpha = R_ALPHA(col);
 
   if (col == NA_INTEGER || alpha == 0) {
@@ -94,15 +95,15 @@ void write_attr_col(FILE* f, const char* attr, unsigned int col) {
   }
 }
 
-void write_attr_dbl(FILE* f, const char* attr, double value) {
+inline void write_attr_dbl(FILE* f, const char* attr, double value) {
   fprintf(f, " %s='%.2f'", attr, value);
 }
 
-void write_attr_str(FILE* f, const char* attr, const char* value) {
+inline void write_attr_str(FILE* f, const char* attr, const char* value) {
   fprintf(f, " %s='%s'", attr, value);
 }
 
-static void write_attrs_linetype(FILE* f, int lty, double lwd, int col) {
+inline void write_attrs_linetype(FILE* f, int lty, double lwd, int col) {
   write_attr_col(f, "stroke", col);
 
   // 1 lwd = 1/96", but units in rest of document are 1/72"
@@ -127,8 +128,8 @@ static void write_attrs_linetype(FILE* f, int lty, double lwd, int col) {
 
 // Callback functions for graphics device --------------------------------------
 
-static void svg_metric_info(int c, const pGEcontext gc, double* ascent,
-                            double* descent, double* width, pDevDesc dd) {
+void svg_metric_info(int c, const pGEcontext gc, double* ascent,
+                     double* descent, double* width, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   // Convert to string - negative implies unicode code point
@@ -140,7 +141,7 @@ static void svg_metric_info(int c, const pGEcontext gc, double* ascent,
     str[1] = '\0';
   }
 
-  gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily),
+  gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily, gc->fontface),
     gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface));
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
@@ -149,7 +150,7 @@ static void svg_metric_info(int c, const pGEcontext gc, double* ascent,
   *width = fm.width;
 }
 
-static void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
+void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   svgd->clipleft = x0;
@@ -158,7 +159,7 @@ static void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   svgd->cliptop = y1;
 }
 
-static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
+void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   if (svgd->pageno > 0) {
@@ -168,11 +169,14 @@ static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   if (svgd->standalone)
     fputs("<?xml version='1.0' encoding='UTF-8' ?>\n", svgd->file);
 
-  fputs("<svg ", svgd->file);
-  if (svgd->standalone)
-    fputs("xmlns='http://www.w3.org/2000/svg' ", svgd->file);
+  fputs("<svg", svgd->file);
+  if (svgd->standalone){
+    fputs(" xmlns='http://www.w3.org/2000/svg'", svgd->file);
+    //http://www.w3.org/wiki/SVG_Links
+    fputs(" xmlns:xlink='http://www.w3.org/1999/xlink'", svgd->file);
+  }
 
-  fprintf(svgd->file, "viewBox='0 0 %.2f %.2f'>\n", dd->right, dd->bottom);
+  fprintf(svgd->file, " viewBox='0 0 %.2f %.2f'>\n", dd->right, dd->bottom);
 
   fputs("<rect width='100%' height='100%'", svgd->file);
   write_attr_col(svgd->file, "fill", gc->fill);
@@ -181,7 +185,7 @@ static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   svgd->pageno++;
 }
 
-static void svg_close(pDevDesc dd) {
+void svg_close(pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   if (svgd->pageno > 0)
@@ -190,7 +194,7 @@ static void svg_close(pDevDesc dd) {
   delete(svgd);
 }
 
-static void svg_line(double x1, double y1, double x2, double y2,
+void svg_line(double x1, double y1, double x2, double y2,
                      const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
@@ -218,27 +222,27 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   fputs(" />\n", svgd->file);
 }
 
-static void svg_polyline(int n, double *x, double *y, const pGEcontext gc,
-                         pDevDesc dd) {
+void svg_polyline(int n, double *x, double *y, const pGEcontext gc,
+                  pDevDesc dd) {
   svg_poly(n, x, y, 0, gc, dd);
 }
-static void svg_polygon(int n, double *x, double *y, const pGEcontext gc,
-                        pDevDesc dd) {
+void svg_polygon(int n, double *x, double *y, const pGEcontext gc,
+                 pDevDesc dd) {
   svg_poly(n, x, y, 1, gc, dd);
 }
 
-static double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
+double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily),
+  gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily, gc->fontface),
     gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface));
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
   return fm.width;
 }
 
-static void svg_rect(double x0, double y0, double x1, double y1,
-                     const pGEcontext gc, pDevDesc dd) {
+void svg_rect(double x0, double y0, double x1, double y1,
+              const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   // x and y give top-left position
@@ -251,7 +255,7 @@ static void svg_rect(double x0, double y0, double x1, double y1,
   fputs(" />\n", svgd->file);
 }
 
-static void svg_circle(double x, double y, double r, const pGEcontext gc,
+void svg_circle(double x, double y, double r, const pGEcontext gc,
                        pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
@@ -261,8 +265,8 @@ static void svg_circle(double x, double y, double r, const pGEcontext gc,
   fputs(" />\n", svgd->file);
 }
 
-static void svg_text(double x, double y, const char *str, double rot,
-                     double hadj, const pGEcontext gc, pDevDesc dd) {
+void svg_text(double x, double y, const char *str, double rot,
+              double hadj, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
 
@@ -283,7 +287,7 @@ static void svg_text(double x, double y, const char *str, double rot,
   if (gc->col != -16777216) // black
     write_attr_col(svgd->file, "fill", gc->col);
 
-  std::string font = fontname(gc->fontfamily);
+  std::string font = fontname(gc->fontfamily, gc->fontface);
   write_attr_str(svgd->file, "font-family", font.c_str());
 
   fputs(">", svgd->file);
@@ -293,13 +297,47 @@ static void svg_text(double x, double y, const char *str, double rot,
   fputs("</text>\n", svgd->file);
 }
 
-static void svg_size(double *left, double *right, double *bottom, double *top,
-                     pDevDesc dd) {
+void svg_size(double *left, double *right, double *bottom, double *top,
+              pDevDesc dd) {
   *left = dd->left;
   *right = dd->right;
   *bottom = dd->bottom;
   *top = dd->top;
 }
+
+void svg_raster(unsigned int *raster, int w, int h,
+                double x, double y,
+                double width, double height,
+                double rot,
+                Rboolean interpolate,
+                const pGEcontext gc, pDevDesc dd) {
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+
+  if (height < 0)
+    height = -height;
+
+  std::vector<unsigned int> raster_(w*h);
+  for (int i = 0 ; i < raster_.size(); ++i) {
+    raster_[i] = raster[i] ;
+  }
+
+  std::string base64_str = gdtools::raster_to_str(raster_, w, h, width, height,
+    (Rboolean) interpolate);
+
+  fputs("<image", svgd->file);
+  write_attr_dbl(svgd->file, "width", width);
+  write_attr_dbl(svgd->file, "height", height);
+  write_attr_dbl(svgd->file, "x", x);
+  write_attr_dbl(svgd->file, "y", y - height);
+
+  if( rot != 0 ){
+    fprintf(svgd->file, " transform='rotate(%0.0f,%.2f,%.2f)'", -1.0 * rot, x, y);
+  }
+
+  fprintf(svgd->file, " xlink:href='data:image/png;base64,%s'", base64_str.c_str());
+  fputs( "/>", svgd->file);
+}
+
 
 pDevDesc svg_driver_new(std::string filename, int bg, double width,
                         double height, int pointsize, bool standalone) {
@@ -332,7 +370,7 @@ pDevDesc svg_driver_new(std::string filename, int bg, double width,
   dd->mode = NULL;
   dd->metricInfo = svg_metric_info;
   dd->cap = NULL;
-  dd->raster = NULL;
+  dd->raster = svg_raster;
 
   // UTF-8 support
   dd->wantSymbolUTF8 = (Rboolean) 1;

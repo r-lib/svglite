@@ -89,3 +89,21 @@ test_that("font sets weight/style", {
   text <- xml_find_all(x, ".//text")
   expect_equal(xml_attr(text, "font-family"), c("Times New Roman", "Arial", "courier"))
 })
+
+test_that("a symbol has width greater than 0", {
+  xmlSVG({
+    plot(c(0,2), c(0,2), type = "n")
+    strw <- strwidth(expression(symbol("\042")))
+  })
+  expect_less_than(.Machine$double.eps, strw)
+})
+
+test_that("symbol font family is 'symbol'", {
+  x <- xmlSVG({
+    plot(c(0,2), c(0,2), type = "n", axes = FALSE, xlab = "", ylab = "")
+    text(1, 1, expression(symbol("\042")))
+  })
+  text <- xml_find_all(x, ".//text")
+  expect_equal(xml_attr(text, "font-family"), c("symbol"))
+})
+

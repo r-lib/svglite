@@ -36,6 +36,7 @@ htmlSVG <- function(code, ...) {
 #' @return A \code{xml2::xml_document} object.
 #' @param code Plotting code to execute.
 #' @param ... Other arguments passed on to \code{\link{devSVG}}.
+#' @inheritParams devSVG
 #' @export
 #' @examples
 #' if (require("xml2")) {
@@ -43,8 +44,8 @@ htmlSVG <- function(code, ...) {
 #'   x
 #'   xml_find_all(x, ".//text")
 #' }
-xmlSVG <- function(code, ...) {
-  plot <- inlineSVG(code, ..., standalone = FALSE, height = 7, width = 7)
+xmlSVG <- function(code, ... , standalone = FALSE) {
+  plot <- inlineSVG(code, ..., standalone = standalone, height = 7, width = 7)
   xml2::read_xml(plot)
 }
 
