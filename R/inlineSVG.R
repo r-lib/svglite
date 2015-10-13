@@ -58,9 +58,10 @@ xmlSVG <- function(code, ... , standalone = FALSE) {
 #' @param ... Other arguments passed on to \code{\link{devSVG}}.
 #' @export
 #' @examples
-#' editSVG(plot(1:10))
-#' editSVG(contour(volcano))
-
+#' if (interactive()) {
+#'   editSVG(plot(1:10))
+#'   editSVG(contour(volcano))
+#' }
 editSVG <- function(code, ...) {
   tmp <- inlineSVG(code, ...)
   system(sprintf("open %s", shQuote(tmp)))

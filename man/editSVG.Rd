@@ -15,7 +15,9 @@ editSVG(code, ...)
 This is useful primarily for testing or post-processing the SVG.
 }
 \examples{
-editSVG(plot(1:10))
-editSVG(contour(volcano))
+if (interactive()) {
+  editSVG(plot(1:10))
+  editSVG(contour(volcano))
+}
 }
 
