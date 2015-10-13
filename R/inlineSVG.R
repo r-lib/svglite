@@ -1,15 +1,3 @@
-inlineSVG <- function(code, ..., width = NA, height = NA,
-                      path = tempfile(fileext = ".svg")) {
-  dim <- plot_dim(c(width, height))
-
-  devSVG(path, width = dim[1], height = dim[2], ...)
-  tryCatch(code,
-    finally = dev.off()
-  )
-
-  path
-}
-
 #' Run plotting code and view svg in RStudio Viewer or web broswer.
 #'
 #' This is useful primarily for testing. Requires the \code{htmltools}
@@ -35,8 +23,7 @@ htmlSVG <- function(code, ...) {
 #' This is useful primarily for testing. Requires the \code{xml2} package.
 #'
 #' @return A \code{xml2::xml_document} object.
-#' @param code Plotting code to execute.
-#' @param ... Other arguments passed on to \code{\link{devSVG}}.
+#' @inheritParams htmlSVG
 #' @inheritParams devSVG
 #' @export
 #' @examples
@@ -54,8 +41,7 @@ xmlSVG <- function(code, ... , standalone = FALSE) {
 #'
 #' This is useful primarily for testing or post-processing the SVG.
 #'
-#' @param code Plotting code to execute.
-#' @param ... Other arguments passed on to \code{\link{devSVG}}.
+#' @inheritParams htmlSVG
 #' @export
 #' @examples
 #' if (interactive()) {
@@ -65,4 +51,17 @@ xmlSVG <- function(code, ... , standalone = FALSE) {
 editSVG <- function(code, ...) {
   tmp <- inlineSVG(code, ...)
   system(sprintf("open %s", shQuote(tmp)))
+}
+
+
+inlineSVG <- function(code, ..., width = NA, height = NA,
+  path = tempfile(fileext = ".svg")) {
+  dim <- plot_dim(c(width, height))
+
+  devSVG(path, width = dim[1], height = dim[2], ...)
+  tryCatch(code,
+    finally = dev.off()
+  )
+
+  path
 }
