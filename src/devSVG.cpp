@@ -71,7 +71,7 @@ inline std::string fontname(const char* family_, int face) {
   }
 }
 
-void write_escaped(FILE* f, const char* text) {
+inline void write_escaped(FILE* f, const char* text) {
   for(const char* cur = text; *cur != '\0'; ++cur) {
     switch(*cur) {
     case '&': fputs("&amp;", f); break;
@@ -82,7 +82,7 @@ void write_escaped(FILE* f, const char* text) {
   }
 }
 
-void write_attr_col(FILE* f, const char* attr, unsigned int col) {
+inline void write_attr_col(FILE* f, const char* attr, unsigned int col) {
   int alpha = R_ALPHA(col);
 
   if (col == NA_INTEGER || alpha == 0) {
@@ -95,15 +95,15 @@ void write_attr_col(FILE* f, const char* attr, unsigned int col) {
   }
 }
 
-void write_attr_dbl(FILE* f, const char* attr, double value) {
+inline void write_attr_dbl(FILE* f, const char* attr, double value) {
   fprintf(f, " %s='%.2f'", attr, value);
 }
 
-void write_attr_str(FILE* f, const char* attr, const char* value) {
+inline void write_attr_str(FILE* f, const char* attr, const char* value) {
   fprintf(f, " %s='%s'", attr, value);
 }
 
-void write_attrs_linetype(FILE* f, int lty, double lwd, int col) {
+inline void write_attrs_linetype(FILE* f, int lty, double lwd, int col) {
   write_attr_col(f, "stroke", col);
 
   // 1 lwd = 1/96", but units in rest of document are 1/72"
