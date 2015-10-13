@@ -169,13 +169,14 @@ static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   if (svgd->standalone)
     fputs("<?xml version='1.0' encoding='UTF-8' ?>\n", svgd->file);
 
-  fputs("<svg ", svgd->file);
+  fputs("<svg", svgd->file);
   if (svgd->standalone){
-    fputs("xmlns='http://www.w3.org/2000/svg' ", svgd->file);
-    fputs("xmlns:xlink='http://www.w3.org/1999/xlink' ", svgd->file);//http://www.w3.org/wiki/SVG_Links
+    fputs(" xmlns='http://www.w3.org/2000/svg'", svgd->file);
+    //http://www.w3.org/wiki/SVG_Links
+    fputs(" xmlns:xlink='http://www.w3.org/1999/xlink'", svgd->file);
   }
 
-  fprintf(svgd->file, "viewBox='0 0 %.2f %.2f'>\n", dd->right, dd->bottom);
+  fprintf(svgd->file, " viewBox='0 0 %.2f %.2f'>\n", dd->right, dd->bottom);
 
   fputs("<rect width='100%' height='100%'", svgd->file);
   write_attr_col(svgd->file, "fill", gc->fill);
