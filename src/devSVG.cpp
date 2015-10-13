@@ -103,7 +103,7 @@ void write_attr_str(FILE* f, const char* attr, const char* value) {
   fprintf(f, " %s='%s'", attr, value);
 }
 
-static void write_attrs_linetype(FILE* f, int lty, double lwd, int col) {
+void write_attrs_linetype(FILE* f, int lty, double lwd, int col) {
   write_attr_col(f, "stroke", col);
 
   // 1 lwd = 1/96", but units in rest of document are 1/72"
@@ -128,8 +128,8 @@ static void write_attrs_linetype(FILE* f, int lty, double lwd, int col) {
 
 // Callback functions for graphics device --------------------------------------
 
-static void svg_metric_info(int c, const pGEcontext gc, double* ascent,
-                            double* descent, double* width, pDevDesc dd) {
+void svg_metric_info(int c, const pGEcontext gc, double* ascent,
+                     double* descent, double* width, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   // Convert to string - negative implies unicode code point
@@ -150,7 +150,7 @@ static void svg_metric_info(int c, const pGEcontext gc, double* ascent,
   *width = fm.width;
 }
 
-static void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
+void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   svgd->clipleft = x0;
@@ -159,7 +159,7 @@ static void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   svgd->cliptop = y1;
 }
 
-static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
+void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   if (svgd->pageno > 0) {
@@ -185,7 +185,7 @@ static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   svgd->pageno++;
 }
 
-static void svg_close(pDevDesc dd) {
+void svg_close(pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   if (svgd->pageno > 0)
@@ -194,7 +194,7 @@ static void svg_close(pDevDesc dd) {
   delete(svgd);
 }
 
-static void svg_line(double x1, double y1, double x2, double y2,
+void svg_line(double x1, double y1, double x2, double y2,
                      const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
@@ -222,16 +222,16 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   fputs(" />\n", svgd->file);
 }
 
-static void svg_polyline(int n, double *x, double *y, const pGEcontext gc,
-                         pDevDesc dd) {
+void svg_polyline(int n, double *x, double *y, const pGEcontext gc,
+                  pDevDesc dd) {
   svg_poly(n, x, y, 0, gc, dd);
 }
-static void svg_polygon(int n, double *x, double *y, const pGEcontext gc,
-                        pDevDesc dd) {
+void svg_polygon(int n, double *x, double *y, const pGEcontext gc,
+                 pDevDesc dd) {
   svg_poly(n, x, y, 1, gc, dd);
 }
 
-static double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
+double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily, gc->fontface),
@@ -241,8 +241,8 @@ static double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   return fm.width;
 }
 
-static void svg_rect(double x0, double y0, double x1, double y1,
-                     const pGEcontext gc, pDevDesc dd) {
+void svg_rect(double x0, double y0, double x1, double y1,
+              const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   // x and y give top-left position
@@ -255,7 +255,7 @@ static void svg_rect(double x0, double y0, double x1, double y1,
   fputs(" />\n", svgd->file);
 }
 
-static void svg_circle(double x, double y, double r, const pGEcontext gc,
+void svg_circle(double x, double y, double r, const pGEcontext gc,
                        pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
@@ -265,8 +265,8 @@ static void svg_circle(double x, double y, double r, const pGEcontext gc,
   fputs(" />\n", svgd->file);
 }
 
-static void svg_text(double x, double y, const char *str, double rot,
-                     double hadj, const pGEcontext gc, pDevDesc dd) {
+void svg_text(double x, double y, const char *str, double rot,
+              double hadj, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
 
@@ -297,20 +297,20 @@ static void svg_text(double x, double y, const char *str, double rot,
   fputs("</text>\n", svgd->file);
 }
 
-static void svg_size(double *left, double *right, double *bottom, double *top,
-                     pDevDesc dd) {
+void svg_size(double *left, double *right, double *bottom, double *top,
+              pDevDesc dd) {
   *left = dd->left;
   *right = dd->right;
   *bottom = dd->bottom;
   *top = dd->top;
 }
 
-static void svg_raster(unsigned int *raster, int w, int h,
-                       double x, double y,
-                       double width, double height,
-                       double rot,
-                       Rboolean interpolate,
-                       const pGEcontext gc, pDevDesc dd) {
+void svg_raster(unsigned int *raster, int w, int h,
+                double x, double y,
+                double width, double height,
+                double rot,
+                Rboolean interpolate,
+                const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   if (height < 0)
