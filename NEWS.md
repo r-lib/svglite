@@ -1,10 +1,8 @@
 # RSvgDevice 0.6.4.9000
 
-* Works on Windows
-
-* Output no longer contains dummy `<desc>` element (#4)
-
-* Text is now coloured, and defaults to a sans-serif font.
+* Text is now coloured, and defaults the same fonts the R uses (Arial, 
+  Times New Roman and Courier). Font metrics are computed using the 
+  gdtools package so that `plotmath()` and `strwidth()` now work.
 
 * Stroke and fill are saved in `stroke` and `fill` attributes, rather than
   lumped into the `style` attribute. Transparent colours are now generated with
@@ -25,4 +23,9 @@
   SVG, either as raw XML or in RStudio/the browser. `editSVG()` opens the SVG
   in the OS/system default SVG viewer or editor.
 
-* Supports for rasters (#2)
+* Rasters are saved by rendering as base64-encoded pngs which are embedded
+  in a data url (#2)
+
+* Works on Windows
+
+* Output no longer contains dummy `<desc>` element (#4)

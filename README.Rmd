@@ -28,6 +28,7 @@ Install the development version from github with:
 
 ```R
 # install.packages("devtools")
+devtools::install_github("davidgohel/gdtools")
 devtools::install_github("mdecorde/RSvgDevice")
 ```
 
@@ -35,7 +36,7 @@ devtools::install_github("mdecorde/RSvgDevice")
 
 Compared to the base svg device, RSvgDevice is quite a bit faster:
 
-```{r}
+```{r, dev}
 library(RSvgDevice)
 x <- runif(1e3)
 y <- runif(1e3)

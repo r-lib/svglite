@@ -18,6 +18,7 @@ Install the development version from github with:
 
 ``` r
 # install.packages("devtools")
+devtools::install_github("davidgohel/gdtools")
 devtools::install_github("mdecorde/RSvgDevice")
 ```
 
@@ -39,7 +40,7 @@ system.time({
   dev.off()
 })
 #>    user  system elapsed 
-#>   0.004   0.001   0.004
+#>   0.003   0.001   0.003 
 
 system.time({
   svg(tmp2, onefile = TRUE)
@@ -47,16 +48,16 @@ system.time({
   dev.off()
 })
 #>    user  system elapsed 
-#>   0.025   0.006   0.031
+#>   0.015   0.001   0.017 
 ```
 
 It also produces considerably smaller files:
 
 ``` r
 file.size(tmp1) / 1024
-#> [1] 90.49805
+#> [1] 93.54785
 file.size(tmp2) / 1024
-#> [1] 320.9307
+#> [1] 321.1357
 ```
 
 In both cases, compressing to make `.svgz` is worthwhile:
@@ -70,7 +71,7 @@ gz <- function(in_path, out_path = tempfile()) {
   invisible(out_path)
 }
 file.size(gz(tmp1)) / 1024
-#> [1] 9.09082
+#> [1] 9.064453
 file.size(gz(tmp2)) / 1024
-#> [1] 38.55566
+#> [1] 38.6123
 ```
