@@ -58,7 +58,7 @@ inline bool is_italic(int face) {
 
 inline std::string fontname(const char* family_, int face) {
   std::string family(family_);
-  if( face == 5 ) return "symbol";
+  if (face == 5) return "symbol";
 
   if (family == "mono") {
     return "courier";
@@ -310,19 +310,19 @@ static void svg_raster(unsigned int *raster, int w, int h,
                        double width, double height,
                        double rot,
                        Rboolean interpolate,
-                       const pGEcontext gc, pDevDesc dd)
-{
+                       const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   if (height < 0)
     height = -height;
 
   std::vector<unsigned int> raster_(w*h);
-  for ( int i = 0 ; i < raster_.size(); i++) {
+  for (int i = 0 ; i < raster_.size(); ++i) {
     raster_[i] = raster[i] ;
   }
 
-  std::string base64_str = gdtools::raster_to_str(raster_, w, h, width, height, (Rboolean) interpolate);
+  std::string base64_str = gdtools::raster_to_str(raster_, w, h, width, height,
+    (Rboolean) interpolate);
 
   fputs("<image", svgd->file);
   write_attr_dbl(svgd->file, "width", width);
