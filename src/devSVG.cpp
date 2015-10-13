@@ -170,8 +170,10 @@ static void svg_new_page(const pGEcontext gc, pDevDesc dd) {
     fputs("<?xml version='1.0' encoding='UTF-8' ?>\n", svgd->file);
 
   fputs("<svg ", svgd->file);
-  if (svgd->standalone)
+  if (svgd->standalone){
     fputs("xmlns='http://www.w3.org/2000/svg' ", svgd->file);
+    fputs("xmlns:xlink='http://www.w3.org/1999/xlink' ", svgd->file);//http://www.w3.org/wiki/SVG_Links
+  }
 
   fprintf(svgd->file, "viewBox='0 0 %.2f %.2f'>\n", dd->right, dd->bottom);
 
@@ -326,13 +328,12 @@ static void svg_raster(unsigned int *raster, int w, int h,
   write_attr_dbl(svgd->file, "height", height);
   write_attr_dbl(svgd->file, "x", x);
   write_attr_dbl(svgd->file, "y", y - height);
+
   if( rot != 0 ){
     fprintf(svgd->file, " transform='rotate(%0.0f,%.2f,%.2f)'", -1.0 * rot, x, y);
   }
 
   fprintf(svgd->file, " xlink:href='data:image/png;base64,%s'", base64_str.c_str());
-  if (svgd->standalone) fputs( " xmlns:xlink='http://www.w3.org/1999/xlink'", svgd->file);
-
   fputs( "/>", svgd->file);
 }
 
