@@ -1,4 +1,5 @@
-inlineSVG <- function(code, ..., width = NA, height = NA, path = tempfile()) {
+inlineSVG <- function(code, ..., width = NA, height = NA,
+                      path = tempfile(fileext = ".svg")) {
   dim <- plot_dim(c(width, height))
 
   devSVG(path, width = dim[1], height = dim[2], ...)
@@ -49,3 +50,18 @@ xmlSVG <- function(code, ... , standalone = FALSE) {
   xml2::read_xml(plot)
 }
 
+#' Run plotting code and open svg in OS/system default svg viewer or editor.
+#'
+#' This is useful primarily for testing or post-processing the SVG.
+#'
+#' @param code Plotting code to execute.
+#' @param ... Other arguments passed on to \code{\link{devSVG}}.
+#' @export
+#' @examples
+#' editSVG(plot(1:10))
+#' editSVG(contour(volcano))
+
+editSVG <- function(code, ...) {
+  tmp <- inlineSVG(code, ...)
+  system(sprintf("open %s", shQuote(tmp)))
+}
