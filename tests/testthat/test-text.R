@@ -11,7 +11,7 @@ test_that("par(cex) affects strwidth", {
   par(cex = 4)
   w4 <- strwidth("X")
 
-  expect_equal(w4 / w1, 4)
+  expect_equal(w4 / w1, 4, tol = 1e-4)
 })
 
 test_that("cex affects strwidth", {
@@ -20,7 +20,7 @@ test_that("cex affects strwidth", {
     w1 <- strwidth("X")
     w4 <- strwidth("X", cex = 4)
   })
-  expect_equal(w4 / w1, 4)
+  expect_equal(w4 / w1, 4, tol = 1e-4)
 })
 
 test_that("special characters are escaped", {
