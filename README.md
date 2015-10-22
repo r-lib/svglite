@@ -18,7 +18,6 @@ Install the development version from github with:
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("davidgohel/gdtools")
 devtools::install_github("mdecorde/RSvgDevice")
 ```
 

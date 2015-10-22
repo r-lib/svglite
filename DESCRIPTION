@@ -26,5 +26,3 @@ LinkingTo:
 License: GPL (>= 2)
 URL: https://github.com/mdecorde/RSvgDevice
 BugReports: https://github.com/mdecorde/RSvgDevice/issues
-Remotes:
-  davidgohel/gdtools
