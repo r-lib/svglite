@@ -231,6 +231,42 @@ void svg_polygon(int n, double *x, double *y, const pGEcontext gc,
   svg_poly(n, x, y, 1, gc, dd);
 }
 
+void svg_path(double *x, double *y,
+              int npoly, int *nper,
+              Rboolean winding,
+              const pGEcontext gc, pDevDesc dd) {
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  // Create path data
+  fputs("<path d='", svgd->file);
+  int ind = 0;
+  for (int i = 0; i < npoly; i++) {
+    // Move to the first point of the sub-path
+    fprintf(svgd->file, "M %.2f %.2f ", x[ind], y[ind]);
+    ind++;
+    // Draw the sub-path
+    for (int j = 1; j < nper[i]; j++) {
+      fprintf(svgd->file, "L %.2f %.2f ", x[ind], y[ind]);
+      ind++;
+    }
+    // Close the sub-path
+    fputs("Z ", svgd->file);
+  }
+  // Finish path data
+  fputs("'", svgd->file);
+
+  write_attr_col(svgd->file, "fill", gc->fill);
+
+  // Specify fill rule
+  if (winding)
+    fputs(" fill-rule='nonzero'", svgd->file);
+  else
+    fputs(" fill-rule='evenodd'", svgd->file);
+
+  write_attrs_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+
+  fputs(" />\n", svgd->file);
+}
+
 double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
@@ -367,6 +403,7 @@ pDevDesc svg_driver_new(std::string filename, int bg, double width,
   dd->circle = svg_circle;
   dd->polygon = svg_polygon;
   dd->polyline = svg_polyline;
+  dd->path = svg_path;
   dd->mode = NULL;
   dd->metricInfo = svg_metric_info;
   dd->cap = NULL;
