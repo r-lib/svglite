@@ -257,10 +257,7 @@ void svg_path(double *x, double *y,
   write_attr_col(svgd->file, "fill", gc->fill);
 
   // Specify fill rule
-  if (winding)
-    fputs(" fill-rule='nonzero'", svgd->file);
-  else
-    fputs(" fill-rule='evenodd'", svgd->file);
+  write_attr_str(svgd->file, "fill-rule", winding ? "nonzero" : "evenodd");
 
   write_attrs_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
 
