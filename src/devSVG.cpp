@@ -103,7 +103,14 @@ inline void write_attr_str(FILE* f, const char* attr, const char* value) {
   fprintf(f, " %s='%s'", attr, value);
 }
 
-inline void write_attrs_linetype(FILE* f, int lty, double lwd, int col) {
+inline void write_attrs_linetype(FILE* f, const pGEcontext gc) {
+  int lty = gc->lty;
+  const double lwd = gc->lwd;
+  const int col = gc->col;
+  const int lend = gc->lend;
+  const int ljoin = gc->ljoin;
+  const double lmitre = gc->lmitre;
+
   write_attr_col(f, "stroke", col);
 
   // 1 lwd = 1/96", but units in rest of document are 1/72"
@@ -122,6 +129,37 @@ inline void write_attrs_linetype(FILE* f, int lty, double lwd, int col) {
       lty = lty >> 4;
     }
     fputs("'", f);
+    break;
+  }
+
+  // Set line end shape
+  switch(lend)
+  {
+  case GE_ROUND_CAP:
+    write_attr_str(f, "stroke-linecap", "round");
+    break;
+  case GE_SQUARE_CAP:
+    write_attr_str(f, "stroke-linecap", "square");
+    break;
+  case GE_BUTT_CAP: // doing nothing, default is butt
+  default:
+    break;
+  }
+
+  // Set line join shape
+  switch(ljoin)
+  {
+  case GE_ROUND_JOIN:
+    write_attr_str(f, "stroke-linejoin", "round");
+    break;
+  case GE_BEVEL_JOIN:
+    write_attr_str(f, "stroke-linejoin", "bevel");
+    break;
+  case GE_MITRE_JOIN: // We don't need to write "stroke-linejoin" attribute here,
+                      // since the default is "miter". However, we do need to
+                      // specify "stroke-miterlimit".
+    write_attr_dbl(f, "stroke-miterlimit", lmitre);
+  default:
     break;
   }
 }
@@ -201,7 +239,7 @@ void svg_line(double x1, double y1, double x2, double y2,
   fprintf(svgd->file, "<line x1='%.2f' y1='%.2f' x2='%.2f' y2='%.2f'",
     x1, y1, x2, y2);
 
-  write_attrs_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+  write_attrs_linetype(svgd->file, gc);
   fputs(" />\n", svgd->file);
 }
 
@@ -217,7 +255,7 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   fputs("'", svgd->file);
 
   write_attr_col(svgd->file, "fill", filled ? gc->fill : NA_INTEGER);
-  write_attrs_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+  write_attrs_linetype(svgd->file, gc);
 
   fputs(" />\n", svgd->file);
 }
@@ -259,7 +297,7 @@ void svg_path(double *x, double *y,
   // Specify fill rule
   write_attr_str(svgd->file, "fill-rule", winding ? "nonzero" : "evenodd");
 
-  write_attrs_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+  write_attrs_linetype(svgd->file, gc);
 
   fputs(" />\n", svgd->file);
 }
@@ -284,7 +322,7 @@ void svg_rect(double x0, double y0, double x1, double y1,
       fmin(x0, x1), fmin(y0, y1), fabs(x1 - x0), fabs(y1 - y0));
 
   write_attr_col(svgd->file, "fill", gc->fill);
-  write_attrs_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+  write_attrs_linetype(svgd->file, gc);
   fputs(" />\n", svgd->file);
 }
 
@@ -294,7 +332,7 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
 
   fprintf(svgd->file, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y, r * 1.5);
   write_attr_col(svgd->file, "fill", gc->fill);
-  write_attrs_linetype(svgd->file, gc->lty, gc->lwd, gc->col);
+  write_attrs_linetype(svgd->file, gc);
   fputs(" />\n", svgd->file);
 }
 
