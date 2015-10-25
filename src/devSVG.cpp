@@ -82,7 +82,7 @@ inline void write_escaped(FILE* f, const char* text) {
   }
 }
 
-inline void write_attr_col(FILE* f, const char* attr, unsigned int col) {
+inline void write_attr_col(FILE* f, const char* attr, int col) {
   int alpha = R_ALPHA(col);
 
   if (col == NA_INTEGER || alpha == 0) {
@@ -388,7 +388,7 @@ void svg_raster(unsigned int *raster, int w, int h,
     height = -height;
 
   std::vector<unsigned int> raster_(w*h);
-  for (int i = 0 ; i < raster_.size(); ++i) {
+  for (std::vector<unsigned int>::size_type i = 0 ; i < raster_.size(); ++i) {
     raster_[i] = raster[i] ;
   }
 
