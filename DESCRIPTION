@@ -4,9 +4,9 @@ Title: A SVG Graphics Device
 Description: A graphics device for R that produces "Scalable Vector Graphics".
 Authors@R: c(
   person("T Jake", "Luciani", , "jake@apache.org", "aut"),
-  person("Matthieu", "Decorde", , "matthieu.decorde@ens-lyon.fr", c("aut", "cre")),
+  person("Hadley", "Wickham", , "hadley@rstudio.com", c("aut", "cre")),
+  person("Matthieu", "Decorde", , "matthieu.decorde@ens-lyon.fr", "aut"),
   person("Vaudor", "Lise", , "lise.vaudor@ens-lyon.fr", "aut"),
-  person("Hadley", "Wickham", , "hadley@rstudio.com", "aut"),
   person("David", "Gohel", role = "ctb", comment = "Line dashing code and raster code"),
   person("Håkon", "Malmedal", role = "ctb", comment = "Opacity code"),
   person("RStudio", role = "cph")
@@ -24,5 +24,5 @@ LinkingTo:
   Rcpp,
   gdtools
 License: GPL (>= 2)
-URL: https://github.com/mdecorde/RSvgDevice
-BugReports: https://github.com/mdecorde/RSvgDevice/issues
+URL: https://github.com/hadley/RSvgDevice
+BugReports: https://github.com/hadley/RSvgDevice/issues
