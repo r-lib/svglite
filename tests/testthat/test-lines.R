@@ -63,3 +63,40 @@ test_that("stroke-dasharray scales with lwd", {
   expect_equal(dash_array(lty = 2), c(4, 4))
   expect_equal(dash_array(lty = 2, lwd = 2), c(8, 8))
 })
+
+test_that("line end shapes", {
+  x1 <- xmlSVG({
+    plot.new()
+    lines(c(0.3, 0.7), c(0.5, 0.5), lwd = 15, lend = "round")
+  })
+  x2 <- xmlSVG({
+    plot.new()
+    lines(c(0.3, 0.7), c(0.5, 0.5), lwd = 15, lend = "butt")
+  })
+  x3 <- xmlSVG({
+    plot.new()
+    lines(c(0.3, 0.7), c(0.5, 0.5), lwd = 15, lend = "square")
+  })
+  expect_equal(xml_attr(xml_find_all(x1, ".//polyline"), "stroke-linecap"), "round")
+  expect_equal(xml_attr(xml_find_all(x2, ".//polyline"), "stroke-linecap"), NA_character_)
+  expect_equal(xml_attr(xml_find_all(x3, ".//polyline"), "stroke-linecap"), "square")
+})
+
+test_that("line join shapes", {
+  x1 <- xmlSVG({
+    plot.new()
+    lines(c(0.3, 0.5, 0.7), c(0.1, 0.9, 0.1), lwd = 15, ljoin = "round")
+  })
+  x2 <- xmlSVG({
+    plot.new()
+    lines(c(0.3, 0.5, 0.7), c(0.1, 0.9, 0.1), lwd = 15, ljoin = "mitre", lmitre = 10)
+  })
+  x3 <- xmlSVG({
+    plot.new()
+    lines(c(0.3, 0.5, 0.7), c(0.1, 0.9, 0.1), lwd = 15, ljoin = "bevel")
+  })
+  expect_equal(xml_attr(xml_find_all(x1, ".//polyline"), "stroke-linejoin"), "round")
+  expect_equal(xml_attr(xml_find_all(x2, ".//polyline"), "stroke-linejoin"), NA_character_)
+  expect_equal(xml_attr(xml_find_all(x2, ".//polyline"), "stroke-miterlimit"), "10.00")
+  expect_equal(xml_attr(xml_find_all(x3, ".//polyline"), "stroke-linejoin"), "bevel")
+})

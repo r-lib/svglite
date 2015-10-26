@@ -33,3 +33,5 @@
 * The `path()` device function has been added to support the R plotting function
   `polypath()`, and it also allows the `showtext` package to render
   fonts correctly on the `devSVG()` device (#36)
+
+* Supports all line end and line join styles (#24)
