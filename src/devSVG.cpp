@@ -137,6 +137,7 @@ inline void write_attrs_linetype(FILE* f, const pGEcontext gc) {
     write_attr_str(f, "stroke-linecap", "square");
     break;
   case GE_BUTT_CAP: // doing nothing, default is butt
+    break;
   default:
     break;
   }
@@ -152,8 +153,11 @@ inline void write_attrs_linetype(FILE* f, const pGEcontext gc) {
     break;
   case GE_MITRE_JOIN: // We don't need to write "stroke-linejoin" attribute here,
                       // since the default is "miter". However, we do need to
-                      // specify "stroke-miterlimit".
-    write_attr_dbl(f, "stroke-miterlimit", gc->lmitre);
+                      // specify "stroke-miterlimit" when the value is not 4
+                      // (the SVG default).
+    if (gc->lmitre != 4.0)
+      write_attr_dbl(f, "stroke-miterlimit", gc->lmitre);
+    break;
   default:
     break;
   }
