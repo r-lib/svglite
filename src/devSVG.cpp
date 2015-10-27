@@ -105,16 +105,11 @@ inline void write_attr_str(FILE* f, const char* attr, const char* value) {
 
 inline void write_attrs_linetype(FILE* f, const pGEcontext gc) {
   int lty = gc->lty;
-  const double lwd = gc->lwd;
-  const int col = gc->col;
-  const int lend = gc->lend;
-  const int ljoin = gc->ljoin;
-  const double lmitre = gc->lmitre;
 
-  write_attr_col(f, "stroke", col);
+  write_attr_col(f, "stroke", gc->col);
 
   // 1 lwd = 1/96", but units in rest of document are 1/72"
-  write_attr_dbl(f, "stroke-width", lwd / 96 * 72);
+  write_attr_dbl(f, "stroke-width", gc->lwd / 96 * 72);
 
   // Set line pattern type
   switch (lty) {
@@ -125,7 +120,7 @@ inline void write_attrs_linetype(FILE* f, const pGEcontext gc) {
     // See comment in GraphicsEngine.h for how this works
     fputs(" stroke-dasharray='", f);
     for(int i = 0 ; i < 8 && lty & 15; i++) {
-      fprintf(f, "%i ", (int) lwd * (lty & 15));
+      fprintf(f, "%i ", (int) gc->lwd * (lty & 15));
       lty = lty >> 4;
     }
     fputs("'", f);
@@ -133,7 +128,7 @@ inline void write_attrs_linetype(FILE* f, const pGEcontext gc) {
   }
 
   // Set line end shape
-  switch(lend)
+  switch(gc->lend)
   {
   case GE_ROUND_CAP:
     write_attr_str(f, "stroke-linecap", "round");
@@ -147,7 +142,7 @@ inline void write_attrs_linetype(FILE* f, const pGEcontext gc) {
   }
 
   // Set line join shape
-  switch(ljoin)
+  switch(gc->ljoin)
   {
   case GE_ROUND_JOIN:
     write_attr_str(f, "stroke-linejoin", "round");
@@ -158,7 +153,7 @@ inline void write_attrs_linetype(FILE* f, const pGEcontext gc) {
   case GE_MITRE_JOIN: // We don't need to write "stroke-linejoin" attribute here,
                       // since the default is "miter". However, we do need to
                       // specify "stroke-miterlimit".
-    write_attr_dbl(f, "stroke-miterlimit", lmitre);
+    write_attr_dbl(f, "stroke-miterlimit", gc->lmitre);
   default:
     break;
   }
