@@ -249,7 +249,7 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   fputs("    line, polyline, path, rect, circle {\n", svgd->file);
   fputs("      stroke-linecap: round;\n", svgd->file);
   fputs("      stroke-linejoin: round;\n", svgd->file);
-  fputs("      stroke-miterlimit: 10;\n", svgd->file);
+  fputs("      stroke-miterlimit: 10.00;\n", svgd->file);
   fputs("    }\n", svgd->file);
   fputs("  ]]></style>\n", svgd->file);
   fputs("</defs>\n", svgd->file);
