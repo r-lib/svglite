@@ -13,6 +13,8 @@ test_that("segments don't have fill", {
     plot.new()
     segments(0.5, 0.5, 1, 1)
   })
+  style <- xml_text(xml_find_one(x, "//style"))
+  expect_match(style, "fill: none;")
   expect_equal(style_attr(xml_find_one(x, ".//line"), "fill"), NA_character_)
 })
 
@@ -21,7 +23,7 @@ test_that("lines don't have fill", {
     plot.new()
     lines(c(0.5, 1, 0.5), c(0.5, 1, 1))
   })
-  expect_equal(style_attr(xml_find_one(x, ".//polyline"), "fill"), "none")
+  expect_equal(style_attr(xml_find_one(x, ".//polyline"), "fill"), NA_character_)
 })
 
 test_that("polygons do have fill", {

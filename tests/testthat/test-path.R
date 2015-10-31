@@ -48,9 +48,12 @@ test_that("paths with no filling color", {
              col = NA, border = rgb(1, 0, 0, 0.3),
              rule = "winding")
   })
+  style <- xml_text(xml_find_one(x, "//style"))
+  expect_match(style, "fill: none;")
+
   path <- xml_find_one(x, ".//path")
   expect_equal(style_attr(path, "fill-rule"), "nonzero")
-  expect_equal(style_attr(path, "fill"), "none")
+  expect_equal(style_attr(path, "fill"), NA_character_)
   expect_equal(style_attr(path, "stroke"), rgb(1, 0, 0))
   expect_equal(style_attr(path, "stroke-opacity"), "0.30")
 })

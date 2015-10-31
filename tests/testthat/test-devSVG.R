@@ -21,6 +21,16 @@ test_that("default background respects par", {
   expect_equal(style_attr(xml_find_one(x, ".//rect"), "fill"), rgb(1, 0, 0))
 })
 
+test_that("no background", {
+  x <- xmlSVG({
+    par(bg = NA)
+    plot.new()
+  })
+  style <- xml_text(xml_find_one(x, "//style"))
+  expect_match(style, "fill: none;")
+  expect_equal(style_attr(xml_find_one(x, ".//rect"), "fill"), NA_character_)
+})
+
 test_that("can only have one page", {
   devSVG(tempfile())
   on.exit(dev.off())
