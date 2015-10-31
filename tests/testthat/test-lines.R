@@ -36,6 +36,16 @@ test_that("polygons do have fill", {
   expect_equal(style_attr(polygon, "stroke"), rgb(0, 0, 1))
 })
 
+test_that("polygons without border", {
+  x <- xmlSVG({
+    plot.new()
+    polygon(c(0.5, 1, 0.5), c(0.5, 1, 1), col = "red", border = NA)
+  })
+  polygon <- xml_find_one(x, ".//polyline")
+  expect_equal(style_attr(polygon, "fill"), rgb(1, 0, 0))
+  expect_equal(style_attr(polygon, "stroke"), "none")
+})
+
 test_that("last point of polygon joined to first point", {
   x <- xmlSVG({
     plot.new()
