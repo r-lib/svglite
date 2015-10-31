@@ -112,10 +112,10 @@ inline void write_style_end(FILE* f) {
 }
 
 // Writing style attributes related to colors
-inline void write_style_col(FILE* f, const char* attr, int col, bool head_space = true) {
+inline void write_style_col(FILE* f, const char* attr, int col, bool first = false) {
   int alpha = R_ALPHA(col);
 
-  fprintf(f, "%s", head_space ? " " : "");
+  fprintf(f, "%s", first ? "" : " ");
   if (col == NA_INTEGER || alpha == 0) {
     fprintf(f, "%s: none;", attr);
     return;
@@ -127,23 +127,23 @@ inline void write_style_col(FILE* f, const char* attr, int col, bool head_space 
 }
 
 // Writing style attributes whose values are double type
-inline void write_style_dbl(FILE* f, const char* attr, double value, bool head_space = true) {
-  fprintf(f, "%s", head_space ? " " : "");
+inline void write_style_dbl(FILE* f, const char* attr, double value, bool first = false) {
+  fprintf(f, "%s", first ? "" : " ");
   fprintf(f, "%s: %.2f;", attr, value);
 }
 
 // Writing style attributes whose values are strings
-inline void write_style_str(FILE* f, const char* attr, const char* value, bool head_space = true) {
-  fprintf(f, "%s", head_space ? " " : "");
+inline void write_style_str(FILE* f, const char* attr, const char* value, bool first = false) {
+  fprintf(f, "%s", first ? "" : " ");
   fprintf(f, "%s: %s;", attr, value);
 }
 
 // Writing style attributes related to line types
-inline void write_style_linetype(FILE* f, const pGEcontext gc, bool head_space = true) {
+inline void write_style_linetype(FILE* f, const pGEcontext gc, bool first = false) {
   int lty = gc->lty;
 
   // 1 lwd = 1/96", but units in rest of document are 1/72"
-  write_style_dbl(f, "stroke-width", gc->lwd / 96 * 72, head_space);
+  write_style_dbl(f, "stroke-width", gc->lwd / 96 * 72, first);
 
   // Default is "stroke: #000000;" as declared in <style>
   if (!is_black(gc->col))
@@ -270,7 +270,7 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   fputs("<rect width='100%' height='100%'", svgd->file);
   if (is_filled(gc->fill)) {
     write_style_begin(svgd->file);
-    write_style_col(svgd->file, "fill", gc->fill, false);
+    write_style_col(svgd->file, "fill", gc->fill, true);
     write_style_end(svgd->file);
   }
   fputs("/>\n", svgd->file);
@@ -295,7 +295,7 @@ void svg_line(double x1, double y1, double x2, double y2,
     x1, y1, x2, y2);
 
   write_style_begin(svgd->file);
-  write_style_linetype(svgd->file, gc, false);
+  write_style_linetype(svgd->file, gc, true);
   write_style_end(svgd->file);
 
   fputs(" />\n", svgd->file);
@@ -313,7 +313,7 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   fputs("'", svgd->file);
 
   write_style_begin(svgd->file);
-  write_style_linetype(svgd->file, gc, false);
+  write_style_linetype(svgd->file, gc, true);
   if (filled)
     write_style_col(svgd->file, "fill", gc->fill);
   write_style_end(svgd->file);
@@ -355,7 +355,7 @@ void svg_path(double *x, double *y,
 
   write_style_begin(svgd->file);
   // Specify fill rule
-  write_style_str(svgd->file, "fill-rule", winding ? "nonzero" : "evenodd", false);
+  write_style_str(svgd->file, "fill-rule", winding ? "nonzero" : "evenodd", true);
   if (is_filled(gc->fill))
     write_style_col(svgd->file, "fill", gc->fill);
   write_style_linetype(svgd->file, gc);
@@ -384,7 +384,7 @@ void svg_rect(double x0, double y0, double x1, double y1,
       fmin(x0, x1), fmin(y0, y1), fabs(x1 - x0), fabs(y1 - y0));
 
   write_style_begin(svgd->file);
-  write_style_linetype(svgd->file, gc, false);
+  write_style_linetype(svgd->file, gc, true);
   if (is_filled(gc->fill))
     write_style_col(svgd->file, "fill", gc->fill);
   write_style_end(svgd->file);
@@ -399,7 +399,7 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
   fprintf(svgd->file, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y, r * 1.5);
 
   write_style_begin(svgd->file);
-  write_style_linetype(svgd->file, gc, false);
+  write_style_linetype(svgd->file, gc, true);
   if (is_filled(gc->fill))
     write_style_col(svgd->file, "fill", gc->fill);
   write_style_end(svgd->file);
@@ -422,7 +422,7 @@ void svg_text(double x, double y, const char *str, double rot,
   }
 
   write_style_begin(svgd->file);
-  write_style_dbl(svgd->file, "font-size", gc->cex * gc->ps, false);
+  write_style_dbl(svgd->file, "font-size", gc->cex * gc->ps, true);
   if (is_bold(gc->fontface))
     write_style_str(svgd->file, "font-weight", "bold");
   if (is_italic(gc->fontface))
