@@ -16,10 +16,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#include "Rcpp.h"
+#include <Rcpp.h>
 #include <gdtools.h>
-#include <string.h>
-#include "R_ext/GraphicsEngine.h"
+#include <string>
+#include <R_ext/GraphicsEngine.h>
 
 // SVG device metadata
 class SVGDesc {
