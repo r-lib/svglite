@@ -35,3 +35,6 @@
   fonts correctly on the `devSVG()` device (#36)
 
 * Supports all line end and line join styles (#24)
+
+* Styling properties such as `fill` and `stroke` are now specified in an inline
+  `style` attribute.
