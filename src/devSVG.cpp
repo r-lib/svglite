@@ -16,10 +16,10 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#include "Rcpp.h"
+#include <Rcpp.h>
 #include <gdtools.h>
-#include <string.h>
-#include "R_ext/GraphicsEngine.h"
+#include <string>
+#include <R_ext/GraphicsEngine.h>
 
 // SVG device metadata
 class SVGDesc {
@@ -48,6 +48,15 @@ public:
       fclose(file);
   }
 };
+
+inline bool is_black(int col) {
+  return (R_RED(col) == 0) && (R_GREEN(col) == 0) && (R_BLUE(col) == 0);
+}
+
+inline bool is_filled(int col) {
+  const int alpha = R_ALPHA(col);
+  return (col != NA_INTEGER) && (alpha != 0);
+}
 
 inline bool is_bold(int face) {
   return face == 2 || face == 4;
@@ -82,19 +91,6 @@ inline void write_escaped(FILE* f, const char* text) {
   }
 }
 
-inline void write_attr_col(FILE* f, const char* attr, int col) {
-  int alpha = R_ALPHA(col);
-
-  if (col == NA_INTEGER || alpha == 0) {
-    fprintf(f, " %s='none'", attr);
-    return;
-  } else {
-    fprintf(f, " %s='#%02X%02X%02X'", attr, R_RED(col), R_GREEN(col), R_BLUE(col));
-    if (alpha != 255)
-      fprintf(f, " %s-opacity='%0.2f'", attr, alpha / 255.0);
-  }
-}
-
 inline void write_attr_dbl(FILE* f, const char* attr, double value) {
   fprintf(f, " %s='%.2f'", attr, value);
 }
@@ -103,18 +99,55 @@ inline void write_attr_str(FILE* f, const char* attr, const char* value) {
   fprintf(f, " %s='%s'", attr, value);
 }
 
-inline void write_attrs_linetype(FILE* f, const pGEcontext gc) {
-  int lty = gc->lty;
-  const double lwd = gc->lwd;
-  const int col = gc->col;
-  const int lend = gc->lend;
-  const int ljoin = gc->ljoin;
-  const double lmitre = gc->lmitre;
 
-  write_attr_col(f, "stroke", col);
+
+// Beginning of writing style attributes
+inline void write_style_begin(FILE* f) {
+  fputs(" style='", f);
+}
+
+// End of writing style attributes
+inline void write_style_end(FILE* f) {
+  fputs("'", f);
+}
+
+// Writing style attributes related to colors
+inline void write_style_col(FILE* f, const char* attr, int col, bool first = false) {
+  int alpha = R_ALPHA(col);
+
+  fprintf(f, "%s", first ? "" : " ");
+  if (col == NA_INTEGER || alpha == 0) {
+    fprintf(f, "%s: none;", attr);
+    return;
+  } else {
+    fprintf(f, "%s: #%02X%02X%02X;", attr, R_RED(col), R_GREEN(col), R_BLUE(col));
+    if (alpha != 255)
+      fprintf(f, " %s-opacity: %0.2f;", attr, alpha / 255.0);
+  }
+}
+
+// Writing style attributes whose values are double type
+inline void write_style_dbl(FILE* f, const char* attr, double value, bool first = false) {
+  fprintf(f, "%s", first ? "" : " ");
+  fprintf(f, "%s: %.2f;", attr, value);
+}
+
+// Writing style attributes whose values are strings
+inline void write_style_str(FILE* f, const char* attr, const char* value, bool first = false) {
+  fprintf(f, "%s", first ? "" : " ");
+  fprintf(f, "%s: %s;", attr, value);
+}
+
+// Writing style attributes related to line types
+inline void write_style_linetype(FILE* f, const pGEcontext gc, bool first = false) {
+  int lty = gc->lty;
 
   // 1 lwd = 1/96", but units in rest of document are 1/72"
-  write_attr_dbl(f, "stroke-width", lwd / 96 * 72);
+  write_style_dbl(f, "stroke-width", gc->lwd / 96 * 72, first);
+
+  // Default is "stroke: #000000;" as declared in <style>
+  if (!is_black(gc->col))
+    write_style_col(f, "stroke", gc->col);
 
   // Set line pattern type
   switch (lty) {
@@ -123,42 +156,47 @@ inline void write_attrs_linetype(FILE* f, const pGEcontext gc) {
     break;
   default:
     // See comment in GraphicsEngine.h for how this works
-    fputs(" stroke-dasharray='", f);
-    for(int i = 0 ; i < 8 && lty & 15; i++) {
-      fprintf(f, "%i ", (int) lwd * (lty & 15));
+    fputs(" stroke-dasharray: ", f);
+    // First number
+    fprintf(f, "%i", (int) gc->lwd * (lty & 15));
+    lty = lty >> 4;
+    // Remaining numbers
+    for(int i = 1 ; i < 8 && lty & 15; i++) {
+      fprintf(f, ",%i", (int) gc->lwd * (lty & 15));
       lty = lty >> 4;
     }
-    fputs("'", f);
+    fputs(";", f);
     break;
   }
 
   // Set line end shape
-  switch(lend)
+  switch(gc->lend)
   {
-  case GE_ROUND_CAP:
-    write_attr_str(f, "stroke-linecap", "round");
+  case GE_ROUND_CAP: // declared to be default in <style>
+    break;
+  case GE_BUTT_CAP:
+    write_style_str(f, "stroke-linecap", "butt");
     break;
   case GE_SQUARE_CAP:
-    write_attr_str(f, "stroke-linecap", "square");
+    write_style_str(f, "stroke-linecap", "square");
     break;
-  case GE_BUTT_CAP: // doing nothing, default is butt
   default:
     break;
   }
 
   // Set line join shape
-  switch(ljoin)
+  switch(gc->ljoin)
   {
-  case GE_ROUND_JOIN:
-    write_attr_str(f, "stroke-linejoin", "round");
+  case GE_ROUND_JOIN: // declared to be default in <style>
     break;
   case GE_BEVEL_JOIN:
-    write_attr_str(f, "stroke-linejoin", "bevel");
+    write_style_str(f, "stroke-linejoin", "bevel");
     break;
-  case GE_MITRE_JOIN: // We don't need to write "stroke-linejoin" attribute here,
-                      // since the default is "miter". However, we do need to
-                      // specify "stroke-miterlimit".
-    write_attr_dbl(f, "stroke-miterlimit", lmitre);
+  case GE_MITRE_JOIN:
+    write_style_str(f, "stroke-linejoin", "miter");
+    if (std::abs(gc->lmitre - 10.0) > 1e-3) // 10 is declared to be the default in <style>
+      write_style_dbl(f, "stroke-miterlimit", gc->lmitre);
+    break;
   default:
     break;
   }
@@ -216,8 +254,25 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
 
   fprintf(svgd->file, " viewBox='0 0 %.2f %.2f'>\n", dd->right, dd->bottom);
 
+  // Setting default styles
+  fputs("<defs>\n", svgd->file);
+  fputs("  <style type='text/css'><![CDATA[\n", svgd->file);
+  fputs("    line, polyline, path, rect, circle {\n", svgd->file);
+  fputs("      fill: none;\n", svgd->file);
+  fputs("      stroke: #000000;\n", svgd->file);
+  fputs("      stroke-linecap: round;\n", svgd->file);
+  fputs("      stroke-linejoin: round;\n", svgd->file);
+  fputs("      stroke-miterlimit: 10.00;\n", svgd->file);
+  fputs("    }\n", svgd->file);
+  fputs("  ]]></style>\n", svgd->file);
+  fputs("</defs>\n", svgd->file);
+
   fputs("<rect width='100%' height='100%'", svgd->file);
-  write_attr_col(svgd->file, "fill", gc->fill);
+  if (is_filled(gc->fill)) {
+    write_style_begin(svgd->file);
+    write_style_col(svgd->file, "fill", gc->fill, true);
+    write_style_end(svgd->file);
+  }
   fputs("/>\n", svgd->file);
 
   svgd->pageno++;
@@ -239,7 +294,10 @@ void svg_line(double x1, double y1, double x2, double y2,
   fprintf(svgd->file, "<line x1='%.2f' y1='%.2f' x2='%.2f' y2='%.2f'",
     x1, y1, x2, y2);
 
-  write_attrs_linetype(svgd->file, gc);
+  write_style_begin(svgd->file);
+  write_style_linetype(svgd->file, gc, true);
+  write_style_end(svgd->file);
+
   fputs(" />\n", svgd->file);
 }
 
@@ -254,8 +312,11 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   }
   fputs("'", svgd->file);
 
-  write_attr_col(svgd->file, "fill", filled ? gc->fill : NA_INTEGER);
-  write_attrs_linetype(svgd->file, gc);
+  write_style_begin(svgd->file);
+  write_style_linetype(svgd->file, gc, true);
+  if (filled)
+    write_style_col(svgd->file, "fill", gc->fill);
+  write_style_end(svgd->file);
 
   fputs(" />\n", svgd->file);
 }
@@ -292,12 +353,13 @@ void svg_path(double *x, double *y,
   // Finish path data
   fputs("'", svgd->file);
 
-  write_attr_col(svgd->file, "fill", gc->fill);
-
+  write_style_begin(svgd->file);
   // Specify fill rule
-  write_attr_str(svgd->file, "fill-rule", winding ? "nonzero" : "evenodd");
-
-  write_attrs_linetype(svgd->file, gc);
+  write_style_str(svgd->file, "fill-rule", winding ? "nonzero" : "evenodd", true);
+  if (is_filled(gc->fill))
+    write_style_col(svgd->file, "fill", gc->fill);
+  write_style_linetype(svgd->file, gc);
+  write_style_end(svgd->file);
 
   fputs(" />\n", svgd->file);
 }
@@ -321,8 +383,12 @@ void svg_rect(double x0, double y0, double x1, double y1,
       "<rect x='%.2f' y='%.2f' width='%.2f' height='%.2f'",
       fmin(x0, x1), fmin(y0, y1), fabs(x1 - x0), fabs(y1 - y0));
 
-  write_attr_col(svgd->file, "fill", gc->fill);
-  write_attrs_linetype(svgd->file, gc);
+  write_style_begin(svgd->file);
+  write_style_linetype(svgd->file, gc, true);
+  if (is_filled(gc->fill))
+    write_style_col(svgd->file, "fill", gc->fill);
+  write_style_end(svgd->file);
+
   fputs(" />\n", svgd->file);
 }
 
@@ -331,8 +397,13 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   fprintf(svgd->file, "<circle cx='%.2f' cy='%.2f' r='%.2f'", x, y, r * 1.5);
-  write_attr_col(svgd->file, "fill", gc->fill);
-  write_attrs_linetype(svgd->file, gc);
+
+  write_style_begin(svgd->file);
+  write_style_linetype(svgd->file, gc, true);
+  if (is_filled(gc->fill))
+    write_style_col(svgd->file, "fill", gc->fill);
+  write_style_end(svgd->file);
+
   fputs(" />\n", svgd->file);
 }
 
@@ -350,16 +421,18 @@ void svg_text(double x, double y, const char *str, double rot,
       -1.0 * rot);
   }
 
-  write_attr_dbl(svgd->file, "font-size", gc->cex * gc->ps);
+  write_style_begin(svgd->file);
+  write_style_dbl(svgd->file, "font-size", gc->cex * gc->ps, true);
   if (is_bold(gc->fontface))
-    write_attr_str(svgd->file, "font-weight", "bold");
+    write_style_str(svgd->file, "font-weight", "bold");
   if (is_italic(gc->fontface))
-    write_attr_str(svgd->file, "font-style", "italic");
-  if (gc->col != -16777216) // black
-    write_attr_col(svgd->file, "fill", gc->col);
+    write_style_str(svgd->file, "font-style", "italic");
+  if (!is_black(gc->col))
+    write_style_col(svgd->file, "fill", gc->col);
 
   std::string font = fontname(gc->fontfamily, gc->fontface);
-  write_attr_str(svgd->file, "font-family", font.c_str());
+  write_style_str(svgd->file, "font-family", font.c_str());
+  write_style_end(svgd->file);
 
   fputs(">", svgd->file);
 
@@ -501,4 +574,3 @@ bool devSVG_(std::string file, std::string bg_, int width, int height,
 
   return true;
 }
-
