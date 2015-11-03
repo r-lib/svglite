@@ -9,7 +9,7 @@ htmlSVG(code, ...)
 \arguments{
 \item{code}{Plotting code to execute.}
 
-\item{...}{Other arguments passed on to \code{\link{devSVG}}.}
+\item{...}{Other arguments passed on to \code{\link{svglite}}.}
 }
 \description{
 This is useful primarily for testing. Requires the \code{htmltools}
