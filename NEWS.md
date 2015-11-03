@@ -1,6 +1,6 @@
 # svglite 1.0.0
 
-This release completes svglite so that it is now a fully featured graphics device that works on all platforms. It now supports all graphics features:
+svglite is fully featured svg graphics device that works on all platforms, forked from RSvgDevice. It supports all graphics device features:
 
 * All types of line dashing are supported (#15). All line end and line join 
   styles are supported (#24).
