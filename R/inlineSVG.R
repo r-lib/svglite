@@ -24,7 +24,7 @@ htmlSVG <- function(code, ...) {
 #'
 #' @return A \code{xml2::xml_document} object.
 #' @inheritParams htmlSVG
-#' @inheritParams devSVG
+#' @inheritParams svglite
 #' @export
 #' @examples
 #' if (require("xml2")) {
@@ -58,7 +58,7 @@ inlineSVG <- function(code, ..., width = NA, height = NA,
   path = tempfile(fileext = ".svg")) {
   dim <- plot_dim(c(width, height))
 
-  devSVG(path, width = dim[1], height = dim[2], ...)
+  svglite(path, width = dim[1], height = dim[2], ...)
   tryCatch(code,
     finally = dev.off()
   )

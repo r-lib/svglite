@@ -9,7 +9,7 @@ style_attr <- function(nodes, attr) {
 }
 
 test_that("par(cex) affects strwidth", {
-  devSVG(tempfile())
+  svglite(tempfile())
   on.exit(dev.off())
 
   plot.new()

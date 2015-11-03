@@ -32,7 +32,7 @@ test_that("no background", {
 })
 
 test_that("can only have one page", {
-  devSVG(tempfile())
+  svglite(tempfile())
   on.exit(dev.off())
 
   plot.new()

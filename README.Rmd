@@ -35,7 +35,7 @@ y <- runif(1e3)
 tmp1 <- tempfile()
 tmp2 <- tempfile()
 system.time({
-  devSVG(tmp1)
+  svglite(tmp1)
   plot(x, y)
   dev.off()
 })
