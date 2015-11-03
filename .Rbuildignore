@@ -4,3 +4,5 @@
 ^Rplots\.svg$
 ^README\.Rmd$
 ^README-.*\.png$
+^cran-comments\.md$
+^revdep/$
