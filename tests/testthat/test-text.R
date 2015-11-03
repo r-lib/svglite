@@ -41,6 +41,8 @@ test_that("special characters are escaped", {
 })
 
 test_that("utf-8 characters are preserved", {
+  skip_on_os("windows") # skip because of xml2 buglet
+
   x <- xmlSVG({
     plot.new()
     text(0.5, 0.5, "\u00b5")
