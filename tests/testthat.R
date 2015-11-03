@@ -1,4 +1,4 @@
 library(testthat)
-library(RSvgDevice)
+library(svglite)
 
-test_check("RSvgDevice")
+test_check("svglite")

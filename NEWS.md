@@ -1,4 +1,4 @@
-# RSvgDevice 0.6.4.9000
+# svglite 0.6.4.9000
 
 * Text is now coloured, and defaults the same fonts the R uses (Arial, 
   Times New Roman and Courier). Font metrics are computed using the 

@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // devSVG_
 bool devSVG_(std::string file, std::string bg_, int width, int height, int pointsize, bool standalone);
-RcppExport SEXP RSvgDevice_devSVG_(SEXP fileSEXP, SEXP bg_SEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP) {
+RcppExport SEXP svglite_devSVG_(SEXP fileSEXP, SEXP bg_SEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;

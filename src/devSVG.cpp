@@ -239,7 +239,7 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   if (svgd->pageno > 0) {
-    Rf_error("RSvgDevice only supports one page");
+    Rf_error("svglite only supports one page");
   }
 
   if (svgd->standalone)

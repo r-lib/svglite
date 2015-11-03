@@ -22,7 +22,7 @@
 #' plot(1:11,(-5:5)^2, type='b', main="Simple Example")
 #' dev.off()
 #' @keywords device
-#' @useDynLib RSvgDevice
+#' @useDynLib svglite
 #' @importFrom Rcpp sourceCpp
 #' @importFrom gdtools raster_view
 #' @export
