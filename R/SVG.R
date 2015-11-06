@@ -1,15 +1,13 @@
-#' A SVG Graphics Driver
+#' An SVG Graphics Driver
 #'
-#' This function produces graphics suitable the current w3 svg XML standard.
-#' It currently does not have any font metric information, so the use of
-#' \code{\link{plotmath}} is not supported. The driver output is currently NOT
-#' specifying a DOCTYPE DTD
+#' This function produces graphics compliant to the current w3 svg XML standard.
+#' The driver output is currently NOT specifying a DOCTYPE DTD.
 #'
 #' @param file the file where output will appear.
 #' @param height,width Height and width in inches.
 #' @param bg Default background color for the plot (defaults to "white").
 #' @param pointsize default point size.
-#' @param standalone Produce a stand alone svg file? If \code{FALSE}, omits
+#' @param standalone Produce a standalone svg file? If \code{FALSE}, omits
 #'   xml header and default namespace.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
 #'   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
