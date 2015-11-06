@@ -2,7 +2,7 @@
 % Please edit documentation in R/SVG.R
 \name{svglite}
 \alias{svglite}
-\title{A SVG Graphics Driver}
+\title{An SVG Graphics Driver}
 \usage{
 svglite(file = "Rplots.svg", width = 10, height = 8, bg = "white",
   pointsize = 12, standalone = TRUE)
@@ -16,14 +16,12 @@ svglite(file = "Rplots.svg", width = 10, height = 8, bg = "white",
 
 \item{pointsize}{default point size.}
 
-\item{standalone}{Produce a stand alone svg file? If \code{FALSE}, omits
+\item{standalone}{Produce a standalone svg file? If \code{FALSE}, omits
 xml header and default namespace.}
 }
 \description{
-This function produces graphics suitable the current w3 svg XML standard.
-It currently does not have any font metric information, so the use of
-\code{\link{plotmath}} is not supported. The driver output is currently NOT
-specifying a DOCTYPE DTD
+This function produces graphics compliant to the current w3 svg XML standard.
+The driver output is currently NOT specifying a DOCTYPE DTD.
 }
 \examples{
 svglite()

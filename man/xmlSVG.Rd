@@ -9,9 +9,9 @@ xmlSVG(code, ..., standalone = FALSE)
 \arguments{
 \item{code}{Plotting code to execute.}
 
-\item{...}{Other arguments passed on to \code{\link{devSVG}}.}
+\item{...}{Other arguments passed on to \code{\link{svglite}}.}
 
-\item{standalone}{Produce a stand alone svg file? If \code{FALSE}, omits
+\item{standalone}{Produce a standalone svg file? If \code{FALSE}, omits
 xml header and default namespace.}
 }
 \value{
