@@ -13,6 +13,11 @@ test_that("adds default background", {
   expect_equal(style_attr(xml_find_one(x, ".//rect"), "fill"), "#FFFFFF")
 })
 
+test_that("adds background set by device driver", {
+  x <- xmlSVG(plot.new(), bg = "red")
+  expect_equal(style_attr(xml_find_one(x, ".//rect"), "fill"), rgb(1, 0, 0))
+})
+
 test_that("default background respects par", {
   x <- xmlSVG({
     par(bg = "red")
@@ -21,14 +26,14 @@ test_that("default background respects par", {
   expect_equal(style_attr(xml_find_one(x, ".//rect"), "fill"), rgb(1, 0, 0))
 })
 
-test_that("no background", {
+test_that("if bg is transparent in par(), use device driver background", {
   x <- xmlSVG({
     par(bg = NA)
     plot.new()
-  })
+  }, bg = "blue")
   style <- xml_text(xml_find_one(x, "//style"))
   expect_match(style, "fill: none;")
-  expect_equal(style_attr(xml_find_one(x, ".//rect"), "fill"), NA_character_)
+  expect_equal(style_attr(xml_find_one(x, ".//rect"), "fill"), rgb(0, 0, 1))
 })
 
 test_that("can only have one page", {
