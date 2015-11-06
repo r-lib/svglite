@@ -268,11 +268,13 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   fputs("</defs>\n", svgd->file);
 
   fputs("<rect width='100%' height='100%'", svgd->file);
-  if (is_filled(gc->fill)) {
-    write_style_begin(svgd->file);
-    write_style_col(svgd->file, "fill", gc->fill, true);
-    write_style_end(svgd->file);
-  }
+  write_style_begin(svgd->file);
+  write_style_str(svgd->file, "stroke", "none", true);
+  if (is_filled(gc->fill))
+    write_style_col(svgd->file, "fill", gc->fill);
+  else
+    write_style_col(svgd->file, "fill", dd->startfill);
+  write_style_end(svgd->file);
   fputs("/>\n", svgd->file);
 
   svgd->pageno++;
