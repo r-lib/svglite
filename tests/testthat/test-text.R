@@ -67,7 +67,7 @@ test_that("default point size is 12", {
     plot.new()
     text(0.5, 0.5, "a")
   })
-  expect_equal(style_attr(xml_find_one(x, ".//text"), "font-size"), "12.00")
+  expect_equal(style_attr(xml_find_one(x, ".//text"), "font-size"), "12.00pt")
 })
 
 test_that("cex generates fractional font sizes", {
@@ -75,7 +75,7 @@ test_that("cex generates fractional font sizes", {
     plot.new()
     text(0.5, 0.5, "a", cex = 0.1)
   })
-  expect_equal(style_attr(xml_find_one(x, ".//text"), "font-size"), "1.20")
+  expect_equal(style_attr(xml_find_one(x, ".//text"), "font-size"), "1.20pt")
 })
 
 test_that("font sets weight/style", {

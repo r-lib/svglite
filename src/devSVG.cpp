@@ -132,6 +132,11 @@ inline void write_style_dbl(FILE* f, const char* attr, double value, bool first 
   fprintf(f, "%s: %.2f;", attr, value);
 }
 
+inline void write_style_fontsize(FILE* f, double value, bool first = false) {
+  fprintf(f, "%s", first ? "" : " ");
+  fprintf(f, "font-size: %.2fpt;", value);
+}
+
 // Writing style attributes whose values are strings
 inline void write_style_str(FILE* f, const char* attr, const char* value, bool first = false) {
   fprintf(f, "%s", first ? "" : " ");
@@ -422,7 +427,7 @@ void svg_text(double x, double y, const char *str, double rot,
   }
 
   write_style_begin(svgd->file);
-  write_style_dbl(svgd->file, "font-size", gc->cex * gc->ps, true);
+  write_style_fontsize(svgd->file, gc->cex * gc->ps, true);
   if (is_bold(gc->fontface))
     write_style_str(svgd->file, "font-weight", "bold");
   if (is_italic(gc->fontface))
