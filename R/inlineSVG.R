@@ -60,7 +60,7 @@ inlineSVG <- function(code, ..., width = NA, height = NA,
 
   svglite(path, width = dim[1], height = dim[2], ...)
   tryCatch(code,
-    finally = dev.off()
+    finally = grDevices::dev.off()
   )
 
   path
