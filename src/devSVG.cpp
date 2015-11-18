@@ -28,10 +28,17 @@
 // SVG device metadata
 class SVGDesc {
 public:
-  std::string filename;
-  std::ostream* stream;
-  int stream_type;  // 0 - R terminal, 1 - string, 2 - file
-  std::ios::fmtflags stream_flags;
+  std::string filename; // Filename of the SVG image. Two special filenames:
+                        // ":terminal:" to indicate printing on R terminal
+                        // ":string:" to save the content to a string
+
+  std::ostream* stream; // A pointer to the output stream (terminal/string/file)
+
+  int stream_type;      // 0 - R terminal, 1 - string, 2 - file
+
+  std::ios::fmtflags stream_flags; // Save the original formatting flags --
+                                   // we don't want to pollute Rcpp::Rcout
+
   int pageno;
   double clipleft, clipright, cliptop, clipbottom;
   bool standalone;
@@ -68,6 +75,7 @@ public:
     // Restore formatting flags
     stream->flags(stream_flags);
 
+    // If it is a string stream, save the content to svglite:::.pkg_env$svg_string
     if (stream_type == 1) {
       Rcpp::Environment ns = Rcpp::Environment::namespace_env("svglite");
       Rcpp::Environment pkg = ns[".pkg_env"];
