@@ -29,3 +29,10 @@ svglite <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
 
   invisible(devSVG_(file, bg, width, height, pointsize, standalone))
 }
+
+.pkg_env <- new.env()
+.pkg_env$svg_string <- ""
+
+stringSVG <- function() {
+  .pkg_env$svg_string
+}
