@@ -30,6 +30,8 @@ class SVGDesc {
 public:
   std::string filename;
   std::ostream* stream;
+  int stream_type;  // 0 - R terminal, 1 - string, 2 - file
+  std::ios::fmtflags stream_flags;
   int pageno;
   double clipleft, clipright, cliptop, clipbottom;
   bool standalone;
@@ -37,19 +39,43 @@ public:
 
   SVGDesc(std::string filename_, bool standalone_):
       filename(filename_),
-      stream(new std::ofstream(R_ExpandFileName(filename.c_str()))),
       pageno(0),
       standalone(standalone_),
       cc(gdtools::context_create()) {
-    if(stream->fail())
-      Rcpp::stop("cannot open file " + filename);
+
+    if (filename == ":terminal:") {
+      stream = (std::ostream*) &(Rcpp::Rcout);
+      stream_type = 0;
+    } else if (filename == ":string:") {
+      stream = new std::ostringstream();
+      stream_type = 1;
+    } else {
+      stream = new std::ofstream(R_ExpandFileName(filename.c_str()));
+      stream_type = 2;
+    }
+
+    if (stream->fail())
+      Rcpp::stop("cannot open stream " + filename);
+
+    // Save formatting flags
+    stream_flags = stream->flags();
 
     // Format float numbers to be two digits
     (*stream) << std::fixed << std::setprecision(2);
   }
 
   ~SVGDesc() {
-    delete stream;
+    // Restore formatting flags
+    stream->flags(stream_flags);
+
+    if (stream_type == 1) {
+      Rcpp::Environment ns = Rcpp::Environment::namespace_env("svglite");
+      Rcpp::Environment pkg = ns[".pkg_env"];
+      pkg["svg_string"] = ((std::ostringstream*) stream)->str();
+    }
+
+    if (stream_type > 0)
+      delete stream;
   }
 };
 
@@ -117,7 +143,7 @@ inline void write_style_end(std::ostream* stream) {
 
 // Writing style attributes related to colors
 inline void write_style_col(std::ostream* stream, const char* attr, int col, bool first = false) {
-  // Save formating flags
+  // Save formatting flags
   std::ios::fmtflags fflag(stream->flags());
 
   int alpha = R_ALPHA(col);
@@ -137,7 +163,7 @@ inline void write_style_col(std::ostream* stream, const char* attr, int col, boo
       (*stream) << ' ' << attr << "-opacity: " << alpha / 255.0 << ';';
   }
 
-  // Restore formating flags
+  // Restore formatting flags
   stream->flags(fflag);
 }
 
