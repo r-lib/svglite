@@ -2,9 +2,9 @@
 
 export(editSVG)
 export(htmlSVG)
+export(stringSVG)
 export(svglite)
 export(xmlSVG)
-export(stringSVG)
 importFrom(Rcpp,sourceCpp)
 importFrom(gdtools,raster_view)
 useDynLib(svglite)
