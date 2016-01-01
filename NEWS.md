@@ -1,3 +1,5 @@
+# svglite 1.0.0.9000
+
 # svglite 1.0.0
 
 svglite is fully featured svg graphics device that works on all platforms, forked from RSvgDevice. It supports all graphics device features:

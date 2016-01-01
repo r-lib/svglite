@@ -1,5 +1,5 @@
 Package: svglite
-Version: 0.9.9.9000
+Version: 1.0.0.9000
 Title: A SVG Graphics Device
 Description: A graphics device for R that produces 'Scalable Vector Graphics'.
   'svglite' is a fork of the older 'RSvgDevice' package.
@@ -8,6 +8,7 @@ Authors@R: c(
   person("T Jake", "Luciani", , "jake@apache.org", "aut"),
   person("Matthieu", "Decorde", , "matthieu.decorde@ens-lyon.fr", "aut"),
   person("Vaudor", "Lise", , "lise.vaudor@ens-lyon.fr", "aut"),
+  person("Tony", "Plate", role = "ctb", comment = "Early line dashing code"),
   person("David", "Gohel", role = "ctb", comment = "Line dashing code and raster code"),
   person("Yixuan", "Qiu", role = "ctb", comment = "Improved styles; polypath implementation"),
   person("Håkon", "Malmedal", role = "ctb", comment = "Opacity code"),
