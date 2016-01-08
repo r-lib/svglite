@@ -29,12 +29,14 @@ public:
   int pageno;
   double clipleft, clipright, cliptop, clipbottom;
   bool standalone;
+  bool overwrite_page;
   XPtrCairoContext cc;
 
-  SVGDesc(std::string filename_, bool standalone_):
+  SVGDesc(std::string filename_, bool standalone_, bool overwrite_page_):
       filename(filename_),
       pageno(0),
       standalone(standalone_),
+      overwrite_page(overwrite_page_),
       cc(gdtools::context_create()) {
     file = fopen(R_ExpandFileName(filename.c_str()), "w");
   }
@@ -244,7 +246,15 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   if (svgd->pageno > 0) {
-    Rf_error("svglite only supports one page");
+
+    if (!(svgd->overwrite_page)) {
+      Rf_error("svglite only supports one page when overwrite_page = FALSE");
+    } else {
+      fclose(svgd->file);
+      svgd->file = fopen(R_ExpandFileName(svgd->filename.c_str()), "w");
+
+      svgd->pageno = 0;
+    }
   }
 
   if (svgd->standalone)
@@ -518,7 +528,8 @@ void svg_raster(unsigned int *raster, int w, int h,
 
 
 pDevDesc svg_driver_new(std::string filename, int bg, double width,
-                        double height, int pointsize, bool standalone) {
+                        double height, int pointsize, bool standalone,
+                        bool overwrite_page) {
 
   pDevDesc dd = (DevDesc*) calloc(1, sizeof(DevDesc));
   if (dd == NULL)
@@ -583,20 +594,20 @@ pDevDesc svg_driver_new(std::string filename, int bg, double width,
   dd->haveTransparency = 2;
   dd->haveTransparentBg = 2;
 
-  dd->deviceSpecific = new SVGDesc(filename, standalone);
+  dd->deviceSpecific = new SVGDesc(filename, standalone, overwrite_page);
   return dd;
 }
 
 // [[Rcpp::export]]
 bool devSVG_(std::string file, std::string bg_, int width, int height,
-             int pointsize, bool standalone) {
+             int pointsize, bool standalone, bool overwrite_page) {
 
   int bg = R_GE_str2col(bg_.c_str());
 
   R_GE_checkVersionOrDie(R_GE_version);
   R_CheckDeviceAvailable();
   BEGIN_SUSPEND_INTERRUPTS {
-    pDevDesc dev = svg_driver_new(file, bg, width, height, pointsize, standalone);
+    pDevDesc dev = svg_driver_new(file, bg, width, height, pointsize, standalone, overwrite_page);
     if (dev == NULL)
       Rcpp::stop("Failed to start SVG device");
 

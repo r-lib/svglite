@@ -9,6 +9,8 @@
 #' @param pointsize default point size.
 #' @param standalone Produce a standalone svg file? If \code{FALSE}, omits
 #'   xml header and default namespace.
+#' @param overwrite_page Overwrite the current page when a new page is created.
+#'   Otherwise, only a single page is supported.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
 #'   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
 #' @author This driver was written by T Jake Luciani
@@ -25,7 +27,7 @@
 #' @importFrom gdtools raster_view
 #' @export
 svglite <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-                   pointsize = 12, standalone = TRUE) {
+                   pointsize = 12, standalone = TRUE, overwrite_page = FALSE) {
 
-  invisible(devSVG_(file, bg, width, height, pointsize, standalone))
+  invisible(devSVG_(file, bg, width, height, pointsize, standalone, overwrite_page))
 }
