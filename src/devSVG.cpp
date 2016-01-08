@@ -282,6 +282,7 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   write_style_end(svgd->file);
   fputs("/>\n", svgd->file);
 
+  fflush(svgd->file);
   svgd->pageno++;
 }
 
@@ -306,6 +307,7 @@ void svg_line(double x1, double y1, double x2, double y2,
   write_style_end(svgd->file);
 
   fputs(" />\n", svgd->file);
+  fflush(svgd->file);
 }
 
 void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
@@ -369,6 +371,7 @@ void svg_path(double *x, double *y,
   write_style_end(svgd->file);
 
   fputs(" />\n", svgd->file);
+  fflush(svgd->file);
 }
 
 double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
@@ -397,6 +400,7 @@ void svg_rect(double x0, double y0, double x1, double y1,
   write_style_end(svgd->file);
 
   fputs(" />\n", svgd->file);
+  fflush(svgd->file);
 }
 
 void svg_circle(double x, double y, double r, const pGEcontext gc,
@@ -412,6 +416,7 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
   write_style_end(svgd->file);
 
   fputs(" />\n", svgd->file);
+  fflush(svgd->file);
 }
 
 void svg_text(double x, double y, const char *str, double rot,
@@ -446,6 +451,7 @@ void svg_text(double x, double y, const char *str, double rot,
   write_escaped(svgd->file, str);
 
   fputs("</text>\n", svgd->file);
+  fflush(svgd->file);
 }
 
 void svg_size(double *left, double *right, double *bottom, double *top,
@@ -487,6 +493,7 @@ void svg_raster(unsigned int *raster, int w, int h,
 
   fprintf(svgd->file, " xlink:href='data:image/png;base64,%s'", base64_str.c_str());
   fputs( "/>", svgd->file);
+  fflush(svgd->file);
 }
 
 
