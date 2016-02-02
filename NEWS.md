@@ -1,6 +1,6 @@
 # svglite 1.0.0.9000
 
-* Use test compatible with older versions of R.
+* Use raster test compatible with older versions of R.
 
 # svglite 1.0.0
 
