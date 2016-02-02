@@ -2,8 +2,7 @@ context("raster")
 
 test_that("raster exists", {
   x <- xmlSVG({
-    r <- as.raster(matrix(hcl(0, 80, seq(40, 80, 10)), nrow = 5, ncol = 4))
-    plot(r)
+    image(matrix(runif(64), nrow = 8), useRaster = TRUE)
   }, standalone = TRUE)
   ns <- xml_ns(x)
 
