@@ -6,8 +6,8 @@
 using namespace Rcpp;
 
 // devSVG_
-bool devSVG_(std::string file, std::string bg_, int width, int height, int pointsize, bool standalone);
-RcppExport SEXP svglite_devSVG_(SEXP fileSEXP, SEXP bg_SEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP) {
+bool devSVG_(std::string file, std::string bg_, int width, int height, int pointsize, bool standalone, bool overwrite_page);
+RcppExport SEXP svglite_devSVG_(SEXP fileSEXP, SEXP bg_SEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP, SEXP overwrite_pageSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -17,7 +17,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type height(heightSEXP);
     Rcpp::traits::input_parameter< int >::type pointsize(pointsizeSEXP);
     Rcpp::traits::input_parameter< bool >::type standalone(standaloneSEXP);
-    __result = Rcpp::wrap(devSVG_(file, bg_, width, height, pointsize, standalone));
+    Rcpp::traits::input_parameter< bool >::type overwrite_page(overwrite_pageSEXP);
+    __result = Rcpp::wrap(devSVG_(file, bg_, width, height, pointsize, standalone, overwrite_page));
     return __result;
 END_RCPP
 }
