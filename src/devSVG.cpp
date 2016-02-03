@@ -553,7 +553,7 @@ void svg_raster(unsigned int *raster, int w, int h,
 
 
 pDevDesc svg_driver_new(std::string filename, int bg, double width,
-                        double height, int pointsize, bool standalone) {
+                        double height, double pointsize, bool standalone) {
 
   pDevDesc dd = (DevDesc*) calloc(1, sizeof(DevDesc));
   if (dd == NULL)
@@ -623,8 +623,8 @@ pDevDesc svg_driver_new(std::string filename, int bg, double width,
 }
 
 // [[Rcpp::export]]
-bool devSVG_(std::string file, std::string bg_, int width, int height,
-             int pointsize, bool standalone) {
+bool devSVG_(std::string file, std::string bg_, double width, double height,
+             double pointsize, bool standalone) {
 
   int bg = R_GE_str2col(bg_.c_str());
 
