@@ -1,6 +1,7 @@
 # svglite 1.0.0.9000
 
 * Use raster test compatible with older versions of R.
+* Support clipping operation (#47 and #49).
 
 # svglite 1.0.0
 
