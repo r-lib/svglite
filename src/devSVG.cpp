@@ -266,10 +266,12 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
 }
 
 void svg_new_page(const pGEcontext gc, pDevDesc dd) {
+BEGIN_RCPP
+
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   if (svgd->pageno > 0) {
-    Rf_error("svglite only supports one page");
+    Rcpp::stop("svglite only supports one page");
   }
 
   if (svgd->standalone)
@@ -308,6 +310,8 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   fputs("/>\n", svgd->file);
 
   svgd->pageno++;
+
+VOID_END_RCPP
 }
 
 void svg_close(pDevDesc dd) {
