@@ -453,6 +453,13 @@ void svg_text(double x, double y, const char *str, double rot,
               double hadj, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
+  // If we specify the clip path inside <text>, the "transform" also
+  // affects the clip path, so we need to specify clip path at an outer level
+  if(svgd->clipno > 0) {
+    fputs("<g", svgd->file);
+    write_attr_clip(svgd->file, svgd->clipno);
+    fputs(">", svgd->file);
+  }
 
   fputs("<text", svgd->file);
   if (rot == 0) {
@@ -476,13 +483,17 @@ void svg_text(double x, double y, const char *str, double rot,
   write_style_str(svgd->file, "font-family", font.c_str());
   write_style_end(svgd->file);
 
-  write_attr_clip(svgd->file, svgd->clipno);
-
   fputs(">", svgd->file);
 
   write_escaped(svgd->file, str);
 
-  fputs("</text>\n", svgd->file);
+  fputs("</text>", svgd->file);
+
+  if(svgd->clipno > 0) {
+    fputs("</g>", svgd->file);
+  }
+
+  fputs("\n", svgd->file);
 }
 
 void svg_size(double *left, double *right, double *bottom, double *top,
@@ -512,6 +523,14 @@ void svg_raster(unsigned int *raster, int w, int h,
   std::string base64_str = gdtools::raster_to_str(raster_, w, h, width, height,
     (Rboolean) interpolate);
 
+  // If we specify the clip path inside <image>, the "transform" also
+  // affects the clip path, so we need to specify clip path at an outer level
+  if(svgd->clipno > 0) {
+    fputs("<g", svgd->file);
+    write_attr_clip(svgd->file, svgd->clipno);
+    fputs(">", svgd->file);
+  }
+
   fputs("<image", svgd->file);
   write_attr_dbl(svgd->file, "width", width);
   write_attr_dbl(svgd->file, "height", height);
@@ -523,9 +542,13 @@ void svg_raster(unsigned int *raster, int w, int h,
   }
 
   fprintf(svgd->file, " xlink:href='data:image/png;base64,%s'", base64_str.c_str());
-
-  write_attr_clip(svgd->file, svgd->clipno);
   fputs( "/>", svgd->file);
+
+  if(svgd->clipno > 0) {
+    fputs("</g>", svgd->file);
+  }
+
+  fputs("\n", svgd->file);
 }
 
 
