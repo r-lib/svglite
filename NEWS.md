@@ -2,7 +2,8 @@
 
 * Use raster test compatible with older versions of R.
 
-* Support clipping operation (#47 and #49).
+* Add support for `clip()`. This also fixes a number of minor issues with
+  grid graphics (@yixuan, #47 and #49).
 
 * Fix incorrect device size (#50).
 
