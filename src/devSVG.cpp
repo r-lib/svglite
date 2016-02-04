@@ -104,7 +104,7 @@ inline void write_attr_str(FILE* f, const char* attr, const char* value) {
 
 // Writing clip path attribute
 inline void write_attr_clip(FILE* f, int clipno) {
-  if(clipno < 1)
+  if (clipno < 1)
     return;
 
   fprintf(f, " clip-path='url(#cp%d)'", clipno);
@@ -244,10 +244,10 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   // Avoid duplication
-  if(std::abs(x0 - svgd->clipx0) < 0.01 &&
-     std::abs(x1 - svgd->clipx1) < 0.01 &&
-     std::abs(y0 - svgd->clipy0) < 0.01 &&
-     std::abs(y1 - svgd->clipy1) < 0.01)
+  if (std::abs(x0 - svgd->clipx0) < 0.01 &&
+      std::abs(x1 - svgd->clipx1) < 0.01 &&
+      std::abs(y0 - svgd->clipy0) < 0.01 &&
+      std::abs(y1 - svgd->clipy1) < 0.01)
     return;
 
   svgd->clipno++;
@@ -459,7 +459,7 @@ void svg_text(double x, double y, const char *str, double rot,
 
   // If we specify the clip path inside <text>, the "transform" also
   // affects the clip path, so we need to specify clip path at an outer level
-  if(svgd->clipno > 0) {
+  if (svgd->clipno > 0) {
     fputs("<g", svgd->file);
     write_attr_clip(svgd->file, svgd->clipno);
     fputs(">", svgd->file);
@@ -493,7 +493,7 @@ void svg_text(double x, double y, const char *str, double rot,
 
   fputs("</text>", svgd->file);
 
-  if(svgd->clipno > 0) {
+  if (svgd->clipno > 0) {
     fputs("</g>", svgd->file);
   }
 
@@ -529,7 +529,7 @@ void svg_raster(unsigned int *raster, int w, int h,
 
   // If we specify the clip path inside <image>, the "transform" also
   // affects the clip path, so we need to specify clip path at an outer level
-  if(svgd->clipno > 0) {
+  if (svgd->clipno > 0) {
     fputs("<g", svgd->file);
     write_attr_clip(svgd->file, svgd->clipno);
     fputs(">", svgd->file);
@@ -541,14 +541,14 @@ void svg_raster(unsigned int *raster, int w, int h,
   write_attr_dbl(svgd->file, "x", x);
   write_attr_dbl(svgd->file, "y", y - height);
 
-  if( rot != 0 ){
+  if ( rot != 0 ) {
     fprintf(svgd->file, " transform='rotate(%0.0f,%.2f,%.2f)'", -1.0 * rot, x, y);
   }
 
   fprintf(svgd->file, " xlink:href='data:image/png;base64,%s'", base64_str.c_str());
   fputs( "/>", svgd->file);
 
-  if(svgd->clipno > 0) {
+  if (svgd->clipno > 0) {
     fputs("</g>", svgd->file);
   }
 
