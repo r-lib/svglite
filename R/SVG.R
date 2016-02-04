@@ -3,10 +3,10 @@
 #' This function produces graphics compliant to the current w3 svg XML standard.
 #' The driver output is currently NOT specifying a DOCTYPE DTD.
 #'
-#' @param file the file where output will appear.
+#' @param file The file where output will appear.
 #' @param height,width Height and width in inches.
 #' @param bg Default background color for the plot (defaults to "white").
-#' @param pointsize default point size.
+#' @param pointsize Default point size.
 #' @param standalone Produce a standalone svg file? If \code{FALSE}, omits
 #'   xml header and default namespace.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:

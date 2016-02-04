@@ -1,4 +1,5 @@
-context("raster")
+context("Raster")
+library(xml2)
 
 test_that("raster exists", {
   x <- xmlSVG({

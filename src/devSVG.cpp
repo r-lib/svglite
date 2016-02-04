@@ -27,13 +27,16 @@ public:
   FILE *file;
   std::string filename;
   int pageno;
-  double clipleft, clipright, cliptop, clipbottom;
+  int clipno;  // ID for the clip path
+  double clipx0, clipx1, clipy0, clipy1;  // Save the previous clip path to avoid duplication
   bool standalone;
   XPtrCairoContext cc;
 
   SVGDesc(std::string filename_, bool standalone_):
       filename(filename_),
       pageno(0),
+      clipno(0),
+      clipx0(0), clipx1(0), clipy0(0), clipy1(0),
       standalone(standalone_),
       cc(gdtools::context_create()) {
     file = fopen(R_ExpandFileName(filename.c_str()), "w");
@@ -99,7 +102,13 @@ inline void write_attr_str(FILE* f, const char* attr, const char* value) {
   fprintf(f, " %s='%s'", attr, value);
 }
 
+// Writing clip path attribute
+inline void write_attr_clip(FILE* f, int clipno) {
+  if (clipno < 1)
+    return;
 
+  fprintf(f, " clip-path='url(#cp%d)'", clipno);
+}
 
 // Beginning of writing style attributes
 inline void write_style_begin(FILE* f) {
@@ -234,17 +243,35 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
 void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  svgd->clipleft = x0;
-  svgd->clipright = x1;
-  svgd->clipbottom = y0;
-  svgd->cliptop = y1;
+  // Avoid duplication
+  if (std::abs(x0 - svgd->clipx0) < 0.01 &&
+      std::abs(x1 - svgd->clipx1) < 0.01 &&
+      std::abs(y0 - svgd->clipy0) < 0.01 &&
+      std::abs(y1 - svgd->clipy1) < 0.01)
+    return;
+
+  svgd->clipno++;
+  svgd->clipx0 = x0;
+  svgd->clipx1 = x1;
+  svgd->clipy0 = y0;
+  svgd->clipy1 = y1;
+
+  fputs("<defs>\n", svgd->file);
+  fprintf(svgd->file, "  <clipPath id='cp%d'>\n", svgd->clipno);
+  fprintf(svgd->file, "    <rect x='%.2f' y='%.2f' width='%.2f' height='%.2f' />\n",
+          std::min(x0, x1), std::min(y0, y1), std::abs(x1 - x0), std::abs(y1 - y0));
+  fputs("  </clipPath>\n", svgd->file);
+  fputs("</defs>\n", svgd->file);
+
 }
 
 void svg_new_page(const pGEcontext gc, pDevDesc dd) {
+BEGIN_RCPP
+
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   if (svgd->pageno > 0) {
-    Rf_error("svglite only supports one page");
+    Rcpp::stop("svglite only supports one page");
   }
 
   if (svgd->standalone)
@@ -283,6 +310,8 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   fputs("/>\n", svgd->file);
 
   svgd->pageno++;
+
+VOID_END_RCPP
 }
 
 void svg_close(pDevDesc dd) {
@@ -305,6 +334,8 @@ void svg_line(double x1, double y1, double x2, double y2,
   write_style_linetype(svgd->file, gc, true);
   write_style_end(svgd->file);
 
+  write_attr_clip(svgd->file, svgd->clipno);
+
   fputs(" />\n", svgd->file);
 }
 
@@ -324,6 +355,8 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   if (filled)
     write_style_col(svgd->file, "fill", gc->fill);
   write_style_end(svgd->file);
+
+  write_attr_clip(svgd->file, svgd->clipno);
 
   fputs(" />\n", svgd->file);
 }
@@ -368,6 +401,8 @@ void svg_path(double *x, double *y,
   write_style_linetype(svgd->file, gc);
   write_style_end(svgd->file);
 
+  write_attr_clip(svgd->file, svgd->clipno);
+
   fputs(" />\n", svgd->file);
 }
 
@@ -396,6 +431,8 @@ void svg_rect(double x0, double y0, double x1, double y1,
     write_style_col(svgd->file, "fill", gc->fill);
   write_style_end(svgd->file);
 
+  write_attr_clip(svgd->file, svgd->clipno);
+
   fputs(" />\n", svgd->file);
 }
 
@@ -411,6 +448,8 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
     write_style_col(svgd->file, "fill", gc->fill);
   write_style_end(svgd->file);
 
+  write_attr_clip(svgd->file, svgd->clipno);
+
   fputs(" />\n", svgd->file);
 }
 
@@ -418,6 +457,13 @@ void svg_text(double x, double y, const char *str, double rot,
               double hadj, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
+  // If we specify the clip path inside <text>, the "transform" also
+  // affects the clip path, so we need to specify clip path at an outer level
+  if (svgd->clipno > 0) {
+    fputs("<g", svgd->file);
+    write_attr_clip(svgd->file, svgd->clipno);
+    fputs(">", svgd->file);
+  }
 
   fputs("<text", svgd->file);
   if (rot == 0) {
@@ -445,7 +491,13 @@ void svg_text(double x, double y, const char *str, double rot,
 
   write_escaped(svgd->file, str);
 
-  fputs("</text>\n", svgd->file);
+  fputs("</text>", svgd->file);
+
+  if (svgd->clipno > 0) {
+    fputs("</g>", svgd->file);
+  }
+
+  fputs("\n", svgd->file);
 }
 
 void svg_size(double *left, double *right, double *bottom, double *top,
@@ -475,23 +527,37 @@ void svg_raster(unsigned int *raster, int w, int h,
   std::string base64_str = gdtools::raster_to_str(raster_, w, h, width, height,
     (Rboolean) interpolate);
 
+  // If we specify the clip path inside <image>, the "transform" also
+  // affects the clip path, so we need to specify clip path at an outer level
+  if (svgd->clipno > 0) {
+    fputs("<g", svgd->file);
+    write_attr_clip(svgd->file, svgd->clipno);
+    fputs(">", svgd->file);
+  }
+
   fputs("<image", svgd->file);
   write_attr_dbl(svgd->file, "width", width);
   write_attr_dbl(svgd->file, "height", height);
   write_attr_dbl(svgd->file, "x", x);
   write_attr_dbl(svgd->file, "y", y - height);
 
-  if( rot != 0 ){
+  if ( rot != 0 ) {
     fprintf(svgd->file, " transform='rotate(%0.0f,%.2f,%.2f)'", -1.0 * rot, x, y);
   }
 
   fprintf(svgd->file, " xlink:href='data:image/png;base64,%s'", base64_str.c_str());
   fputs( "/>", svgd->file);
+
+  if (svgd->clipno > 0) {
+    fputs("</g>", svgd->file);
+  }
+
+  fputs("\n", svgd->file);
 }
 
 
 pDevDesc svg_driver_new(std::string filename, int bg, double width,
-                        double height, int pointsize, bool standalone) {
+                        double height, double pointsize, bool standalone) {
 
   pDevDesc dd = (DevDesc*) calloc(1, sizeof(DevDesc));
   if (dd == NULL)
@@ -549,7 +615,7 @@ pDevDesc svg_driver_new(std::string filename, int bg, double width,
   dd->ipr[1] = 1.0 / 72.0;
 
   // Capabilities
-  dd->canClip = FALSE;
+  dd->canClip = TRUE;
   dd->canHAdj = 0;
   dd->canChangeGamma = FALSE;
   dd->displayListOn = FALSE;
@@ -561,8 +627,8 @@ pDevDesc svg_driver_new(std::string filename, int bg, double width,
 }
 
 // [[Rcpp::export]]
-bool devSVG_(std::string file, std::string bg_, int width, int height,
-             int pointsize, bool standalone) {
+bool devSVG_(std::string file, std::string bg_, double width, double height,
+             double pointsize, bool standalone) {
 
   int bg = R_GE_str2col(bg_.c_str());
 
