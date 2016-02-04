@@ -1,7 +1,7 @@
 context("Clipping")
 
 test_that("create a plot that uses clipping", {
-  svglite("tests/testthat/test-clip.svg", 16, 8)
+  svglite("test-clip.svg", 16, 8)
   par(mfrow = c(1, 2))
 
   set.seed(0)
