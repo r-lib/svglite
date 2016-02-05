@@ -32,21 +32,31 @@ public:
                         // ":terminal:" to indicate printing on R terminal
                         // ":string:" to save the content to a string
 
-  std::ostream* stream; // A pointer to the output stream (terminal/string/file)
-
   int stream_type;      // 0 - R terminal, 1 - string, 2 - file
+
+  std::ostringstream strstream; // The string output stream, only used
+                                // when stream_type == 1
+
+  std::ofstream filestream;     // The file output stream, only used
+                                // when stream_type == 2
+
+  std::ostream* stream;         // A pointer to the actual output stream (terminal/string/file)
 
   std::ios::fmtflags stream_flags; // Save the original formatting flags --
                                    // we don't want to pollute Rcpp::Rcout
 
   int pageno;
-  double clipleft, clipright, cliptop, clipbottom;
+  int clipno;  // ID for the clip path
+  double clipx0, clipx1, clipy0, clipy1;  // Save the previous clip path to avoid duplication
   bool standalone;
   XPtrCairoContext cc;
 
   SVGDesc(std::string filename_, bool standalone_):
       filename(filename_),
+      stream_type(2),
       pageno(0),
+      clipno(0),
+      clipx0(0), clipx1(0), clipy0(0), clipy1(0),
       standalone(standalone_),
       cc(gdtools::context_create()) {
 
@@ -54,10 +64,11 @@ public:
       stream = (std::ostream*) &(Rcpp::Rcout);
       stream_type = 0;
     } else if (filename == ":string:") {
-      stream = new std::ostringstream();
+      stream = (std::ostream*) &strstream;
       stream_type = 1;
     } else {
-      stream = new std::ofstream(R_ExpandFileName(filename.c_str()));
+      filestream.open(R_ExpandFileName(filename.c_str()));
+      stream = (std::ostream*) &filestream;
       stream_type = 2;
     }
 
@@ -79,11 +90,12 @@ public:
     if (stream_type == 1) {
       Rcpp::Environment ns = Rcpp::Environment::namespace_env("svglite");
       Rcpp::Environment pkg = ns[".pkg_env"];
-      pkg["svg_string"] = ((std::ostringstream*) stream)->str();
+      pkg["svg_string"] = strstream.str();
     }
 
-    if (stream_type > 0)
-      delete stream;
+    // If it is a file stream, close the file
+    if (stream_type == 2)
+      filestream.close();
   }
 };
 
@@ -137,7 +149,13 @@ inline void write_attr_str(std::ostream* stream, const char* attr, const char* v
   (*stream) << ' ' << attr << "='" << value << '\'';
 }
 
+// Writing clip path attribute
+inline void write_attr_clip(std::ostream* stream, int clipno) {
+  if (clipno < 1)
+    return;
 
+  (*stream) << " clip-path='url(#cp" << clipno << ")'";
+}
 
 // Beginning of writing style attributes
 inline void write_style_begin(std::ostream* stream) {
@@ -282,17 +300,34 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
 
 void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  std::ostream *stream = svgd->stream;
 
-  svgd->clipleft = x0;
-  svgd->clipright = x1;
-  svgd->clipbottom = y0;
-  svgd->cliptop = y1;
+  // Avoid duplication
+  if (std::abs(x0 - svgd->clipx0) < 0.01 &&
+      std::abs(x1 - svgd->clipx1) < 0.01 &&
+      std::abs(y0 - svgd->clipy0) < 0.01 &&
+      std::abs(y1 - svgd->clipy1) < 0.01)
+    return;
+
+  svgd->clipno++;
+  svgd->clipx0 = x0;
+  svgd->clipx1 = x1;
+  svgd->clipy0 = y0;
+  svgd->clipy1 = y1;
+
+  (*stream) << "<defs>\n";
+  (*stream) << "  <clipPath id='cp" << svgd->clipno << "'>\n";
+  (*stream) << "    <rect x='" << std::min(x0, x1) << "' y='" << std::min(y0, y1) <<
+    "' width='" << std::abs(x1 - x0) << "' height='" << std::abs(y1 - y0) << "' />\n";
+  (*stream) << "  </clipPath>\n";
+  (*stream) << "</defs>\n";
 }
 
 void svg_new_page(const pGEcontext gc, pDevDesc dd) {
 BEGIN_RCPP
+
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  std::ostream *stream = (std::ostream *) svgd->stream;
+  std::ostream *stream = svgd->stream;
 
   if (svgd->pageno > 0) {
     Rcpp::stop("svglite only supports one page");
@@ -334,12 +369,13 @@ BEGIN_RCPP
   (*stream) << "/>\n";
 
   svgd->pageno++;
-  VOID_END_RCPP
+
+VOID_END_RCPP
 }
 
 void svg_close(pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  std::ostream *stream = (std::ostream *) svgd->stream;
+  std::ostream *stream = svgd->stream;
 
   if (svgd->pageno > 0)
     (*stream) << "</svg>\n";
@@ -350,7 +386,7 @@ void svg_close(pDevDesc dd) {
 void svg_line(double x1, double y1, double x2, double y2,
                      const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  std::ostream *stream = (std::ostream *) svgd->stream;
+  std::ostream *stream = svgd->stream;
 
   (*stream) << "<line x1='" << x1 << "' y1='" << y1 << "' x2='" <<
     x2 << "' y2='" << y2 << '\'';
@@ -359,6 +395,8 @@ void svg_line(double x1, double y1, double x2, double y2,
   write_style_linetype(stream, gc, true);
   write_style_end(stream);
 
+  write_attr_clip(stream, svgd->clipno);
+
   (*stream) << " />\n";
 }
 
@@ -366,7 +404,7 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
               pDevDesc dd) {
 
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  std::ostream *stream = (std::ostream *) svgd->stream;
+  std::ostream *stream = svgd->stream;
 
   (*stream) << "<polyline points='";
 
@@ -380,6 +418,8 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   if (filled)
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
+
+  write_attr_clip(stream, svgd->clipno);
 
   (*stream) << " />\n";
 }
@@ -398,7 +438,7 @@ void svg_path(double *x, double *y,
               Rboolean winding,
               const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  std::ostream *stream = (std::ostream *) svgd->stream;
+  std::ostream *stream = svgd->stream;
 
   // Create path data
   (*stream) << "<path d='";
@@ -426,6 +466,8 @@ void svg_path(double *x, double *y,
   write_style_linetype(stream, gc);
   write_style_end(stream);
 
+  write_attr_clip(stream, svgd->clipno);
+
   (*stream) << " />\n";
 }
 
@@ -442,7 +484,7 @@ double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
 void svg_rect(double x0, double y0, double x1, double y1,
               const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  std::ostream *stream = (std::ostream *) svgd->stream;
+  std::ostream *stream = svgd->stream;
 
   // x and y give top-left position
   (*stream) << "<rect x='" << fmin(x0, x1) << "' y='" << fmin(y0, y1) <<
@@ -454,13 +496,15 @@ void svg_rect(double x0, double y0, double x1, double y1,
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
 
+  write_attr_clip(stream, svgd->clipno);
+
   (*stream) << " />\n";
 }
 
 void svg_circle(double x, double y, double r, const pGEcontext gc,
                        pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  std::ostream *stream = (std::ostream *) svgd->stream;
+  std::ostream *stream = svgd->stream;
 
   (*stream) << "<circle cx='" << x << "' cy='" << y << "' r='" << r << "pt'";
 
@@ -470,15 +514,26 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
 
+  write_attr_clip(stream, svgd->clipno);
+
   (*stream) << " />\n";
 }
 
 void svg_text(double x, double y, const char *str, double rot,
               double hadj, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  std::ostream *stream = (std::ostream *) svgd->stream;
+  std::ostream *stream = svgd->stream;
+
+  // If we specify the clip path inside <text>, the "transform" also
+  // affects the clip path, so we need to specify clip path at an outer level
+  if (svgd->clipno > 0) {
+    (*stream) << "<g";
+    write_attr_clip(stream, svgd->clipno);
+    stream->put('>');
+  }
 
   (*stream) << "<text";
+
   if (rot == 0) {
     write_attr_dbl(stream, "x", x);
     write_attr_dbl(stream, "y", y);
@@ -504,7 +559,12 @@ void svg_text(double x, double y, const char *str, double rot,
 
   write_escaped(stream, str);
 
-  (*stream) << "</text>\n";
+  (*stream) << "</text>";
+
+  if (svgd->clipno > 0)
+    (*stream) << "</g>";
+
+  stream->put('\n');
 }
 
 void svg_size(double *left, double *right, double *bottom, double *top,
@@ -522,7 +582,7 @@ void svg_raster(unsigned int *raster, int w, int h,
                 Rboolean interpolate,
                 const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  std::ostream *stream = (std::ostream *) svgd->stream;
+  std::ostream *stream = svgd->stream;
 
   if (height < 0)
     height = -height;
@@ -534,6 +594,14 @@ void svg_raster(unsigned int *raster, int w, int h,
 
   std::string base64_str = gdtools::raster_to_str(raster_, w, h, width, height,
     (Rboolean) interpolate);
+
+  // If we specify the clip path inside <image>, the "transform" also
+  // affects the clip path, so we need to specify clip path at an outer level
+  if (svgd->clipno > 0) {
+    (*stream) << "<g";
+    write_attr_clip(stream, svgd->clipno);
+    stream->put('>');
+  }
 
   (*stream) << "<image";
   write_attr_dbl(stream, "width", width);
@@ -547,12 +615,17 @@ void svg_raster(unsigned int *raster, int w, int h,
   }
 
   (*stream) << " xlink:href='data:image/png;base64," << base64_str << '\'';
-  (*stream) << "/>\n";
+  (*stream) << "/>";
+
+  if (svgd->clipno > 0)
+    (*stream) << "</g>";
+
+  stream->put('\n');
 }
 
 
 pDevDesc svg_driver_new(std::string filename, int bg, double width,
-                        double height, int pointsize, bool standalone) {
+                        double height, double pointsize, bool standalone) {
 
   pDevDesc dd = (DevDesc*) calloc(1, sizeof(DevDesc));
   if (dd == NULL)
@@ -610,7 +683,7 @@ pDevDesc svg_driver_new(std::string filename, int bg, double width,
   dd->ipr[1] = 1.0 / 72.0;
 
   // Capabilities
-  dd->canClip = FALSE;
+  dd->canClip = TRUE;
   dd->canHAdj = 0;
   dd->canChangeGamma = FALSE;
   dd->displayListOn = FALSE;
@@ -622,8 +695,9 @@ pDevDesc svg_driver_new(std::string filename, int bg, double width,
 }
 
 // [[Rcpp::export]]
-bool devSVG_(std::string file, std::string bg_, int width, int height,
-             int pointsize, bool standalone) {
+bool devSVG_(std::string file, std::string bg_, double width, double height,
+             double pointsize, bool standalone) {
+
   int bg = R_GE_str2col(bg_.c_str());
 
   R_GE_checkVersionOrDie(R_GE_version);
