@@ -6,16 +6,16 @@
 using namespace Rcpp;
 
 // devSVG_
-bool devSVG_(std::string file, std::string bg_, int width, int height, int pointsize, bool standalone);
+bool devSVG_(std::string file, std::string bg_, double width, double height, double pointsize, bool standalone);
 RcppExport SEXP svglite_devSVG_(SEXP fileSEXP, SEXP bg_SEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< std::string >::type file(fileSEXP);
     Rcpp::traits::input_parameter< std::string >::type bg_(bg_SEXP);
-    Rcpp::traits::input_parameter< int >::type width(widthSEXP);
-    Rcpp::traits::input_parameter< int >::type height(heightSEXP);
-    Rcpp::traits::input_parameter< int >::type pointsize(pointsizeSEXP);
+    Rcpp::traits::input_parameter< double >::type width(widthSEXP);
+    Rcpp::traits::input_parameter< double >::type height(heightSEXP);
+    Rcpp::traits::input_parameter< double >::type pointsize(pointsizeSEXP);
     Rcpp::traits::input_parameter< bool >::type standalone(standaloneSEXP);
     __result = Rcpp::wrap(devSVG_(file, bg_, width, height, pointsize, standalone));
     return __result;

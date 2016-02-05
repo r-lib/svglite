@@ -1,6 +1,6 @@
 Package: svglite
 Version: 1.0.0.9000
-Title: A SVG Graphics Device
+Title: An 'SVG' Graphics Device
 Description: A graphics device for R that produces 'Scalable Vector Graphics'.
   'svglite' is a fork of the older 'RSvgDevice' package.
 Authors@R: c(
@@ -30,4 +30,4 @@ Suggests:
 License: GPL (>= 2)
 URL: https://github.com/hadley/svglite
 BugReports: https://github.com/hadley/svglite/issues
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1
