@@ -1,5 +1,8 @@
 # svglite 1.0.0.9000
 
+* Text metrics now converted from points to pixels (#45, #48) - this
+  fixes text alignment issues.
+
 * Intermediate outputs are always valid SVG (#53).
 
 * `svglite` accepts special destinations `:terminal:` and `:string:` to print
