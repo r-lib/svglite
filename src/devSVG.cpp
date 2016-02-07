@@ -19,13 +19,32 @@
 #include <Rcpp.h>
 #include <gdtools.h>
 #include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <iomanip>
 #include <R_ext/GraphicsEngine.h>
 
 // SVG device metadata
 class SVGDesc {
 public:
-  FILE *file;
-  std::string filename;
+  std::string filename; // Filename of the SVG image. Two special filenames:
+                        // ":terminal:" to indicate printing on R terminal
+                        // ":string:" to save the content to a string
+
+  int stream_type;      // 0 - R terminal, 1 - string, 2 - file
+
+  std::ostringstream strstream; // The string output stream, only used
+                                // when stream_type == 1
+
+  std::ofstream filestream;     // The file output stream, only used
+                                // when stream_type == 2
+
+  std::ostream* stream;         // A pointer to the actual output stream (terminal/string/file)
+
+  std::ios::fmtflags stream_flags; // Save the original formatting flags --
+                                   // we don't want to pollute Rcpp::Rcout
+
   int pageno;
   int clipno;  // ID for the clip path
   double clipx0, clipx1, clipy0, clipy1;  // Save the previous clip path to avoid duplication
@@ -34,21 +53,49 @@ public:
 
   SVGDesc(std::string filename_, bool standalone_):
       filename(filename_),
+      stream_type(2),
       pageno(0),
       clipno(0),
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
       standalone(standalone_),
       cc(gdtools::context_create()) {
-    file = fopen(R_ExpandFileName(filename.c_str()), "w");
-  }
 
-  bool ok() const {
-    return file != NULL;
+    if (filename == ":terminal:") {
+      stream = (std::ostream*) &(Rcpp::Rcout);
+      stream_type = 0;
+    } else if (filename == ":string:") {
+      stream = (std::ostream*) &strstream;
+      stream_type = 1;
+    } else {
+      filestream.open(R_ExpandFileName(filename.c_str()));
+      stream = (std::ostream*) &filestream;
+      stream_type = 2;
+    }
+
+    if (stream->fail())
+      Rcpp::stop("cannot open stream " + filename);
+
+    // Save formatting flags
+    stream_flags = stream->flags();
+
+    // Format float numbers to be two digits
+    (*stream) << std::fixed << std::setprecision(2);
   }
 
   ~SVGDesc() {
-    if (ok())
-      fclose(file);
+    // Restore formatting flags
+    stream->flags(stream_flags);
+
+    // If it is a string stream, save the content to svglite:::.pkg_env$svg_string
+    if (stream_type == 1) {
+      Rcpp::Environment ns = Rcpp::Environment::namespace_env("svglite");
+      Rcpp::Environment pkg = ns[".pkg_env"];
+      pkg["svg_string"] = strstream.str();
+    }
+
+    // If it is a file stream, close the file
+    if (stream_type == 2)
+      filestream.close();
   }
 };
 
@@ -83,85 +130,96 @@ inline std::string fontname(const char* family_, int face) {
   }
 }
 
-inline void write_escaped(FILE* f, const char* text) {
+inline void write_escaped(std::ostream* stream, const char* text) {
   for(const char* cur = text; *cur != '\0'; ++cur) {
     switch(*cur) {
-    case '&': fputs("&amp;", f); break;
-    case '<': fputs("&lt;",  f); break;
-    case '>': fputs("&gt;",  f); break;
-    default:  fputc(*cur,    f);
+    case '&': (*stream) << "&amp;"; break;
+    case '<': (*stream) << "&lt;";  break;
+    case '>': (*stream) << "&gt;";  break;
+    default:  stream->put(*cur);
     }
   }
 }
 
-inline void write_attr_dbl(FILE* f, const char* attr, double value) {
-  fprintf(f, " %s='%.2f'", attr, value);
+inline void write_attr_dbl(std::ostream* stream, const char* attr, double value) {
+  (*stream) << ' ' << attr << "='" << value << '\'';
 }
 
-inline void write_attr_str(FILE* f, const char* attr, const char* value) {
-  fprintf(f, " %s='%s'", attr, value);
+inline void write_attr_str(std::ostream* stream, const char* attr, const char* value) {
+  (*stream) << ' ' << attr << "='" << value << '\'';
 }
 
 // Writing clip path attribute
-inline void write_attr_clip(FILE* f, int clipno) {
+inline void write_attr_clip(std::ostream* stream, int clipno) {
   if (clipno < 1)
     return;
 
-  fprintf(f, " clip-path='url(#cp%d)'", clipno);
+  (*stream) << " clip-path='url(#cp" << clipno << ")'";
 }
 
 // Beginning of writing style attributes
-inline void write_style_begin(FILE* f) {
-  fputs(" style='", f);
+inline void write_style_begin(std::ostream* stream) {
+  (*stream) << " style='";
 }
 
 // End of writing style attributes
-inline void write_style_end(FILE* f) {
-  fputs("'", f);
+inline void write_style_end(std::ostream* stream) {
+  stream->put('\'');
 }
 
 // Writing style attributes related to colors
-inline void write_style_col(FILE* f, const char* attr, int col, bool first = false) {
+inline void write_style_col(std::ostream* stream, const char* attr, int col, bool first = false) {
+  // Save formatting flags
+  std::ios::fmtflags fflag(stream->flags());
+
   int alpha = R_ALPHA(col);
 
-  fprintf(f, "%s", first ? "" : " ");
+  if(!first)  (*stream) << ' ';
+
   if (col == NA_INTEGER || alpha == 0) {
-    fprintf(f, "%s: none;", attr);
+    (*stream) << attr << ": none;";
     return;
   } else {
-    fprintf(f, "%s: #%02X%02X%02X;", attr, R_RED(col), R_GREEN(col), R_BLUE(col));
+    (*stream) << attr << ": #" <<
+      std::setfill('0') << std::uppercase << std::hex <<
+      std::setw(2) << R_RED(col) <<
+      std::setw(2) << R_GREEN(col) <<
+      std::setw(2) << R_BLUE(col) << ';';
     if (alpha != 255)
-      fprintf(f, " %s-opacity: %0.2f;", attr, alpha / 255.0);
+      (*stream) << ' ' << attr << "-opacity: " << alpha / 255.0 << ';';
   }
+
+  // Restore formatting flags
+  stream->flags(fflag);
 }
 
 // Writing style attributes whose values are double type
-inline void write_style_dbl(FILE* f, const char* attr, double value, bool first = false) {
-  fprintf(f, "%s", first ? "" : " ");
-  fprintf(f, "%s: %.2f;", attr, value);
+inline void write_style_dbl(std::ostream* stream, const char* attr, double value, bool first = false) {
+  if(!first)  (*stream) << ' ';
+  (*stream) << attr << ": " << value << ';';
 }
 
-inline void write_style_fontsize(FILE* f, double value, bool first = false) {
-  fprintf(f, "%s", first ? "" : " ");
-  fprintf(f, "font-size: %.2fpt;", value);
+inline void write_style_fontsize(std::ostream* stream, double value, bool first = false) {
+  if(!first)  (*stream) << ' ';
+  (*stream) << "font-size: " << value << "pt;";
 }
 
 // Writing style attributes whose values are strings
-inline void write_style_str(FILE* f, const char* attr, const char* value, bool first = false) {
-  fprintf(f, "%s", first ? "" : " ");
-  fprintf(f, "%s: %s;", attr, value);
+inline void write_style_str(std::ostream* stream, const char* attr, const char* value, bool first = false) {
+  if(!first)  (*stream) << ' ';
+  (*stream) << attr << ": " << value << ';';
 }
 
 // Writing style attributes related to line types
-inline void write_style_linetype(FILE* f, const pGEcontext gc, bool first = false) {
+inline void write_style_linetype(std::ostream* stream, const pGEcontext gc, bool first = false) {
   int lty = gc->lty;
 
   // 1 lwd = 1/96", but units in rest of document are 1/72"
-  write_style_dbl(f, "stroke-width", gc->lwd / 96 * 72, first);
+  write_style_dbl(stream, "stroke-width", gc->lwd / 96.0 * 72, first);
 
   // Default is "stroke: #000000;" as declared in <style>
   if (!is_black(gc->col))
-    write_style_col(f, "stroke", gc->col);
+    write_style_col(stream, "stroke", gc->col);
 
   // Set line pattern type
   switch (lty) {
@@ -170,16 +228,16 @@ inline void write_style_linetype(FILE* f, const pGEcontext gc, bool first = fals
     break;
   default:
     // See comment in GraphicsEngine.h for how this works
-    fputs(" stroke-dasharray: ", f);
+    (*stream) << " stroke-dasharray: " << std::dec;
     // First number
-    fprintf(f, "%i", (int) gc->lwd * (lty & 15));
+    (*stream) << (int) gc->lwd * (lty & 15);
     lty = lty >> 4;
     // Remaining numbers
     for(int i = 1 ; i < 8 && lty & 15; i++) {
-      fprintf(f, ",%i", (int) gc->lwd * (lty & 15));
+      (*stream) << ',' << (int) gc->lwd * (lty & 15);
       lty = lty >> 4;
     }
-    fputs(";", f);
+    stream->put(';');
     break;
   }
 
@@ -189,10 +247,10 @@ inline void write_style_linetype(FILE* f, const pGEcontext gc, bool first = fals
   case GE_ROUND_CAP: // declared to be default in <style>
     break;
   case GE_BUTT_CAP:
-    write_style_str(f, "stroke-linecap", "butt");
+    write_style_str(stream, "stroke-linecap", "butt");
     break;
   case GE_SQUARE_CAP:
-    write_style_str(f, "stroke-linecap", "square");
+    write_style_str(stream, "stroke-linecap", "square");
     break;
   default:
     break;
@@ -204,12 +262,12 @@ inline void write_style_linetype(FILE* f, const pGEcontext gc, bool first = fals
   case GE_ROUND_JOIN: // declared to be default in <style>
     break;
   case GE_BEVEL_JOIN:
-    write_style_str(f, "stroke-linejoin", "bevel");
+    write_style_str(stream, "stroke-linejoin", "bevel");
     break;
   case GE_MITRE_JOIN:
-    write_style_str(f, "stroke-linejoin", "miter");
+    write_style_str(stream, "stroke-linejoin", "miter");
     if (std::abs(gc->lmitre - 10.0) > 1e-3) // 10 is declared to be the default in <style>
-      write_style_dbl(f, "stroke-miterlimit", gc->lmitre);
+      write_style_dbl(stream, "stroke-miterlimit", gc->lmitre);
     break;
   default:
     break;
@@ -242,6 +300,7 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
 
 void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  std::ostream *stream = svgd->stream;
 
   // Avoid duplication
   if (std::abs(x0 - svgd->clipx0) < 0.01 &&
@@ -256,58 +315,58 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   svgd->clipy0 = y0;
   svgd->clipy1 = y1;
 
-  fputs("<defs>\n", svgd->file);
-  fprintf(svgd->file, "  <clipPath id='cp%d'>\n", svgd->clipno);
-  fprintf(svgd->file, "    <rect x='%.2f' y='%.2f' width='%.2f' height='%.2f' />\n",
-          std::min(x0, x1), std::min(y0, y1), std::abs(x1 - x0), std::abs(y1 - y0));
-  fputs("  </clipPath>\n", svgd->file);
-  fputs("</defs>\n", svgd->file);
-
+  (*stream) << "<defs>\n";
+  (*stream) << "  <clipPath id='cp" << svgd->clipno << "'>\n";
+  (*stream) << "    <rect x='" << std::min(x0, x1) << "' y='" << std::min(y0, y1) <<
+    "' width='" << std::abs(x1 - x0) << "' height='" << std::abs(y1 - y0) << "' />\n";
+  (*stream) << "  </clipPath>\n";
+  (*stream) << "</defs>\n";
 }
 
 void svg_new_page(const pGEcontext gc, pDevDesc dd) {
 BEGIN_RCPP
 
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  std::ostream *stream = svgd->stream;
 
   if (svgd->pageno > 0) {
     Rcpp::stop("svglite only supports one page");
   }
 
   if (svgd->standalone)
-    fputs("<?xml version='1.0' encoding='UTF-8' ?>\n", svgd->file);
+    (*stream) << "<?xml version='1.0' encoding='UTF-8' ?>\n";
 
-  fputs("<svg", svgd->file);
+  (*stream) << "<svg";
   if (svgd->standalone){
-    fputs(" xmlns='http://www.w3.org/2000/svg'", svgd->file);
+    (*stream) << " xmlns='http://www.w3.org/2000/svg'";
     //http://www.w3.org/wiki/SVG_Links
-    fputs(" xmlns:xlink='http://www.w3.org/1999/xlink'", svgd->file);
+    (*stream) << " xmlns:xlink='http://www.w3.org/1999/xlink'";
   }
 
-  fprintf(svgd->file, " viewBox='0 0 %.2f %.2f'>\n", dd->right, dd->bottom);
+  (*stream) << " viewBox='0 0 " << dd->right << ' ' << dd->bottom << "'>\n";
 
   // Setting default styles
-  fputs("<defs>\n", svgd->file);
-  fputs("  <style type='text/css'><![CDATA[\n", svgd->file);
-  fputs("    line, polyline, path, rect, circle {\n", svgd->file);
-  fputs("      fill: none;\n", svgd->file);
-  fputs("      stroke: #000000;\n", svgd->file);
-  fputs("      stroke-linecap: round;\n", svgd->file);
-  fputs("      stroke-linejoin: round;\n", svgd->file);
-  fputs("      stroke-miterlimit: 10.00;\n", svgd->file);
-  fputs("    }\n", svgd->file);
-  fputs("  ]]></style>\n", svgd->file);
-  fputs("</defs>\n", svgd->file);
+  (*stream) << "<defs>\n";
+  (*stream) << "  <style type='text/css'><![CDATA[\n";
+  (*stream) << "    line, polyline, path, rect, circle {\n";
+  (*stream) << "      fill: none;\n";
+  (*stream) << "      stroke: #000000;\n";
+  (*stream) << "      stroke-linecap: round;\n";
+  (*stream) << "      stroke-linejoin: round;\n";
+  (*stream) << "      stroke-miterlimit: 10.00;\n";
+  (*stream) << "    }\n";
+  (*stream) << "  ]]></style>\n";
+  (*stream) << "</defs>\n";
 
-  fputs("<rect width='100%' height='100%'", svgd->file);
-  write_style_begin(svgd->file);
-  write_style_str(svgd->file, "stroke", "none", true);
+  (*stream) << "<rect width='100%' height='100%'";
+  write_style_begin(stream);
+  write_style_str(stream, "stroke", "none", true);
   if (is_filled(gc->fill))
-    write_style_col(svgd->file, "fill", gc->fill);
+    write_style_col(stream, "fill", gc->fill);
   else
-    write_style_col(svgd->file, "fill", dd->startfill);
-  write_style_end(svgd->file);
-  fputs("/>\n", svgd->file);
+    write_style_col(stream, "fill", dd->startfill);
+  write_style_end(stream);
+  (*stream) << "/>\n";
 
   svgd->pageno++;
 
@@ -316,9 +375,10 @@ VOID_END_RCPP
 
 void svg_close(pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  std::ostream *stream = svgd->stream;
 
   if (svgd->pageno > 0)
-    fputs("</svg>\n", svgd->file);
+    (*stream) << "</svg>\n";
 
   delete(svgd);
 }
@@ -326,39 +386,42 @@ void svg_close(pDevDesc dd) {
 void svg_line(double x1, double y1, double x2, double y2,
                      const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  std::ostream *stream = svgd->stream;
 
-  fprintf(svgd->file, "<line x1='%.2f' y1='%.2f' x2='%.2f' y2='%.2f'",
-    x1, y1, x2, y2);
+  (*stream) << "<line x1='" << x1 << "' y1='" << y1 << "' x2='" <<
+    x2 << "' y2='" << y2 << '\'';
 
-  write_style_begin(svgd->file);
-  write_style_linetype(svgd->file, gc, true);
-  write_style_end(svgd->file);
+  write_style_begin(stream);
+  write_style_linetype(stream, gc, true);
+  write_style_end(stream);
 
-  write_attr_clip(svgd->file, svgd->clipno);
+  write_attr_clip(stream, svgd->clipno);
 
-  fputs(" />\n", svgd->file);
+  (*stream) << " />\n";
 }
 
 void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
               pDevDesc dd) {
 
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  fputs("<polyline points='", svgd->file);
+  std::ostream *stream = svgd->stream;
+
+  (*stream) << "<polyline points='";
 
   for (int i = 0; i < n; i++) {
-    fprintf(svgd->file, "%.2f,%.2f ", x[i], y[i]);
+    (*stream) << x[i] << ',' << y[i] << ' ';
   }
-  fputs("'", svgd->file);
+  stream->put('\'');
 
-  write_style_begin(svgd->file);
-  write_style_linetype(svgd->file, gc, true);
+  write_style_begin(stream);
+  write_style_linetype(stream, gc, true);
   if (filled)
-    write_style_col(svgd->file, "fill", gc->fill);
-  write_style_end(svgd->file);
+    write_style_col(stream, "fill", gc->fill);
+  write_style_end(stream);
 
-  write_attr_clip(svgd->file, svgd->clipno);
+  write_attr_clip(stream, svgd->clipno);
 
-  fputs(" />\n", svgd->file);
+  (*stream) << " />\n";
 }
 
 void svg_polyline(int n, double *x, double *y, const pGEcontext gc,
@@ -375,35 +438,37 @@ void svg_path(double *x, double *y,
               Rboolean winding,
               const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  std::ostream *stream = svgd->stream;
+
   // Create path data
-  fputs("<path d='", svgd->file);
+  (*stream) << "<path d='";
   int ind = 0;
   for (int i = 0; i < npoly; i++) {
     // Move to the first point of the sub-path
-    fprintf(svgd->file, "M %.2f %.2f ", x[ind], y[ind]);
+    (*stream) << "M " << x[ind] << ' ' << y[ind] << ' ';
     ind++;
     // Draw the sub-path
     for (int j = 1; j < nper[i]; j++) {
-      fprintf(svgd->file, "L %.2f %.2f ", x[ind], y[ind]);
+      (*stream) << "L " << x[ind] << ' ' << y[ind] << ' ';
       ind++;
     }
     // Close the sub-path
-    fputs("Z ", svgd->file);
+    stream->put('Z');
   }
   // Finish path data
-  fputs("'", svgd->file);
+  stream->put('\'');
 
-  write_style_begin(svgd->file);
+  write_style_begin(stream);
   // Specify fill rule
-  write_style_str(svgd->file, "fill-rule", winding ? "nonzero" : "evenodd", true);
+  write_style_str(stream, "fill-rule", winding ? "nonzero" : "evenodd", true);
   if (is_filled(gc->fill))
-    write_style_col(svgd->file, "fill", gc->fill);
-  write_style_linetype(svgd->file, gc);
-  write_style_end(svgd->file);
+    write_style_col(stream, "fill", gc->fill);
+  write_style_linetype(stream, gc);
+  write_style_end(stream);
 
-  write_attr_clip(svgd->file, svgd->clipno);
+  write_attr_clip(stream, svgd->clipno);
 
-  fputs(" />\n", svgd->file);
+  (*stream) << " />\n";
 }
 
 double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
@@ -419,85 +484,87 @@ double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
 void svg_rect(double x0, double y0, double x1, double y1,
               const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  std::ostream *stream = svgd->stream;
 
   // x and y give top-left position
-  fprintf(svgd->file,
-      "<rect x='%.2f' y='%.2f' width='%.2f' height='%.2f'",
-      fmin(x0, x1), fmin(y0, y1), fabs(x1 - x0), fabs(y1 - y0));
+  (*stream) << "<rect x='" << fmin(x0, x1) << "' y='" << fmin(y0, y1) <<
+    "' width='" << fabs(x1 - x0) << "' height='" << fabs(y1 - y0) << '\'';
 
-  write_style_begin(svgd->file);
-  write_style_linetype(svgd->file, gc, true);
+  write_style_begin(stream);
+  write_style_linetype(stream, gc, true);
   if (is_filled(gc->fill))
-    write_style_col(svgd->file, "fill", gc->fill);
-  write_style_end(svgd->file);
+    write_style_col(stream, "fill", gc->fill);
+  write_style_end(stream);
 
-  write_attr_clip(svgd->file, svgd->clipno);
+  write_attr_clip(stream, svgd->clipno);
 
-  fputs(" />\n", svgd->file);
+  (*stream) << " />\n";
 }
 
 void svg_circle(double x, double y, double r, const pGEcontext gc,
                        pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  std::ostream *stream = svgd->stream;
 
-  fprintf(svgd->file, "<circle cx='%.2f' cy='%.2f' r='%.2fpt'", x, y, r);
+  (*stream) << "<circle cx='" << x << "' cy='" << y << "' r='" << r << "pt'";
 
-  write_style_begin(svgd->file);
-  write_style_linetype(svgd->file, gc, true);
+  write_style_begin(stream);
+  write_style_linetype(stream, gc, true);
   if (is_filled(gc->fill))
-    write_style_col(svgd->file, "fill", gc->fill);
-  write_style_end(svgd->file);
+    write_style_col(stream, "fill", gc->fill);
+  write_style_end(stream);
 
-  write_attr_clip(svgd->file, svgd->clipno);
+  write_attr_clip(stream, svgd->clipno);
 
-  fputs(" />\n", svgd->file);
+  (*stream) << " />\n";
 }
 
 void svg_text(double x, double y, const char *str, double rot,
               double hadj, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  std::ostream *stream = svgd->stream;
 
   // If we specify the clip path inside <text>, the "transform" also
   // affects the clip path, so we need to specify clip path at an outer level
   if (svgd->clipno > 0) {
-    fputs("<g", svgd->file);
-    write_attr_clip(svgd->file, svgd->clipno);
-    fputs(">", svgd->file);
+    (*stream) << "<g";
+    write_attr_clip(stream, svgd->clipno);
+    stream->put('>');
   }
 
-  fputs("<text", svgd->file);
+  (*stream) << "<text";
+
   if (rot == 0) {
-    write_attr_dbl(svgd->file, "x", x);
-    write_attr_dbl(svgd->file, "y", y);
+    write_attr_dbl(stream, "x", x);
+    write_attr_dbl(stream, "y", y);
   } else {
-    fprintf(svgd->file, " transform='translate(%.2f,%.2f) rotate(%0.0f)'", x, y,
-      -1.0 * rot);
+    (*stream) << " transform='translate(" << x << ',' << y << ") rotate(" <<
+      std::setprecision(0) << -1.0 * rot << ")'" << std::setprecision(2);
   }
 
-  write_style_begin(svgd->file);
-  write_style_fontsize(svgd->file, gc->cex * gc->ps, true);
+  write_style_begin(stream);
+  write_style_fontsize(stream, gc->cex * gc->ps, true);
   if (is_bold(gc->fontface))
-    write_style_str(svgd->file, "font-weight", "bold");
+    write_style_str(stream, "font-weight", "bold");
   if (is_italic(gc->fontface))
-    write_style_str(svgd->file, "font-style", "italic");
+    write_style_str(stream, "font-style", "italic");
   if (!is_black(gc->col))
-    write_style_col(svgd->file, "fill", gc->col);
+    write_style_col(stream, "fill", gc->col);
 
   std::string font = fontname(gc->fontfamily, gc->fontface);
-  write_style_str(svgd->file, "font-family", font.c_str());
-  write_style_end(svgd->file);
+  write_style_str(stream, "font-family", font.c_str());
+  write_style_end(stream);
 
-  fputs(">", svgd->file);
+  stream->put('>');
 
-  write_escaped(svgd->file, str);
+  write_escaped(stream, str);
 
-  fputs("</text>", svgd->file);
+  (*stream) << "</text>";
 
-  if (svgd->clipno > 0) {
-    fputs("</g>", svgd->file);
-  }
+  if (svgd->clipno > 0)
+    (*stream) << "</g>";
 
-  fputs("\n", svgd->file);
+  stream->put('\n');
 }
 
 void svg_size(double *left, double *right, double *bottom, double *top,
@@ -515,6 +582,7 @@ void svg_raster(unsigned int *raster, int w, int h,
                 Rboolean interpolate,
                 const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  std::ostream *stream = svgd->stream;
 
   if (height < 0)
     height = -height;
@@ -530,29 +598,29 @@ void svg_raster(unsigned int *raster, int w, int h,
   // If we specify the clip path inside <image>, the "transform" also
   // affects the clip path, so we need to specify clip path at an outer level
   if (svgd->clipno > 0) {
-    fputs("<g", svgd->file);
-    write_attr_clip(svgd->file, svgd->clipno);
-    fputs(">", svgd->file);
+    (*stream) << "<g";
+    write_attr_clip(stream, svgd->clipno);
+    stream->put('>');
   }
 
-  fputs("<image", svgd->file);
-  write_attr_dbl(svgd->file, "width", width);
-  write_attr_dbl(svgd->file, "height", height);
-  write_attr_dbl(svgd->file, "x", x);
-  write_attr_dbl(svgd->file, "y", y - height);
+  (*stream) << "<image";
+  write_attr_dbl(stream, "width", width);
+  write_attr_dbl(stream, "height", height);
+  write_attr_dbl(stream, "x", x);
+  write_attr_dbl(stream, "y", y - height);
 
-  if ( rot != 0 ) {
-    fprintf(svgd->file, " transform='rotate(%0.0f,%.2f,%.2f)'", -1.0 * rot, x, y);
+  if( rot != 0 ){
+    (*stream) << " transform='rotate(" << std::setprecision(0) << -1.0 * rot <<
+      std::setprecision(2) << ',' << x << ',' << y << ")'";
   }
 
-  fprintf(svgd->file, " xlink:href='data:image/png;base64,%s'", base64_str.c_str());
-  fputs( "/>", svgd->file);
+  (*stream) << " xlink:href='data:image/png;base64," << base64_str << '\'';
+  (*stream) << "/>";
 
-  if (svgd->clipno > 0) {
-    fputs("</g>", svgd->file);
-  }
+  if (svgd->clipno > 0)
+    (*stream) << "</g>";
 
-  fputs("\n", svgd->file);
+  stream->put('\n');
 }
 
 

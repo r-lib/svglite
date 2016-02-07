@@ -8,13 +8,18 @@ svglite(file = "Rplots.svg", width = 10, height = 8, bg = "white",
   pointsize = 12, standalone = TRUE)
 }
 \arguments{
-\item{file}{the file where output will appear.}
+\item{file}{The file where output will appear. There are two special values
+that can be recognized by the device: \code{file = ":terminal:"}
+prints the content of SVG to the R terminal, and \code{file = ":string:"}
+saves the SVG to a character string which can be retrieved by
+\code{\link{stringSVG}()} after closing the device. These two special values
+will not generate temporary files on the hard disk.}
 
 \item{height, width}{Height and width in inches.}
 
 \item{bg}{Default background color for the plot (defaults to "white").}
 
-\item{pointsize}{default point size.}
+\item{pointsize}{Default point size.}
 
 \item{standalone}{Produce a standalone svg file? If \code{FALSE}, omits
 xml header and default namespace.}
@@ -24,9 +29,23 @@ This function produces graphics compliant to the current w3 svg XML standard.
 The driver output is currently NOT specifying a DOCTYPE DTD.
 }
 \examples{
-svglite()
-plot(1:11,(-5:5)^2, type='b', main="Simple Example")
+## Save to file
+svglite("Rplots.svg")
+plot(1:11, (-5:5)^2, type = 'b', main = "Simple Example")
 dev.off()
+
+## Print to R console
+svglite(":terminal:")
+plot.new()
+dev.off()
+
+## Write to a string stream
+svglite(":string:")
+plot.new()
+dev.off()
+svgstr <- stringSVG()
+cat(svgstr)
+
 }
 \author{
 This driver was written by T Jake Luciani
