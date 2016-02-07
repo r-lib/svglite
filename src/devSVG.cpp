@@ -32,15 +32,9 @@ public:
                         // ":terminal:" to indicate printing on R terminal
                         // ":string:" to save the content to a string
 
-  int stream_type;      // 0 - R terminal, 1 - string, 2 - file
-
-  std::ostringstream strstream; // The string output stream, only used
-                                // when stream_type == 1
-
-  std::ofstream filestream;     // The file output stream, only used
-                                // when stream_type == 2
-
-  std::ostream* stream;         // A pointer to the actual output stream (terminal/string/file)
+  std::ostringstream strstream; // only used for string output
+  std::ofstream filestream;     // only used for file output
+  std::ostream* stream;         // pointer to the actual output stream
 
   std::ios::fmtflags stream_flags; // Save the original formatting flags --
                                    // we don't want to pollute Rcpp::Rcout
@@ -53,7 +47,6 @@ public:
 
   SVGDesc(std::string filename_, bool standalone_):
       filename(filename_),
-      stream_type(2),
       pageno(0),
       clipno(0),
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
@@ -62,40 +55,34 @@ public:
 
     if (filename == ":terminal:") {
       stream = (std::ostream*) &(Rcpp::Rcout);
-      stream_type = 0;
+      // Save formatting flags
+      stream_flags = stream->flags();
     } else if (filename == ":string:") {
       stream = (std::ostream*) &strstream;
-      stream_type = 1;
     } else {
       filestream.open(R_ExpandFileName(filename.c_str()));
       stream = (std::ostream*) &filestream;
-      stream_type = 2;
     }
 
     if (stream->fail())
       Rcpp::stop("cannot open stream " + filename);
 
-    // Save formatting flags
-    stream_flags = stream->flags();
 
     // Format float numbers to be two digits
     (*stream) << std::fixed << std::setprecision(2);
   }
 
   ~SVGDesc() {
-    // Restore formatting flags
-    stream->flags(stream_flags);
-
-    // If it is a string stream, save the content to svglite:::.pkg_env$svg_string
-    if (stream_type == 1) {
+    if (filename == ":terminal:") {
+      // Restore formatting flags
+      stream->flags(stream_flags);
+    } else if (filename == ":string:") {
       Rcpp::Environment ns = Rcpp::Environment::namespace_env("svglite");
       Rcpp::Environment pkg = ns[".pkg_env"];
       pkg["svg_string"] = strstream.str();
-    }
-
-    // If it is a file stream, close the file
-    if (stream_type == 2)
+    } else {
       filestream.close();
+    }
   }
 };
 
