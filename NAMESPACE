@@ -2,6 +2,7 @@
 
 export(editSVG)
 export(htmlSVG)
+export(stringSVG)
 export(svglite)
 export(xmlSVG)
 importFrom(Rcpp,sourceCpp)
