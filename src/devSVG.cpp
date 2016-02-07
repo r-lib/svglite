@@ -261,6 +261,11 @@ inline void write_style_linetype(std::ostream* stream, const pGEcontext gc, bool
   }
 }
 
+inline void terminate_svg(std::ostream* stream) {
+  *(stream) << "</svg>\n";
+  stream->seekp(-7, std::ios_base::cur);
+}
+
 // Callback functions for graphics device --------------------------------------
 
 void svg_metric_info(int c, const pGEcontext gc, double* ascent,
@@ -362,10 +367,9 @@ VOID_END_RCPP
 
 void svg_close(pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  std::ostream *stream = svgd->stream;
 
   if (svgd->pageno > 0)
-    (*stream) << "</svg>\n";
+    terminate_svg(svgd->stream);
 
   delete(svgd);
 }
@@ -385,6 +389,7 @@ void svg_line(double x1, double y1, double x2, double y2,
   write_attr_clip(stream, svgd->clipno);
 
   (*stream) << " />\n";
+  terminate_svg(stream);
 }
 
 void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
@@ -409,6 +414,8 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   write_attr_clip(stream, svgd->clipno);
 
   (*stream) << " />\n";
+  terminate_svg(stream);
+
 }
 
 void svg_polyline(int n, double *x, double *y, const pGEcontext gc,
@@ -456,6 +463,7 @@ void svg_path(double *x, double *y,
   write_attr_clip(stream, svgd->clipno);
 
   (*stream) << " />\n";
+  terminate_svg(stream);
 }
 
 double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
@@ -486,6 +494,7 @@ void svg_rect(double x0, double y0, double x1, double y1,
   write_attr_clip(stream, svgd->clipno);
 
   (*stream) << " />\n";
+  terminate_svg(stream);
 }
 
 void svg_circle(double x, double y, double r, const pGEcontext gc,
@@ -504,6 +513,7 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
   write_attr_clip(stream, svgd->clipno);
 
   (*stream) << " />\n";
+  terminate_svg(stream);
 }
 
 void svg_text(double x, double y, const char *str, double rot,
@@ -552,6 +562,7 @@ void svg_text(double x, double y, const char *str, double rot,
     (*stream) << "</g>";
 
   stream->put('\n');
+  terminate_svg(stream);
 }
 
 void svg_size(double *left, double *right, double *bottom, double *top,
@@ -608,6 +619,7 @@ void svg_raster(unsigned int *raster, int w, int h,
     (*stream) << "</g>";
 
   stream->put('\n');
+  terminate_svg(stream);
 }
 
 

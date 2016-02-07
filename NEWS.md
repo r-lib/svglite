@@ -1,5 +1,7 @@
 # svglite 1.0.0.9000
 
+* Intermediate outputs are always valid SVG (#53).
+
 * `svglite` accepts special destinations `:terminal:` and `:string:` to print
   svg to the terminal or return as a string (accessed with `stringSVG()`) 
   respectively (#40, @yixuan).
