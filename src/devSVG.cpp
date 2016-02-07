@@ -285,9 +285,9 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
     gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface));
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
-  *ascent = fm.ascent;
-  *descent = fm.descent;
-  *width = fm.width;
+  *ascent = fm.ascent * 96.0 / 72;
+  *descent = fm.descent * 96.0 / 72;
+  *width = fm.width * 96.0 / 72;
 }
 
 void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
@@ -473,7 +473,7 @@ double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
     gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface));
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
-  return fm.width;
+  return fm.width * 96 / 72;
 }
 
 void svg_rect(double x0, double y0, double x1, double y1,
