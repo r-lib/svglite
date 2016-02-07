@@ -1,31 +1,24 @@
 context("Output")
 
-test_that("three types of output", {
+test_that("different outputs produce identical code", {
+  simple_plot <- function(path) {
+    svglite(path)
+    plot(1:5)
+    invisible(dev.off())
+  }
 
   ## 1. Write to a file
   f1 <- tempfile()
-  svglite(f1)
-  plot(1:5, (1:5)^2, main = "Examples")
-  dev.off()
+  simple_plot(f1)
+  out1 <- readLines(f1)
 
   ## 2. Direct to R terminal
-  f2 <- tempfile()
-  sink(f2) # capture the output
-  svglite(":terminal:")
-  plot(1:5, (1:5)^2, main = "Examples")
-  invisible(dev.off())
-  sink()
+  out2 <- capture.output(simple_plot(":terminal:"))
 
   ## 3. Write to a string stream
-  svglite(":string:")
-  plot(1:5, (1:5)^2, main = "Examples")
-  dev.off()
-  svgstr <- stringSVG()
+  simple_plot(":string:")
+  out3 <- strsplit(stringSVG(), "\n")[[1]]
 
-  str1 <- readLines(f1)
-  str2 <- readLines(f2)
-  str3 <- unlist(strsplit(svgstr, "\n"))
-
-  expect_equal(str1, str2)
-  expect_equal(str1, str3)
+  expect_equal(out1, out2)
+  expect_equal(out1, out2)
 })

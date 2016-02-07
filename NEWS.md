@@ -1,5 +1,9 @@
 # svglite 1.0.0.9000
 
+* `svglite` accepts special destinations `:terminal:` and `:string:` to print
+  svg to the terminal or return as a string (accessed with `stringSVG()`) 
+  respectively (#40, @yixuan).
+
 * Use raster test compatible with older versions of R.
 
 * Add support for `clip()`. This also fixes a number of minor issues with

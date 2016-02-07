@@ -2,12 +2,13 @@
 % Please edit documentation in R/SVG.R
 \name{stringSVG}
 \alias{stringSVG}
-\title{Extract the content of SVG as a string}
+\title{Access current SVG as a string.}
 \usage{
 stringSVG()
 }
 \value{
-A character string representing the last plot created by \code{svglite(":string:")}.
+A character string representing the last plot created by
+  \code{svglite(":string:")}.
 }
 \description{
 This function is used to extract the content of SVG produced by
@@ -19,7 +20,6 @@ and does not generate any temporary files.
 svglite(":string:")
 plot(rnorm(5), rnorm(5))
 dev.off()
-svgstr = stringSVG()
-cat(svgstr)
+cat(stringSVG())
 }
 

@@ -9,11 +9,12 @@ svglite(file = "Rplots.svg", width = 10, height = 8, bg = "white",
 }
 \arguments{
 \item{file}{The file where output will appear. There are two special values
-that can be recognized by the device: \code{file = ":terminal:"}
-prints the content of SVG to the R terminal, and \code{file = ":string:"}
-saves the SVG to a character string which can be retrieved by
-\code{\link{stringSVG}()} after closing the device. These two special values
-will not generate temporary files on the hard disk.}
+  recognized by the device:
+
+  \code{file = ":terminal:"} prints the content of SVG to the R terminal.
+
+  \code{file = ":string:"} saves the SVG to a character string which can be
+  retrieved by \code{\link{stringSVG}()} after closing the device.}
 
 \item{height, width}{Height and width in inches.}
 
@@ -29,22 +30,21 @@ This function produces graphics compliant to the current w3 svg XML standard.
 The driver output is currently NOT specifying a DOCTYPE DTD.
 }
 \examples{
-## Save to file
+# Save to file
 svglite("Rplots.svg")
 plot(1:11, (-5:5)^2, type = 'b', main = "Simple Example")
 dev.off()
 
-## Print to R console
+# Print to R console
 svglite(":terminal:")
 plot.new()
 dev.off()
 
-## Write to a string stream
+# Write to a string stream
 svglite(":string:")
 plot.new()
 dev.off()
-svgstr <- stringSVG()
-cat(svgstr)
+cat(stringSVG())
 
 }
 \author{
