@@ -337,6 +337,12 @@ BEGIN_RCPP
 
   (*stream) << " viewBox='0 0 " << dd->right << ' ' << dd->bottom << "'>\n";
 
+  // Initialise clipping the same way R does
+  svgd->clipx0 = 0;
+  svgd->clipy0 = dd->bottom;
+  svgd->clipx1 = dd->right;
+  svgd->clipy1 = 0;
+
   // Setting default styles
   (*stream) << "<defs>\n";
   (*stream) << "  <style type='text/css'><![CDATA[\n";

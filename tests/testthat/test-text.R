@@ -117,12 +117,10 @@ test_that("symbol font family is 'symbol'", {
 })
 
 test_that("strwidth and height correctly computed", {
-  svglite("test-text.svg", 16, 8)
+  svglite("test-text.svg", 4, 4)
   on.exit(dev.off())
 
   plot.new()
-  plot.window(0:1, 0:1)
-
   str <- "This is a string"
   text(0.5, 0.5, str)
 

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 1152.00 576.00'>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 288.00 288.00'>
 <defs>
   <style type='text/css'><![CDATA[
     line, polyline, path, rect, circle {
@@ -14,9 +14,9 @@
 <rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
 <defs>
   <clipPath id='cp1'>
-    <rect x='59.04' y='59.04' width='1062.72' height='443.52' />
+    <rect x='59.04' y='59.04' width='198.72' height='155.52' />
   </clipPath>
 </defs>
-<g clip-path='url(#cp1)'><text x='538.83' y='284.84' style='font-size: 12.00pt; font-family: Arial;'>This is a string</text></g>
-<rect x='538.83' y='275.07' width='103.14' height='11.45' style='stroke-width: 0.75;' clip-path='url(#cp1)' />
+<g clip-path='url(#cp1)'><text x='106.83' y='140.84' style='font-size: 12.00pt; font-family: Arial;'>This is a string</text></g>
+<rect x='106.83' y='131.07' width='103.14' height='11.45' style='stroke-width: 0.75;' clip-path='url(#cp1)' />
 </svg>
