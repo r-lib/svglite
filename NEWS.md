@@ -1,4 +1,4 @@
-# svglite 1.0.0.9000
+# svglite 1.1.0
 
 * Text metrics now converted from points to pixels (#45, #48) - this
   fixes text alignment issues.

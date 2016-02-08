@@ -13,4 +13,5 @@
   (https://github.com/hadley/svglite/blob/master/revdep/summary.md).
 
 * I couldn't install either of them because I don't have the right 
-  dependencies. I informed the maintainers.
+  dependencies - but the chances of failures are small. 
+  I informed the maintainers.
