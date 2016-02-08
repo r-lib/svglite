@@ -9,4 +9,8 @@
 
 ## Downstream dependencies
 
-There are currently no downstream dependencies.
+* I ran R CMD check on all 2 downstream dependencies
+  (https://github.com/hadley/svglite/blob/master/revdep/summary.md).
+
+* I couldn't install either of them because I don't have the right 
+  dependencies. I informed the maintainers.
