@@ -366,6 +366,7 @@ BEGIN_RCPP
   write_style_end(stream);
   (*stream) << "/>\n";
 
+  terminate_svg(svgd->stream);
   svgd->pageno++;
 
 VOID_END_RCPP
@@ -374,9 +375,7 @@ VOID_END_RCPP
 void svg_close(pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  if (svgd->pageno > 0)
-    terminate_svg(svgd->stream);
-
+  terminate_svg(svgd->stream);
   delete(svgd);
 }
 
