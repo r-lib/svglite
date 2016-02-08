@@ -262,8 +262,8 @@ inline void write_style_linetype(std::ostream* stream, const pGEcontext gc, bool
 }
 
 inline void terminate_svg(std::ostream* stream) {
-  *(stream) << "</svg>\n";
-  stream->seekp(-7, std::ios_base::cur);
+  *(stream) << "</svg>";
+  stream->seekp(-6, std::ios_base::cur);
 }
 
 // Callback functions for graphics device --------------------------------------
@@ -375,7 +375,7 @@ VOID_END_RCPP
 void svg_close(pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  terminate_svg(svgd->stream);
+  *(svgd->stream) << "</svg>\n";
   delete(svgd);
 }
 
