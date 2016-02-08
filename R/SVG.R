@@ -58,7 +58,7 @@ svgstring <- function(width = 10, height = 8, bg = "white",
 
   env <- new.env(parent = emptyenv())
   svgstring_(env, width = width, height = height, bg = bg,
-    pointsize = pointsize, standalone = TRUE)
+    pointsize = pointsize, standalone = standalone)
 
   function() {
     structure(env$svg_string, class = "svg")

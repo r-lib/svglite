@@ -12,9 +12,9 @@
 #'   htmlSVG(hist(rnorm(100)))
 #' }
 htmlSVG <- function(code, ...) {
-  tmp <- inlineSVG(code, ...)
+  svg <- inlineSVG(code, ...)
   htmltools::browsable(
-    htmltools::HTML(paste0(readLines(tmp), collapse = "\n"))
+    htmltools::HTML(svg)
   )
 }
 
@@ -55,13 +55,15 @@ editSVG <- function(code, ...) {
 
 
 inlineSVG <- function(code, ..., width = NA, height = NA,
-  path = tempfile(fileext = ".svg")) {
+                      path = tempfile(fileext = ".svg")) {
   dim <- plot_dim(c(width, height))
 
-  svglite(path, width = dim[1], height = dim[2], ...)
+  svg <- svgstring(width = dim[1], height = dim[2], ...)
   tryCatch(code,
     finally = grDevices::dev.off()
   )
 
-  path
+  out <- svg()
+  class(out) <- NULL
+  out
 }
