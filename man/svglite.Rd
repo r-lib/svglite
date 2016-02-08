@@ -8,13 +8,7 @@ svglite(file = "Rplots.svg", width = 10, height = 8, bg = "white",
   pointsize = 12, standalone = TRUE)
 }
 \arguments{
-\item{file}{The file where output will appear. There are two special values
-  recognized by the device:
-
-  \code{file = ":terminal:"} prints the content of SVG to the R terminal.
-
-  \code{file = ":string:"} saves the SVG to a character string which can be
-  retrieved by \code{\link{stringSVG}()} after closing the device.}
+\item{file}{The file where output will appear.}
 
 \item{height, width}{Height and width in inches.}
 
@@ -34,17 +28,6 @@ The driver output is currently NOT specifying a DOCTYPE DTD.
 svglite("Rplots.svg")
 plot(1:11, (-5:5)^2, type = 'b', main = "Simple Example")
 dev.off()
-
-# Print to R console
-svglite(":terminal:")
-plot.new()
-dev.off()
-
-# Write to a string stream
-svglite(":string:")
-plot.new()
-dev.off()
-cat(stringSVG())
 
 }
 \author{

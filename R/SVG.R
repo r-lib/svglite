@@ -3,13 +3,7 @@
 #' This function produces graphics compliant to the current w3 svg XML standard.
 #' The driver output is currently NOT specifying a DOCTYPE DTD.
 #'
-#' @param file The file where output will appear. There are two special values
-#'   recognized by the device:
-#'
-#'   \code{file = ":terminal:"} prints the content of SVG to the R terminal.
-#'
-#'   \code{file = ":string:"} saves the SVG to a character string which can be
-#'   retrieved by \code{\link{stringSVG}()} after closing the device.
+#' @param file The file where output will appear.
 #' @param height,width Height and width in inches.
 #' @param bg Default background color for the plot (defaults to "white").
 #' @param pointsize Default point size.
@@ -27,17 +21,6 @@
 #' plot(1:11, (-5:5)^2, type = 'b', main = "Simple Example")
 #' dev.off()
 #'
-#' # Print to R console
-#' svglite(":terminal:")
-#' plot.new()
-#' dev.off()
-#'
-#' # Write to a string stream
-#' svglite(":string:")
-#' plot.new()
-#' dev.off()
-#' cat(stringSVG())
-#'
 #' @keywords device
 #' @useDynLib svglite
 #' @importFrom Rcpp sourceCpp
@@ -46,28 +29,41 @@
 svglite <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
                    pointsize = 12, standalone = TRUE) {
 
-  invisible(devSVG_(file, bg, width, height, pointsize, standalone))
+  invisible(svglite_(file, bg, width, height, pointsize, standalone))
 }
-
-.pkg_env <- new.env()
-## This string will be modified by device functions
-.pkg_env$svg_string <- ""
 
 #' Access current SVG as a string.
 #'
-#' This function is used to extract the content of SVG produced by
-#' the most recent call of \code{svglite(":string:")},
-#' which directly writes the SVG to a string stream
-#' and does not generate any temporary files.
+#' This is a variation on \code{\link{svglite}} that makes it easy to access
+#' the current value as a string.
 #'
-#' @return A character string representing the last plot created by
-#'   \code{svglite(":string:")}.
+#' @param ... Arguments passed on to \code{\link{svglite}}.
+#' @return A function with no arguments: call the function to get the
+#'   current value of the string.
 #' @examples
-#' svglite(":string:")
-#' plot(rnorm(5), rnorm(5))
+#' s <- svgstring(); s()
+#'
+#' plot.new(); s();
+#' text(0.5, 0.5, "Hi!"); s()
 #' dev.off()
-#' cat(stringSVG())
+#'
+#' s <- svgstring()
+#' plot(rnorm(5), rnorm(5))
+#' s()
+#' dev.off()
+#' @inheritParams svglite
 #' @export
-stringSVG <- function() {
-  .pkg_env$svg_string
+svgstring <- function(width = 10, height = 8, bg = "white",
+                      pointsize = 12, standalone = TRUE) {
+
+  env <- new.env(parent = emptyenv())
+  svgstring_(env, width = width, height = height, bg = bg,
+    pointsize = pointsize, standalone = TRUE)
+
+  function() {
+    structure(env$svg_string, class = "svg")
+  }
 }
+
+#' @export
+print.svg <- function(x, ...) cat(x, "\n", sep = "")

@@ -5,19 +5,35 @@
 
 using namespace Rcpp;
 
-// devSVG_
-bool devSVG_(std::string file, std::string bg_, double width, double height, double pointsize, bool standalone);
-RcppExport SEXP svglite_devSVG_(SEXP fileSEXP, SEXP bg_SEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP) {
+// svglite_
+bool svglite_(std::string file, std::string bg, double width, double height, double pointsize, bool standalone);
+RcppExport SEXP svglite_svglite_(SEXP fileSEXP, SEXP bgSEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< std::string >::type file(fileSEXP);
-    Rcpp::traits::input_parameter< std::string >::type bg_(bg_SEXP);
+    Rcpp::traits::input_parameter< std::string >::type bg(bgSEXP);
     Rcpp::traits::input_parameter< double >::type width(widthSEXP);
     Rcpp::traits::input_parameter< double >::type height(heightSEXP);
     Rcpp::traits::input_parameter< double >::type pointsize(pointsizeSEXP);
     Rcpp::traits::input_parameter< bool >::type standalone(standaloneSEXP);
-    __result = Rcpp::wrap(devSVG_(file, bg_, width, height, pointsize, standalone));
+    __result = Rcpp::wrap(svglite_(file, bg, width, height, pointsize, standalone));
+    return __result;
+END_RCPP
+}
+// svgstring_
+bool svgstring_(Rcpp::Environment env, std::string bg, double width, double height, double pointsize, bool standalone);
+RcppExport SEXP svglite_svgstring_(SEXP envSEXP, SEXP bgSEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< Rcpp::Environment >::type env(envSEXP);
+    Rcpp::traits::input_parameter< std::string >::type bg(bgSEXP);
+    Rcpp::traits::input_parameter< double >::type width(widthSEXP);
+    Rcpp::traits::input_parameter< double >::type height(heightSEXP);
+    Rcpp::traits::input_parameter< double >::type pointsize(pointsizeSEXP);
+    Rcpp::traits::input_parameter< bool >::type standalone(standaloneSEXP);
+    __result = Rcpp::wrap(svgstring_(env, bg, width, height, pointsize, standalone));
     return __result;
 END_RCPP
 }

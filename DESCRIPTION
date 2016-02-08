@@ -22,7 +22,8 @@ Imports:
     gdtools
 LinkingTo:
     Rcpp,
-    gdtools
+    gdtools,
+    BH
 Suggests:
     htmltools,
     testthat,
