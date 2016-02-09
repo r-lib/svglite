@@ -42,8 +42,8 @@ xmlSVG <- function(code, ... , standalone = FALSE) {
 #' This is useful primarily for testing or post-processing the SVG.
 #'
 #' @inheritParams htmlSVG
-#' @param path \code{string} Name of the file to create.  The default
-#'          behavior will be to create a \code{tempfile}.
+#' @param path Name of the file to save.  The default behavior
+#'          will be to create a temporary file with extension \code{.svg}.
 #' @export
 #' @examples
 #' if (interactive()) {
