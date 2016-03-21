@@ -54,7 +54,7 @@ inline bool is_black(int col) {
 
 inline bool is_filled(int col) {
   const int alpha = R_ALPHA(col);
-  return (col != NA_INTEGER) && (alpha != 0);
+  return (alpha != 0);
 }
 
 inline bool is_bold(int face) {
@@ -122,7 +122,7 @@ inline void write_style_col(SvgStreamPtr stream, const char* attr, int col, bool
 
   if(!first)  (*stream) << ' ';
 
-  if (col == NA_INTEGER || alpha == 0) {
+  if (alpha == 0) {
     (*stream) << attr << ": none;";
     return;
   } else {
