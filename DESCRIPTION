@@ -29,6 +29,7 @@ Suggests:
     testthat,
     xml2,
     covr
+Remotes: hadley/xml2
 License: GPL (>= 2)
 URL: https://github.com/hadley/svglite
 BugReports: https://github.com/hadley/svglite/issues
