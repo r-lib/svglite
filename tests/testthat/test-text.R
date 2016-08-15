@@ -97,7 +97,7 @@ test_that("a symbol has width greater than 0", {
     plot(c(0,2), c(0,2), type = "n")
     strw <- strwidth(expression(symbol("\042")))
   })
-  expect_less_than(.Machine$double.eps, strw)
+  expect_lt(.Machine$double.eps, strw)
 })
 
 test_that("symbol font family is 'symbol'", {

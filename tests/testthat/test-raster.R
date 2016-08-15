@@ -8,5 +8,5 @@ test_that("raster exists", {
   ns <- xml_ns(x)
 
   img <- xml_attr(xml_find_all(x, ".//d1:image", ns = ns), "xlink:href", ns = ns)
-  expect_more_than(nchar(img), 1000)
+  expect_gt(nchar(img), 1000)
 })
