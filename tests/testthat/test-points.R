@@ -45,7 +45,7 @@ test_that("points are given stroke and fill", {
     plot.new()
     points(0.5, 0.5, pch = 21, col = "red", bg = NA, cex = 20)
   })
-  style <- xml_text(xml_find_one(x, "//style"))
+  style <- xml_text(xml_find_first(x, "//style"))
   expect_match(style, "fill: none;")
 
   circle <- xml_find_all(x, ".//circle")

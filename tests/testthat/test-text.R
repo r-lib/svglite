@@ -37,7 +37,7 @@ test_that("special characters are escaped", {
   })
   # xml_text unescapes for us - this still tests that the
   # file parses, which it wouldn't otherwise
-  expect_equal(xml_text(xml_find_one(x, ".//text")), "<&>")
+  expect_equal(xml_text(xml_find_first(x, ".//text")), "<&>")
 })
 
 test_that("utf-8 characters are preserved", {
@@ -49,7 +49,7 @@ test_that("utf-8 characters are preserved", {
   })
   # xml_text unescapes for us - this still tests that the
   # file parses, which it wouldn't otherwise
-  expect_equal(xml_text(xml_find_one(x, ".//text")), "\u00b5")
+  expect_equal(xml_text(xml_find_first(x, ".//text")), "\u00b5")
 })
 
 test_that("special characters are escaped", {
@@ -59,7 +59,7 @@ test_that("special characters are escaped", {
   })
   # xml_text unescapes for us - this still tests that the
   # file parses, which it wouldn't otherwise
-  expect_equal(style_attr(xml_find_one(x, ".//text"), "fill"), "#113399")
+  expect_equal(style_attr(xml_find_first(x, ".//text"), "fill"), "#113399")
 })
 
 test_that("default point size is 12", {
@@ -67,7 +67,7 @@ test_that("default point size is 12", {
     plot.new()
     text(0.5, 0.5, "a")
   })
-  expect_equal(style_attr(xml_find_one(x, ".//text"), "font-size"), "12.00pt")
+  expect_equal(style_attr(xml_find_first(x, ".//text"), "font-size"), "12.00pt")
 })
 
 test_that("cex generates fractional font sizes", {
@@ -75,7 +75,7 @@ test_that("cex generates fractional font sizes", {
     plot.new()
     text(0.5, 0.5, "a", cex = 0.1)
   })
-  expect_equal(style_attr(xml_find_one(x, ".//text"), "font-size"), "1.20pt")
+  expect_equal(style_attr(xml_find_first(x, ".//text"), "font-size"), "1.20pt")
 })
 
 test_that("font sets weight/style", {
