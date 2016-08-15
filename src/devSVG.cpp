@@ -149,6 +149,12 @@ inline void write_style_str(SvgStreamPtr stream, const char* attr, const char* v
   (*stream) << attr << ": " << value << ';';
 }
 
+inline double scale_lty(int lty, double lwd) {
+  // Don't rescale if lwd < 1
+  // https://github.com/wch/r-source/blob/master/src/library/grDevices/src/cairo/cairoFns.c#L134
+  return ((lwd > 1) ? lwd : 1) * (lty & 15);
+}
+
 // Writing style attributes related to line types
 inline void write_style_linetype(SvgStreamPtr stream, const pGEcontext gc, bool first = false) {
   int lty = gc->lty;
@@ -166,14 +172,15 @@ inline void write_style_linetype(SvgStreamPtr stream, const pGEcontext gc, bool 
   case LTY_SOLID: // default svg setting, so don't need to write out
     break;
   default:
-    // See comment in GraphicsEngine.h for how this works
+    // For details
+    // https://github.com/wch/r-source/blob/trunk/src/include/R_ext/GraphicsEngine.h#L337
     (*stream) << " stroke-dasharray: ";
     // First number
-    (*stream) << (int) gc->lwd * (lty & 15);
+    (*stream) << scale_lty(lty, gc->lwd);
     lty = lty >> 4;
     // Remaining numbers
     for(int i = 1 ; i < 8 && lty & 15; i++) {
-      (*stream) << ',' << (int) gc->lwd * (lty & 15);
+      (*stream) << ',' << scale_lty(lty, gc->lwd);
       lty = lty >> 4;
     }
     stream->put(';');

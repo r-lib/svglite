@@ -53,12 +53,6 @@ test_that("blank lines are omitted", {
   expect_equal(length(xml_find_all(x, "//polyline")), 0)
 })
 
-dash_array <- function(...) {
-  x <- xmlSVG(mini_plot(1:3, ..., type = "l"))
-  dash <- style_attr(xml_find_first(x, "//polyline"), "stroke-dasharray")
-  as.integer(strsplit(dash, ",")[[1]])
-}
-
 test_that("lines lty becomes stroke-dasharray", {
   expect_equal(dash_array(lty = 1), NA_integer_)
   expect_equal(dash_array(lty = 2), c(4, 4))
@@ -70,8 +64,10 @@ test_that("lines lty becomes stroke-dasharray", {
   expect_equal(dash_array(lty = "1234"), c(1, 2, 3, 4))
 })
 
-test_that("stroke-dasharray scales with lwd", {
-  expect_equal(dash_array(lty = 2), c(4, 4))
+test_that("stroke-dasharray scales with lwd > 1", {
+  expect_equal(dash_array(lty = 2, lwd = 1), c(4, 4))
+  expect_equal(dash_array(lty = 2, lwd = 1/2), c(4, 4))
+  expect_equal(dash_array(lty = 2, lwd = 1.1), c(4.4, 4.4))
   expect_equal(dash_array(lty = 2, lwd = 2), c(8, 8))
 })
 

@@ -1,5 +1,7 @@
 # svglite 1.1.0.9000
 
+* The dashes in lines with `lwd < 1` are scaled better (#68).
+
 * `editSVG()` works again (#56).
 
 * Transparent blacks are written correctly (#62, #63). 
