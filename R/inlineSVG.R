@@ -42,20 +42,21 @@ xmlSVG <- function(code, ... , standalone = FALSE) {
 #' This is useful primarily for testing or post-processing the SVG.
 #'
 #' @inheritParams htmlSVG
+#' @param path Name of the file to save.  The default behavior
+#'          will be to create a temporary file with extension \code{.svg}.
 #' @export
 #' @examples
 #' if (interactive()) {
 #'   editSVG(plot(1:10))
 #'   editSVG(contour(volcano))
 #' }
-editSVG <- function(code, ...) {
-  tmp <- inlineSVG(code, ...)
-  system(sprintf("open %s", shQuote(tmp)))
+editSVG <- function(code, path = tempfile(fileext = ".svg"), ...) {
+  cat(inlineSVG(code, ...), file=path)
+  system(sprintf("open %s", shQuote(path)))
 }
 
 
-inlineSVG <- function(code, ..., width = NA, height = NA,
-                      path = tempfile(fileext = ".svg")) {
+inlineSVG <- function(code, ..., width = NA, height = NA) {
   dim <- plot_dim(c(width, height))
 
   svg <- svgstring(width = dim[1], height = dim[2], ...)
