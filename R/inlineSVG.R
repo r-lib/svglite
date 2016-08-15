@@ -32,7 +32,7 @@ htmlSVG <- function(code, ...) {
 #'   x
 #'   xml_find_all(x, ".//text")
 #' }
-xmlSVG <- function(code, ... , standalone = FALSE) {
+xmlSVG <- function(code, ..., standalone = FALSE) {
   plot <- inlineSVG(code, ..., standalone = standalone, height = 7, width = 7)
   xml2::read_xml(plot)
 }
@@ -42,20 +42,27 @@ xmlSVG <- function(code, ... , standalone = FALSE) {
 #' This is useful primarily for testing or post-processing the SVG.
 #'
 #' @inheritParams htmlSVG
+#' @inheritParams svglite
 #' @export
 #' @examples
 #' if (interactive()) {
 #'   editSVG(plot(1:10))
 #'   editSVG(contour(volcano))
 #' }
-editSVG <- function(code, ...) {
-  tmp <- inlineSVG(code, ...)
+editSVG <- function(code, ..., width = NA, height = NA) {
+  dim <- plot_dim(c(width, height))
+
+  tmp <- tempfile(fileext = ".svg")
+  svglite(tmp, width = dim[1], height = dim[2], ...)
+  tryCatch(code,
+    finally = grDevices::dev.off()
+  )
+
   system(sprintf("open %s", shQuote(tmp)))
 }
 
 
-inlineSVG <- function(code, ..., width = NA, height = NA,
-                      path = tempfile(fileext = ".svg")) {
+inlineSVG <- function(code, ..., width = NA, height = NA) {
   dim <- plot_dim(c(width, height))
 
   svg <- svgstring(width = dim[1], height = dim[2], ...)

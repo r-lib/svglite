@@ -4,12 +4,16 @@
 \alias{editSVG}
 \title{Run plotting code and open svg in OS/system default svg viewer or editor.}
 \usage{
-editSVG(code, ...)
+editSVG(code, ..., width = NA, height = NA)
 }
 \arguments{
 \item{code}{Plotting code to execute.}
 
 \item{...}{Other arguments passed on to \code{\link{svglite}}.}
+
+\item{width}{Height and width in inches.}
+
+\item{height}{Height and width in inches.}
 }
 \description{
 This is useful primarily for testing or post-processing the SVG.

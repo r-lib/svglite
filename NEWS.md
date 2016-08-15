@@ -1,5 +1,7 @@
 # svglite 1.1.0.9000
 
+* `editSVG()` works again (#56).
+
 * Transparent blacks are written correctly (#62, #63). 
 
 # svglite 1.1.0
