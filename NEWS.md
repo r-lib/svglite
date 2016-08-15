@@ -1,5 +1,7 @@
 # svglite 1.1.0.9000
 
+* `xmlSVG()` gains `height` and `width` arguments (#66).
+
 * The dashes in lines with `lwd < 1` are scaled better (#68).
 
 * `editSVG()` works again (#56).

@@ -32,8 +32,8 @@ htmlSVG <- function(code, ...) {
 #'   x
 #'   xml_find_all(x, ".//text")
 #' }
-xmlSVG <- function(code, ..., standalone = FALSE) {
-  plot <- inlineSVG(code, ..., standalone = standalone, height = 7, width = 7)
+xmlSVG <- function(code, ..., standalone = FALSE, height = 7, width = 7) {
+  plot <- inlineSVG(code, ..., standalone = standalone, height = height, width = width)
   xml2::read_xml(plot)
 }
 
