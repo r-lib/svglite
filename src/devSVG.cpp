@@ -49,12 +49,12 @@ public:
 };
 
 inline bool is_black(int col) {
-  return (R_RED(col) == 0) && (R_GREEN(col) == 0) && (R_BLUE(col) == 0);
+  return (R_RED(col) == 0) && (R_GREEN(col) == 0) && (R_BLUE(col) == 0) &&
+    (R_ALPHA(col) == 255);
 }
 
 inline bool is_filled(int col) {
-  const int alpha = R_ALPHA(col);
-  return (col != NA_INTEGER) && (alpha != 0);
+  return R_ALPHA(col) != 0;
 }
 
 inline bool is_bold(int face) {
@@ -122,7 +122,7 @@ inline void write_style_col(SvgStreamPtr stream, const char* attr, int col, bool
 
   if(!first)  (*stream) << ' ';
 
-  if (col == NA_INTEGER || alpha == 0) {
+  if (alpha == 0) {
     (*stream) << attr << ": none;";
     return;
   } else {

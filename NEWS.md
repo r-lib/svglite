@@ -1,5 +1,7 @@
 # svglite 1.1.0.9000
 
+* Transparent blacks are written correctly (#62, #63). 
+
 # svglite 1.1.0
 
 * Text metrics now converted from points to pixels (#45, #48) - this
