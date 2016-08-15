@@ -49,7 +49,7 @@ public:
 };
 
 inline bool is_black(int col) {
-  return (R_RED(col) == 0) && (R_GREEN(col) == 0) && (R_BLUE(col) == 0);
+  return (R_RED(col) == 0) && (R_GREEN(col) == 0) && (R_BLUE(col) == 0) && (R_ALPHA(col) == 255);
 }
 
 inline bool is_filled(int col) {

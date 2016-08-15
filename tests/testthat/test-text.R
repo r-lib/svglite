@@ -129,3 +129,25 @@ test_that("strwidth and height correctly computed", {
 
   rect(0.5 - w / 2, 0.5 - h / 2, 0.5 + w / 2, 0.5 + h / 2)
 })
+
+test_that("Black text uses default fill", {
+  x <- xmlSVG({
+    plot.new()
+    text(0.5, 0.1, "a", col=rgb(0, 0, 0))
+  })
+  text <- xml_find_all(x, ".//text")
+  expect_equal(style_attr(text, "fill"), NA_character_)
+})
+
+test_that("Text with alpha sets fill", {
+  x <- xmlSVG({
+    plot.new()
+    text(0.5, 0.1, "a", col=rgb(0, 0, 0, 0.6))
+    text(0.5, 0.1, "b", col=rgb(0, 0, 0, 0.5))
+    text(0.5, 0.1, "c", col=rgb(0.5, 0.5, 0.5, 0.5))
+    text(0.5, 0.1, "c", col=rgb(0.5, 0.5, 0.5, 1))
+  })
+  text <- xml_find_all(x, ".//text")
+  expect_equal(style_attr(text, "fill"), c("#000000", "#000000", "#808080", "#808080"))
+  expect_equal(style_attr(text, "fill-opacity"), c("0.60", "0.50", "0.50", NA_character_))
+})
