@@ -349,7 +349,7 @@ void svg_line(double x1, double y1, double x2, double y2,
   write_attr_clip(stream, svgd->clipno);
 
   (*stream) << " />\n";
-  stream->finish();
+  stream->flush();
 }
 
 void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
