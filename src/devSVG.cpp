@@ -268,6 +268,7 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
     "' width='" << std::abs(x1 - x0) << "' height='" << std::abs(y1 - y0) << "' />\n";
   (*stream) << "  </clipPath>\n";
   (*stream) << "</defs>\n";
+  stream->flush();
 }
 
 void svg_new_page(const pGEcontext gc, pDevDesc dd) {
@@ -329,8 +330,6 @@ VOID_END_RCPP
 
 void svg_close(pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-
-  *(svgd->stream) << "</svg>\n";
   delete(svgd);
 }
 
