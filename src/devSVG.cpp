@@ -330,6 +330,7 @@ VOID_END_RCPP
 
 void svg_close(pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  svgd->stream->finish();
   delete(svgd);
 }
 

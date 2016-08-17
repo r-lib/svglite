@@ -9,3 +9,7 @@ svgstring_ <- function(env, bg, width, height, pointsize, standalone) {
     .Call('svglite_svgstring_', PACKAGE = 'svglite', env, bg, width, height, pointsize, standalone)
 }
 
+get_svg_content <- function(p) {
+    .Call('svglite_get_svg_content', PACKAGE = 'svglite', p)
+}
+

@@ -61,7 +61,8 @@ svgstring <- function(width = 10, height = 8, bg = "white",
     pointsize = pointsize, standalone = standalone)
 
   function() {
-    structure(get_svg_content(string_src), class = "svg")
+    svgstr <- if(env$is_closed) env$svg_string else get_svg_content(string_src)
+    structure(svgstr, class = "svg")
   }
 }
 
