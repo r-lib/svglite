@@ -6,7 +6,9 @@
 
 * `editSVG()` works again (#56).
 
-* Transparent blacks are written correctly (#62, #63). 
+* Transparent blacks are written correctly (#62, #63).
+
+* Greatly improves the performance of `svgstring()` (#58).
 
 # svglite 1.1.0
 
