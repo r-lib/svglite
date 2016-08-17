@@ -681,11 +681,25 @@ bool svglite_(std::string file, std::string bg, double width, double height,
 }
 
 // [[Rcpp::export]]
-bool svgstring_(Rcpp::Environment env, std::string bg, double width, double height,
+Rcpp::XPtr<std::stringstream> svgstring_(Rcpp::Environment env, std::string bg, double width, double height,
   double pointsize, bool standalone) {
 
   SvgStreamPtr stream(new SvgStreamString(env));
   makeDevice(stream, bg, width, height, pointsize, standalone);
 
-  return true;
+  SvgStreamString* strstream = static_cast<SvgStreamString*>(stream.get());
+
+  return strstream->string_src();
+}
+
+// [[Rcpp::export]]
+std::string get_svg_content(Rcpp::XPtr<std::stringstream> p) {
+  p->flush();
+  std::string svgstr = p->str();
+  // If the current SVG is empty, we also make the string empty
+  // Otherwise append "</svg>" to make it a valid SVG
+  if(!svgstr.empty()) {
+    svgstr.append("</svg>");
+  }
+  return svgstr;
 }
