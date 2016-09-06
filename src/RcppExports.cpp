@@ -22,7 +22,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // svgstring_
-bool svgstring_(Rcpp::Environment env, std::string bg, double width, double height, double pointsize, bool standalone);
+Rcpp::XPtr<std::stringstream> svgstring_(Rcpp::Environment env, std::string bg, double width, double height, double pointsize, bool standalone);
 RcppExport SEXP svglite_svgstring_(SEXP envSEXP, SEXP bgSEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
@@ -34,6 +34,17 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type pointsize(pointsizeSEXP);
     Rcpp::traits::input_parameter< bool >::type standalone(standaloneSEXP);
     __result = Rcpp::wrap(svgstring_(env, bg, width, height, pointsize, standalone));
+    return __result;
+END_RCPP
+}
+// get_svg_content
+std::string get_svg_content(Rcpp::XPtr<std::stringstream> p);
+RcppExport SEXP svglite_get_svg_content(SEXP pSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject __result;
+    Rcpp::RNGScope __rngScope;
+    Rcpp::traits::input_parameter< Rcpp::XPtr<std::stringstream> >::type p(pSEXP);
+    __result = Rcpp::wrap(get_svg_content(p));
     return __result;
 END_RCPP
 }

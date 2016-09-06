@@ -268,6 +268,7 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
     "' width='" << std::abs(x1 - x0) << "' height='" << std::abs(y1 - y0) << "' />\n";
   (*stream) << "  </clipPath>\n";
   (*stream) << "</defs>\n";
+  stream->flush();
 }
 
 void svg_new_page(const pGEcontext gc, pDevDesc dd) {
@@ -329,8 +330,7 @@ VOID_END_RCPP
 
 void svg_close(pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-
-  *(svgd->stream) << "</svg>\n";
+  svgd->stream->finish();
   delete(svgd);
 }
 
@@ -349,7 +349,7 @@ void svg_line(double x1, double y1, double x2, double y2,
   write_attr_clip(stream, svgd->clipno);
 
   (*stream) << " />\n";
-  stream->finish();
+  stream->flush();
 }
 
 void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
@@ -682,11 +682,25 @@ bool svglite_(std::string file, std::string bg, double width, double height,
 }
 
 // [[Rcpp::export]]
-bool svgstring_(Rcpp::Environment env, std::string bg, double width, double height,
+Rcpp::XPtr<std::stringstream> svgstring_(Rcpp::Environment env, std::string bg, double width, double height,
   double pointsize, bool standalone) {
 
   SvgStreamPtr stream(new SvgStreamString(env));
   makeDevice(stream, bg, width, height, pointsize, standalone);
 
-  return true;
+  SvgStreamString* strstream = static_cast<SvgStreamString*>(stream.get());
+
+  return strstream->string_src();
+}
+
+// [[Rcpp::export]]
+std::string get_svg_content(Rcpp::XPtr<std::stringstream> p) {
+  p->flush();
+  std::string svgstr = p->str();
+  // If the current SVG is empty, we also make the string empty
+  // Otherwise append "</svg>" to make it a valid SVG
+  if(!svgstr.empty()) {
+    svgstr.append("</svg>");
+  }
+  return svgstr;
 }
