@@ -26,10 +26,11 @@
 #' @importFrom Rcpp sourceCpp
 #' @importFrom gdtools raster_view
 #' @export
-svglite <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-                   pointsize = 12, standalone = TRUE) {
+svglite <- function(file = "Rplots.svg", width = 10, height = 8,
+                    bg = "white", pointsize = 12, standalone = TRUE,
+                    font_aliases = list()) {
 
-  invisible(svglite_(file, bg, width, height, pointsize, standalone))
+  invisible(svglite_(file, bg, width, height, pointsize, standalone, font_aliases))
 }
 
 #' Access current SVG as a string.
@@ -54,11 +55,12 @@ svglite <- function(file = "Rplots.svg", width = 10, height = 8, bg = "white",
 #' @inheritParams svglite
 #' @export
 svgstring <- function(width = 10, height = 8, bg = "white",
-                      pointsize = 12, standalone = TRUE) {
+                      pointsize = 12, standalone = TRUE,
+                      font_aliases = list()) {
 
   env <- new.env(parent = emptyenv())
   string_src <- svgstring_(env, width = width, height = height, bg = bg,
-    pointsize = pointsize, standalone = standalone)
+    pointsize = pointsize, standalone = standalone, font_aliases = font_aliases)
 
   function() {
     svgstr <- if(env$is_closed) env$svg_string else get_svg_content(string_src)
