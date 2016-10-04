@@ -50,8 +50,8 @@ public:
   void write(const std::string& data) { stream_ << data; }
 
   void flush() {
-    stream_ << "</svg>";
-    stream_.seekp(-6, std::ios_base::cur);
+    stream_ << "</svg>\n";
+    stream_.seekp(-7, std::ios_base::cur);
     stream_.flush();
   }
 
