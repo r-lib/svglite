@@ -126,7 +126,7 @@ inline std::string fontfile(const char* family_, int face, Rcpp::List aliases) {
   std::string family(family_);
   if (family == "")
     family = "sans";
-  return find_alias(family, aliases, face, "file");
+  return find_alias(family, aliases, face, "ttf");
 }
 
 inline void write_escaped(SvgStreamPtr stream, const char* text) {
