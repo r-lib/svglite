@@ -37,15 +37,17 @@ public:
   double clipx0, clipx1, clipy0, clipy1;  // Save the previous clip path to avoid duplication
   bool standalone;
   Rcpp::List font_aliases;
+  Rcpp::List font_extra;
   XPtrCairoContext cc;
 
-  SVGDesc(SvgStreamPtr stream_, bool standalone_, Rcpp::List font_aliases_):
+  SVGDesc(SvgStreamPtr stream_, bool standalone_, Rcpp::List font_spec_):
       stream(stream_),
       pageno(0),
       clipno(0),
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
       standalone(standalone_),
-      font_aliases(font_aliases_),
+      font_aliases(Rcpp::wrap(font_spec_["aliases"])),
+      font_extra(Rcpp::wrap(font_spec_["extra"])),
       cc(gdtools::context_create()) {
   }
 };
@@ -122,11 +124,22 @@ inline std::string fontname(const char* family_, int face, Rcpp::List aliases) {
   return validate_fontname(family, face);
 }
 
-inline std::string fontfile(const char* family_, int face, Rcpp::List aliases) {
+inline std::string fontfile(const char* family_, int face,
+                            Rcpp::List aliases,
+                            Rcpp::List extra) {
   std::string family(family_);
   if (family == "")
     family = "sans";
-  return find_alias(family, aliases, face, "ttf");
+
+  std::string file = find_alias(family, aliases, face, "ttf");
+
+  if (!file.size() && extra.containsElementNamed(family_)) {
+    Rcpp::List font = extra[family_];
+    if (font.containsElementNamed("ttf"))
+      file = Rcpp::as<std::string>(font["ttf"]);
+  }
+
+  return file;
 }
 
 inline void write_escaped(SvgStreamPtr stream, const char* text) {
@@ -286,7 +299,7 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
     str[1] = '\0';
   }
 
-  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->font_aliases);
+  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->font_aliases, svgd->font_extra);
   gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily, gc->fontface, svgd->font_aliases),
                             gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface), file);
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
@@ -480,7 +493,7 @@ void svg_path(double *x, double *y,
 double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->font_aliases);
+  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->font_aliases, svgd->font_extra);
   gdtools::context_set_font(svgd->cc, fontname(gc->fontfamily, gc->fontface, svgd->font_aliases),
                             gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface), file);
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
@@ -636,7 +649,7 @@ void svg_raster(unsigned int *raster, int w, int h,
 
 pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
                         double height, double pointsize,
-                        bool standalone, Rcpp::List& font_aliases) {
+                        bool standalone, Rcpp::List& font_spec) {
 
   pDevDesc dd = (DevDesc*) calloc(1, sizeof(DevDesc));
   if (dd == NULL)
@@ -701,12 +714,12 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->haveTransparency = 2;
   dd->haveTransparentBg = 2;
 
-  dd->deviceSpecific = new SVGDesc(stream, standalone, font_aliases);
+  dd->deviceSpecific = new SVGDesc(stream, standalone, font_spec);
   return dd;
 }
 
 void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double height,
-                double pointsize, bool standalone, Rcpp::List& font_aliases) {
+                double pointsize, bool standalone, Rcpp::List& font_spec) {
 
   int bg = R_GE_str2col(bg_.c_str());
 
@@ -714,7 +727,7 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
   R_CheckDeviceAvailable();
   BEGIN_SUSPEND_INTERRUPTS {
     pDevDesc dev = svg_driver_new(stream, bg, width, height, pointsize,
-                                  standalone, font_aliases);
+                                  standalone, font_spec);
     if (dev == NULL)
       Rcpp::stop("Failed to start SVG device");
 
@@ -727,10 +740,10 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
 
 // [[Rcpp::export]]
 bool svglite_(std::string file, std::string bg, double width, double height,
-              double pointsize, bool standalone, Rcpp::List font_aliases) {
+              double pointsize, bool standalone, Rcpp::List font_spec) {
 
   SvgStreamPtr stream(new SvgStreamFile(file));
-  makeDevice(stream, bg, width, height, pointsize, standalone, font_aliases);
+  makeDevice(stream, bg, width, height, pointsize, standalone, font_spec);
 
   return true;
 }
@@ -738,10 +751,10 @@ bool svglite_(std::string file, std::string bg, double width, double height,
 // [[Rcpp::export]]
 Rcpp::XPtr<std::stringstream> svgstring_(Rcpp::Environment env, std::string bg,
                                          double width, double height, double pointsize,
-                                         bool standalone, Rcpp::List font_aliases) {
+                                         bool standalone, Rcpp::List font_spec) {
 
   SvgStreamPtr stream(new SvgStreamString(env));
-  makeDevice(stream, bg, width, height, pointsize, standalone, font_aliases);
+  makeDevice(stream, bg, width, height, pointsize, standalone, font_spec);
 
   SvgStreamString* strstream = static_cast<SvgStreamString*>(stream.get());
 

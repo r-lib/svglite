@@ -1,3 +1,4 @@
+
 mini_plot <- function(...) graphics::plot(..., axes = FALSE, xlab = "", ylab = "")
 
 plot_dim <- function(dim = c(NA, NA)) {
@@ -15,4 +16,20 @@ plot_dim <- function(dim = c(NA, NA)) {
   }
 
   dim
+}
+
+vapply_chr <- function(.x, .f, ...) {
+  vapply(.x, .f, character(1), ...)
+}
+vapply_lgl <- function(.x, .f, ...) {
+  vapply(.x, .f, logical(1), ...)
+}
+keep <- function(.x, .p, ...) {
+  .x[vapply_lgl(.x, .p, ...)]
+}
+compact <- function(x) {
+  Filter(length, x)
+}
+`%||%` <- function(x, y) {
+  if (is.null(x)) y else x
 }

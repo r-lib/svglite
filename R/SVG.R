@@ -9,8 +9,12 @@
 #' @param pointsize Default point size.
 #' @param standalone Produce a standalone svg file? If \code{FALSE}, omits
 #'   xml header and default namespace.
-#' @param font_aliases List of fonts, typically created with
-#'   \code{fontquiver::font_families()}.
+#' @param font_aliases List of font families to be aliased. By
+#'   default, \code{sans} is aliased to "Arial", \code{serif} to
+#'   "Times" or "Times New Roman" (the latter on Windows), and
+#'   \code{mono} to "courier".
+#' @param font_extra List of fonts or collection of fonts. These are
+#'   used by svglite to compute text metrics in a reproducible way.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
 #'   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
 #' @author This driver was written by T Jake Luciani
@@ -30,9 +34,9 @@
 #' @export
 svglite <- function(file = "Rplots.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,
-                    font_aliases = list()) {
-
-  invisible(svglite_(file, bg, width, height, pointsize, standalone, font_aliases))
+                    font_aliases = NULL, font_extra = NULL) {
+  font_spec <- font_spec(aliases = font_aliases, extra = font_extra)
+  invisible(svglite_(file, bg, width, height, pointsize, standalone, font_spec))
 }
 
 #' Access current SVG as a string.
@@ -58,11 +62,12 @@ svglite <- function(file = "Rplots.svg", width = 10, height = 8,
 #' @export
 svgstring <- function(width = 10, height = 8, bg = "white",
                       pointsize = 12, standalone = TRUE,
-                      font_aliases = list()) {
+                      font_aliases = list(), font_extra = list()) {
+  font_spec <- font_spec(aliases = font_aliases, extra = font_extra)
 
   env <- new.env(parent = emptyenv())
   string_src <- svgstring_(env, width = width, height = height, bg = bg,
-    pointsize = pointsize, standalone = standalone, font_aliases = font_aliases)
+    pointsize = pointsize, standalone = standalone, font_spec = font_spec)
 
   function() {
     svgstr <- if(env$is_closed) env$svg_string else get_svg_content(string_src)

@@ -5,7 +5,8 @@
 \title{An SVG Graphics Driver}
 \usage{
 svglite(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-  pointsize = 12, standalone = TRUE, font_aliases = list())
+  pointsize = 12, standalone = TRUE, font_aliases = NULL,
+  font_extra = NULL)
 }
 \arguments{
 \item{file}{The file where output will appear.}
@@ -19,8 +20,13 @@ svglite(file = "Rplots.svg", width = 10, height = 8, bg = "white",
 \item{standalone}{Produce a standalone svg file? If \code{FALSE}, omits
 xml header and default namespace.}
 
-\item{font_aliases}{List of fonts, typically created with
-\code{fontquiver::font_families()}.}
+\item{font_aliases}{List of font families to be aliased. By
+default, \code{sans} is aliased to "Arial", \code{serif} to
+"Times" or "Times New Roman" (the latter on Windows), and
+\code{mono} to "courier".}
+
+\item{font_extra}{List of fonts or collection of fonts. These are
+used by svglite to compute text metrics in a reproducible way.}
 }
 \description{
 This function produces graphics compliant to the current w3 svg XML standard.
@@ -32,6 +38,9 @@ svglite("Rplots.svg")
 plot(1:11, (-5:5)^2, type = 'b', main = "Simple Example")
 dev.off()
 
+# Supply font aliases.
+# svglite("aliased.svg", font_alias = list(sans = "Verdana"))
+# plot(1:10, main = "Simple Example")
 }
 \author{
 This driver was written by T Jake Luciani
