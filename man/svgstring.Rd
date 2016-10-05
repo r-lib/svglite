@@ -5,7 +5,7 @@
 \title{Access current SVG as a string.}
 \usage{
 svgstring(width = 10, height = 8, bg = "white", pointsize = 12,
-  standalone = TRUE)
+  standalone = TRUE, font_aliases = list())
 }
 \arguments{
 \item{width}{Height and width in inches.}
@@ -18,6 +18,9 @@ svgstring(width = 10, height = 8, bg = "white", pointsize = 12,
 
 \item{standalone}{Produce a standalone svg file? If \code{FALSE}, omits
 xml header and default namespace.}
+
+\item{font_aliases}{List of fonts, typically created with
+\code{fontquiver::font_families()}.}
 
 \item{...}{Arguments passed on to \code{\link{svglite}}.}
 }

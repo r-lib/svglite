@@ -5,7 +5,7 @@
 \title{An SVG Graphics Driver}
 \usage{
 svglite(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-  pointsize = 12, standalone = TRUE)
+  pointsize = 12, standalone = TRUE, font_aliases = list())
 }
 \arguments{
 \item{file}{The file where output will appear.}
@@ -18,6 +18,9 @@ svglite(file = "Rplots.svg", width = 10, height = 8, bg = "white",
 
 \item{standalone}{Produce a standalone svg file? If \code{FALSE}, omits
 xml header and default namespace.}
+
+\item{font_aliases}{List of fonts, typically created with
+\code{fontquiver::font_families()}.}
 }
 \description{
 This function produces graphics compliant to the current w3 svg XML standard.

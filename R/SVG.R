@@ -9,6 +9,8 @@
 #' @param pointsize Default point size.
 #' @param standalone Produce a standalone svg file? If \code{FALSE}, omits
 #'   xml header and default namespace.
+#' @param font_aliases List of fonts, typically created with
+#'   \code{fontquiver::font_families()}.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
 #'   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
 #' @author This driver was written by T Jake Luciani
