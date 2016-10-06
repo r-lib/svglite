@@ -70,9 +70,10 @@ test_that("cex generates fractional font sizes", {
   })
   expect_equal(style_attr(xml_find_first(x, ".//text"), "font-size"), "1.20pt")
 })
+
 test_that("a symbol has width greater than 0", {
   xmlSVG({
-    plot(c(0,2), c(0,2), type = "n")
+    plot.new()
     strw <- strwidth(expression(symbol("\042")))
   })
   expect_lt(.Machine$double.eps, strw)
@@ -90,4 +91,13 @@ test_that("strwidth and height correctly computed", {
   w <- strwidth(str)
 
   rect(0.5 - w / 2, 0.5 - h / 2, 0.5 + w / 2, 0.5 + h / 2)
+})
+
+test_that("strwidth has fallback for unknown fonts", {
+  xmlSVG({
+    plot.new()
+    w1 <- strwidth("MMMM")
+    w2 <- strwidth("正規分布")
+  })
+  expect_equal(w1, w2)
 })
