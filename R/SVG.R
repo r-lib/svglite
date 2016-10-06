@@ -27,6 +27,9 @@
 #' plot(1:11, (-5:5)^2, type = 'b', main = "Simple Example")
 #' dev.off()
 #'
+#' # Supply font aliases.
+#' # svglite("aliased.svg", font_alias = list(sans = "Verdana"))
+#' # plot(1:10, main = "Simple Example")
 #' @keywords device
 #' @useDynLib svglite
 #' @importFrom Rcpp sourceCpp

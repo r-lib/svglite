@@ -1,4 +1,6 @@
 
+context("Fonts")
+
 test_that("font sets weight/style", {
   x <- xmlSVG({
     plot.new()
@@ -48,4 +50,23 @@ test_that("fonts are aliased", {
     style_attr(text, "font-family"),
     c("Times New Roman", "foobar", "Bitstream Vera Sans Mono")
   )
+})
+
+test_that("metrics are computed for different fonts", {
+  aliases <- list(
+    sans = "courier",
+    mono = fontquiver::font_faces("Bitstream Vera", "Mono")
+  )
+  x <- xmlSVG({
+    plot.new()
+    text(0.5, 0.9, "a", family = "sans")
+    text(0.5, 0.9, "a", family = "mono")
+  }, font_aliases = aliases)
+  text <- xml_find_all(x, ".//text")
+  x_attr <- xml_attr(text, "x")
+  y_attr <- xml_attr(text, "y")
+
+  expect_false(x_attr[[1]] == x_attr[[2]])
+  expect_false(y_attr[[1]] == y_attr[[2]])
+  expect_equal(c(x_attr[[2]], y_attr[[2]]), c("261.58", "111.56"))
 })
