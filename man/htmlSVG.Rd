@@ -4,12 +4,20 @@
 \alias{htmlSVG}
 \title{Run plotting code and view svg in RStudio Viewer or web broswer.}
 \usage{
-htmlSVG(code, ...)
+htmlSVG(code, ..., font_aliases = NULL, font_extra = NULL)
 }
 \arguments{
 \item{code}{Plotting code to execute.}
 
 \item{...}{Other arguments passed on to \code{\link{svglite}}.}
+
+\item{font_aliases}{List of font families to be aliased. By
+default, \code{sans} is aliased to "Arial", \code{serif} to
+"Times" or "Times New Roman" (the latter on Windows), and
+\code{mono} to "courier".}
+
+\item{font_extra}{List of fonts or collection of fonts. These are
+used by svglite to compute text metrics in a reproducible way.}
 }
 \description{
 This is useful primarily for testing. Requires the \code{htmltools}

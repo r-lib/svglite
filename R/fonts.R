@@ -22,10 +22,9 @@ check_aliases <- function(aliases) {
 r_font_families <- c("sans", "serif", "mono", "symbol")
 
 font_spec <- function(aliases, extra) {
-  validate_aliases(aliases)
   extra <- extra %||% list()
   list(
-    aliases = aliases,
+    aliases = validate_aliases(aliases),
     extra = fontquiver::splice_fonts(extra)
   )
 }
@@ -49,11 +48,25 @@ validate_aliases <- function(aliases) {
 
   aliases <- compact(lapply(aliases, compact))
   contains_font_file <- lapply(aliases, vapply_lgl, inherits, "font_file")
-  is_valid_alias <- vapply_lgl(contains_font_file, all)
+  is_valid_user_alias <- vapply_lgl(contains_font_file, all)
+  is_valid_system_alias <- vapply_lgl(aliases, is_scalar_character)
+  is_valid_alias <- is_valid_user_alias | is_valid_system_alias
   if (!all(is_valid_alias)) {
     stop(call. = FALSE,
-      "Some aliases are not valid:",
+      "Some aliases are not valid: ",
       paste(names(aliases)[!is_valid_alias], collapse = ", ")
     )
   }
+
+  missing_aliases <- setdiff(r_font_families, names(aliases))
+  aliases[missing_aliases] <- alias_lookup[missing_aliases]
+
+  aliases
 }
+
+alias_lookup <- c(
+  sans = "Arial",
+  serif = "Times New Roman",
+  mono = "courier",
+  symbol = "symbol"
+)

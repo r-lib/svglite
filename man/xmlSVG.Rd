@@ -4,7 +4,8 @@
 \alias{xmlSVG}
 \title{Run plotting code and return svg}
 \usage{
-xmlSVG(code, ..., standalone = FALSE, height = 7, width = 7)
+xmlSVG(code, ..., standalone = FALSE, height = 7, width = 7,
+  font_aliases = NULL, font_extra = NULL)
 }
 \arguments{
 \item{code}{Plotting code to execute.}
@@ -17,6 +18,14 @@ xml header and default namespace.}
 \item{height}{Height and width in inches.}
 
 \item{width}{Height and width in inches.}
+
+\item{font_aliases}{List of font families to be aliased. By
+default, \code{sans} is aliased to "Arial", \code{serif} to
+"Times" or "Times New Roman" (the latter on Windows), and
+\code{mono} to "courier".}
+
+\item{font_extra}{List of fonts or collection of fonts. These are
+used by svglite to compute text metrics in a reproducible way.}
 }
 \value{
 A \code{xml2::xml_document} object.

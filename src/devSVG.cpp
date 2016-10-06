@@ -71,20 +71,6 @@ inline bool is_bolditalic(int face) {
   return face == 4;
 }
 
-inline std::string validate_fontname(std::string& family, int face) {
-  if (face == 5) return "symbol";
-
-  if (family == "mono") {
-    return "courier";
-  } else if (family == "serif") {
-    return "Times New Roman";
-  } else if (family == "sans") {
-    return "Arial";
-  } else {
-    return family;
-  }
-}
-
 inline std::string find_alias_field(std::string& family, Rcpp::List& alias,
                                     const char* face, const char* field) {
   if (alias.containsElementNamed(face)) {
@@ -112,16 +98,32 @@ inline std::string find_alias(std::string& family, Rcpp::List& aliases,
   return out;
 }
 
+inline std::string find_chr_alias(std::string& family, Rcpp::List& aliases,
+                                  int face) {
+  std::string out;
+  if (aliases.containsElementNamed(family.c_str())) {
+    SEXP alias = aliases[family];
+    if (TYPEOF(alias) == STRSXP && Rf_length(alias) == 1)
+      out = Rcpp::as<std::string>(alias);
+  }
+  return out;
+}
+
 inline std::string fontname(const char* family_, int face, Rcpp::List aliases) {
+  if (face == 5)
+    return "symbol";
+
   std::string family(family_);
   if (family == "")
     family = "sans";
 
-  std::string alias = find_alias(family, aliases, face, "name");
+  std::string alias = find_chr_alias(family, aliases, face);
+  if (!alias.size())
+    alias = find_alias(family, aliases, face, "name");
   if (alias.size())
     family = alias;
 
-  return validate_fontname(family, face);
+  return family;
 }
 
 inline std::string fontfile(const char* family_, int face,
