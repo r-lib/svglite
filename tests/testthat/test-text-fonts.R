@@ -11,6 +11,20 @@ test_that("font sets weight/style", {
   expect_equal(style_attr(text, "font-style"), c(NA, NA, "italic", "italic"))
 })
 
+test_that("metrics are computed for different weight/style", {
+  x <- xmlSVG({
+    plot.new()
+    text(1, 1, "text")
+    text(1, 1, "text", font = 2)
+    text(1, 1, "text", font = 4)
+  })
+  text <- xml_find_all(x, ".//text")
+  x <- xml_attr(text, "x")
+  y <- xml_attr(text, "y")
+  expect_false(any(x[2:3] == x[1]))
+  expect_false(any(y[2:3] == y[1]))
+})
+
 test_that("symbol font family is 'symbol'", {
   x <- xmlSVG({
     plot(c(0,2), c(0,2), type = "n", axes = FALSE, xlab = "", ylab = "")
