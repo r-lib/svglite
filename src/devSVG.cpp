@@ -500,20 +500,6 @@ double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
                             gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface), file);
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
-  if (fm.width == 0) {
-    int length = 0;
-    if (mbcslocale) {
-      // Compute width of UTF8 string
-      const char* s = str;
-      while (*s)
-        length += (*s++ & 0xc0) != 0x80;
-    } else {
-      length = strlen(str);
-    }
-    std::string fallback = std::string(length, 'M');
-    fm = gdtools::context_extents(svgd->cc, fallback);
-  }
-
   return fm.width * 96 / 72;
 }
 
