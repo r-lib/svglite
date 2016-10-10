@@ -59,14 +59,7 @@ validate_aliases <- function(aliases) {
   }
 
   missing_aliases <- setdiff(r_font_families, names(aliases))
-  aliases[missing_aliases] <- alias_lookup[missing_aliases]
+  aliases[missing_aliases] <- lapply(missing_aliases, gdtools::match_family)
 
   aliases
 }
-
-alias_lookup <- c(
-  sans = "Arial",
-  serif = "Times New Roman",
-  mono = "courier",
-  symbol = "symbol"
-)

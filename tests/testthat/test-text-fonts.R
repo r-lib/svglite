@@ -12,7 +12,7 @@ test_that("font sets weight/style", {
 })
 
 test_that("metrics are computed for different weight/style", {
-  x <- xmlSVG({
+  x <- xmlSVG(font_aliases = list(sans = "Arial"), {
     plot.new()
     text(1, 1, "text")
     text(1, 1, "text", font = 2)
@@ -59,10 +59,10 @@ test_that("fonts are aliased", {
     text(0.5, 0.9, "a", family = "mono")
   }, font_aliases = aliases)
   text <- xml_find_all(x, ".//text")
+  families <- style_attr(text, "font-family")
 
-  expect_equal(
-    style_attr(text, "font-family"),
-    c("Times New Roman", "foobar", "Bitstream Vera Sans Mono")
+  expect_false(families[[1]] == "serif")
+  expect_true(all(families[2:3] == c("foobar", "Bitstream Vera Sans Mono"))
   )
 })
 

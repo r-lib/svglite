@@ -2,15 +2,12 @@ context("Text")
 library(xml2)
 
 test_that("par(cex) affects strwidth", {
-  svglite(tempfile())
-  on.exit(dev.off())
-
-  plot.new()
-  w1 <- strwidth("X")
-
-  par(cex = 4)
-  w4 <- strwidth("X")
-
+  xmlSVG({
+    plot.new()
+    w1 <- strwidth("X")
+    par(cex = 4)
+    w4 <- strwidth("X")
+  })
   expect_equal(w4 / w1, 4, tol = 1e-4)
 })
 
@@ -80,7 +77,7 @@ test_that("a symbol has width greater than 0", {
 })
 
 test_that("strwidth and height correctly computed", {
-  svglite("test-text.svg", 4, 4)
+  svglite("test-text.svg", 4, 4, font_aliases = bitstream)
   on.exit(dev.off())
 
   plot.new()
@@ -93,8 +90,8 @@ test_that("strwidth and height correctly computed", {
   rect(0.5 - w / 2, 0.5 - h / 2, 0.5 + w / 2, 0.5 + h / 2)
 })
 
-test_that("strwidth has fallback for unknown fonts", {
-  xmlSVG({
+test_that("strwidth has fallback for unknown glyphs", {
+  xmlSVG(font_aliases = bitstream, {
     plot.new()
     w <- strwidth("正規分布")
   })
