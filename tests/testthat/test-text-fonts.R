@@ -12,7 +12,7 @@ test_that("font sets weight/style", {
 })
 
 test_that("metrics are computed for different weight/style", {
-  x <- xmlSVG(fonts = list(sans = "Arial"), {
+  x <- xmlSVG(fonts = fontquiver::font_families("Bitstream Vera"), {
     plot.new()
     text(1, 1, "text")
     text(1, 1, "text", font = 2)
@@ -20,21 +20,18 @@ test_that("metrics are computed for different weight/style", {
   })
   text <- xml_find_all(x, ".//text")
   x <- xml_attr(text, "x")
-  y <- xml_attr(text, "y")
   expect_false(any(x[2:3] == x[1]))
-  expect_false(any(y[2:3] == y[1]))
 })
 
 test_that("symbol font family is 'Symbol'", {
-  aliases <- validate_aliases(list())
-  expect_equal(aliases$system$symbol, "Symbol")
+  matched_symbol_font <- gdtools::match_family("symbol")
 
   x <- xmlSVG({
     plot(c(0,2), c(0,2), type = "n", axes = FALSE, xlab = "", ylab = "")
     text(1, 1, expression(symbol("\042")))
   })
   text <- xml_find_all(x, ".//text")
-  expect_equal(style_attr(text, "font-family"), c("Symbol"))
+  expect_equal(style_attr(text, "font-family"), matched_symbol_font)
 })
 
 test_that("partial aliases are checked", {
@@ -72,13 +69,10 @@ test_that("fonts are aliased", {
 })
 
 test_that("metrics are computed for different fonts", {
-  aliases <- list(
-    sans = "Courier",
-    mono = fontquiver::font_faces("Bitstream Vera", "Mono")
-  )
+  aliases <- fontquiver::font_families("Bitstream Vera")
   x <- xmlSVG({
     plot.new()
-    text(0.5, 0.9, "a", family = "sans")
+    text(0.5, 0.9, "a", family = "serif")
     text(0.5, 0.9, "a", family = "mono")
   }, fonts = aliases)
   text <- xml_find_all(x, ".//text")
