@@ -4,8 +4,7 @@
 \alias{editSVG}
 \title{Run plotting code and open svg in OS/system default svg viewer or editor.}
 \usage{
-editSVG(code, ..., width = NA, height = NA, font_aliases = NULL,
-  font_extra = NULL)
+editSVG(code, ..., width = NA, height = NA, fonts = list())
 }
 \arguments{
 \item{code}{Plotting code to execute.}
@@ -16,13 +15,10 @@ editSVG(code, ..., width = NA, height = NA, font_aliases = NULL,
 
 \item{height}{Height and width in inches.}
 
-\item{font_aliases}{List of font families to be aliased. By
-default, \code{sans} is aliased to "Arial", \code{serif} to
-"Times" or "Times New Roman" (the latter on Windows), and
-\code{mono} to "courier".}
-
-\item{font_extra}{List of fonts or collection of fonts. These are
-used by svglite to compute text metrics in a reproducible way.}
+\item{fonts}{List of fonts to be aliased. If unspecified, the R
+default families \code{sans}, \code{serif}, \code{mono} and
+\code{symbol} are aliased to the family returned by
+\code{\link[gdtools]{match_family}()}.}
 }
 \description{
 This is useful primarily for testing or post-processing the SVG.

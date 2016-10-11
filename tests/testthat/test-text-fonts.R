@@ -12,7 +12,7 @@ test_that("font sets weight/style", {
 })
 
 test_that("metrics are computed for different weight/style", {
-  x <- xmlSVG(font_aliases = list(sans = "Arial"), {
+  x <- xmlSVG(fonts = list(sans = "Arial"), {
     plot.new()
     text(1, 1, "text")
     text(1, 1, "text", font = 2)
@@ -25,13 +25,16 @@ test_that("metrics are computed for different weight/style", {
   expect_false(any(y[2:3] == y[1]))
 })
 
-test_that("symbol font family is 'symbol'", {
+test_that("symbol font family is 'Symbol'", {
+  aliases <- validate_aliases(list())
+  expect_equal(aliases$system$symbol, "Symbol")
+
   x <- xmlSVG({
     plot(c(0,2), c(0,2), type = "n", axes = FALSE, xlab = "", ylab = "")
     text(1, 1, expression(symbol("\042")))
   })
   text <- xml_find_all(x, ".//text")
-  expect_equal(style_attr(text, "font-family"), c("symbol"))
+  expect_equal(style_attr(text, "font-family"), c("Symbol"))
 })
 
 test_that("partial aliases are checked", {
@@ -44,38 +47,40 @@ test_that("partial aliases are checked", {
 })
 
 test_that("throw on malformed alias", {
-  expect_error(validate_aliases(list(mono = letters)), "not valid")
+  expect_error(validate_aliases(list(mono = letters)), "must be scalar")
+  expect_error(validate_aliases(list(sans = "foobar")), "not found")
 })
 
 test_that("fonts are aliased", {
+  matched <- gdtools::match_family("cursive")
   aliases <- list(
-    sans = "foobar",
+    sans = matched,
     mono = fontquiver::font_faces("Bitstream Vera", "Mono")
   )
-  x <- xmlSVG({
+  x <- xmlSVG(fonts = aliases, {
     plot.new()
     text(0.5, 0.1, "a", family = "serif")
     text(0.5, 0.5, "a", family = "sans")
     text(0.5, 0.9, "a", family = "mono")
-  }, font_aliases = aliases)
+  })
   text <- xml_find_all(x, ".//text")
   families <- style_attr(text, "font-family")
 
   expect_false(families[[1]] == "serif")
-  expect_true(all(families[2:3] == c("foobar", "Bitstream Vera Sans Mono"))
+  expect_true(all(families[2:3] == c(matched, "Bitstream Vera Sans Mono"))
   )
 })
 
 test_that("metrics are computed for different fonts", {
   aliases <- list(
-    sans = "courier",
+    sans = "Courier",
     mono = fontquiver::font_faces("Bitstream Vera", "Mono")
   )
   x <- xmlSVG({
     plot.new()
     text(0.5, 0.9, "a", family = "sans")
     text(0.5, 0.9, "a", family = "mono")
-  }, font_aliases = aliases)
+  }, fonts = aliases)
   text <- xml_find_all(x, ".//text")
   x_attr <- xml_attr(text, "x")
   y_attr <- xml_attr(text, "y")

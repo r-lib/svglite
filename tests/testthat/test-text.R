@@ -77,7 +77,7 @@ test_that("a symbol has width greater than 0", {
 })
 
 test_that("strwidth and height correctly computed", {
-  svglite("test-text.svg", 4, 4, font_aliases = bitstream)
+  svglite("test-text.svg", 4, 4, fonts = bitstream)
   on.exit(dev.off())
 
   plot.new()
@@ -91,7 +91,7 @@ test_that("strwidth and height correctly computed", {
 })
 
 test_that("strwidth has fallback for unknown glyphs", {
-  xmlSVG(font_aliases = bitstream, {
+  xmlSVG(fonts = bitstream, {
     plot.new()
     w <- strwidth("正規分布")
   })

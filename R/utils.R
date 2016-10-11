@@ -24,6 +24,13 @@ vapply_chr <- function(.x, .f, ...) {
 vapply_lgl <- function(.x, .f, ...) {
   vapply(.x, .f, logical(1), ...)
 }
+lapply_if <- function(.x, .p, .f, ...) {
+  if (!is.logical(.p)) {
+    .p <- vapply_lgl(.x, .p)
+  }
+  .x[.p] <- lapply(.x[.p], .f, ...)
+  .x
+}
 keep <- function(.x, .p, ...) {
   .x[vapply_lgl(.x, .p, ...)]
 }
@@ -35,4 +42,29 @@ compact <- function(x) {
 }
 is_scalar_character <- function(x) {
   is.character(x) && length(x) == 1
+}
+names2 <- function(x) {
+  names(x) %||% rep("", length(x))
+}
+ilapply <- function(.x, .f, ...) {
+  idx <- names(.x) %||% seq_along(.x)
+  out <- Map(.f, names(.x), .x, ...)
+  names(out) <- names(.x)
+  out
+}
+ilapply_if <- function(.x, .p, .f, ...) {
+  if (!is.logical(.p)) {
+    .p <- vapply_lgl(.x, .p)
+  }
+  .x[.p] <- ilapply(.x[.p], .f, ...)
+  .x
+}
+set_names <- function(x, nm = x) {
+  stats::setNames(x, nm)
+}
+zip <- function(.l) {
+  fields <- set_names(names(.l[[1]]))
+  lapply(fields, function(i) {
+    lapply(.l, .subset2, i)
+  })
 }
