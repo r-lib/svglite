@@ -70,6 +70,9 @@ inline bool is_italic(int face) {
 inline bool is_bolditalic(int face) {
   return face == 4;
 }
+inline bool is_symbol(int face) {
+  return face == 5;
+}
 
 inline std::string find_alias_field(std::string& family, Rcpp::List& alias,
                                     const char* face, const char* field) {
@@ -93,6 +96,8 @@ inline std::string find_user_alias(std::string& family,
       out = find_alias_field(family, alias, "bold", field);
     else if (is_italic(face))
       out = find_alias_field(family, alias, "italic", field);
+    else if (is_symbol(face))
+      out = find_alias_field(family, alias, "symbol", field);
     else
       out = find_alias_field(family, alias, "plain", field);
   }
@@ -123,14 +128,13 @@ inline std::string fontname(const char* family_, int face,
   if (!alias.size())
     alias = find_user_alias(family, user_aliases, face, "name");
 
-  if (!alias.size())
-    return family;
-  else
+  if (alias.size())
     return alias;
+  else
+    return family;
 }
 
 inline std::string fontfile(const char* family_, int face,
-                            Rcpp::List system_aliases,
                             Rcpp::List user_aliases) {
   std::string family(family_);
   if (family == "")
@@ -296,7 +300,7 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
     str[1] = '\0';
   }
 
-  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases);
+  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->user_aliases);
   std::string name = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases);
   gdtools::context_set_font(svgd->cc, name, gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface), file);
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
@@ -490,7 +494,7 @@ void svg_path(double *x, double *y,
 double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases);
+  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->user_aliases);
   std::string name = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases);
   gdtools::context_set_font(svgd->cc, name, gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface), file);
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));

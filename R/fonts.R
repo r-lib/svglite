@@ -20,7 +20,7 @@ check_aliases <- function(aliases) {
 }
 
 r_font_families <- c("sans", "serif", "mono", "symbol")
-r_font_faces <- c("plain", "bold", "italic", "bolditalic")
+r_font_faces <- c("plain", "bold", "italic", "bolditalic", "symbol")
 
 validate_aliases <- function(fonts) {
   fonts <- lapply(fonts, compact)
@@ -59,7 +59,7 @@ is_font_file <- function(x) {
 
 validate_user_alias <- function(default_name, family) {
   if (!all(names(family) %in% r_font_faces)) {
-    stop("Families can contain only: `plain`, `bold`, `italic`, `bolditalic`",
+    stop("Faces must contain only: `plain`, `bold`, `italic`, `bolditalic`, `symbol`",
       call. = FALSE)
   }
 
