@@ -47,7 +47,8 @@ families of fonts (\code{sans}, \code{serif}, \code{mono},
 \code{symbol}). You can supply the name of an installed font with
 the \code{system_fonts} argument. Fontconfig will be used to
 identify where the font location. Use
-\code{\link[gdtools]{match_family}()} to determine the font family
+\code{\link[gdtools]{match_family}()} and
+\code{\link[gdtools]{match_font}()} to determine the font family
 and the font file matched by fontconfig.
 
 You can also provide specific files with the \code{user_fonts}
@@ -68,6 +69,7 @@ gdtools::match_family("Verdana")
 # Then supply a list of aliases:
 fonts <- list(sans = "Verdana", mono = "Times New Roman")
 svglite("Rplots.svg", system_fonts = fonts)
+plot.new()
 text(1, 1, "Some text", family = "mono")
 dev.off()
 
@@ -92,7 +94,7 @@ fonts <- list(
 # Bar/plain/italic faces to be aliased with the font names supplied
 # in the font objects. Also the supplied fonts will be used to
 # compute the metrics of the graphical elements.
-ss <- svgstring(fonts = fonts)
+ss <- svgstring(user_fonts = fonts)
 plot(1:2, main = "Simple Example")
 text(1, 1, family = "Foo Bar", font = 3)
 dev.off()
