@@ -22,35 +22,40 @@ check_aliases <- function(aliases) {
 r_font_families <- c("sans", "serif", "mono", "symbol")
 r_font_faces <- c("plain", "bold", "italic", "bolditalic", "symbol")
 
-validate_aliases <- function(fonts) {
-  fonts <- lapply(fonts, compact)
+validate_aliases <- function(system_fonts, user_fonts) {
+  system_fonts <- compact(lapply(system_fonts, compact))
+  user_fonts <- compact(lapply(user_fonts, compact))
 
-  malformed_system_alias <- vapply_lgl(fonts, is.character) & lengths(fonts) > 1
-  if (any(malformed_system_alias)) {
-    stop("System alias must be scalar character vector", call. = FALSE)
+  system_fonts <- lapply(system_fonts, validate_system_alias)
+  user_fonts <- ilapply(user_fonts, validate_user_alias)
+
+  aliases <- c(names(system_fonts), names(user_fonts))
+  if (any(duplicated(aliases))) {
+    stop("Cannot supply both system and font alias", call. = FALSE)
   }
 
-  # Validate system aliases
-  lapply_if(fonts, is_scalar_character, function(alias) {
-    matched <- gdtools::match_family(alias)
-    if (alias != matched) {
-      stop(call. = FALSE,
-        "System font `", alias, "` not found. ",
-        "Closest match: `", matched, "`")
-    }
-  })
-
   # Add missing system fonts for base families
-  missing_aliases <- setdiff(r_font_families, names(compact(fonts)))
-  fonts[missing_aliases] <- lapply(missing_aliases, gdtools::match_family)
-
-  # Validate user-defined aliases
-  fonts <- ilapply_if(fonts, is.list, validate_user_alias)
+  missing_aliases <- setdiff(r_font_families, aliases)
+  system_fonts[missing_aliases] <- lapply(missing_aliases, gdtools::match_family)
 
   list(
-    system = keep(fonts, is.character),
-    user = keep(fonts, is.list)
+    system = system_fonts,
+    user = user_fonts
   )
+}
+
+validate_system_alias <- function(alias) {
+  if (!is_scalar_character(alias)) {
+    stop("System fonts must be scalar character vector", call. = FALSE)
+  }
+
+  matched <- gdtools::match_family(alias)
+  if (alias != matched) {
+    warning(call. = FALSE,
+      "System font `", alias, "` not found. ",
+      "Closest match: `", matched, "`")
+  }
+  matched
 }
 
 is_font_file <- function(x) {

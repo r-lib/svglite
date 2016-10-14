@@ -5,7 +5,8 @@
 \title{An SVG Graphics Driver}
 \usage{
 svglite(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-  pointsize = 12, standalone = TRUE, fonts = list())
+  pointsize = 12, standalone = TRUE, system_fonts = list(),
+  user_fonts = list())
 }
 \arguments{
 \item{file}{The file where output will appear.}
@@ -19,14 +20,41 @@ svglite(file = "Rplots.svg", width = 10, height = 8, bg = "white",
 \item{standalone}{Produce a standalone svg file? If \code{FALSE}, omits
 xml header and default namespace.}
 
-\item{fonts}{List of fonts to be aliased. If unspecified, the R
-default families \code{sans}, \code{serif}, \code{mono} and
-\code{symbol} are aliased to the family returned by
+\item{system_fonts}{Named list of font names to be aliased with
+fonts installed on your system. If unspecified, the R default
+families \code{sans}, \code{serif}, \code{mono} and \code{symbol}
+are aliased to the family returned by
 \code{\link[gdtools]{match_family}()}.}
+
+\item{user_fonts}{Named list of fonts to be aliased with specific
+font files. These font files can be fonts from the fontquiver
+package or they}
 }
 \description{
-This function produces graphics compliant to the current w3 svg XML standard.
-The driver output is currently NOT specifying a DOCTYPE DTD.
+This function produces graphics compliant to the current w3 svg XML
+standard. The driver output is currently NOT specifying a DOCTYPE DTD.
+}
+\details{
+svglite provides two ways of controlling fonts: system fonts
+aliases and user fonts aliases. Supplying a font alias has two
+effects. First it determines the \code{font-family} property of all
+text anchors in the SVG output. Secondly, the font is used to
+determine the dimensions of graphical elements and has thus an
+influence on the overall aspect of the plots.
+
+By default, fontconfig is used to find fonts corresponding to the R
+families of fonts (\code{sans}, \code{serif}, \code{mono},
+\code{symbol}). You can supply the name of an installed font with
+the \code{system_fonts} argument. Fontconfig will be used to
+identify where the font location. Use
+\code{\link[gdtools]{match_family}()} to determine the font family
+and the font file matched by fontconfig.
+
+You can also provide specific files with the \code{user_fonts}
+argument. It accepts fonts returned by the fontquiver package as
+well as lists containing \code{name} and \code{ttf} elements. The
+name field specifies an alias for the \code{font-family} text
+property.
 }
 \examples{
 # Save to file
@@ -34,9 +62,41 @@ svglite("Rplots.svg")
 plot(1:11, (-5:5)^2, type = 'b', main = "Simple Example")
 dev.off()
 
-# Supply font aliases.
-# svglite("aliased.svg", font_alias = list(sans = "Verdana"))
-# plot(1:10, main = "Simple Example")
+# Supply system font aliases. First check the font can be located:
+gdtools::match_family("Verdana")
+
+# Then supply a list of aliases:
+fonts <- list(sans = "Verdana", mono = "Times New Roman")
+svglite("Rplots.svg", system_fonts = fonts)
+text(1, 1, "Some text", family = "mono")
+dev.off()
+
+# To supply user font aliases, use either fontquiver:
+fonts <- fontquiver::font_families("Liberation")
+
+# Or create yourself a list of fonts. First create a font file
+# object, which is a list with name and ttf elements:
+myfont <- list(name = "Some Font Serif", ttf = "myfont.ttf")
+myotherfont <- list(name = "Other Font Mono", ttf = "myotherfont.ttf")
+
+# Then create a named tree with R font families (sans, serif, mono,
+# symbol) in the first level and R faces in the second (plain,
+# itali bold, bolditalic, symbol).
+fonts <- list(
+  sans = list(plain = myfont),
+  mono = list(italic = myotherfont),
+  `Foo Bar` = list(plain = myfont, italic = myotherfont)
+)
+
+# This will cause the sans/plain, mono/italic and Foo
+# Bar/plain/italic faces to be aliased with the font names supplied
+# in the font objects. Also the supplied fonts will be used to
+# compute the metrics of the graphical elements.
+ss <- svgstring(fonts = fonts)
+plot(1:2, main = "Simple Example")
+text(1, 1, family = "Foo Bar", font = 3)
+dev.off()
+ss()
 }
 \author{
 This driver was written by T Jake Luciani

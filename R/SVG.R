@@ -9,10 +9,14 @@
 #' @param pointsize Default point size.
 #' @param standalone Produce a standalone svg file? If \code{FALSE}, omits
 #'   xml header and default namespace.
-#' @param fonts List of fonts to be aliased. If unspecified, the R
-#'   default families \code{sans}, \code{serif}, \code{mono} and
-#'   \code{symbol} are aliased to the family returned by
+#' @param system_fonts Named list of font names to be aliased with
+#'   fonts installed on your system. If unspecified, the R default
+#'   families \code{sans}, \code{serif}, \code{mono} and \code{symbol}
+#'   are aliased to the family returned by
 #'   \code{\link[gdtools]{match_family}()}.
+#' @param user_fonts Named list of fonts to be aliased with specific
+#'   font files. These font files can be fonts from the fontquiver
+#'   package or they
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
 #'   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
 #' @author This driver was written by T Jake Luciani
@@ -35,8 +39,8 @@
 #' @export
 svglite <- function(file = "Rplots.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,
-                    fonts = list()) {
-  aliases <- validate_aliases(fonts)
+                    system_fonts = list(), user_fonts = list()) {
+  aliases <- validate_aliases(system_fonts, user_fonts)
   invisible(svglite_(file, bg, width, height, pointsize, standalone, aliases))
 }
 
@@ -63,8 +67,8 @@ svglite <- function(file = "Rplots.svg", width = 10, height = 8,
 #' @export
 svgstring <- function(width = 10, height = 8, bg = "white",
                       pointsize = 12, standalone = TRUE,
-                      fonts = list()) {
-  aliases <- validate_aliases(fonts)
+                      system_fonts = list(), user_fonts = list()) {
+  aliases <- validate_aliases(system_fonts, user_fonts)
 
   env <- new.env(parent = emptyenv())
   string_src <- svgstring_(env, width = width, height = height, bg = bg,

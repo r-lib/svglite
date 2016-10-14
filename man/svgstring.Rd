@@ -5,7 +5,7 @@
 \title{Access current SVG as a string.}
 \usage{
 svgstring(width = 10, height = 8, bg = "white", pointsize = 12,
-  standalone = TRUE, fonts = list())
+  standalone = TRUE, system_fonts = list(), user_fonts = list())
 }
 \arguments{
 \item{width}{Height and width in inches.}
@@ -19,10 +19,15 @@ svgstring(width = 10, height = 8, bg = "white", pointsize = 12,
 \item{standalone}{Produce a standalone svg file? If \code{FALSE}, omits
 xml header and default namespace.}
 
-\item{fonts}{List of fonts to be aliased. If unspecified, the R
-default families \code{sans}, \code{serif}, \code{mono} and
-\code{symbol} are aliased to the family returned by
+\item{system_fonts}{Named list of font names to be aliased with
+fonts installed on your system. If unspecified, the R default
+families \code{sans}, \code{serif}, \code{mono} and \code{symbol}
+are aliased to the family returned by
 \code{\link[gdtools]{match_family}()}.}
+
+\item{user_fonts}{Named list of fonts to be aliased with specific
+font files. These font files can be fonts from the fontquiver
+package or they}
 
 \item{...}{Arguments passed on to \code{\link{svglite}}.}
 }
@@ -33,6 +38,10 @@ A function with no arguments: call the function to get the
 \description{
 This is a variation on \code{\link{svglite}} that makes it easy to access
 the current value as a string.
+}
+\details{
+See \code{\link{svglite}()} documentation for information about
+specifying fonts.
 }
 \examples{
 s <- svgstring(); s()

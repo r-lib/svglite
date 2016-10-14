@@ -12,8 +12,8 @@
 #'   htmlSVG(plot(1:10))
 #'   htmlSVG(hist(rnorm(100)))
 #' }
-htmlSVG <- function(code, ..., fonts = list()) {
-  svg <- inlineSVG(code, ..., fonts = fonts)
+htmlSVG <- function(code, ..., system_fonts = list(), user_fonts = list()) {
+  svg <- inlineSVG(code, ..., system_fonts = system_fonts, user_fonts = user_fonts)
   htmltools::browsable(
     htmltools::HTML(svg)
   )
@@ -34,12 +34,13 @@ htmlSVG <- function(code, ..., fonts = list()) {
 #'   xml_find_all(x, ".//text")
 #' }
 xmlSVG <- function(code, ..., standalone = FALSE, height = 7, width = 7,
-                   fonts = list()) {
+                   system_fonts = list(), user_fonts = list()) {
   plot <- inlineSVG(code, ...,
     standalone = standalone,
     height = height,
     width = width,
-    fonts = fonts
+    system_fonts = system_fonts,
+    user_fonts = user_fonts
   )
   xml2::read_xml(plot)
 }
@@ -56,11 +57,13 @@ xmlSVG <- function(code, ..., standalone = FALSE, height = 7, width = 7,
 #'   editSVG(plot(1:10))
 #'   editSVG(contour(volcano))
 #' }
-editSVG <- function(code, ..., width = NA, height = NA, fonts = list()) {
+editSVG <- function(code, ..., width = NA, height = NA,
+                    system_fonts = list(), user_fonts = list()) {
   dim <- plot_dim(c(width, height))
 
   tmp <- tempfile(fileext = ".svg")
-  svglite(tmp, width = dim[1], height = dim[2], fonts = fonts, ...)
+  svglite(tmp, width = dim[1], height = dim[2], ...,
+    system_fonts = system_fonts, user_fonts = user_fonts)
   tryCatch(code,
     finally = grDevices::dev.off()
   )
@@ -69,10 +72,12 @@ editSVG <- function(code, ..., width = NA, height = NA, fonts = list()) {
 }
 
 
-inlineSVG <- function(code, ..., width = NA, height = NA, fonts = list()) {
+inlineSVG <- function(code, ..., width = NA, height = NA,
+                      system_fonts = list(), user_fonts = list()) {
   dim <- plot_dim(c(width, height))
 
-  svg <- svgstring(width = dim[1], height = dim[2], fonts = fonts, ...)
+  svg <- svgstring(width = dim[1], height = dim[2], ...,
+    system_fonts = system_fonts, user_fonts = user_fonts)
   tryCatch(code,
     finally = grDevices::dev.off()
   )

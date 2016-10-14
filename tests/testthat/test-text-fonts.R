@@ -12,7 +12,7 @@ test_that("font sets weight/style", {
 })
 
 test_that("metrics are computed for different weight/style", {
-  x <- xmlSVG(fonts = fontquiver::font_families("Bitstream Vera"), {
+  x <- xmlSVG(user_fonts = fontquiver::font_families("Bitstream Vera"), {
     plot.new()
     text(1, 1, "text")
     text(1, 1, "text", font = 2)
@@ -44,37 +44,35 @@ test_that("partial aliases are checked", {
 })
 
 test_that("throw on malformed alias", {
-  expect_error(validate_aliases(list(mono = letters)), "must be scalar")
-  expect_error(validate_aliases(list(sans = "foobar")), "not found")
+  expect_error(validate_aliases(list(mono = letters), list()), "must be scalar")
+  expect_warning(validate_aliases(list(sans = "foobar"), list()), "not found")
 })
 
 test_that("fonts are aliased", {
   matched <- gdtools::match_family("cursive")
-  aliases <- list(
-    sans = matched,
-    mono = fontquiver::font_faces("Bitstream Vera", "Mono")
-  )
-  x <- xmlSVG(fonts = aliases, {
-    plot.new()
-    text(0.5, 0.1, "a", family = "serif")
-    text(0.5, 0.5, "a", family = "sans")
-    text(0.5, 0.9, "a", family = "mono")
-  })
+  x <- xmlSVG(
+    system_fonts = list(sans = matched),
+    user_fonts = list(mono = fontquiver::font_faces("Bitstream Vera", "Mono")),
+    {
+      plot.new()
+      text(0.5, 0.1, "a", family = "serif")
+      text(0.5, 0.5, "a", family = "sans")
+      text(0.5, 0.9, "a", family = "mono")
+    })
   text <- xml_find_all(x, ".//text")
   families <- style_attr(text, "font-family")
 
   expect_false(families[[1]] == "serif")
-  expect_true(all(families[2:3] == c(matched, "Bitstream Vera Sans Mono"))
-  )
+  expect_true(all(families[2:3] == c(matched, "Bitstream Vera Sans Mono")))
 })
 
 test_that("metrics are computed for different fonts", {
   aliases <- fontquiver::font_families("Bitstream Vera")
-  x <- xmlSVG({
+  x <- xmlSVG(user_fonts = aliases, {
     plot.new()
     text(0.5, 0.9, "a", family = "serif")
     text(0.5, 0.9, "a", family = "mono")
-  }, fonts = aliases)
+  })
   text <- xml_find_all(x, ".//text")
   x_attr <- xml_attr(text, "x")
   y_attr <- xml_attr(text, "y")

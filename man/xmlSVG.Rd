@@ -5,7 +5,7 @@
 \title{Run plotting code and return svg}
 \usage{
 xmlSVG(code, ..., standalone = FALSE, height = 7, width = 7,
-  fonts = list())
+  system_fonts = list(), user_fonts = list())
 }
 \arguments{
 \item{code}{Plotting code to execute.}
@@ -19,10 +19,15 @@ xml header and default namespace.}
 
 \item{width}{Height and width in inches.}
 
-\item{fonts}{List of fonts to be aliased. If unspecified, the R
-default families \code{sans}, \code{serif}, \code{mono} and
-\code{symbol} are aliased to the family returned by
+\item{system_fonts}{Named list of font names to be aliased with
+fonts installed on your system. If unspecified, the R default
+families \code{sans}, \code{serif}, \code{mono} and \code{symbol}
+are aliased to the family returned by
 \code{\link[gdtools]{match_family}()}.}
+
+\item{user_fonts}{Named list of fonts to be aliased with specific
+font files. These font files can be fonts from the fontquiver
+package or they}
 }
 \value{
 A \code{xml2::xml_document} object.
