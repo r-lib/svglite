@@ -137,7 +137,9 @@ inline std::string fontname(const char* family_, int face,
 inline std::string fontfile(const char* family_, int face,
                             Rcpp::List user_aliases) {
   std::string family(family_);
-  if (family == "")
+  if (face == 5)
+    family = "symbol";
+  else if (family == "")
     family = "sans";
 
   return find_user_alias(family, user_aliases, face, "file");
