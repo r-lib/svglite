@@ -78,8 +78,8 @@ fonts <- fontquiver::font_families("Liberation")
 
 # Or create yourself a list of fonts. First create a font file
 # object, which is a list with name and ttf elements:
-myfont <- list(name = "Some Font Serif", ttf = "myfont.ttf")
-myotherfont <- list(name = "Other Font Mono", ttf = "myotherfont.ttf")
+myfont <- list(name = "Some Font Serif", file = "myfont.ttf")
+myotherfont <- list(name = "Other Font Mono", file = "myotherfont.ttf")
 
 # Then create a named tree with R font families (sans, serif, mono,
 # symbol) in the first level and R faces in the second (plain,
@@ -87,7 +87,8 @@ myotherfont <- list(name = "Other Font Mono", ttf = "myotherfont.ttf")
 fonts <- list(
   sans = list(plain = myfont),
   mono = list(italic = myotherfont),
-  `Foo Bar` = list(plain = myfont, italic = myotherfont)
+  `Foo Bar` = list(plain = myfont, italic = myotherfont),
+  `Foo Baz` = list(plain = "no_aliasing.ttf")
 )
 
 # This will cause the sans/plain, mono/italic and Foo

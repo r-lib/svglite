@@ -59,7 +59,9 @@ validate_system_alias <- function(alias) {
 }
 
 is_font_file <- function(x) {
-  is.list(x) && is.character(x$ttf) && is.character(x$name)
+  is.list(x) &&
+    (is.character(x$file) || is.character(x$ttf)) &&
+    is.character(x$name)
 }
 
 validate_user_alias <- function(default_name, family) {
@@ -75,11 +77,24 @@ validate_user_alias <- function(default_name, family) {
   if (any(!is_valid_alias)) {
     stop(call. = FALSE,
       "The following faces are invalid for `", default_name, "`: ",
-      paste0(names(family)[!is_valid_alias], collapse = ", "))
+      paste0(names(family)[!is_valid_alias], collapse = ", ")
+    )
   }
 
   names <- ifelse(is_file_plain, default_name, family)
   names <- lapply_if(names, is_file_object, `[[`, "name")
-  files <- lapply_if(family, is_file_object, `[[`, "ttf")
+  files <- lapply_if(family, is_file_object, function(obj) {
+    obj$file %||% obj$ttf
+  })
+
+  file_exists <- vapply_lgl(files, file.exists)
+  if (any(!file_exists)) {
+    missing <- basename(unlist(files))[!file_exists]
+    stop(call. = FALSE,
+      "Could not find font file: ",
+      paste0(missing, collapse = ", ")
+    )
+  }
+
   zip(list(name = names, file = files))
 }
