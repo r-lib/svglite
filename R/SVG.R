@@ -82,11 +82,14 @@
 #' # Bar/plain/italic faces to be aliased with the font names supplied
 #' # in the font objects. Also the supplied fonts will be used to
 #' # compute the metrics of the graphical elements.
+#'
+#' \dontrun{
 #' ss <- svgstring(user_fonts = fonts)
 #' plot(1:2, main = "Simple Example")
 #' text(1, 1, family = "Foo Bar", font = 3)
 #' dev.off()
 #' ss()
+#' }
 #' @keywords device
 #' @useDynLib svglite
 #' @importFrom Rcpp sourceCpp
