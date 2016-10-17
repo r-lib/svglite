@@ -27,8 +27,10 @@ are aliased to the family returned by
 \code{\link[gdtools]{match_family}()}.}
 
 \item{user_fonts}{Named list of fonts to be aliased with specific
-font files. These font files can be fonts from the fontquiver
-package or they}
+font files. The aliases can be fonts from the fontquiver package,
+strings pointing to a font file, or a list containing \code{name}
+and \code{file} elements with \code{name} indicating the font
+alias in the SVG output.}
 }
 \description{
 This function produces graphics compliant to the current w3 svg XML

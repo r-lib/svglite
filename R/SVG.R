@@ -37,8 +37,10 @@
 #'   are aliased to the family returned by
 #'   \code{\link[gdtools]{match_family}()}.
 #' @param user_fonts Named list of fonts to be aliased with specific
-#'   font files. These font files can be fonts from the fontquiver
-#'   package or they
+#'   font files. The aliases can be fonts from the fontquiver package,
+#'   strings pointing to a font file, or a list containing \code{name}
+#'   and \code{file} elements with \code{name} indicating the font
+#'   alias in the SVG output.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
 #'   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
 #' @author This driver was written by T Jake Luciani
