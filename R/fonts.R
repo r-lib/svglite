@@ -89,7 +89,7 @@ validate_user_alias <- function(default_name, family) {
 
   file_exists <- vapply_lgl(files, file.exists)
   if (any(!file_exists)) {
-    missing <- basename(unlist(files))[!file_exists]
+    missing <- unlist(files)[!file_exists]
     stop(call. = FALSE,
       "Could not find font file: ",
       paste0(missing, collapse = ", ")
