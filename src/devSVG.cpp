@@ -140,7 +140,7 @@ inline std::string fontfile(const char* family_, int face,
   if (family == "")
     family = "sans";
 
-  return find_user_alias(family, user_aliases, face, "ttf");
+  return find_user_alias(family, user_aliases, face, "file");
 }
 
 inline void write_escaped(SvgStreamPtr stream, const char* text) {
