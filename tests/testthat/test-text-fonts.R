@@ -34,15 +34,6 @@ test_that("symbol font family is 'Symbol'", {
   expect_equal(style_attr(text, "font-family"), matched_symbol_font)
 })
 
-test_that("partial aliases are checked", {
-  aliases <- list(
-    sans = fontquiver::font_faces("Bitstream Vera", "Sans"),
-    mono = fontquiver::font_faces("Bitstream Vera", "Mono")
-  )
-  missing_faces <- check_aliases(aliases)$families
-  expect_equal(missing_faces, c("serif", "symbol"))
-})
-
 test_that("throw on malformed alias", {
   expect_error(validate_aliases(list(mono = letters), list()), "must be scalar")
   expect_warning(validate_aliases(list(sans = "foobar"), list()), "not found")

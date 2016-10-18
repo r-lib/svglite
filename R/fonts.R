@@ -1,23 +1,3 @@
-#' Check font aliases for missing families and faces
-#' 
-#' @param aliases A list of families of faces. Typically created with
-#'   \code{fontquiver::font_families()}.
-#' @export
-check_aliases <- function(aliases) {
-  all_missing <- 0 == vapply(aliases, function(alias) length(compact(alias)), integer(1))
-  missing_families <- names(all_missing)[all_missing]
-
-  # Include families not in the list
-  missing_families <- c(missing_families, setdiff(r_font_families, names(aliases)))
-  message("Missing families:\n\n  ", paste(missing_families, collpase = "\n  "), "\n")
-
-  missing_faces <- lapply(aliases[!all_missing], keep, is.null)
-  missing_faces <- unlist(missing_faces, recursive = FALSE)
-  missing_faces <- names(missing_faces)
-  message("Missing faces:\n\n  ", paste(missing_faces, collapse = "\n  "), "\n")
-
-  invisible(list(families = missing_families, faces = missing_faces))
-}
 
 r_font_families <- c("sans", "serif", "mono", "symbol")
 r_font_faces <- c("plain", "bold", "italic", "bolditalic", "symbol")
