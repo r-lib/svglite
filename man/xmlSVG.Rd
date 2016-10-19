@@ -25,11 +25,13 @@ families \code{sans}, \code{serif}, \code{mono} and \code{symbol}
 are aliased to the family returned by
 \code{\link[gdtools]{match_family}()}.}
 
-\item{user_fonts}{Named list of fonts to be aliased with specific
-font files. The aliases can be fonts from the fontquiver package,
-strings pointing to a font file, or a list containing \code{name}
-and \code{file} elements with \code{name} indicating the font
-alias in the SVG output.}
+\item{user_fonts}{Named list of fonts to be aliased with font files
+provided by the user rather than fonts properly installed on the
+system. The aliases can be fonts from the fontquiver package,
+strings containing a path to a font file, or a list containing
+\code{name} and \code{file} elements with \code{name} indicating
+the font alias in the SVG output and \code{file} the path to a
+font file.}
 }
 \value{
 A \code{xml2::xml_document} object.

@@ -26,11 +26,13 @@ families \code{sans}, \code{serif}, \code{mono} and \code{symbol}
 are aliased to the family returned by
 \code{\link[gdtools]{match_family}()}.}
 
-\item{user_fonts}{Named list of fonts to be aliased with specific
-font files. The aliases can be fonts from the fontquiver package,
-strings pointing to a font file, or a list containing \code{name}
-and \code{file} elements with \code{name} indicating the font
-alias in the SVG output.}
+\item{user_fonts}{Named list of fonts to be aliased with font files
+provided by the user rather than fonts properly installed on the
+system. The aliases can be fonts from the fontquiver package,
+strings containing a path to a font file, or a list containing
+\code{name} and \code{file} elements with \code{name} indicating
+the font alias in the SVG output and \code{file} the path to a
+font file.}
 }
 \description{
 This function produces graphics compliant to the current w3 svg XML
@@ -42,22 +44,10 @@ aliases and user fonts aliases. Supplying a font alias has two
 effects. First it determines the \code{font-family} property of all
 text anchors in the SVG output. Secondly, the font is used to
 determine the dimensions of graphical elements and has thus an
-influence on the overall aspect of the plots.
-
-By default, fontconfig is used to find fonts corresponding to the R
-families of fonts (\code{sans}, \code{serif}, \code{mono},
-\code{symbol}). You can supply the name of an installed font with
-the \code{system_fonts} argument. Fontconfig will be used to
-identify where the font location. Use
-\code{\link[gdtools]{match_family}()} and
-\code{\link[gdtools]{match_font}()} to determine the font family
-and the font file matched by fontconfig.
-
-You can also provide specific files with the \code{user_fonts}
-argument. It accepts fonts returned by the fontquiver package as
-well as lists containing \code{name} and \code{ttf} elements. The
-name field specifies an alias for the \code{font-family} text
-property.
+influence on the overall aspect of the plots. This means that for
+optimal display, the font must be available on both the computer
+used to create the svg, and the computer used to render the
+svg. See the \code{fonts} vignette for more information.
 }
 \examples{
 # Save to file
@@ -72,7 +62,15 @@ gdtools::match_family("Verdana")
 fonts <- list(sans = "Verdana", mono = "Times New Roman")
 svglite("Rplots.svg", system_fonts = fonts)
 plot.new()
-text(1, 1, "Some text", family = "mono")
+text(0.5, 0.5, "Some text", family = "mono")
+dev.off()
+
+# If you need support for non-latin characters, choose fonts with
+# good Unicode coverage. "Arial Unicode MS" is available on MacOs
+# and Windows systems (if MS Office is installed on the latter):
+svglite("Rplots.svg", system_fonts = list(sans = "Arial Unicode MS"))
+plot.new()
+text(0.5, 0.5, "正規分布")
 dev.off()
 
 # To supply user font aliases, use either fontquiver:
@@ -101,7 +99,7 @@ fonts <- list(
 \dontrun{
 ss <- svgstring(user_fonts = fonts)
 plot(1:2, main = "Simple Example")
-text(1, 1, family = "Foo Bar", font = 3)
+text(0.5, 0.5, family = "Foo Bar", font = 3)
 dev.off()
 ss()
 }
