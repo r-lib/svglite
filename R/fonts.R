@@ -54,10 +54,10 @@ validate_system_alias <- function(alias) {
   matched
 }
 
-is_font_file <- function(x) {
+is_user_alias <- function(x) {
   is.list(x) &&
-    (is.character(x$file) || is.character(x$ttf)) &&
-    is.character(x$name)
+    (is_scalar_character(x$file) || is_scalar_character(x$ttf)) &&
+    (is_scalar_character(x$alias) || is_scalar_character(x$name))
 }
 
 validate_user_alias <- function(default_name, family) {
@@ -66,10 +66,10 @@ validate_user_alias <- function(default_name, family) {
       call. = FALSE)
   }
 
-  is_file_object <- vapply_lgl(family, is_font_file)
-  is_file_plain <- vapply_lgl(family, is_scalar_character)
+  is_alias_object <- vapply_lgl(family, is_user_alias)
+  is_alias_plain <- vapply_lgl(family, is_scalar_character)
 
-  is_valid_alias <- is_file_object | is_file_plain
+  is_valid_alias <- is_alias_object | is_alias_plain
   if (any(!is_valid_alias)) {
     stop(call. = FALSE,
       "The following faces are invalid for `", default_name, "`: ",
@@ -77,9 +77,11 @@ validate_user_alias <- function(default_name, family) {
     )
   }
 
-  names <- ifelse(is_file_plain, default_name, family)
-  names <- lapply_if(names, is_file_object, `[[`, "name")
-  files <- lapply_if(family, is_file_object, function(obj) {
+  names <- ifelse(is_alias_plain, default_name, family)
+  names <- lapply_if(names, is_alias_object, function(obj) {
+    obj$alias %||% obj$name
+  })
+  files <- lapply_if(family, is_alias_object, function(obj) {
     obj$file %||% obj$ttf
   })
 

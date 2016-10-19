@@ -68,8 +68,8 @@
 #'
 #' # Or create yourself a list of fonts. First create a font file
 #' # object, which is a list with name and ttf elements:
-#' myfont <- list(name = "Some Font Serif", file = "myfont.ttf")
-#' myotherfont <- list(name = "Other Font Mono", file = "myotherfont.ttf")
+#' myfont <- list(alias = "Some Font Serif", file = "myfont.ttf")
+#' myotherfont <- list(alias = "Other Font Mono", file = "myotherfont.ttf")
 #'
 #' # Then create a named tree with R font families (sans, serif, mono,
 #' # symbol) in the first level and R faces in the second (plain,
