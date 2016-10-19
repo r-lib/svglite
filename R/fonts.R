@@ -2,6 +2,22 @@
 r_font_families <- c("sans", "serif", "mono", "symbol")
 r_font_faces <- c("plain", "bold", "italic", "bolditalic", "symbol")
 
+alias_lookup <- function() {
+  if (.Platform$OS.type == "windows") {
+    serif_font <- "Times New Roman"
+    symbol_font <- "Standard Symbols L"
+  } else {
+    serif_font <- "Times"
+    symbol_font <- "Symbol"
+  }
+  c(
+    sans = "Arial",
+    serif = serif_font,
+    mono = "Courier",
+    symbol = symbol_font
+  )
+}
+
 validate_aliases <- function(system_fonts, user_fonts) {
   system_fonts <- compact(lapply(system_fonts, compact))
   user_fonts <- compact(lapply(user_fonts, compact))
@@ -16,7 +32,7 @@ validate_aliases <- function(system_fonts, user_fonts) {
 
   # Add missing system fonts for base families
   missing_aliases <- setdiff(r_font_families, aliases)
-  system_fonts[missing_aliases] <- lapply(missing_aliases, gdtools::match_family)
+  system_fonts[missing_aliases] <- lapply(alias_lookup()[missing_aliases], gdtools::match_family)
 
   list(
     system = system_fonts,
