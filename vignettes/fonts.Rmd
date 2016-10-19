@@ -64,7 +64,7 @@ ss()
 
 If you need support for non-latin characters, choose fonts with good
 Unicode coverage. "Arial Unicode MS" is a sans serif font with good
-coverage that is available on MacOs and Windows systems (on the
+coverage that is available on macOS and Windows systems (on the
 latter, only if MS Office is installed). Note that this font does not
 support kerning and has no bold or italic faces.
 
@@ -80,19 +80,21 @@ Google as well as the
 [Han Sans family](https://github.com/adobe-fonts/source-han-sans) by
 Adobe have excellent coverage but may not be available at the time of
 rendering. This can be a concern if you distribute the SVG files on
-Internet.
+the Internet.
 
 
 ## User Font Aliases
 
 In addition to system fonts, you can also provide fonts that are not
 necessarily installed on the system (i.e., fonts that live in user
-space). The `user_fonts` arguments takes either paths to font files,
-fonts from the `fontquiver` package, or a list that specifies the
-alias. Whereas `system_fonts` gets a named list of families as argument,
-`user_fonts` takes a named tree of lists of families (`sans`, `serif`,
-`mono` and `symbol`) and faces (`plain`, `italic`, `bold`,
-`bolditalic`, `symbol`):
+space). The main reason to do this is to generate reproducible SVG
+files as different platforms can have different versions of a font and
+thus produce different text metrics. The `user_fonts` arguments takes
+either paths to font files, fonts from the `fontquiver` package, or a
+list that specifies the alias. Whereas `system_fonts` gets a named
+list of families as argument, `user_fonts` takes a named tree of lists
+of families (`sans`, `serif`, `mono` and `symbol`) and faces (`plain`,
+`italic`, `bold`, `bolditalic`, `symbol`):
 
 ```{r}
 # Using ttf files from fontquiver here, but it could be any ttf
@@ -118,7 +120,7 @@ text(0.8, 0.8, "Serif text", family = "serif")
 dev.off()
 ```
 
-You can also control which fonts gets written in the `font-family`
+You can also control which font gets written in the `font-family`
 fields of SVGs by supplying a list containing `alias` and `file`
 elements:
 
@@ -137,10 +139,10 @@ ss()
 SVG files. The `vdiffr` package uses svglite with fontquiver fonts to
 create visual unit tests reliably across platforms. The Liberation
 fontset is appropriate for this usage because it features all 12
-combinations of standard R families and faces. Symbola provides a
-reproducible symbol font. The fontquiver function `font_families()`
-produces a list with the appropriate structure and can be directly
-supplied to svglite:
+combinations of standard R families and faces. In addition fontquiver
+provides Symbola for the symbol font. The function
+`fontquiver::font_families()` produces a list with the appropriate
+structure and can be directly supplied to svglite:
 
 ```{r, eval=FALSE}
 fonts <- fontquiver::font_families("Liberation")
@@ -157,7 +159,7 @@ dev.off()
 
 The C library Fontconfig is used as backend to find fonts installed on
 the system. Fontconfig is the standard interface to system fonts on
-Linux systems. It is also provided on OSX alongside the X11 graphics
+Linux systems. It is also provided on macOS alongside the X11 graphics
 system and comes with R on Windows. A warning is issued if Fontconfig
 cannot find a system font. The gdtools package provides tools in case
 you have trouble with a particular font:
@@ -175,5 +177,5 @@ files Fontconfig is currently using:
 gdtools::match_family("Helvetica", debug = "config")
 ```
 
-See https://www.freedesktop.org/software/fontconfig/fontconfig-user.html
+See <https://www.freedesktop.org/software/fontconfig/fontconfig-user.html>
 for more information on configuring Fontconfig.

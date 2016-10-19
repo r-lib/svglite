@@ -66,7 +66,7 @@ text(0.5, 0.5, "Some text", family = "mono")
 dev.off()
 
 # If you need support for non-latin characters, choose fonts with
-# good Unicode coverage. "Arial Unicode MS" is available on MacOs
+# good Unicode coverage. "Arial Unicode MS" is available on macOS
 # and Windows systems (if MS Office is installed on the latter):
 svglite("Rplots.svg", system_fonts = list(sans = "Arial Unicode MS"))
 plot.new()
