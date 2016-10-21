@@ -4,26 +4,12 @@
 \alias{htmlSVG}
 \title{Run plotting code and view svg in RStudio Viewer or web broswer.}
 \usage{
-htmlSVG(code, ..., system_fonts = list(), user_fonts = list())
+htmlSVG(code, ...)
 }
 \arguments{
 \item{code}{Plotting code to execute.}
 
 \item{...}{Other arguments passed on to \code{\link{svglite}}.}
-
-\item{system_fonts}{Named list of font names to be aliased with
-fonts installed on your system. If unspecified, the R default
-families \code{sans}, \code{serif}, \code{mono} and \code{symbol}
-are aliased to the family returned by
-\code{\link[gdtools]{match_family}()}.}
-
-\item{user_fonts}{Named list of fonts to be aliased with font files
-provided by the user rather than fonts properly installed on the
-system. The aliases can be fonts from the fontquiver package,
-strings containing a path to a font file, or a list containing
-\code{name} and \code{file} elements with \code{name} indicating
-the font alias in the SVG output and \code{file} the path to a
-font file.}
 }
 \description{
 This is useful primarily for testing. Requires the \code{htmltools}
