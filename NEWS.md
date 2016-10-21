@@ -13,6 +13,8 @@
 * Clip paths now get a unique identifier to avoid collisions when
   multiple plots are included in a document (#67).
 
+* Add `stringSVG()` for testing.
+
 # svglite 1.1.0
 
 * Text metrics now converted from points to pixels (#45, #48) - this

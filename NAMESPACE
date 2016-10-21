@@ -3,6 +3,7 @@
 S3method(print,svg)
 export(editSVG)
 export(htmlSVG)
+export(stringSVG)
 export(svglite)
 export(svgstring)
 export(xmlSVG)

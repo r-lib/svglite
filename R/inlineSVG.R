@@ -66,6 +66,19 @@ editSVG <- function(code, ..., width = NA, height = NA) {
   system(sprintf("open %s", shQuote(tmp)))
 }
 
+#' Run plotting code and return svg as string
+#'
+#' This is useful primarily for testing but can be used as an
+#' alternative to \code{\link{svgstring}()}.
+#'
+#' @inheritParams htmlSVG
+#' @export
+#' @examples
+#' stringSVG(plot(1:10))
+stringSVG <- function(code, ...) {
+  svg <- inlineSVG(code, ...)
+  structure(svg, class = "svg")
+}
 
 inlineSVG <- function(code, ..., width = NA, height = NA) {
   dim <- plot_dim(c(width, height))
