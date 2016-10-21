@@ -1,7 +1,7 @@
 context("Clipping")
 
 test_that("regression test for no clipping", {
-  svglite("test-no-clip.svg", 4, 4)
+  svglite("test-no-clip.svg", 4, 4, user_fonts = bitstream)
   on.exit(dev.off())
 
   mini_plot(c(-1, 1), c(-1, 1), asp = 1, type = "n")
@@ -11,7 +11,7 @@ test_that("regression test for no clipping", {
 })
 
 test_that("regression test for clipping", {
-  svglite("test-clip.svg", 4, 4)
+  svglite("test-clip.svg", 4, 4, user_fonts = bitstream)
   on.exit(dev.off())
 
   mini_plot(c(-1, 1), c(-1, 1), asp = 1, type = "n")

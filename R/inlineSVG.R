@@ -3,6 +3,7 @@
 #' This is useful primarily for testing. Requires the \code{htmltools}
 #' package.
 #'
+#' @inheritParams svglite
 #' @param code Plotting code to execute.
 #' @param ... Other arguments passed on to \code{\link{svglite}}.
 #' @export
@@ -11,8 +12,8 @@
 #'   htmlSVG(plot(1:10))
 #'   htmlSVG(hist(rnorm(100)))
 #' }
-htmlSVG <- function(code, ...) {
-  svg <- inlineSVG(code, ...)
+htmlSVG <- function(code, ..., system_fonts = list(), user_fonts = list()) {
+  svg <- inlineSVG(code, ..., system_fonts = system_fonts, user_fonts = user_fonts)
   htmltools::browsable(
     htmltools::HTML(svg)
   )
@@ -32,8 +33,15 @@ htmlSVG <- function(code, ...) {
 #'   x
 #'   xml_find_all(x, ".//text")
 #' }
-xmlSVG <- function(code, ..., standalone = FALSE, height = 7, width = 7) {
-  plot <- inlineSVG(code, ..., standalone = standalone, height = height, width = width)
+xmlSVG <- function(code, ..., standalone = FALSE, height = 7, width = 7,
+                   system_fonts = list(), user_fonts = list()) {
+  plot <- inlineSVG(code, ...,
+    standalone = standalone,
+    height = height,
+    width = width,
+    system_fonts = system_fonts,
+    user_fonts = user_fonts
+  )
   xml2::read_xml(plot)
 }
 
@@ -49,11 +57,13 @@ xmlSVG <- function(code, ..., standalone = FALSE, height = 7, width = 7) {
 #'   editSVG(plot(1:10))
 #'   editSVG(contour(volcano))
 #' }
-editSVG <- function(code, ..., width = NA, height = NA) {
+editSVG <- function(code, ..., width = NA, height = NA,
+                    system_fonts = list(), user_fonts = list()) {
   dim <- plot_dim(c(width, height))
 
   tmp <- tempfile(fileext = ".svg")
-  svglite(tmp, width = dim[1], height = dim[2], ...)
+  svglite(tmp, width = dim[1], height = dim[2], ...,
+    system_fonts = system_fonts, user_fonts = user_fonts)
   tryCatch(code,
     finally = grDevices::dev.off()
   )
@@ -62,10 +72,12 @@ editSVG <- function(code, ..., width = NA, height = NA) {
 }
 
 
-inlineSVG <- function(code, ..., width = NA, height = NA) {
+inlineSVG <- function(code, ..., width = NA, height = NA,
+                      system_fonts = list(), user_fonts = list()) {
   dim <- plot_dim(c(width, height))
 
-  svg <- svgstring(width = dim[1], height = dim[2], ...)
+  svg <- svgstring(width = dim[1], height = dim[2], ...,
+    system_fonts = system_fonts, user_fonts = user_fonts)
   tryCatch(code,
     finally = grDevices::dev.off()
   )

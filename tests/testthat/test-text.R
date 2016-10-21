@@ -2,15 +2,12 @@ context("Text")
 library(xml2)
 
 test_that("par(cex) affects strwidth", {
-  svglite(tempfile())
-  on.exit(dev.off())
-
-  plot.new()
-  w1 <- strwidth("X")
-
-  par(cex = 4)
-  w4 <- strwidth("X")
-
+  xmlSVG({
+    plot.new()
+    w1 <- strwidth("X")
+    par(cex = 4)
+    w4 <- strwidth("X")
+  })
   expect_equal(w4 / w1, 4, tol = 1e-4)
 })
 
@@ -71,46 +68,16 @@ test_that("cex generates fractional font sizes", {
   expect_equal(style_attr(xml_find_first(x, ".//text"), "font-size"), "1.20pt")
 })
 
-test_that("font sets weight/style", {
-  x <- xmlSVG({
-    plot.new()
-    text(0.5, seq(0.9, 0.1, length = 4), "a", font = 1:4)
-  })
-  text <- xml_find_all(x, ".//text")
-  expect_equal(style_attr(text, "font-weight"), c(NA, "bold", NA, "bold"))
-  expect_equal(style_attr(text, "font-style"), c(NA, NA, "italic", "italic"))
-})
-
-test_that("font sets weight/style", {
-  x <- xmlSVG({
-    plot.new()
-    text(0.5, 0.1, "a", family = "serif")
-    text(0.5, 0.5, "a", family = "sans")
-    text(0.5, 0.9, "a", family = "mono")
-  })
-  text <- xml_find_all(x, ".//text")
-  expect_equal(style_attr(text, "font-family"), c("Times New Roman", "Arial", "courier"))
-})
-
 test_that("a symbol has width greater than 0", {
   xmlSVG({
-    plot(c(0,2), c(0,2), type = "n")
+    plot.new()
     strw <- strwidth(expression(symbol("\042")))
   })
   expect_lt(.Machine$double.eps, strw)
 })
 
-test_that("symbol font family is 'symbol'", {
-  x <- xmlSVG({
-    plot(c(0,2), c(0,2), type = "n", axes = FALSE, xlab = "", ylab = "")
-    text(1, 1, expression(symbol("\042")))
-  })
-  text <- xml_find_all(x, ".//text")
-  expect_equal(style_attr(text, "font-family"), c("symbol"))
-})
-
 test_that("strwidth and height correctly computed", {
-  svglite("test-text.svg", 4, 4)
+  svglite("test-text.svg", 4, 4, user_fonts = bitstream)
   on.exit(dev.off())
 
   plot.new()
@@ -121,4 +88,12 @@ test_that("strwidth and height correctly computed", {
   w <- strwidth(str)
 
   rect(0.5 - w / 2, 0.5 - h / 2, 0.5 + w / 2, 0.5 + h / 2)
+})
+
+test_that("strwidth has fallback for unknown glyphs", {
+  xmlSVG(user_fonts = bitstream, {
+    plot.new()
+    w <- strwidth("正規分布")
+  })
+  expect_true(w > 0)
 })
