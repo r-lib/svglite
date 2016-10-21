@@ -29,7 +29,9 @@ Suggests:
     testthat,
     xml2 (>= 1.0.0),
     covr,
-    fontquiver (>= 0.1.0.9001)
+    fontquiver (>= 0.1.0.9001),
+    knitr,
+    rmarkdown
 Remotes:
     davidgohel/gdtools#32,
     lionel-/fontquiver#6
@@ -37,3 +39,4 @@ License: GPL (>= 2)
 URL: https://github.com/hadley/svglite
 BugReports: https://github.com/hadley/svglite/issues
 RoxygenNote: 5.0.1
+VignetteBuilder: knitr
