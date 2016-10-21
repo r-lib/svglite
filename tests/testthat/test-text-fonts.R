@@ -70,5 +70,4 @@ test_that("metrics are computed for different fonts", {
 
   expect_false(x_attr[[1]] == x_attr[[2]])
   expect_false(y_attr[[1]] == y_attr[[2]])
-  expect_equal(c(x_attr[[2]], y_attr[[2]]), c("261.58", "111.56"))
 })

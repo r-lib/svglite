@@ -205,8 +205,10 @@ inline void write_style_dbl(SvgStreamPtr stream, const char* attr, double value,
 }
 
 inline void write_style_fontsize(SvgStreamPtr stream, double value, bool first = false) {
-  if(!first)  (*stream) << ' ';
-  (*stream) << "font-size: " << value << "pt;";
+  if(!first) (*stream) << ' ';
+  // Firefox requires that we provide a unit (even tough px is
+  // redundant here)
+  (*stream) << "font-size: " << value << "px;";
 }
 
 // Writing style attributes whose values are strings
@@ -307,9 +309,9 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
   gdtools::context_set_font(svgd->cc, name, gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface), file);
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
-  *ascent = fm.ascent * 96.0 / 72;
-  *descent = fm.descent * 96.0 / 72;
-  *width = fm.width * 96.0 / 72;
+  *ascent = fm.ascent;
+  *descent = fm.descent;
+  *width = fm.width;
 }
 
 void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
@@ -402,7 +404,7 @@ void svg_close(pDevDesc dd) {
 }
 
 void svg_line(double x1, double y1, double x2, double y2,
-                     const pGEcontext gc, pDevDesc dd) {
+              const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
 
@@ -501,7 +503,7 @@ double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   gdtools::context_set_font(svgd->cc, name, gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface), file);
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
-  return fm.width * 96 / 72;
+  return fm.width;
 }
 
 void svg_rect(double x0, double y0, double x1, double y1,
