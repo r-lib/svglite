@@ -17,10 +17,15 @@ svglite produces SVG files containing plain text but fonts are still
 important for plot generation and rendering. Fonts are used during SVG
 generation to figure out the metrics of graphical elements. The font
 name is then recorded in the `font-family` property of text anchors so
-that SVG renderers know what fonts to use. This means that for optimal
-display, the font must be available on both the computer used to
-create the svg, and the computer used to render the svg. The defaults
-are fonts that are available on almost all systems: there may be small
+that SVG renderers know what fonts to use. svglite does try to ensure
+a consistent figure rendering even when fonts are not available at the
+time of rendering (by supplying the
+[textLength](http://www.w3.org/TR/SVG/text.html#TextElementTextLengthAttribute)
+SVG text attribute). However, the text may look slightly distorted
+when a fallback font is used. This means that for optimal display,
+the font must be available on both the computer used to create the
+svg, and the computer used to render the svg. The defaults are fonts
+that are available on almost all systems: there may be small
 differences between them, but they are unlikely to cause problems in
 most causes.
 
@@ -32,13 +37,9 @@ most causes.
 | `symbol` | Standard Symbols L | Symbol       |
 
 One downside to these default fonts is that they do not have good
-coverage of characters for non-latin alphabets. If the placement of
-graphical elements in your plot looks odd (text not perfectly
-centered, etc), chances are it is because the font used by svglite for
-computing text metrics does not support some characters. This can be
-fixed by using the arguments `system_fonts` and `user_fonts` which
-provide control over which fonts to use during SVG generation and
-rendering.
+coverage of characters for non-latin alphabets. This can be fixed by
+using the arguments `system_fonts` and `user_fonts` which provide
+control over which fonts to use during SVG generation and rendering.
 
 
 ## System Font Aliases
