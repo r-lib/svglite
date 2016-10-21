@@ -24,3 +24,12 @@ test_that("text has correct dimensions", {
   grid.text("foobar", 0, 1, hjust = 0, vjust = 1, gp = gpar(fontsize = 12))
   pushViewport(viewport())
 })
+
+test_that("lwd has correct dimensions", {
+  x <- xmlSVG({
+    plot.new()
+    segments(0, 1, 0, 0, lwd = 96 / 72)
+  })
+  line <- xml_find_all(x, "//line")
+  expect_equal(xml_attr(line, "style"), "stroke-width: 1.00;")
+})
