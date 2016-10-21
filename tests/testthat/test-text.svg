@@ -17,6 +17,6 @@
     <rect x='59.04' y='59.04' width='198.72' height='155.52' />
   </clipPath>
 </defs>
-<g clip-path='url(#cp1)'><text x='114.72' y='140.11' style='font-size: 12.00px; font-family: Bitstream Vera Sans;'>This is a string</text></g>
+<g clip-path='url(#cp1)'><text x='114.72' y='140.11' style='font-size: 12.00px; font-family: Bitstream Vera Sans;' textLength='87.35px' lengthAdjust='spacingAndGlyphs'>This is a string</text></g>
 <rect x='114.72' y='132.43' width='87.35' height='8.75' style='stroke-width: 0.75;' clip-path='url(#cp1)' />
 </svg>

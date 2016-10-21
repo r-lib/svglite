@@ -569,8 +569,10 @@ void svg_text(double x, double y, const char *str, double rot,
       x, y, -1.0 * rot);
   }
 
+  double fontsize = gc->cex * gc->ps;
+
   write_style_begin(stream);
-  write_style_fontsize(stream, gc->cex * gc->ps, true);
+  write_style_fontsize(stream, fontsize, true);
   if (is_bold(gc->fontface))
     write_style_str(stream, "font-weight", "bold");
   if (is_italic(gc->fontface))
@@ -582,6 +584,11 @@ void svg_text(double x, double y, const char *str, double rot,
   write_style_str(stream, "font-family", font.c_str());
   write_style_end(stream);
 
+  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->user_aliases);
+  gdtools::context_set_font(svgd->cc, font, fontsize, is_bold(gc->fontface), is_italic(gc->fontface), file);
+  FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
+  (*stream) << " textLength='" << fm.width << "px'";
+  (*stream) << " lengthAdjust='spacingAndGlyphs'";
   stream->put('>');
 
   write_escaped(stream, str);
