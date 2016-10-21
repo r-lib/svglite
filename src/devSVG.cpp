@@ -206,7 +206,7 @@ inline void write_style_dbl(SvgStreamPtr stream, const char* attr, double value,
 
 inline void write_style_fontsize(SvgStreamPtr stream, double value, bool first = false) {
   if(!first) (*stream) << ' ';
-  // Firefox requires that we provide a unit (even tough px is
+  // Firefox requires that we provide a unit (even though px is
   // redundant here)
   (*stream) << "font-size: " << value << "px;";
 }

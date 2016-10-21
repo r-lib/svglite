@@ -42,7 +42,7 @@ using the arguments `system_fonts` and `user_fonts` which provide
 control over which fonts to use during SVG generation and rendering.
 
 
-## System Font Aliases
+## System font aliases
 
 `system_fonts` takes a named list of font families as argument. The
 names typically correspond to standard R faces but they can also alias
@@ -69,7 +69,7 @@ coverage that is available on macOS and Windows systems (on the
 latter, only if MS Office is installed). Note that this font does not
 support kerning and has no bold or italic faces.
 
-```{r}
+```{r, eval=FALSE}
 svglite("Rplots.svg", system_fonts = list(sans = "Arial Unicode MS"))
 plot.new()
 text(0.5, 0.5, "正規分布")
@@ -84,7 +84,7 @@ rendering. This can be a concern if you distribute the SVG files on
 the Internet.
 
 
-## User Font Aliases
+## User font aliases
 
 In addition to system fonts, you can also provide fonts that are not
 necessarily installed on the system (i.e., fonts that live in user
@@ -97,7 +97,7 @@ list of families as argument, `user_fonts` takes a named tree of lists
 of families (`sans`, `serif`, `mono` and `symbol`) and faces (`plain`,
 `italic`, `bold`, `bolditalic`, `symbol`):
 
-```{r}
+```{r, eval=FALSE}
 # Using ttf files from fontquiver here, but it could be any ttf
 some_file <- fontquiver::font("Liberation", "Sans", "Regular")$ttf
 other_file <- fontquiver::font("Liberation", "Sans", "Italic")$ttf
@@ -107,7 +107,7 @@ serif_file <- fontquiver::font("Liberation", "serif", "Italic")$ttf
 # contains faces:
 fonts <- list(
   sans = list(
-    plain = file,
+    plain = some_file,
     italic = other_file
   ),
   serif = list(plain = serif_file)
@@ -125,7 +125,7 @@ You can also control which font gets written in the `font-family`
 fields of SVGs by supplying a list containing `alias` and `file`
 elements:
 
-```{r}
+```{r, eval=FALSE}
 file_with_alias <- list(alias = "Foobar Font", file = other_file)
 fonts <- list(sans = list(plain = file_with_alias))
 
@@ -156,7 +156,7 @@ dev.off()
 ```
 
 
-## Debugging Font Matching
+## Debugging font matching
 
 The C library Fontconfig is used as backend to find fonts installed on
 the system. Fontconfig is the standard interface to system fonts on
