@@ -13,21 +13,21 @@
 </defs>
 <rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
 <defs>
-  <clipPath id='cp1'>
+  <clipPath id='cpMHwwfDB8MHw='>
     <rect x='86.40' y='136.80' width='72.00' height='72.00' />
   </clipPath>
 </defs>
-<rect x='122.40' y='100.80' width='72.00' height='72.00' style='stroke-width: 0.75; fill: #0000FF;' clip-path='url(#cp1)' />
+<rect x='122.40' y='100.80' width='72.00' height='72.00' style='stroke-width: 0.75; fill: #0000FF;' clip-path='url(#cpMHwwfDB8MHw=)' />
 <defs>
-  <clipPath id='cp2'>
+  <clipPath id='cpODYuNHw4Ni40fDg2LjR8ODYuNHw='>
     <rect x='158.40' y='64.80' width='72.00' height='72.00' />
   </clipPath>
 </defs>
-<g clip-path='url(#cp2)'><text transform='translate(106.42,141.00) rotate(-30)' style='font-size: 24.00pt; font-family: Bitstream Vera Sans;'>Clipping</text></g>
+<g clip-path='url(#cpODYuNHw4Ni40fDg2LjR8ODYuNHw=)'><text transform='translate(106.42,141.00) rotate(-30)' style='font-size: 24.00pt; font-family: Bitstream Vera Sans;'>Clipping</text></g>
 <defs>
-  <clipPath id='cp3'>
+  <clipPath id='cpMTU4LjR8MTU4LjR8MTU4LjR8MTU4LjR8'>
     <rect x='86.40' y='64.80' width='72.00' height='72.00' />
   </clipPath>
 </defs>
-<line x1='59.04' y1='100.80' x2='257.76' y2='100.80' style='stroke-width: 0.75; stroke: #FF0000;' clip-path='url(#cp3)' />
+<line x1='59.04' y1='100.80' x2='257.76' y2='100.80' style='stroke-width: 0.75; stroke: #FF0000;' clip-path='url(#cpMTU4LjR8MTU4LjR8MTU4LjR8MTU4LjR8)' />
 </svg>

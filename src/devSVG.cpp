@@ -20,6 +20,7 @@
 #include <gdtools.h>
 #include <string>
 #include <iomanip>
+#include <sstream>
 #include <boost/shared_ptr.hpp>
 #include <R_ext/GraphicsEngine.h>
 
@@ -33,7 +34,7 @@ public:
   SvgStreamPtr stream;
 
   int pageno;
-  int clipno;  // ID for the clip path
+  std::string clipid;  // ID for the clip path
   double clipx0, clipx1, clipy0, clipy1;  // Save the previous clip path to avoid duplication
   bool standalone;
   Rcpp::List system_aliases;
@@ -43,7 +44,6 @@ public:
   SVGDesc(SvgStreamPtr stream_, bool standalone_, Rcpp::List aliases_):
       stream(stream_),
       pageno(0),
-      clipno(0),
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
       standalone(standalone_),
       system_aliases(Rcpp::wrap(aliases_["system"])),
@@ -165,11 +165,11 @@ inline void write_attr_str(SvgStreamPtr stream, const char* attr, const char* va
 }
 
 // Writing clip path attribute
-inline void write_attr_clip(SvgStreamPtr stream, int clipno) {
-  if (clipno < 1)
+inline void write_attr_clip(SvgStreamPtr stream, std::string clipid) {
+  if (!clipid.size())
     return;
 
-  (*stream) << " clip-path='url(#cp" << clipno << ")'";
+  (*stream) << " clip-path='url(#cp" << clipid << ")'";
 }
 
 // Beginning of writing style attributes
@@ -323,14 +323,21 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
       std::abs(y1 - svgd->clipy1) < 0.01)
     return;
 
-  svgd->clipno++;
+  std::ostringstream s;
+  s << svgd->clipx0 << "|"
+    << svgd->clipx0 << "|"
+    << svgd->clipx0 << "|"
+    << svgd->clipx0 << "|";
+  std::string clipid = gdtools::base64_string_encode(s.str());
+
+  svgd->clipid = clipid;
   svgd->clipx0 = x0;
   svgd->clipx1 = x1;
   svgd->clipy0 = y0;
   svgd->clipy1 = y1;
 
   (*stream) << "<defs>\n";
-  (*stream) << "  <clipPath id='cp" << svgd->clipno << "'>\n";
+  (*stream) << "  <clipPath id='cp" << svgd->clipid << "'>\n";
   (*stream) << "    <rect x='" << std::min(x0, x1) << "' y='" << std::min(y0, y1) <<
     "' width='" << std::abs(x1 - x0) << "' height='" << std::abs(y1 - y0) << "' />\n";
   (*stream) << "  </clipPath>\n";
@@ -413,7 +420,7 @@ void svg_line(double x1, double y1, double x2, double y2,
   write_style_linetype(stream, gc, true);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipno);
+  write_attr_clip(stream, svgd->clipid);
 
   (*stream) << " />\n";
   stream->flush();
@@ -438,7 +445,7 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipno);
+  write_attr_clip(stream, svgd->clipid);
 
   (*stream) << " />\n";
   stream->flush();
@@ -487,7 +494,7 @@ void svg_path(double *x, double *y,
   write_style_linetype(stream, gc);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipno);
+  write_attr_clip(stream, svgd->clipid);
 
   (*stream) << " />\n";
   stream->flush();
@@ -519,7 +526,7 @@ void svg_rect(double x0, double y0, double x1, double y1,
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipno);
+  write_attr_clip(stream, svgd->clipid);
 
   (*stream) << " />\n";
   stream->flush();
@@ -538,7 +545,7 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipno);
+  write_attr_clip(stream, svgd->clipid);
 
   (*stream) << " />\n";
   stream->flush();
@@ -551,9 +558,9 @@ void svg_text(double x, double y, const char *str, double rot,
 
   // If we specify the clip path inside <text>, the "transform" also
   // affects the clip path, so we need to specify clip path at an outer level
-  if (svgd->clipno > 0) {
+  if (svgd->clipid.size()) {
     (*stream) << "<g";
-    write_attr_clip(stream, svgd->clipno);
+    write_attr_clip(stream, svgd->clipid);
     stream->put('>');
   }
 
@@ -586,7 +593,7 @@ void svg_text(double x, double y, const char *str, double rot,
 
   (*stream) << "</text>";
 
-  if (svgd->clipno > 0)
+  if (svgd->clipid.size())
     (*stream) << "</g>";
 
   stream->put('\n');
@@ -623,9 +630,9 @@ void svg_raster(unsigned int *raster, int w, int h,
 
   // If we specify the clip path inside <image>, the "transform" also
   // affects the clip path, so we need to specify clip path at an outer level
-  if (svgd->clipno > 0) {
+  if (svgd->clipid.size()) {
     (*stream) << "<g";
-    write_attr_clip(stream, svgd->clipno);
+    write_attr_clip(stream, svgd->clipid);
     stream->put('>');
   }
 
@@ -642,7 +649,7 @@ void svg_raster(unsigned int *raster, int w, int h,
   (*stream) << " xlink:href='data:image/png;base64," << base64_str << '\'';
   (*stream) << "/>";
 
-  if (svgd->clipno > 0)
+  if (svgd->clipid.size())
     (*stream) << "</g>";
 
   stream->put('\n');
