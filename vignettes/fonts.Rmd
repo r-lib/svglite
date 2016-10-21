@@ -24,12 +24,12 @@ are fonts that are available on almost all systems: there may be small
 differences between them, but they are unlikely to cause problems in
 most causes.
 
-| R face   | Font on Windows    | Font on Unix |
+| R family | Font on Windows    | Font on Unix |
 |----------|--------------------|--------------|
 | `sans`   | Arial              | Arial        |
 | `serif`  | Times New Roman    | Times        |
 | `mono`   | Courier            | Courier      |
-| `symbol` | Standard Symbols L | Symbols      |
+| `symbol` | Standard Symbols L | Symbol       |
 
 One downside to these default fonts is that they do not have good
 coverage of characters for non-latin alphabets. If the placement of
