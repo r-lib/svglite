@@ -53,44 +53,8 @@
 #' text(0.5, 0.5, "Some text", family = "mono")
 #' dev.off()
 #'
-#' # If you need support for non-latin characters, choose fonts with
-#' # good Unicode coverage. "Arial Unicode MS" is available on macOS
-#' # and Windows systems (if MS Office is installed on the latter):
-#' svglite("Rplots.svg", system_fonts = list(sans = "Arial Unicode MS"))
-#' plot.new()
-#' text(0.5, 0.5, "正規分布")
-#' dev.off()
+#' # See the fonts vignettes for more options to deal with fonts
 #'
-#' # To supply user font aliases, use either fontquiver:
-#' fonts <- fontquiver::font_families("Liberation")
-#'
-#' # Or create yourself a list of fonts. First create a font file
-#' # object, which is a list with name and ttf elements:
-#' myfont <- list(alias = "Some Font Serif", file = "myfont.ttf")
-#' myotherfont <- list(alias = "Other Font Mono", file = "myotherfont.ttf")
-#'
-#' # Then create a named tree with R font families (sans, serif, mono,
-#' # symbol) in the first level and R faces in the second (plain,
-#' # itali bold, bolditalic, symbol).
-#' fonts <- list(
-#'   sans = list(plain = myfont),
-#'   mono = list(italic = myotherfont),
-#'   `Foo Bar` = list(plain = myfont, italic = myotherfont),
-#'   `Foo Baz` = list(plain = "no_aliasing.ttf")
-#' )
-#'
-#' # This will cause the sans/plain, mono/italic and Foo
-#' # Bar/plain/italic faces to be aliased with the font names supplied
-#' # in the font objects. Also the supplied fonts will be used to
-#' # compute the metrics of the graphical elements.
-#'
-#' \dontrun{
-#' ss <- svgstring(user_fonts = fonts)
-#' plot(1:2, main = "Simple Example")
-#' text(0.5, 0.5, family = "Foo Bar", font = 3)
-#' dev.off()
-#' ss()
-#' }
 #' @keywords device
 #' @useDynLib svglite
 #' @importFrom Rcpp sourceCpp
