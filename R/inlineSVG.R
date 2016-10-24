@@ -12,8 +12,8 @@
 #'   htmlSVG(plot(1:10))
 #'   htmlSVG(hist(rnorm(100)))
 #' }
-htmlSVG <- function(code, ..., system_fonts = list(), user_fonts = list()) {
-  svg <- inlineSVG(code, ..., system_fonts = system_fonts, user_fonts = user_fonts)
+htmlSVG <- function(code, ...) {
+  svg <- inlineSVG(code, ...)
   htmltools::browsable(
     htmltools::HTML(svg)
   )
@@ -33,14 +33,11 @@ htmlSVG <- function(code, ..., system_fonts = list(), user_fonts = list()) {
 #'   x
 #'   xml_find_all(x, ".//text")
 #' }
-xmlSVG <- function(code, ..., standalone = FALSE, height = 7, width = 7,
-                   system_fonts = list(), user_fonts = list()) {
+xmlSVG <- function(code, ..., standalone = FALSE, height = 7, width = 7) {
   plot <- inlineSVG(code, ...,
     standalone = standalone,
     height = height,
-    width = width,
-    system_fonts = system_fonts,
-    user_fonts = user_fonts
+    width = width
   )
   xml2::read_xml(plot)
 }
@@ -57,13 +54,11 @@ xmlSVG <- function(code, ..., standalone = FALSE, height = 7, width = 7,
 #'   editSVG(plot(1:10))
 #'   editSVG(contour(volcano))
 #' }
-editSVG <- function(code, ..., width = NA, height = NA,
-                    system_fonts = list(), user_fonts = list()) {
+editSVG <- function(code, ..., width = NA, height = NA) {
   dim <- plot_dim(c(width, height))
 
   tmp <- tempfile(fileext = ".svg")
-  svglite(tmp, width = dim[1], height = dim[2], ...,
-    system_fonts = system_fonts, user_fonts = user_fonts)
+  svglite(tmp, width = dim[1], height = dim[2], ...)
   tryCatch(code,
     finally = grDevices::dev.off()
   )
@@ -71,13 +66,24 @@ editSVG <- function(code, ..., width = NA, height = NA,
   system(sprintf("open %s", shQuote(tmp)))
 }
 
+#' Run plotting code and return svg as string
+#'
+#' This is useful primarily for testing but can be used as an
+#' alternative to \code{\link{svgstring}()}.
+#'
+#' @inheritParams htmlSVG
+#' @export
+#' @examples
+#' stringSVG(plot(1:10))
+stringSVG <- function(code, ...) {
+  svg <- inlineSVG(code, ...)
+  structure(svg, class = "svg")
+}
 
-inlineSVG <- function(code, ..., width = NA, height = NA,
-                      system_fonts = list(), user_fonts = list()) {
+inlineSVG <- function(code, ..., width = NA, height = NA) {
   dim <- plot_dim(c(width, height))
 
-  svg <- svgstring(width = dim[1], height = dim[2], ...,
-    system_fonts = system_fonts, user_fonts = user_fonts)
+  svg <- svgstring(width = dim[1], height = dim[2], ...)
   tryCatch(code,
     finally = grDevices::dev.off()
   )

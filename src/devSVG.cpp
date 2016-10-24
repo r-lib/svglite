@@ -205,8 +205,10 @@ inline void write_style_dbl(SvgStreamPtr stream, const char* attr, double value,
 }
 
 inline void write_style_fontsize(SvgStreamPtr stream, double value, bool first = false) {
-  if(!first)  (*stream) << ' ';
-  (*stream) << "font-size: " << value << "pt;";
+  if(!first) (*stream) << ' ';
+  // Firefox requires that we provide a unit (even though px is
+  // redundant here)
+  (*stream) << "font-size: " << value << "px;";
 }
 
 // Writing style attributes whose values are strings
@@ -307,9 +309,9 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
   gdtools::context_set_font(svgd->cc, name, gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface), file);
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
-  *ascent = fm.ascent * 96.0 / 72;
-  *descent = fm.descent * 96.0 / 72;
-  *width = fm.width * 96.0 / 72;
+  *ascent = fm.ascent;
+  *descent = fm.descent;
+  *width = fm.width;
 }
 
 void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
@@ -325,9 +327,9 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
 
   std::ostringstream s;
   s << svgd->clipx0 << "|"
-    << svgd->clipx0 << "|"
-    << svgd->clipx0 << "|"
-    << svgd->clipx0 << "|";
+    << svgd->clipx1 << "|"
+    << svgd->clipy0 << "|"
+    << svgd->clipy1;
   std::string clipid = gdtools::base64_string_encode(s.str());
 
   svgd->clipid = clipid;
@@ -409,7 +411,7 @@ void svg_close(pDevDesc dd) {
 }
 
 void svg_line(double x1, double y1, double x2, double y2,
-                     const pGEcontext gc, pDevDesc dd) {
+              const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
 
@@ -508,7 +510,7 @@ double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   gdtools::context_set_font(svgd->cc, name, gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface), file);
   FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
 
-  return fm.width * 96 / 72;
+  return fm.width;
 }
 
 void svg_rect(double x0, double y0, double x1, double y1,
@@ -574,8 +576,10 @@ void svg_text(double x, double y, const char *str, double rot,
       x, y, -1.0 * rot);
   }
 
+  double fontsize = gc->cex * gc->ps;
+
   write_style_begin(stream);
-  write_style_fontsize(stream, gc->cex * gc->ps, true);
+  write_style_fontsize(stream, fontsize, true);
   if (is_bold(gc->fontface))
     write_style_str(stream, "font-weight", "bold");
   if (is_italic(gc->fontface))
@@ -587,6 +591,11 @@ void svg_text(double x, double y, const char *str, double rot,
   write_style_str(stream, "font-family", font.c_str());
   write_style_end(stream);
 
+  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->user_aliases);
+  gdtools::context_set_font(svgd->cc, font, fontsize, is_bold(gc->fontface), is_italic(gc->fontface), file);
+  FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
+  (*stream) << " textLength='" << fm.width << "px'";
+  (*stream) << " lengthAdjust='spacingAndGlyphs'";
   stream->put('>');
 
   write_escaped(stream, str);

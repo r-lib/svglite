@@ -17,31 +17,32 @@ svglite produces SVG files containing plain text but fonts are still
 important for plot generation and rendering. Fonts are used during SVG
 generation to figure out the metrics of graphical elements. The font
 name is then recorded in the `font-family` property of text anchors so
-that SVG renderers know what fonts to use. This means that for optimal
-display, the font must be available on both the computer used to
-create the svg, and the computer used to render the svg. The defaults
-are fonts that are available on almost all systems: there may be small
+that SVG renderers know what fonts to use. svglite does try to ensure
+a consistent figure rendering even when fonts are not available at the
+time of rendering (by supplying the
+[textLength](http://www.w3.org/TR/SVG/text.html#TextElementTextLengthAttribute)
+SVG text attribute). However, the text may look slightly distorted
+when a fallback font is used. This means that for optimal display,
+the font must be available on both the computer used to create the
+svg, and the computer used to render the svg. The defaults are fonts
+that are available on almost all systems: there may be small
 differences between them, but they are unlikely to cause problems in
 most causes.
 
-| R face   | Font on Windows    | Font on Unix |
+| R family | Font on Windows    | Font on Unix |
 |----------|--------------------|--------------|
 | `sans`   | Arial              | Arial        |
 | `serif`  | Times New Roman    | Times        |
 | `mono`   | Courier            | Courier      |
-| `symbol` | Standard Symbols L | Symbols      |
+| `symbol` | Standard Symbols L | Symbol       |
 
 One downside to these default fonts is that they do not have good
-coverage of characters for non-latin alphabets. If the placement of
-graphical elements in your plot looks odd (text not perfectly
-centered, etc), chances are it is because the font used by svglite for
-computing text metrics does not support some characters. This can be
-fixed by using the arguments `system_fonts` and `user_fonts` which
-provide control over which fonts to use during SVG generation and
-rendering.
+coverage of characters for non-latin alphabets. This can be fixed by
+using the arguments `system_fonts` and `user_fonts` which provide
+control over which fonts to use during SVG generation and rendering.
 
 
-## System Font Aliases
+## System font aliases
 
 `system_fonts` takes a named list of font families as argument. The
 names typically correspond to standard R faces but they can also alias
@@ -68,7 +69,7 @@ coverage that is available on macOS and Windows systems (on the
 latter, only if MS Office is installed). Note that this font does not
 support kerning and has no bold or italic faces.
 
-```{r}
+```{r, eval=FALSE}
 svglite("Rplots.svg", system_fonts = list(sans = "Arial Unicode MS"))
 plot.new()
 text(0.5, 0.5, "正規分布")
@@ -83,7 +84,7 @@ rendering. This can be a concern if you distribute the SVG files on
 the Internet.
 
 
-## User Font Aliases
+## User font aliases
 
 In addition to system fonts, you can also provide fonts that are not
 necessarily installed on the system (i.e., fonts that live in user
@@ -96,7 +97,7 @@ list of families as argument, `user_fonts` takes a named tree of lists
 of families (`sans`, `serif`, `mono` and `symbol`) and faces (`plain`,
 `italic`, `bold`, `bolditalic`, `symbol`):
 
-```{r}
+```{r, eval=FALSE}
 # Using ttf files from fontquiver here, but it could be any ttf
 some_file <- fontquiver::font("Liberation", "Sans", "Regular")$ttf
 other_file <- fontquiver::font("Liberation", "Sans", "Italic")$ttf
@@ -106,7 +107,7 @@ serif_file <- fontquiver::font("Liberation", "serif", "Italic")$ttf
 # contains faces:
 fonts <- list(
   sans = list(
-    plain = file,
+    plain = some_file,
     italic = other_file
   ),
   serif = list(plain = serif_file)
@@ -124,7 +125,7 @@ You can also control which font gets written in the `font-family`
 fields of SVGs by supplying a list containing `alias` and `file`
 elements:
 
-```{r}
+```{r, eval=FALSE}
 file_with_alias <- list(alias = "Foobar Font", file = other_file)
 fonts <- list(sans = list(plain = file_with_alias))
 
@@ -155,7 +156,7 @@ dev.off()
 ```
 
 
-## Debugging Font Matching
+## Debugging font matching
 
 The C library Fontconfig is used as backend to find fonts installed on
 the system. Fontconfig is the standard interface to system fonts on

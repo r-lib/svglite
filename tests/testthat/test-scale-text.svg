@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 34.03 8.70'>
+<defs>
+  <style type='text/css'><![CDATA[
+    line, polyline, path, rect, circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<rect x='0.00' y='0.00' width='34.03' height='8.70' style='stroke-width: 0.75; stroke: #FF0000; fill: #FFFFFF;' />
+<text x='0.00' y='8.25' style='font-size: 12.00px; font-family: Liberation Sans;' textLength='34.03px' lengthAdjust='spacingAndGlyphs'>foobar</text>
+</svg>

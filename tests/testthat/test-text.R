@@ -57,7 +57,7 @@ test_that("default point size is 12", {
     plot.new()
     text(0.5, 0.5, "a")
   })
-  expect_equal(style_attr(xml_find_first(x, ".//text"), "font-size"), "12.00pt")
+  expect_equal(style_attr(xml_find_first(x, ".//text"), "font-size"), "12.00px")
 })
 
 test_that("cex generates fractional font sizes", {
@@ -65,7 +65,7 @@ test_that("cex generates fractional font sizes", {
     plot.new()
     text(0.5, 0.5, "a", cex = 0.1)
   })
-  expect_equal(style_attr(xml_find_first(x, ".//text"), "font-size"), "1.20pt")
+  expect_equal(style_attr(xml_find_first(x, ".//text"), "font-size"), "1.20px")
 })
 
 test_that("a symbol has width greater than 0", {

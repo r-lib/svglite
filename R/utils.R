@@ -68,3 +68,18 @@ zip <- function(.l) {
     lapply(.l, .subset2, i)
   })
 }
+
+svglite_manual_tests <- new.env()
+register_manual_test <- function(file) {
+  testthat_dir <- getwd()
+  testfile <- file.path(testthat_dir, file)
+  assign(file, testfile, svglite_manual_tests)
+}
+init_manual_tests <- function() {
+  remove(list = names(svglite_manual_tests), envir = svglite_manual_tests)
+}
+open_manual_tests <- function() {
+  lapply(names(svglite_manual_tests), function(test) {
+    utils::browseURL(svglite_manual_tests[[test]])
+  })
+}
