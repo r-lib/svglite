@@ -327,9 +327,9 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
 
   std::ostringstream s;
   s << svgd->clipx0 << "|"
-    << svgd->clipx0 << "|"
-    << svgd->clipx0 << "|"
-    << svgd->clipx0;
+    << svgd->clipx1 << "|"
+    << svgd->clipy0 << "|"
+    << svgd->clipy1;
   std::string clipid = gdtools::base64_string_encode(s.str());
 
   svgd->clipid = clipid;
