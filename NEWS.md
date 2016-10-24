@@ -15,6 +15,15 @@
 
 * Add `stringSVG()` for testing.
 
+* Text is now correctly scaled (#72, #59). See also the new vignette
+  on scaling.
+
+* The device functions gain `system_fonts` and `user_fonts`
+  arguments. See the new vignette on fonts for more information.
+
+* Raster graphics are now correctly cropped (#64) and handle
+  transparency properly.
+
 # svglite 1.1.0
 
 * Text metrics now converted from points to pixels (#45, #48) - this
