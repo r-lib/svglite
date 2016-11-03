@@ -1,6 +1,6 @@
 # svglite
 
-[![Travis-CI Build Status](https://travis-ci.org/hadley/svglite.svg?branch=master)](https://travis-ci.org/hadley/svglite) [![Coverage Status](https://img.shields.io/codecov/c/github/hadley/svglite/master.svg)](https://codecov.io/github/hadley/svglite?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/svglite)](http://cran.r-project.org/package=svglite)
+[![Travis-CI Build Status](https://travis-ci.org/hadley/svglite.svg?branch=master)](https://travis-ci.org/hadley/svglite) [![Coverage Status](https://img.shields.io/codecov/c/github/hadley/svglite/master.svg)](https://codecov.io/github/hadley/svglite?branch=master) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/svglite)](https://cran.r-project.org/package=svglite)
 
 svglite is a graphics device that produces clean svg output, suitable for use on the web, or hand editing. Compared to the built-in `svg()`, svglite is considerably faster, produces smaller files, and leaves text as is.
 

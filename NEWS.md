@@ -1,28 +1,45 @@
-# svglite 1.1.0.9000
+# svglite 1.2.0
+
+## New features
+
+* The device functions gain `system_fonts` and `user_fonts`
+  arguments.
+
+* Two new vignettes: `vignette("fonts")` and `vignette("scaling")`.
+  The vignette on fonts explains in detail how to use the new fonts
+  arguments and why. The vignette on scaling goes over scaling issues,
+  e.g. when embedding svglite outputs in a web page.
 
 * `xmlSVG()` gains `height` and `width` arguments (#66).
 
-* The dashes in lines with `lwd < 1` are scaled better (#68).
+* New `stringSVG()` device function for quick testing.
 
-* `editSVG()` works again (#56).
 
-* Transparent blacks are written correctly (#62, #63).
+## Improvements
 
 * Greatly improves the performance of `svgstring()` (#58).
 
 * Clip paths now get a unique identifier to avoid collisions when
   multiple plots are included in a document (#67).
 
-* Add `stringSVG()` for testing.
-
-* Text is now correctly scaled (#72, #59). See also the new vignette
-  on scaling.
-
-* The device functions gain `system_fonts` and `user_fonts`
-  arguments. See the new vignette on fonts for more information.
-
 * Raster graphics are now correctly cropped (#64) and handle
   transparency properly.
+
+* The dimensions of text fields are now hardcoded in the SVGs to
+  prevent alignment issues.
+
+
+## Bug fixes
+
+* `editSVG()` works again (#56).
+
+* The dashes in lines with `lwd < 1` are scaled better (#68).
+
+* Transparent blacks are written correctly (#62, #63).
+
+* Text is now scaled correctly (#72, #59). See also the new vignette
+  on scaling.
+
 
 # svglite 1.1.0
 
