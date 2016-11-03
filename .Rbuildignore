@@ -8,3 +8,5 @@
 ^revdep/$
 ^revdep$
 ^codecov\.yml$
+^docs/$
+^docs$
