@@ -1,5 +1,5 @@
 Package: svglite
-Version: 1.1.0.9001
+Version: 1.2.0
 Title: An 'SVG' Graphics Device
 Description: A graphics device for R that produces 'Scalable Vector Graphics'.
   'svglite' is a fork of the older 'RSvgDevice' package.
@@ -19,7 +19,7 @@ Depends:
     R (>= 3.0.0)
 Imports:
     Rcpp,
-    gdtools
+    gdtools (>= 0.1.1)
 LinkingTo:
     Rcpp,
     gdtools,
@@ -29,12 +29,9 @@ Suggests:
     testthat,
     xml2 (>= 1.0.0),
     covr,
-    fontquiver (>= 0.1.0.9001),
+    fontquiver (>= 0.2.0),
     knitr,
     rmarkdown
-Remotes:
-    davidgohel/gdtools#32,
-    lionel-/fontquiver#6
 License: GPL (>= 2)
 URL: https://github.com/hadley/svglite
 BugReports: https://github.com/hadley/svglite/issues
