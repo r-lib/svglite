@@ -24,7 +24,8 @@ test_that("metrics are computed for different weight/style", {
 })
 
 test_that("symbol font family is 'Symbol'", {
-  matched_symbol_font <- gdtools::match_family("symbol")
+  symbol_font <- alias_lookup()["symbol"]
+  matched_symbol_font <- gdtools::match_family(symbol_font)
 
   x <- xmlSVG({
     plot(c(0,2), c(0,2), type = "n", axes = FALSE, xlab = "", ylab = "")
