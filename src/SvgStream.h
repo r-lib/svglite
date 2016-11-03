@@ -49,6 +49,9 @@ public:
   void write(char data)           { stream_ << data; }
   void write(const std::string& data) { stream_ << data; }
 
+  // Adding a final newline here creates problems on Windows when
+  // seeking back to original position. So we only write the newline
+  // in finish()
   void flush() {
     stream_ << "</svg>";
     stream_.seekp(-6, std::ios_base::cur);
