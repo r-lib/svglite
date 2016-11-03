@@ -1,6 +1,6 @@
 ## Test environments
-* local OS X install, R 3.2.3
-* ubuntu 12.04 (on travis-ci), R 3.2.3
+* local OS X install, R 3.3.1
+* ubuntu 12.04 (on travis-ci), R 3.3.1
 * win-builder (devel and release)
 
 ## R CMD check results
@@ -9,9 +9,6 @@
 
 ## Downstream dependencies
 
-* I ran R CMD check on all 2 downstream dependencies
-  (https://github.com/hadley/svglite/blob/master/revdep/summary.md).
-
-* I couldn't install either of them because I don't have the right 
-  dependencies - but the chances of failures are small. 
-  I informed the maintainers.
+* I ran R CMD check on all 5 downstream dependencies
+  (https://github.com/hadley/svglite/blob/master/revdep/readme.md).
+  No problems were found.
