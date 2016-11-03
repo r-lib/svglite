@@ -38,10 +38,7 @@ in multiple ways via the `preserveAspectRatio` attribute. See
 <https://sarasoueidan.com/blog/svg-coordinate-systems/> for more
 information about this property.
 
-Other useful resources:
-
-* <https://css-tricks.com/scale-svg/>
-* <https://www.stat.auckland.ac.nz/~paul/Reports/gridSVGsizing/sizing.html>
+Other useful resource: <https://css-tricks.com/scale-svg/>
 
 
 ### Natural scaling
