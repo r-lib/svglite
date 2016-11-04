@@ -6,6 +6,12 @@ Today we are pleased to release a new version of svglite. This release
 fixes many bugs, includes new documentation vignettes, and improves
 fonts support.
 
+Install svglite with:
+
+```{r, eval=FALSE}
+install.packages("svglite")
+```
+
 ## Fonts handling
 
 svglite's font support is now much more flexible thanks to the new
