@@ -14,18 +14,24 @@ install.packages("svglite")
 
 ## Font handling
 
-svglite's font support is now much more flexible thanks to two new
-arguments: `system_fonts` and `user_fonts`. These two arguments reflect the
-two roles that font play in SVG rendering.
+Fonts are tricky with SVG because they are needed at two stages:
 
-1.  `system_fonts` are needed by the computer creating the SVG file. They 
-    control how the standard R font faces (sans plain, serif italic, etc) are 
-    mapped to fonts on your computer, and used to compute text size on the plot
-    (this is particularly important for `plotmath` layouts).
+*   When creating the SVG file, the fonts are needed in order to correctly
+    measure the amount space each character occupies. This is particularly
+    important for plot that use `plotmath`.
     
-    The defaults `system_fonts` match R as closely as possible, but are not
-    great for some langauges. One use of `system_fonts` is to specify fonts 
-    with better CJK support:
+*   When drawing the SVG file on screen, the fonts are needed to draw each
+    character correctly.
+    
+For the best display, that means you need to have the same fonts installed on
+both the computer that generates the SVG file and the computer that draws it.
+By default, svglite uses fonts that are installed on pretty much every computer.
+svglite's font support is now much more flexible thanks to two new
+arguments: `system_fonts` and `user_fonts`. 
+
+1.  `system_fonts` allows you to specify the name of a font installed on your
+    computer. This is useful, for example, if you'd like to use a font with 
+    better CJK support:
 
     ```{r, eval=FALSE}
     svglite("Rplots.svg", system_fonts = list(sans = "Arial Unicode MS"))
@@ -34,11 +40,11 @@ two roles that font play in SVG rendering.
     dev.off()
     ```
 
-1.  `user_fonts` are needed by the computer rendering the SVG on screen. 
-    By default, `system_fonts` also set the `user_fonts`, and you shouldn't
-    need to touch this yourself. However, they are needed for perfect 
-    reproducibility of generated SVGs, as used by the upcoming 
-    [vdiffr package](https://github.com/lionel-/vdiffr) which provide graphical 
+1.  `user_fonts` allows you to specify a font installed in a R package 
+    (like [fontquiver](https://github.com/lionel-/fontquiver)). This is 
+    needed if you want to generate identical plot across different operating
+    systems, and are using in the upcoming 
+    [vdiffr package](https://github.com/lionel-/vdiffr) which provides graphical 
     unit tests.
 
 For more details, see `vignette("fonts")`. 
