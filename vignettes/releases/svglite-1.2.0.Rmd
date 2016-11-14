@@ -6,23 +6,26 @@ Today we are pleased to release a new version of svglite. This release
 fixes many bugs, includes new documentation vignettes, and improves
 fonts support.
 
-Install svglite with:
+You can install svglite with:
 
 ```{r, eval=FALSE}
 install.packages("svglite")
 ```
 
-## Fonts handling
+## Font handling
 
-svglite's font support is now much more flexible thanks to the new
-arguments `system_fonts` and `user_fonts`. The `vignette("fonts")`
-goes into details over these new features. Here are the highlights:
+svglite's font support is now much more flexible thanks to two new
+arguments: `system_fonts` and `user_fonts`. These two arguments reflect the
+two roles that font play in SVG rendering.
 
-1.  It is now possible to control how the standard R font faces (sans
-    plain, serif italic, etc) are mapped to system fonts with the
-    `system_fonts` argument. This ensures that the text metrics are
-    properly computed and encoded in the SVG when svglite is
-    called. You can for example specify fonts with good CKJ support:
+1.  `system_fonts` are needed by the computer creating the SVG file. They 
+    control how the standard R font faces (sans plain, serif italic, etc) are 
+    mapped to fonts on your computer, and used to compute text size on the plot
+    (this is particularly important for `plotmath` layouts).
+    
+    The defaults `system_fonts` match R as closely as possible, but are not
+    great for some langauges. One use of `system_fonts` is to specify fonts 
+    with better CJK support:
 
     ```{r, eval=FALSE}
     svglite("Rplots.svg", system_fonts = list(sans = "Arial Unicode MS"))
@@ -31,31 +34,22 @@ goes into details over these new features. Here are the highlights:
     dev.off()
     ```
 
-    While this helps to ensure correct dimensions of plot components
-    at generation time, there is no guarantee that the fonts will be
-    available at rendering time. For this reason, svglite now
-    hardcodes the dimensions of text fields with the `textLength`
-    attribute to ensure that the SVG elements are properly scaled and
-    aligned at the time of rendering, even when the original fonts
-    cannot be found.
+1.  `user_fonts` are needed by the computer rendering the SVG on screen. 
+    By default, `system_fonts` also set the `user_fonts`, and you shouldn't
+    need to touch this yourself. However, they are needed for perfect 
+    reproducibility of generated SVGs, as used by the upcoming 
+    [vdiffr package](https://github.com/lionel-/vdiffr) which provide graphical 
+    unit tests.
 
-1.  In addition to fonts installed on the system, you can directly
-    supply fonts to svglite. The `user_fonts` arguments accepts paths
-    to `ttf` files as well as font objects from the new
-    [fontquiver package](https://github.com/lionel-/fontquiver). This
-    is mostly useful to ensure perfect reproducibility of generated
-    SVGs. The upcoming
-    [vdiffr package](https://github.com/lionel-/vdiffr) relies on this
-    mechanism to provide graphical unit tests for plots.
+For more details, see `vignette("fonts")`. 
 
 ## Text scaling
 
-This update also fixes many issues, the most important of which is
-that text is now properly scaled within the plot. We now provide a
-vignette that goes over scaling issues: `vignette("scaling")`. It
-documents, for instance, how to include a svglite graphic in a web
-page with the figure text consistently scaled with the surrounding
-text.
+This update also fixes many bugs. The most important is that text is 
+now properly scaled within the plot, and we provide a vignette that 
+describes the details: `vignette("scaling")`. It documents, for instance, 
+how to include a svglite graphic in a web page with the figure text 
+consistently scaled with the surrounding text.
 
 Find a full list of changes in the
 [release notes](https://github.com/hadley/svglite/releases/tag/v1.2.0).
