@@ -1,3 +1,9 @@
+# svglite 1.2.0.9000
+
+* Text metrics are now correctly computed for Unicode characters in
+  plotmath expressions (#81)
+
+
 # svglite 1.2.0
 
 ## New features

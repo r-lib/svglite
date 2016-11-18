@@ -295,10 +295,16 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
                      double* descent, double* width, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
+  bool is_unicode = mbcslocale;
+  if (c < 0) {
+    is_unicode = true;
+    c = -c;
+  }
+
   // Convert to string - negative implies unicode code point
   char str[16];
-  if (c < 0) {
-    Rf_ucstoutf8(str, (unsigned int) -c);
+  if (is_unicode) {
+    Rf_ucstoutf8(str, (unsigned int) c);
   } else {
     str[0] = (char) c;
     str[1] = '\0';
