@@ -442,6 +442,10 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   for (int i = 0; i < n; i++) {
     (*stream) << x[i] << ',' << y[i] << ' ';
   }
+  // In some cases the device does not close the path itself.
+  // Close polygon manually in those cases.
+  if (!(x[0] == x[n-1] &&  y[0] == y[n-1]))
+    (*stream) << x[0] << ',' << y[0];
   stream->put('\'');
 
   write_style_begin(stream);
