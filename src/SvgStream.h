@@ -29,6 +29,16 @@ SvgStream& operator<<(SvgStream& object, const T& data) {
   object.write(data);
   return object;
 }
+template <>
+SvgStream& operator<<(SvgStream& object, const double& data) {
+  // Make sure negative zeros are converted to positive zero for
+  // reproducibility of SVGs
+  if (data == 0.00)
+    object.write(0.00);
+  else
+    object.write(data);
+  return object;
+}
 
 class SvgStreamFile : public SvgStream {
   std::ofstream stream_;

@@ -1,9 +1,12 @@
 # svglite 1.2.0.9000
 
-* svglite now correctly closes polygons in all cases (#82)
+* Negative zeros are now treated as positive to make the generated SVG
+  files reproducible.
+
+* svglite now correctly closes polygons in all cases (#82).
 
 * Text metrics are now correctly computed for Unicode characters in
-  plotmath expressions (#81)
+  plotmath expressions (#81).
 
 
 # svglite 1.2.0
