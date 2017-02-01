@@ -320,6 +320,13 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
   *width = fm.width;
 }
 
+double fmt(double x) {
+  if (std::abs(x) < 0.01)
+    return 0.00;
+  else
+    return x;
+}
+
 void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
@@ -332,7 +339,8 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
     return;
 
   std::ostringstream s;
-  s << x0 << "|" << x1 << "|" << y0 << "|" << y1;
+  s << std::fixed << std::setprecision(2);
+  s << fmt(x0) << "|" << fmt(x1) << "|" << fmt(y0) << "|" << fmt(y1);
   std::string clipid = gdtools::base64_string_encode(s.str());
 
   svgd->clipid = clipid;

@@ -1,7 +1,8 @@
 # svglite 1.2.0.9000
 
-* Negative zeros are now treated as positive to make the generated SVG
-  files reproducible.
+* Improvements to reproducibility of generated SVGs: Negative zeros
+  are now treated as positive, and the clip ID are now generated from
+  truncated elements.
 
 * svglite now uses the `polygon` SVG element. This ensures that
   polygons are properly closed (#82).
