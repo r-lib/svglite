@@ -24,7 +24,7 @@ test_that("polygons do have fill", {
     plot.new()
     polygon(c(0.5, 1, 0.5), c(0.5, 1, 1), col = "red", border = "blue")
   })
-  polygon <- xml_find_first(x, ".//polyline")
+  polygon <- xml_find_first(x, ".//polygon")
   expect_equal(style_attr(polygon, "fill"), rgb(1, 0, 0))
   expect_equal(style_attr(polygon, "stroke"), rgb(0, 0, 1))
 })
@@ -34,23 +34,14 @@ test_that("polygons without border", {
     plot.new()
     polygon(c(0.5, 1, 0.5), c(0.5, 1, 1), col = "red", border = NA)
   })
-  polygon <- xml_find_first(x, ".//polyline")
+  polygon <- xml_find_first(x, ".//polygon")
   expect_equal(style_attr(polygon, "fill"), rgb(1, 0, 0))
   expect_equal(style_attr(polygon, "stroke"), "none")
 })
 
-test_that("last point of polygon joined to first point", {
-  x <- xmlSVG({
-    plot.new()
-    polygon(c(0.5, 1, 0.5), c(0, 1, 1))
-  })
-  points <- strsplit(xml_attr(xml_find_first(x, ".//polyline"), "points"), " ")[[1]]
-  expect_equal(length(points), 4)
-})
-
 test_that("blank lines are omitted", {
   x <- xmlSVG(mini_plot(1:3, lty = "blank", type = "l"))
-  expect_equal(length(xml_find_all(x, "//polyline")), 0)
+  expect_equal(length(xml_find_all(x, "//polygon")), 0)
 })
 
 test_that("lines lty becomes stroke-dasharray", {

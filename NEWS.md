@@ -3,7 +3,8 @@
 * Negative zeros are now treated as positive to make the generated SVG
   files reproducible.
 
-* svglite now correctly closes polygons in all cases (#82).
+* svglite now uses the `polygon` SVG element. This ensures that
+  polygons are properly closed (#82).
 
 * Text metrics are now correctly computed for Unicode characters in
   plotmath expressions (#81).

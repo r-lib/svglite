@@ -381,7 +381,7 @@ BEGIN_RCPP
   // Setting default styles
   (*stream) << "<defs>\n";
   (*stream) << "  <style type='text/css'><![CDATA[\n";
-  (*stream) << "    line, polyline, path, rect, circle {\n";
+  (*stream) << "    line, polyline, polygon, path, rect, circle {\n";
   (*stream) << "      fill: none;\n";
   (*stream) << "      stroke: #000000;\n";
   (*stream) << "      stroke-linecap: round;\n";
@@ -432,20 +432,16 @@ void svg_line(double x1, double y1, double x2, double y2,
 }
 
 void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
-              pDevDesc dd) {
+              pDevDesc dd, const char* head) {
 
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
 
-  (*stream) << "<polyline points='";
+  (*stream) << "<" << head << " points='";
 
   for (int i = 0; i < n; i++) {
     (*stream) << x[i] << ',' << y[i] << ' ';
   }
-  // In some cases the device does not close the path itself.
-  // Close polygon manually in those cases.
-  if (n > 2 && !(x[0] == x[n-1] &&  y[0] == y[n-1]))
-    (*stream) << x[0] << ',' << y[0];
   stream->put('\'');
 
   write_style_begin(stream);
@@ -463,11 +459,11 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
 
 void svg_polyline(int n, double *x, double *y, const pGEcontext gc,
                   pDevDesc dd) {
-  svg_poly(n, x, y, 0, gc, dd);
+  svg_poly(n, x, y, 0, gc, dd, "polyline");
 }
 void svg_polygon(int n, double *x, double *y, const pGEcontext gc,
                  pDevDesc dd) {
-  svg_poly(n, x, y, 1, gc, dd);
+  svg_poly(n, x, y, 1, gc, dd, "polygon");
 }
 
 void svg_path(double *x, double *y,
