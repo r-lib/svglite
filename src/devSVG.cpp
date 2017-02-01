@@ -25,6 +25,7 @@
 #include <R_ext/GraphicsEngine.h>
 
 #include "SvgStream.h"
+#include "utils.h"
 
 typedef boost::shared_ptr<SvgStream> SvgStreamPtr;
 
@@ -320,13 +321,6 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
   *width = fm.width;
 }
 
-double fmt(double x) {
-  if (std::abs(x) < 0.01)
-    return 0.00;
-  else
-    return x;
-}
-
 void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
@@ -340,7 +334,8 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
 
   std::ostringstream s;
   s << std::fixed << std::setprecision(2);
-  s << fmt(x0) << "|" << fmt(x1) << "|" << fmt(y0) << "|" << fmt(y1);
+  s << dbl_format(x0) << "|" << dbl_format(x1) << "|" <<
+       dbl_format(y0) << "|" << dbl_format(y1);
   std::string clipid = gdtools::base64_string_encode(s.str());
 
   svgd->clipid = clipid;

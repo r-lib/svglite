@@ -1,10 +1,10 @@
 #ifndef __SVG_STREAM__
 #define __SVG_STREAM__
 
-#include <cmath>
 #include <fstream>
 #include <sstream>
 #include <Rcpp.h>
+#include "utils.h"
 
 class SvgStream {
   public:
@@ -34,10 +34,7 @@ template <>
 SvgStream& operator<<(SvgStream& object, const double& data) {
   // Make sure negative zeros are converted to positive zero for
   // reproducibility of SVGs
-  if (std::abs(data) < 0.01)
-    object.write(0.00);
-  else
-    object.write(data);
+  object.write(dbl_format(data));
   return object;
 }
 
