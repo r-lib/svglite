@@ -435,12 +435,12 @@ void svg_line(double x1, double y1, double x2, double y2,
 }
 
 void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
-              pDevDesc dd, const char* head) {
+              pDevDesc dd, const char* node_name) {
 
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
 
-  (*stream) << "<" << head << " points='";
+  (*stream) << "<" << node_name << " points='";
 
   for (int i = 0; i < n; i++) {
     (*stream) << x[i] << ',' << y[i] << ' ';
