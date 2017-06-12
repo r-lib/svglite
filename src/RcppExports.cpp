@@ -50,3 +50,15 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"svglite_svglite_", (DL_FUNC) &svglite_svglite_, 7},
+    {"svglite_svgstring_", (DL_FUNC) &svglite_svgstring_, 7},
+    {"svglite_get_svg_content", (DL_FUNC) &svglite_get_svg_content, 1},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_svglite(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}
