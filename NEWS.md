@@ -1,5 +1,8 @@
 # svglite 1.2.0.9000
 
+This release makes svglite compatible with gdtools 0.1.6. It also
+includes the following changes:
+
 * Improvements to reproducibility of generated SVGs: Negative zeros
   are now treated as positive, and the clip ID are now generated from
   truncated elements.

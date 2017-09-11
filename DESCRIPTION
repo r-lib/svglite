@@ -20,7 +20,7 @@ Depends:
     R (>= 3.0.0)
 Imports:
     Rcpp,
-    gdtools (>= 0.1.2)
+    gdtools (>= 0.1.6)
 LinkingTo:
     Rcpp,
     gdtools,
