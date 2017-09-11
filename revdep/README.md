@@ -23,17 +23,11 @@
 
 # Revdeps
 
-## Couldn't check (1)
-
-|package                          |version |error  |warning |note |
-|:--------------------------------|:-------|:------|:-------|:----|
-|[DeLorean](problems.md#delorean) |1.2.5   |__+1__ |1       |     |
-
 ## All (8)
 
 |package                              |version |error  |warning |note |
 |:------------------------------------|:-------|:------|:-------|:----|
-|[DeLorean](problems.md#delorean)     |1.2.5   |__+1__ |1       |     |
+|[DeLorean](problems.md#delorean)     |1.2.5   |       |1       |     |
 |[ggExtra](problems.md#ggextra)       |0.7     |       |        |1    |
 |[ggplot2](problems.md#ggplot2)       |2.2.1   |       |        |1    |
 |[mlr](problems.md#mlr)               |2.11    |1      |        |1    |

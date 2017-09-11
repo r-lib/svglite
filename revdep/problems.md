@@ -2,11 +2,6 @@
 
 Version: 1.2.5
 
-## Newly broken
-
-*   R CMD check timed out
-    
-
 ## In both
 
 *   checking S3 generic/method consistency ... WARNING

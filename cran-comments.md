@@ -1,16 +1,18 @@
+
 ## Test environments
-* local OS X install, R 3.3.1
-* ubuntu 12.04 (on travis-ci), R 3.3.1
+
+* local OS X install, R 3.4.1
+* ubuntu 12.04 (on travis-ci), R 3.4.1
 * win-builder (devel and release)
+
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note.
+0 errors | 0 warnings | 0 note
 
-Lionel Henry is taking over as maintainer
 
 ## Downstream dependencies
 
-* I ran R CMD check on all 5 downstream dependencies
-  (https://github.com/hadley/svglite/blob/master/revdep/readme.md).
+* I ran R CMD check on all 8 downstream dependencies (summary at
+  https://github.com/r-lib/svglite/blob/master/revdep/readme.md).
   No problems were found.
