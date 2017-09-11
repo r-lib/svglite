@@ -21,4 +21,3 @@ if (require("htmltools")) {
   htmlSVG(hist(rnorm(100)))
 }
 }
-

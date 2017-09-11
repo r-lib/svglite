@@ -24,4 +24,3 @@ if (interactive()) {
   editSVG(contour(volcano))
 }
 }
-
