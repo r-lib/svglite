@@ -1,36 +1,164 @@
-# Setup
+# DeLorean
 
-## Platform
+Version: 1.2.5
 
-|setting  |value                                              |
-|:--------|:--------------------------------------------------|
-|version  |R Under development (unstable) (2016-10-26 r71594) |
-|system   |x86_64, darwin13.4.0                               |
-|ui       |X11                                                |
-|language |(EN)                                               |
-|collate  |en_US.UTF-8                                        |
-|tz       |Europe/Brussels                                    |
-|date     |2016-11-03                                         |
+## Newly broken
 
-## Packages
+*   R CMD check timed out
+    
 
-|package   |*  |version  |date       |source          |
-|:---------|:--|:--------|:----------|:---------------|
-|BH        |   |1.60.0-2 |2016-05-07 |cran (@1.60.0-) |
-|covr      |   |2.2.1    |2016-08-10 |cran (@2.2.1)   |
-|gdtools   |   |0.1.1    |2016-11-01 |CRAN (R 3.4.0)  |
-|htmltools |   |0.3.5    |2016-03-21 |cran (@0.3.5)   |
-|knitr     |   |1.14     |2016-08-13 |cran (@1.14)    |
-|Rcpp      |   |0.12.7   |2016-09-05 |cran (@0.12.7)  |
-|rmarkdown |   |1.1      |2016-10-16 |cran (@1.1)     |
-|svglite   |   |1.1.0    |2016-02-09 |CRAN (R 3.2.3)  |
-|testthat  |   |0.11.0   |2015-10-14 |CRAN (R 3.2.0)  |
-|xml2      |   |0.1.2    |2015-09-01 |CRAN (R 3.2.0)  |
+## In both
 
-# Check results
+*   checking S3 generic/method consistency ... WARNING
+    ```
+    filter:
+      function(x, filter, method, sides, circular, init)
+    filter.cells:
+      function(dl, .filter, number, cells)
+    
+    filter:
+      function(x, filter, method, sides, circular, init)
+    filter.genes:
+      function(dl, .filter, number, genes)
+    
+    See section ‘Generic functions and methods’ in the ‘Writing R
+    Extensions’ manual.
+    ```
 
-0 packages with problems
+# ggExtra
 
+Version: 0.7
 
+## In both
 
+*   checking dependencies in R code ... NOTE
+    ```
+    Namespace in Imports field not imported from: ‘grDevices’
+      All declared Imports should be used.
+    ```
+
+# ggplot2
+
+Version: 2.2.1
+
+## In both
+
+*   checking dependencies in R code ... NOTE
+    ```
+    Namespace in Imports field not imported from: ‘reshape2’
+      All declared Imports should be used.
+    ```
+
+# mlr
+
+Version: 2.11
+
+## In both
+
+*   checking tests ...
+    ```
+     ERROR
+    Running the tests in ‘tests/run-base.R’ failed.
+    Last 13 lines of output:
+      7: requirePackages(package, why = stri_paste("learner", id, sep = " "), default.method = "load")
+      8: stopf("For %s please install the following packages: %s", why, ps)
+      
+      testthat results ================================================================
+      OK: 2477 SKIPPED: 1 FAILED: 7
+      1. Error: clustering performance (@test_base_clustering.R#15) 
+      2. Error: clustering performance with missing clusters (@test_base_clustering.R#27) 
+      3. Error: clustering resample (@test_base_clustering.R#41) 
+      4. Error: clustering benchmark (@test_base_clustering.R#52) 
+      5. Error: clustering tune (@test_base_clustering.R#65) 
+      6. Error: hyperpars (@test_base_hyperpars.R#12) 
+      7. Error: check measure calculations (@test_base_measures.R#186) 
+      
+      Error: testthat unit tests failed
+      Execution halted
+    ```
+
+*   checking dependencies in R code ... NOTE
+    ```
+    Unable to find any JVMs matching version "(null)".
+    No Java runtime present, try --request to install.
+    Unable to find any JVMs matching version "(null)".
+    No Java runtime present, try --request to install.
+    Unable to find any JVMs matching version "(null)".
+    No Java runtime present, try --request to install.
+    Missing or unexported object: ‘kohonen::bdk’
+    ```
+
+# svgPanZoom
+
+Version: 0.3.3
+
+## In both
+
+*   checking package dependencies ... NOTE
+    ```
+    Packages which this enhances but not available for checking:
+      ‘gridSVG’ ‘XML’ ‘xml2’
+    ```
+
+# viridis
+
+Version: 0.4.0
+
+## Newly fixed
+
+*   checking tests ...
+    ```
+     ERROR
+    Running the tests in ‘tests/testthat.R’ failed.
+    Last 13 lines of output:
+      > 
+      > test_check("viridis")
+      1. Error: visual elements are correct (@test-viridis.R#44) ---------------------
+      function 'gdtools_RcppExport_validate' not provided by package 'gdtools'
+      1: vdiffr::expect_doppelganger("a", A) at testthat/test-viridis.R:44
+      2: write_svg(fig, testcase, title, user_fonts)
+      3: svglite::svglite(file, user_fonts = user_fonts)
+      4: svglite_(file, bg, width, height, pointsize, standalone, aliases)
+      
+      testthat results ================================================================
+      OK: 5 SKIPPED: 0 FAILED: 1
+      1. Error: visual elements are correct (@test-viridis.R#44) 
+      
+      Error: testthat unit tests failed
+      Execution halted
+    ```
+
+## In both
+
+*   checking re-building of vignette outputs ... WARNING
+    ```
+    ...
+    
+    Attaching package: 'raster'
+    
+    The following object is masked from 'package:colorspace':
+    
+        RGB
+    
+    Loading required package: lattice
+    Loading required package: latticeExtra
+    Loading required package: RColorBrewer
+    
+    Attaching package: 'latticeExtra'
+    
+    The following object is masked from 'package:ggplot2':
+    
+        layer
+    
+    Quitting from lines 204-213 (intro-to-viridis.Rmd) 
+    Error: processing vignette 'intro-to-viridis.Rmd' failed with diagnostics:
+    Cannot create RasterLayer object from this file; perhaps you need to install rgdal first
+    Execution halted
+    ```
+
+*   checking dependencies in R code ... NOTE
+    ```
+    Namespace in Imports field not imported from: ‘stats’
+      All declared Imports should be used.
+    ```
 
