@@ -1,7 +1,5 @@
-# svglite 1.2.1
 
-This release makes svglite compatible with gdtools 0.1.6. It also
-includes the following changes:
+# svglite 1.2.1.9000
 
 * Improvements to reproducibility of generated SVGs: Negative zeros
   are now treated as positive, and the clip ID are now generated from
@@ -12,6 +10,11 @@ includes the following changes:
 
 * Text metrics are now correctly computed for Unicode characters in
   plotmath expressions (#81).
+
+
+# svglite 1.2.1
+
+This release makes svglite compatible with gdtools 0.1.6
 
 
 # svglite 1.2.0
