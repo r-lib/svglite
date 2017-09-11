@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 // svglite_
 bool svglite_(std::string file, std::string bg, double width, double height, double pointsize, bool standalone, Rcpp::List aliases);
-RcppExport SEXP svglite_svglite_(SEXP fileSEXP, SEXP bgSEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP, SEXP aliasesSEXP) {
+RcppExport SEXP _svglite_svglite_(SEXP fileSEXP, SEXP bgSEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP, SEXP aliasesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -24,7 +24,7 @@ END_RCPP
 }
 // svgstring_
 Rcpp::XPtr<std::stringstream> svgstring_(Rcpp::Environment env, std::string bg, double width, double height, double pointsize, bool standalone, Rcpp::List aliases);
-RcppExport SEXP svglite_svgstring_(SEXP envSEXP, SEXP bgSEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP, SEXP aliasesSEXP) {
+RcppExport SEXP _svglite_svgstring_(SEXP envSEXP, SEXP bgSEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP, SEXP aliasesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -41,7 +41,7 @@ END_RCPP
 }
 // get_svg_content
 std::string get_svg_content(Rcpp::XPtr<std::stringstream> p);
-RcppExport SEXP svglite_get_svg_content(SEXP pSEXP) {
+RcppExport SEXP _svglite_get_svg_content(SEXP pSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -52,9 +52,9 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"svglite_svglite_", (DL_FUNC) &svglite_svglite_, 7},
-    {"svglite_svgstring_", (DL_FUNC) &svglite_svgstring_, 7},
-    {"svglite_get_svg_content", (DL_FUNC) &svglite_get_svg_content, 1},
+    {"_svglite_svglite_", (DL_FUNC) &_svglite_svglite_, 7},
+    {"_svglite_svgstring_", (DL_FUNC) &_svglite_svgstring_, 7},
+    {"_svglite_get_svg_content", (DL_FUNC) &_svglite_get_svg_content, 1},
     {NULL, NULL, 0}
 };
 

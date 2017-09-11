@@ -2,14 +2,14 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 svglite_ <- function(file, bg, width, height, pointsize, standalone, aliases) {
-    .Call('svglite_svglite_', PACKAGE = 'svglite', file, bg, width, height, pointsize, standalone, aliases)
+    .Call('_svglite_svglite_', PACKAGE = 'svglite', file, bg, width, height, pointsize, standalone, aliases)
 }
 
 svgstring_ <- function(env, bg, width, height, pointsize, standalone, aliases) {
-    .Call('svglite_svgstring_', PACKAGE = 'svglite', env, bg, width, height, pointsize, standalone, aliases)
+    .Call('_svglite_svgstring_', PACKAGE = 'svglite', env, bg, width, height, pointsize, standalone, aliases)
 }
 
 get_svg_content <- function(p) {
-    .Call('svglite_get_svg_content', PACKAGE = 'svglite', p)
+    .Call('_svglite_get_svg_content', PACKAGE = 'svglite', p)
 }
 
