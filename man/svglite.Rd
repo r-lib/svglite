@@ -68,11 +68,6 @@ dev.off()
 # See the fonts vignettes for more options to deal with fonts
 
 }
-\author{
-This driver was written by T Jake Luciani
-  \email{jakeluciani@yahoo.com} 2012: updated by Matthieu Decorde
-  \email{matthieu.decorde@ens-lyon.fr}
-}
 \references{
 \emph{W3C Scalable Vector Graphics (SVG)}:
   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
@@ -80,5 +75,9 @@ This driver was written by T Jake Luciani
 \seealso{
 \code{\link{pictex}}, \code{\link{postscript}}, \code{\link{Devices}}
 }
+\author{
+This driver was written by T Jake Luciani
+  \email{jakeluciani@yahoo.com} 2012: updated by Matthieu Decorde
+  \email{matthieu.decorde@ens-lyon.fr}
+}
 \keyword{device}
-
