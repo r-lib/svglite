@@ -52,7 +52,11 @@ public:
   }
 
   void write(int data)            { stream_ << data; }
-  void write(double data)         { stream_ << data; }
+  void write(double data) {
+    std::streamsize prec = stream_.precision();
+    uint8_t newprec = std::fabs(data) >= 1 ? prec : std::ceil(-std::log10(std::fabs(data))) + 1;
+    stream_ << std::setprecision(newprec) << data << std::setprecision(prec);
+  }
   void write(const char* data)    { stream_ << data; }
   void write(char data)           { stream_ << data; }
   void write(const std::string& data) { stream_ << data; }
@@ -88,7 +92,11 @@ public:
   }
 
   void write(int data)                { stream_ << data; }
-  void write(double data)             { stream_ << data; }
+  void write(double data) {
+      std::streamsize prec = stream_.precision();
+      uint8_t newprec = std::fabs(data) >= 1 ? prec : std::ceil(-std::log10(std::fabs(data))) + 1;
+      stream_ << std::setprecision(newprec) << data << std::setprecision(prec);
+  }
   void write(const char* data)        { stream_ << data; }
   void write(char data)               { stream_ << data; }
   void write(const std::string& data) { stream_ << data; }
