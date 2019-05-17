@@ -10,3 +10,4 @@
 ^codecov\.yml$
 ^docs/$
 ^docs$
+^CRAN-RELEASE$
