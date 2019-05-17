@@ -1,28 +1,50 @@
 # DeLorean
 
-Version: 1.2.5
+Version: 1.5.0
 
 ## In both
 
-*   checking S3 generic/method consistency ... WARNING
+*   checking whether package ‘DeLorean’ can be installed ... WARNING
     ```
-    filter:
-      function(x, filter, method, sides, circular, init)
-    filter.cells:
-      function(dl, .filter, number, cells)
-    
-    filter:
-      function(x, filter, method, sides, circular, init)
-    filter.genes:
-      function(dl, .filter, number, genes)
-    
-    See section ‘Generic functions and methods’ in the ‘Writing R
-    Extensions’ manual.
+    Found the following significant warnings:
+      Warning: package ‘Rcpp’ was built under R version 3.5.2
+    See ‘/Users/lionel/Desktop/svglite/revdep/checks.noindex/DeLorean/new/DeLorean.Rcheck/00install.out’ for details.
+    ```
+
+*   checking installed package size ... NOTE
+    ```
+      installed size is  8.0Mb
+      sub-directories of 1Mb or more:
+        libs   5.1Mb
+    ```
+
+*   checking dependencies in R code ... NOTE
+    ```
+    Namespace in Imports field not imported from: ‘lattice’
+      All declared Imports should be used.
+    ```
+
+*   checking for GNU extensions in Makefiles ... NOTE
+    ```
+    GNU make is a SystemRequirements.
+    ```
+
+# gganimate
+
+Version: 1.0.3
+
+## In both
+
+*   checking whether package ‘gganimate’ can be installed ... WARNING
+    ```
+    Found the following significant warnings:
+      Warning: package ‘ggplot2’ was built under R version 3.5.2
+    See ‘/Users/lionel/Desktop/svglite/revdep/checks.noindex/gganimate/new/gganimate.Rcheck/00install.out’ for details.
     ```
 
 # ggExtra
 
-Version: 0.7
+Version: 0.8
 
 ## In both
 
@@ -34,39 +56,122 @@ Version: 0.7
 
 # ggplot2
 
-Version: 2.2.1
+Version: 3.1.1
+
+## In both
+
+*   checking installed package size ... NOTE
+    ```
+      installed size is  7.3Mb
+      sub-directories of 1Mb or more:
+        doc   1.8Mb
+        R     3.8Mb
+    ```
+
+*   checking dependencies in R code ... NOTE
+    ```
+    Namespaces in Imports field not imported from:
+      ‘mgcv’ ‘reshape2’ ‘viridisLite’
+      All declared Imports should be used.
+    ```
+
+# leafpop
+
+Version: 0.0.1
 
 ## In both
 
 *   checking dependencies in R code ... NOTE
     ```
-    Namespace in Imports field not imported from: ‘reshape2’
+    Namespace in Imports field not imported from: ‘Rcpp’
       All declared Imports should be used.
     ```
 
-# mlr
+# LLSR
 
-Version: 2.11
+Version: 0.0.2.19
+
+## In both
+
+*   checking whether package ‘LLSR’ can be installed ... ERROR
+    ```
+    Installation failed.
+    See ‘/Users/lionel/Desktop/svglite/revdep/checks.noindex/LLSR/new/LLSR.Rcheck/00install.out’ for details.
+    ```
+
+## Installation
+
+### Devel
+
+```
+* installing *source* package ‘LLSR’ ...
+** package ‘LLSR’ successfully unpacked and MD5 sums checked
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+Unable to find any JVMs matching version "(null)".
+No Java runtime present, try --request to install.
+Warning in system("/usr/libexec/java_home", intern = TRUE) :
+  running command '/usr/libexec/java_home' had status 1
+Error : .onLoad failed in loadNamespace() for 'rJava', details:
+  call: dyn.load(file, DLLpath = DLLpath, ...)
+  error: unable to load shared object '/Users/lionel/Desktop/svglite/revdep/library.noindex/LLSR/rJava/libs/rJava.so':
+  dlopen(/Users/lionel/Desktop/svglite/revdep/library.noindex/LLSR/rJava/libs/rJava.so, 6): Library not loaded: /Library/Java/JavaVirtualMachines/jdk-11.0.1.jdk/Contents/Home/lib/server/libjvm.dylib
+  Referenced from: /Users/lionel/Desktop/svglite/revdep/library.noindex/LLSR/rJava/libs/rJava.so
+  Reason: image not found
+ERROR: lazy loading failed for package ‘LLSR’
+* removing ‘/Users/lionel/Desktop/svglite/revdep/checks.noindex/LLSR/new/LLSR.Rcheck/LLSR’
+
+```
+### CRAN
+
+```
+* installing *source* package ‘LLSR’ ...
+** package ‘LLSR’ successfully unpacked and MD5 sums checked
+** R
+** data
+*** moving datasets to lazyload DB
+** inst
+** byte-compile and prepare package for lazy loading
+Unable to find any JVMs matching version "(null)".
+No Java runtime present, try --request to install.
+Warning in system("/usr/libexec/java_home", intern = TRUE) :
+  running command '/usr/libexec/java_home' had status 1
+Error : .onLoad failed in loadNamespace() for 'rJava', details:
+  call: dyn.load(file, DLLpath = DLLpath, ...)
+  error: unable to load shared object '/Users/lionel/Desktop/svglite/revdep/library.noindex/LLSR/rJava/libs/rJava.so':
+  dlopen(/Users/lionel/Desktop/svglite/revdep/library.noindex/LLSR/rJava/libs/rJava.so, 6): Library not loaded: /Library/Java/JavaVirtualMachines/jdk-11.0.1.jdk/Contents/Home/lib/server/libjvm.dylib
+  Referenced from: /Users/lionel/Desktop/svglite/revdep/library.noindex/LLSR/rJava/libs/rJava.so
+  Reason: image not found
+ERROR: lazy loading failed for package ‘LLSR’
+* removing ‘/Users/lionel/Desktop/svglite/revdep/checks.noindex/LLSR/old/LLSR.Rcheck/LLSR’
+
+```
+# mapview
+
+Version: 2.7.0
 
 ## In both
 
 *   checking tests ...
     ```
      ERROR
-    Running the tests in ‘tests/run-base.R’ failed.
+    Running the tests in ‘tests/testthat.R’ failed.
     Last 13 lines of output:
-      7: requirePackages(package, why = stri_paste("learner", id, sep = " "), default.method = "load")
-      8: stopf("For %s please install the following packages: %s", why, ps)
+             if (logical.return) 
+                 message(paste("Error:", msg), domain = NA)
+             else stop(msg, call. = FALSE, domain = NA)
+         })
+      3: tryCatchList(expr, classes, parentenv, handlers)
+      4: tryCatchOne(expr, names, parentenv, handlers[[1L]])
+      5: value[[3L]](cond)
+      6: stop(msg, call. = FALSE, domain = NA)
       
-      testthat results ================================================================
-      OK: 2477 SKIPPED: 1 FAILED: 7
-      1. Error: clustering performance (@test_base_clustering.R#15) 
-      2. Error: clustering performance with missing clusters (@test_base_clustering.R#27) 
-      3. Error: clustering resample (@test_base_clustering.R#41) 
-      4. Error: clustering benchmark (@test_base_clustering.R#52) 
-      5. Error: clustering tune (@test_base_clustering.R#65) 
-      6. Error: hyperpars (@test_base_hyperpars.R#12) 
-      7. Error: check measure calculations (@test_base_measures.R#186) 
+      ══ testthat results  ═══════════════════════════════════════════════════════════
+      OK: 62 SKIPPED: 0 WARNINGS: 1 FAILED: 1
+      1. Error: getSimpleClass() runs without any issues (@test-mapviewControls.R#25) 
       
       Error: testthat unit tests failed
       Execution halted
@@ -74,15 +179,196 @@ Version: 2.11
 
 *   checking dependencies in R code ... NOTE
     ```
-    Unable to find any JVMs matching version "(null)".
-    No Java runtime present, try --request to install.
-    Unable to find any JVMs matching version "(null)".
-    No Java runtime present, try --request to install.
-    Unable to find any JVMs matching version "(null)".
-    No Java runtime present, try --request to install.
-    Missing or unexported object: ‘kohonen::bdk’
+    Namespaces in Imports field not imported from:
+      ‘brew’ ‘svglite’ ‘uuid’
+      All declared Imports should be used.
     ```
 
+*   checking Rd cross-references ... NOTE
+    ```
+    Packages unavailable to check Rd xrefs: ‘leafsync’, ‘slideview’
+    ```
+
+# metacoder
+
+Version: 0.3.2
+
+## In both
+
+*   checking whether package ‘metacoder’ can be installed ... WARNING
+    ```
+    Found the following significant warnings:
+      Warning: package ‘taxa’ was built under R version 3.5.2
+    See ‘/Users/lionel/Desktop/svglite/revdep/checks.noindex/metacoder/new/metacoder.Rcheck/00install.out’ for details.
+    ```
+
+*   checking dependencies in R code ... NOTE
+    ```
+    Namespaces in Imports field not imported from:
+      ‘ggrepel’ ‘reshape’ ‘svglite’
+      All declared Imports should be used.
+    ```
+
+# mlr
+
+Version: 2.14.0
+
+## In both
+
+*   checking whether package ‘mlr’ can be installed ... WARNING
+    ```
+    Found the following significant warnings:
+      Warning: package ‘ParamHelpers’ was built under R version 3.5.2
+    See ‘/Users/lionel/Desktop/svglite/revdep/checks.noindex/mlr/new/mlr.Rcheck/00install.out’ for details.
+    ```
+
+*   checking package dependencies ... NOTE
+    ```
+    Packages suggested but not available for checking: ‘fpc’ ‘liquidSVM’
+    ```
+
+*   checking installed package size ... NOTE
+    ```
+      installed size is  9.1Mb
+      sub-directories of 1Mb or more:
+        data   2.3Mb
+        help   1.4Mb
+        R      5.1Mb
+    ```
+
+*   checking dependencies in R code ... NOTE
+    ```
+    Unable to find any JVMs matching version "(null)".
+    No Java runtime present, try --request to install.
+    Unable to find any JVMs matching version "(null)".
+    No Java runtime present, try --request to install.
+    Unable to find any JVMs matching version "(null)".
+    No Java runtime present, try --request to install.
+    ```
+
+# netSEM
+
+Version: 0.5.1
+
+## In both
+
+*   checking re-building of vignette outputs ... WARNING
+    ```
+    Error in re-building vignettes:
+      ...
+    pandoc-citeproc: when expecting a product (:*:), encountered Object instead
+    Error running filter /usr/local/bin/pandoc-citeproc:
+    Filter returned error status 1
+    Error: processing vignette 'Crack.Rmd' failed with diagnostics:
+    pandoc document conversion failed with error 83
+    Execution halted
+    ```
+
+# phantasus
+
+Version: 1.2.1
+
+## In both
+
+*   checking installed package size ... NOTE
+    ```
+      installed size is 14.9Mb
+      sub-directories of 1Mb or more:
+        doc   2.6Mb
+        www  11.5Mb
+    ```
+
+*   checking dependencies in R code ... NOTE
+    ```
+    Unexported objects imported by ':::' calls:
+      'GEOquery:::getDirListing' 'opencpu:::rookhandler'
+      'opencpu:::tmp_root' 'opencpu:::win_or_mac'
+      See the note in ?`:::` about the use of this operator.
+    ```
+
+# radiant.data
+
+Version: 0.9.9
+
+## In both
+
+*   checking whether package ‘radiant.data’ can be installed ... WARNING
+    ```
+    Found the following significant warnings:
+      Warning: package ‘ggplot2’ was built under R version 3.5.2
+      Warning: package ‘tidyr’ was built under R version 3.5.2
+      Warning: package ‘dplyr’ was built under R version 3.5.2
+    See ‘/Users/lionel/Desktop/svglite/revdep/checks.noindex/radiant.data/new/radiant.data.Rcheck/00install.out’ for details.
+    ```
+
+# rsvg
+
+Version: 1.3
+
+## In both
+
+*   checking whether package ‘rsvg’ can be installed ... ERROR
+    ```
+    Installation failed.
+    See ‘/Users/lionel/Desktop/svglite/revdep/checks.noindex/rsvg/new/rsvg.Rcheck/00install.out’ for details.
+    ```
+
+## Installation
+
+### Devel
+
+```
+* installing *source* package ‘rsvg’ ...
+** package ‘rsvg’ successfully unpacked and MD5 sums checked
+Package libffi was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libffi.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'libffi', required by 'gobject-2.0', not found
+Found pkg-config cflags and libs!
+Using PKG_CFLAGS=
+Using PKG_LIBS=-L/usr/local/Cellar/librsvg/2.44.13/lib -L/usr/local/Cellar/glib/2.60.0_1/lib -L/usr/local/Cellar/gdk-pixbuf/2.38.1/lib -L/usr/local/Cellar/glib/2.60.0_1/lib -L/usr/local/opt/gettext/lib -L/usr/local/Cellar/cairo/1.16.0/lib -lrsvg-2 -lm -lgio-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lintl -lcairo
+------------------------- ANTICONF ERROR ---------------------------
+Configuration failed because librsvg-2.0 was not found. Try installing:
+ * deb: librsvg2-dev (Debian, Ubuntu, etc)
+ * rpm: librsvg2-devel (Fedora, EPEL)
+ * csw: librsvg_dev, sunx11_devel (Solaris)
+ * brew: librsvg (OSX)
+If librsvg-2.0 is already installed, check that 'pkg-config' is in your
+PATH and PKG_CONFIG_PATH contains a librsvg-2.0.pc file. If pkg-config
+is unavailable you can set INCLUDE_DIR and LIB_DIR manually via:
+R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'
+--------------------------------------------------------------------
+ERROR: configuration failed for package ‘rsvg’
+* removing ‘/Users/lionel/Desktop/svglite/revdep/checks.noindex/rsvg/new/rsvg.Rcheck/rsvg’
+
+```
+### CRAN
+
+```
+* installing *source* package ‘rsvg’ ...
+** package ‘rsvg’ successfully unpacked and MD5 sums checked
+Package libffi was not found in the pkg-config search path.
+Perhaps you should add the directory containing `libffi.pc'
+to the PKG_CONFIG_PATH environment variable
+Package 'libffi', required by 'gobject-2.0', not found
+Found pkg-config cflags and libs!
+Using PKG_CFLAGS=
+Using PKG_LIBS=-L/usr/local/Cellar/librsvg/2.44.13/lib -L/usr/local/Cellar/glib/2.60.0_1/lib -L/usr/local/Cellar/gdk-pixbuf/2.38.1/lib -L/usr/local/Cellar/glib/2.60.0_1/lib -L/usr/local/opt/gettext/lib -L/usr/local/Cellar/cairo/1.16.0/lib -lrsvg-2 -lm -lgio-2.0 -lgdk_pixbuf-2.0 -lgobject-2.0 -lglib-2.0 -lintl -lcairo
+------------------------- ANTICONF ERROR ---------------------------
+Configuration failed because librsvg-2.0 was not found. Try installing:
+ * deb: librsvg2-dev (Debian, Ubuntu, etc)
+ * rpm: librsvg2-devel (Fedora, EPEL)
+ * csw: librsvg_dev, sunx11_devel (Solaris)
+ * brew: librsvg (OSX)
+If librsvg-2.0 is already installed, check that 'pkg-config' is in your
+PATH and PKG_CONFIG_PATH contains a librsvg-2.0.pc file. If pkg-config
+is unavailable you can set INCLUDE_DIR and LIB_DIR manually via:
+R CMD INSTALL --configure-vars='INCLUDE_DIR=... LIB_DIR=...'
+--------------------------------------------------------------------
+ERROR: configuration failed for package ‘rsvg’
+* removing ‘/Users/lionel/Desktop/svglite/revdep/checks.noindex/rsvg/old/rsvg.Rcheck/rsvg’
+
+```
 # svgPanZoom
 
 Version: 0.3.3
@@ -92,36 +378,40 @@ Version: 0.3.3
 *   checking package dependencies ... NOTE
     ```
     Packages which this enhances but not available for checking:
-      ‘gridSVG’ ‘XML’ ‘xml2’
+      ‘gridSVG’ ‘knitr’ ‘XML’ ‘xml2’
     ```
 
-# viridis
+# tidybayes
 
-Version: 0.4.0
+Version: 1.0.4
 
-## Newly fixed
+## In both
 
 *   checking tests ...
     ```
      ERROR
     Running the tests in ‘tests/testthat.R’ failed.
     Last 13 lines of output:
-      > 
-      > test_check("viridis")
-      1. Error: visual elements are correct (@test-viridis.R#44) ---------------------
-      function 'gdtools_RcppExport_validate' not provided by package 'gdtools'
-      1: vdiffr::expect_doppelganger("a", A) at testthat/test-viridis.R:44
-      2: write_svg(fig, testcase, title, user_fonts)
-      3: svglite::svglite(file, user_fonts = user_fonts)
-      4: svglite_(file, bg, width, height, pointsize, standalone, aliases)
+             modules = modules, factories = factories, jags = jags, call.setup = TRUE, method = method, 
+             mutate = mutate)
+      10: setup.jags(model = outmodel, monitor = outmonitor, data = outdata, n.chains = n.chains, 
+             inits = outinits, modules = modules, factories = factories, response = response, 
+             fitted = fitted, residual = residual, jags = jags, method = method, mutate = mutate)
+      11: loadandcheckrjags()
+      12: stop("Loading the rjags package failed (diagnostics are given above this error message)", 
+             call. = FALSE)
       
-      testthat results ================================================================
-      OK: 5 SKIPPED: 0 FAILED: 1
-      1. Error: visual elements are correct (@test-viridis.R#44) 
+      ══ testthat results  ═══════════════════════════════════════════════════════════
+      OK: 223 SKIPPED: 43 WARNINGS: 5 FAILED: 1
+      1. Error: tidy_draws works with runjags (@test.tidy_draws.R#87) 
       
       Error: testthat unit tests failed
       Execution halted
     ```
+
+# viridis
+
+Version: 0.5.1
 
 ## In both
 
@@ -145,7 +435,7 @@ Version: 0.4.0
     
         layer
     
-    Quitting from lines 204-213 (intro-to-viridis.Rmd) 
+    Quitting from lines 205-214 (intro-to-viridis.Rmd) 
     Error: processing vignette 'intro-to-viridis.Rmd' failed with diagnostics:
     Cannot create RasterLayer object from this file; perhaps you need to install rgdal first
     Execution halted
