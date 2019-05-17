@@ -1,8 +1,10 @@
 
+Should fix the CRAN failure when UTF-8 is not available.
+
 ## Test environments
 
-* local OS X install, R 3.4.1
-* ubuntu 12.04 (on travis-ci), R 3.4.1
+* local OS X install, R release
+* ubuntu 12.04 (on travis-ci), R release
 * win-builder (devel and release)
 
 
@@ -13,6 +15,6 @@
 
 ## Downstream dependencies
 
-* I ran R CMD check on all 8 downstream dependencies (summary at
+* I ran R CMD check on all 18 downstream dependencies (summary at
   https://github.com/r-lib/svglite/blob/master/revdep/readme.md).
   No problems were found.

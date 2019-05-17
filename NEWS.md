@@ -1,5 +1,5 @@
 
-# svglite 1.2.1.9000
+# svglite 1.2.2
 
 * Improvements to reproducibility of generated SVGs: Negative zeros
   are now treated as positive, and the clip ID are now generated from
