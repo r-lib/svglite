@@ -6,6 +6,18 @@
 #include <Rcpp.h>
 #include "utils.h"
 
+namespace svglite { namespace internal {
+
+template <typename T>
+void write_double(T& stream, double data) {
+  std::streamsize prec = stream.precision();
+  uint8_t newprec = std::fabs(data) >= 1 ? prec : std::ceil(-std::log10(std::fabs(data))) + 1;
+  stream << std::setprecision(newprec) << data << std::setprecision(prec);
+}
+
+}} // namespace svglite::internal
+
+
 class SvgStream {
   public:
 
@@ -52,11 +64,7 @@ public:
   }
 
   void write(int data)            { stream_ << data; }
-  void write(double data) {
-    std::streamsize prec = stream_.precision();
-    uint8_t newprec = std::fabs(data) >= 1 ? prec : std::ceil(-std::log10(std::fabs(data))) + 1;
-    stream_ << std::setprecision(newprec) << data << std::setprecision(prec);
-  }
+  void write(double data)         { svglite::internal::write_double(stream_, data); }
   void write(const char* data)    { stream_ << data; }
   void write(char data)           { stream_ << data; }
   void write(const std::string& data) { stream_ << data; }
@@ -92,11 +100,7 @@ public:
   }
 
   void write(int data)                { stream_ << data; }
-  void write(double data) {
-      std::streamsize prec = stream_.precision();
-      uint8_t newprec = std::fabs(data) >= 1 ? prec : std::ceil(-std::log10(std::fabs(data))) + 1;
-      stream_ << std::setprecision(newprec) << data << std::setprecision(prec);
-  }
+  void write(double data)             { svglite::internal::write_double(stream_, data); }
   void write(const char* data)        { stream_ << data; }
   void write(char data)               { stream_ << data; }
   void write(const std::string& data) { stream_ << data; }
