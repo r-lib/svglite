@@ -1,3 +1,5 @@
+# svglite (development version)
+
 
 # svglite 1.2.2
 
