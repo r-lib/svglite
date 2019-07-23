@@ -13,7 +13,7 @@
 #' used to create the svg, and the computer used to render the
 #' svg. See the \code{fonts} vignette for more information.
 #'
-#' @param file The file where output will appear.
+#' @param filename The file where output will appear.
 #' @param height,width Height and width in inches.
 #' @param bg Default background color for the plot (defaults to "white").
 #' @param pointsize Default point size.
@@ -60,11 +60,11 @@
 #' @importFrom Rcpp sourceCpp
 #' @importFrom gdtools raster_view
 #' @export
-svglite <- function(file = "Rplots.svg", width = 10, height = 8,
+svglite <- function(filename = "Rplots.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,
                     system_fonts = list(), user_fonts = list()) {
   aliases <- validate_aliases(system_fonts, user_fonts)
-  invisible(svglite_(file, bg, width, height, pointsize, standalone, aliases))
+  invisible(svglite_(filename, bg, width, height, pointsize, standalone, aliases))
 }
 
 #' Access current SVG as a string.
