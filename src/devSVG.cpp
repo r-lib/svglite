@@ -545,7 +545,7 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
 
-  (*stream) << "<circle cx='" << x << "' cy='" << y << "' r='" << r << "pt'";
+  (*stream) << "<circle cx='" << x << "' cy='" << y << "' r='" << r << "'";
 
   write_style_begin(stream);
   write_style_linetype(stream, gc, true);
