@@ -1,6 +1,8 @@
 
 # svglite (development version)
 
+* The radius of circles is no longer expressed in pt (#93, @vandenman).
+
 * Dimensions smaller than 1 now retain two significant figures (#94, @ilia-kats).
 
 
