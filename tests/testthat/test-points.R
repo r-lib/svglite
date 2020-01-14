@@ -1,14 +1,14 @@
 context("Points")
 library(xml2)
 
-test_that("radius is given in points", {
+test_that("radius is not given in points", {
   x <- xmlSVG({
     plot.new()
     points(0.5, 0.5, cex = 20)
     text(0.5, 0.5, cex = 20)
   })
   circle <- xml_find_all(x, ".//circle")
-  expect_equal(xml_attr(circle, "r"), "54.00pt")
+  expect_equal(xml_attr(circle, "r"), "54.00")
 })
 
 test_that("points are given stroke and fill", {
