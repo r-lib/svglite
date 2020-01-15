@@ -83,3 +83,13 @@ open_manual_tests <- function() {
     utils::browseURL(svglite_manual_tests[[test]])
   })
 }
+
+checkIntFormat <- function(s) {
+  # identical to grDevices:::checkIntFormat
+  s <- gsub("%%", "", s)
+  if (length(grep("%", s)) == 0L)
+    return(TRUE)
+  s <- sub("%[#0 ,+-]*[0-9.]*[diouxX]", "", s)
+  length(grep("%", s)) == 0L
+}
+

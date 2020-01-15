@@ -5,6 +5,7 @@
 #include <sstream>
 #include <Rcpp.h>
 #include "utils.h"
+#include <boost/format.hpp>
 
 namespace svglite { namespace internal {
 
@@ -63,11 +64,35 @@ public:
     stream_ << std::fixed << std::setprecision(2);
   }
 
+  SvgStreamFile(const std::string& path, int pageno) {
+
+    // create the appropriate file name (and add 1 if it exists already)
+    std::string fmtStr;
+    do {
+      pageno++;
+      boost::format fmt = boost::format(path) % pageno;
+      fmtStr = boost::str(fmt);
+    } while (fexists(fmtStr));
+
+    stream_.open(R_ExpandFileName(fmtStr.c_str()));
+
+    if (stream_.fail())
+      Rcpp::stop("cannot open stream " + fmtStr);
+    Rcpp::Rcout << "opened " << fmtStr << std::endl;
+
+    stream_ << std::fixed << std::setprecision(2);
+  }
+
   void write(int data)            { stream_ << data; }
   void write(double data)         { svglite::internal::write_double(stream_, data); }
   void write(const char* data)    { stream_ << data; }
   void write(char data)           { stream_ << data; }
   void write(const std::string& data) { stream_ << data; }
+
+  bool fexists(const std::string& filename) {
+    std::ifstream ifile(filename);
+    return (bool)ifile;
+  }
 
   // Adding a final newline here creates problems on Windows when
   // seeking back to original position. So we only write the newline
@@ -84,6 +109,7 @@ public:
   }
 
   ~SvgStreamFile() {
+    Rcpp::Rcout << "destructor called" << std::endl;
     stream_.close();
   }
 };
@@ -122,7 +148,14 @@ public:
     if(!svgstr.empty()) {
       svgstr.append("</svg>");
     }
-    env_["svg_string"] = svgstr;
+	if (env_.exists("svg_string"))
+	{
+		Rcpp::CharacterVector str = env_["svg_string"];
+		str.push_back(svgstr);
+		env_["svg_string"] = str;
+	}
+	else
+		env_["svg_string"] = svgstr;
   }
 
   Rcpp::XPtr<std::stringstream> string_src() {
