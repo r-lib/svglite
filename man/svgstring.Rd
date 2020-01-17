@@ -39,6 +39,16 @@ strings containing a path to a font file, or a list containing
 \code{name} and \code{file} elements with \code{name} indicating
 the font alias in the SVG output and \code{file} the path to a
 font file.}
+<<<<<<< HEAD
+=======
+
+\item{onefile}{Logical, if a new page is opened, should a new file
+be created? The default (FALSE) appends all plots the same file.
+If this is set to TRUE then the filename must contain \%d to
+indicate the file number (e.g., "Rplots\%d.svg").}
+
+\item{...}{Arguments passed on to \code{\link{svglite}}.}
+>>>>>>> added documentation
 }
 \value{
 A function with no arguments: call the function to get the

@@ -40,6 +40,11 @@ strings containing a path to a font file, or a list containing
 \code{name} and \code{file} elements with \code{name} indicating
 the font alias in the SVG output and \code{file} the path to a
 font file.}
+
+\item{onefile}{Logical, if a new page is opened, should a new file
+be created? The default (FALSE) appends all plots the same file.
+If this is set to TRUE then the filename must contain \%d to
+indicate the file number (e.g., "Rplots\%d.svg").}
 }
 \description{
 This function produces graphics compliant to the current w3 svg XML
