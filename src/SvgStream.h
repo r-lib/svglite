@@ -68,17 +68,21 @@ public:
 
     // create the appropriate file name (and add 1 if it exists already)
     std::string fmtStr;
-    do {
-      pageno++;
-      boost::format fmt = boost::format(path) % pageno;
-      fmtStr = boost::str(fmt);
-    } while (fexists(fmtStr));
+    boost::format fmt(path);
+    for (int i = pageno; i < pageno + 1000; i++) {
+      fmtStr = boost::str(fmt % i);
+      if (!fexists(fmtStr))
+        break;
+      else
+        Rcpp::Rcout << "C++ thinks that this file exists: " << fmtStr << std::endl;
+    }
+
+    if (fexists(fmtStr))
+      Rcpp::stop("could not create non-existing file name after 1000 tries using pattern " + path);
 
     stream_.open(R_ExpandFileName(fmtStr.c_str()));
-
     if (stream_.fail())
       Rcpp::stop("cannot open stream " + fmtStr);
-    Rcpp::Rcout << "opened " << fmtStr << std::endl;
 
     stream_ << std::fixed << std::setprecision(2);
   }
@@ -90,8 +94,8 @@ public:
   void write(const std::string& data) { stream_ << data; }
 
   bool fexists(const std::string& filename) {
-    std::ifstream ifile(filename);
-    return (bool)ifile;
+    std::ifstream f(R_ExpandFileName(filename.c_str()));
+    return f.good();
   }
 
   // Adding a final newline here creates problems on Windows when
@@ -109,7 +113,6 @@ public:
   }
 
   ~SvgStreamFile() {
-    Rcpp::Rcout << "destructor called" << std::endl;
     stream_.close();
   }
 };
@@ -148,14 +151,16 @@ public:
     if(!svgstr.empty()) {
       svgstr.append("</svg>");
     }
-	if (env_.exists("svg_string"))
-	{
-		Rcpp::CharacterVector str = env_["svg_string"];
-		str.push_back(svgstr);
-		env_["svg_string"] = str;
-	}
-	else
-		env_["svg_string"] = svgstr;
+    if (env_.exists("svg_string")) {
+      Rcpp::CharacterVector str = env_["svg_string"];
+      str.push_back(svgstr);
+      env_["svg_string"] = str;
+    } else
+      env_["svg_string"] = svgstr;
+
+    // clear the stream
+    stream_.str(std::string());
+    stream_.clear();
   }
 
   Rcpp::XPtr<std::stringstream> string_src() {

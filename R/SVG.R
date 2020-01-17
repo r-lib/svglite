@@ -67,6 +67,8 @@ svglite <- function(file = "Rplots.svg", width = 10, height = 8,
   if (!checkIntFormat(file))
     stop("invalid 'file'")
   aliases <- validate_aliases(system_fonts, user_fonts)
+  if (!onefile)
+    onefile <- !grepl("%\\d+d", file)
   invisible(svglite_(file, bg, width, height, pointsize, standalone, aliases, onefile))
 }
 

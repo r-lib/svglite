@@ -58,8 +58,11 @@ public:
 
   void nextFile() {
     if (typeid(*stream) == typeid(SvgStreamFile)) {
-      SvgStreamPtr newStream(new SvgStreamFile(file, pageno));
+      stream->flush();
+      SvgStreamPtr newStream(new SvgStreamFile(file, pageno + 1));
       stream = newStream;
+    } else {
+      stream->finish();
     }
   }
 };
@@ -364,7 +367,6 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   stream->flush();
 }
 
-void svg_close(pDevDesc dd);
 void svg_new_page(const pGEcontext gc, pDevDesc dd) {
 BEGIN_RCPP
 
@@ -376,10 +378,9 @@ BEGIN_RCPP
     // do nothing, just keep appending to current file
     if (svgd->onefile)
       return;
-    // close existing file and create a new one
-    stream->finish();
+    // close existing file, create a new one, and update stream
     svgd->nextFile();
-
+    stream = svgd->stream;
   }
 
   if (svgd->standalone)
@@ -788,7 +789,7 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
 bool svglite_(std::string file, std::string bg, double width, double height,
               double pointsize, bool standalone, Rcpp::List aliases, bool onefile) {
 
-  SvgStreamPtr stream(new SvgStreamFile(file, 1));
+  SvgStreamPtr stream(onefile ? new SvgStreamFile(file) : new SvgStreamFile(file, 1));
   makeDevice(stream, bg, width, height, pointsize, standalone, aliases, onefile, file);
 
   return true;
