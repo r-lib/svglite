@@ -57,12 +57,10 @@ public:
   }
 
   void nextFile() {
+    stream->finish();
     if (typeid(*stream) == typeid(SvgStreamFile)) {
-      stream->flush();
       SvgStreamPtr newStream(new SvgStreamFile(file, pageno + 1));
       stream = newStream;
-    } else {
-      stream->finish();
     }
   }
 };
@@ -380,6 +378,7 @@ BEGIN_RCPP
       return;
     // close existing file, create a new one, and update stream
     svgd->nextFile();
+    svgd->clipid.clear();
     stream = svgd->stream;
   }
 

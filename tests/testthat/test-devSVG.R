@@ -38,8 +38,9 @@ test_that("if bg is transparent in par(), use device driver background", {
 
 test_that("creating multiple pages is identical to creating multiple individual svgs", {
 
-  plot_one <- function() plot(1, 1)
-  plot_two <- function() plot(1, 2)
+  plot_one <- function() print(ggplot2::qplot(iris$Species))
+  plot_two <- function() print(ggplot2::qplot(iris$Sepal.Length, bins = 30))
+
   # strings
   s_multiple <- svgstring(onefile = FALSE)
   plot_one()
@@ -58,32 +59,29 @@ test_that("creating multiple pages is identical to creating multiple individual 
   expect_identical(s_multiple()[1L], s_1()[1L], label = "svgstring first plot")
   expect_identical(s_multiple()[2L], s_2()[1L], label = "svgstring second plot")
 
-  # do the same with devices
-  f_multiple <- "test-multiple%03d.svg"
-  f_single_1 <- "test-multiple-ref1.svg"
-  f_single_2 <- "test-multiple-ref2.svg"
+  # same with devices
+  dir <- tempdir()
+  f_multiple <- file.path(dir, "test-multiple-%03d.svg")
+  f_single_1 <- file.path(dir, "test-single-1.svg")
+  f_single_2 <- file.path(dir, "test-single-2.svg")
+  f_multiple_1 <- sprintf(f_multiple, 1L)
+  f_multiple_2 <- sprintf(f_multiple, 2L)
+  on.exit(file.remove(f_multiple_1, f_multiple_2, f_single_1, f_single_2))
 
   svglite(f_multiple, onefile = FALSE)
   plot_one()
   plot_two()
-  on.exit(dev.off())
+  dev.off()
 
   svglite(f_single_1, onefile = FALSE)
   plot_one()
-  on.exit(dev.off())
+  dev.off()
 
   svglite(f_single_2, onefile = FALSE)
   plot_two()
-  on.exit(dev.off())
+  dev.off()
 
-  f_multiple_1 <- sprintf(f_multiple, 1)
-  f_multiple_2 <- sprintf(f_multiple, 2)
-  svg_multiple_1 <- readChar(f_multiple_1, file.info(f_multiple_1)$size)
-  svg_multiple_2 <- readChar(f_multiple_2, file.info(f_multiple_2)$size)
-  svg_single_1 <- readChar(f_single_1, file.info(f_single_1)$size)
-  svg_single_2 <- readChar(f_single_2, file.info(f_single_2)$size)
-  expect_equal(svg_multiple_1, svg_single_1)
-  expect_equal(svg_multiple_2, svg_single_2)
+  expect_identical(readLines(f_multiple_1), readLines(f_single_1), label = "svglite first plot")
+  expect_identical(readLines(f_multiple_2), readLines(f_single_2), label = "svglite second plot")
 
-  file.remove(f_multiple_1, f_multiple_2, f_single_1, f_single_2)
 })

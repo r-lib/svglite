@@ -73,8 +73,6 @@ public:
       fmtStr = boost::str(fmt % i);
       if (!fexists(fmtStr))
         break;
-      else
-        Rcpp::Rcout << "C++ thinks that this file exists: " << fmtStr << std::endl;
     }
 
     if (fexists(fmtStr))
@@ -155,8 +153,9 @@ public:
       Rcpp::CharacterVector str = env_["svg_string"];
       str.push_back(svgstr);
       env_["svg_string"] = str;
-    } else
+    } else {
       env_["svg_string"] = svgstr;
+    }
 
     // clear the stream
     stream_.str(std::string());

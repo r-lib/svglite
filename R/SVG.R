@@ -64,7 +64,7 @@
 #' @importFrom Rcpp sourceCpp
 #' @importFrom gdtools raster_view
 #' @export
-svglite <- function(file = "Rplots.svg", width = 10, height = 8,
+svglite <- function(file = if(onefile) "Rplots.svg" else "Rplot%03d.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,
                     system_fonts = list(), user_fonts = list(),
                     onefile = TRUE) {
