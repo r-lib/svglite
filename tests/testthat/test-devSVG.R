@@ -85,3 +85,22 @@ test_that("creating multiple pages is identical to creating multiple individual 
   expect_identical(readLines(f_multiple_2), readLines(f_single_2), label = "svglite second plot")
 
 })
+
+test_that("opening multiple pages does not error with onefile = TRUE", {
+
+  plot_one <- function() print(ggplot2::qplot(iris$Species))
+  plot_two <- function() print(ggplot2::qplot(iris$Sepal.Length, bins = 30))
+
+  expect_error({
+    f <- tempfile()
+    svglite(f, onefile = TRUE)
+    on.exit(dev.off())
+    plot_one()
+    plot_two()
+  }, NA)
+
+})
+
+test_that("invalid file throws an error", {
+  expect_error(svglite("test%f%d.svg"))
+})
