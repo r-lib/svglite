@@ -4,9 +4,16 @@
 \alias{svglite}
 \title{An SVG Graphics Driver}
 \usage{
-svglite(file = "Rplots.svg", width = 10, height = 8, bg = "white",
-  pointsize = 12, standalone = TRUE, system_fonts = list(),
-  user_fonts = list())
+svglite(
+  file = "Rplots.svg",
+  width = 10,
+  height = 8,
+  bg = "white",
+  pointsize = 12,
+  standalone = TRUE,
+  system_fonts = list(),
+  user_fonts = list()
+)
 }
 \arguments{
 \item{file}{The file where output will appear.}

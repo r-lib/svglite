@@ -75,7 +75,6 @@ svglite <- function(file = "Rplots.svg", width = 10, height = 8,
 #' See \code{\link{svglite}()} documentation for information about
 #' specifying fonts.
 #'
-#' @param ... Arguments passed on to \code{\link{svglite}}.
 #' @return A function with no arguments: call the function to get the
 #'   current value of the string.
 #' @examples

@@ -4,8 +4,15 @@
 \alias{svgstring}
 \title{Access current SVG as a string.}
 \usage{
-svgstring(width = 10, height = 8, bg = "white", pointsize = 12,
-  standalone = TRUE, system_fonts = list(), user_fonts = list())
+svgstring(
+  width = 10,
+  height = 8,
+  bg = "white",
+  pointsize = 12,
+  standalone = TRUE,
+  system_fonts = list(),
+  user_fonts = list()
+)
 }
 \arguments{
 \item{width}{Height and width in inches.}
@@ -32,8 +39,6 @@ strings containing a path to a font file, or a list containing
 \code{name} and \code{file} elements with \code{name} indicating
 the font alias in the SVG output and \code{file} the path to a
 font file.}
-
-\item{...}{Arguments passed on to \code{\link{svglite}}.}
 }
 \value{
 A function with no arguments: call the function to get the

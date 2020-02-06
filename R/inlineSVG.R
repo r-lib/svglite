@@ -3,7 +3,6 @@
 #' This is useful primarily for testing. Requires the \code{htmltools}
 #' package.
 #'
-#' @inheritParams svglite
 #' @param code Plotting code to execute.
 #' @param ... Other arguments passed on to \code{\link{svglite}}.
 #' @export
