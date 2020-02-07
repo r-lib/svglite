@@ -1,3 +1,5 @@
+# svglite (development version)
+
 # svglite 1.2.3
 
 * The radius of circles is no longer expressed in pt (#93, @vandenman).
