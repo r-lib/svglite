@@ -5,6 +5,8 @@
 
 * Dimensions smaller than 1 now retain two significant figures (#94, @ilia-kats).
 
+* @thomasp85 takes over as maintainer
+
 
 # svglite 1.2.2
 
