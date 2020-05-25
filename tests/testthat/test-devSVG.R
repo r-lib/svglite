@@ -38,19 +38,21 @@ test_that("if bg is transparent in par(), use device driver background", {
 
 test_that("creating multiple pages is identical to creating multiple individual svgs", {
 
-  plot_one <- function() print(ggplot2::qplot(iris$Species))
-  plot_two <- function() print(ggplot2::qplot(iris$Sepal.Length, bins = 30))
+  set.seed(42)
+  df <- data.frame(x = rnorm(20), y = rnorm(20))
+  plot_one <- function() plot(df$x, df$y)
+  plot_two <- function() plot(df$x, df$y + 10)
 
   # strings
-  s_multiple <- svgstring(onefile = FALSE)
+  s_multiple <- svgstring()
   plot_one()
   plot_two()
   dev.off()
 
-  s_1 <- svgstring(onefile = FALSE)
+  s_1 <- svgstring()
   plot_one()
   dev.off()
-  s_2 <- svgstring(onefile = FALSE)
+  s_2 <- svgstring()
   plot_two()
   dev.off()
 
@@ -68,39 +70,20 @@ test_that("creating multiple pages is identical to creating multiple individual 
   f_multiple_2 <- sprintf(f_multiple, 2L)
   on.exit(file.remove(f_multiple_1, f_multiple_2, f_single_1, f_single_2))
 
-  svglite(f_multiple, onefile = FALSE)
+  svglite(f_multiple)
   plot_one()
   plot_two()
   dev.off()
 
-  svglite(f_single_1, onefile = FALSE)
+  svglite(f_single_1)
   plot_one()
   dev.off()
 
-  svglite(f_single_2, onefile = FALSE)
+  svglite(f_single_2)
   plot_two()
   dev.off()
 
   expect_identical(readLines(f_multiple_1), readLines(f_single_1), label = "svglite first plot")
   expect_identical(readLines(f_multiple_2), readLines(f_single_2), label = "svglite second plot")
 
-})
-
-test_that("opening multiple pages does not error with onefile = TRUE", {
-
-  plot_one <- function() print(ggplot2::qplot(iris$Species))
-  plot_two <- function() print(ggplot2::qplot(iris$Sepal.Length, bins = 30))
-
-  expect_error({
-    f <- tempfile()
-    svglite(f, onefile = TRUE)
-    on.exit(dev.off())
-    plot_one()
-    plot_two()
-  }, NA)
-
-})
-
-test_that("invalid file throws an error", {
-  expect_error(svglite("test%f%d.svg"))
 })

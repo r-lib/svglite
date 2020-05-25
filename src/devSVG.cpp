@@ -38,18 +38,16 @@ public:
   std::string clipid;  // ID for the clip path
   double clipx0, clipx1, clipy0, clipy1;  // Save the previous clip path to avoid duplication
   bool standalone;
-  bool onefile;
-  std::string file;
+  const std::string file;
   Rcpp::List system_aliases;
   Rcpp::List user_aliases;
   XPtrCairoContext cc;
 
-  SVGDesc(SvgStreamPtr stream_, bool standalone_, Rcpp::List aliases_, bool onefile_, const std::string& file_):
+  SVGDesc(SvgStreamPtr stream_, bool standalone_, Rcpp::List aliases_, const std::string& file_):
       stream(stream_),
       pageno(0),
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
       standalone(standalone_),
-      onefile(onefile_),
       file(file_),
       system_aliases(Rcpp::wrap(aliases_["system"])),
       user_aliases(Rcpp::wrap(aliases_["user"])),
@@ -62,6 +60,7 @@ public:
       SvgStreamPtr newStream(new SvgStreamFile(file, pageno + 1));
       stream = newStream;
     }
+    clipid.clear();
   }
 };
 
@@ -373,12 +372,8 @@ BEGIN_RCPP
 
   if (svgd->pageno > 0) {
 
-    // do nothing, just keep appending to current file
-    if (svgd->onefile)
-      return;
     // close existing file, create a new one, and update stream
     svgd->nextFile();
-    svgd->clipid.clear();
     stream = svgd->stream;
   }
 
@@ -694,7 +689,7 @@ void svg_raster(unsigned int *raster, int w, int h,
 pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
                         double height, double pointsize,
                         bool standalone, Rcpp::List& aliases,
-                        bool onefile, const std::string& file) {
+                        const std::string& file) {
 
   pDevDesc dd = (DevDesc*) calloc(1, sizeof(DevDesc));
   if (dd == NULL)
@@ -759,12 +754,12 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->haveTransparency = 2;
   dd->haveTransparentBg = 2;
 
-  dd->deviceSpecific = new SVGDesc(stream, standalone, aliases, onefile, file);
+  dd->deviceSpecific = new SVGDesc(stream, standalone, aliases, file);
   return dd;
 }
 
 void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double height,
-                double pointsize, bool standalone, Rcpp::List& aliases, bool onefile,
+                double pointsize, bool standalone, Rcpp::List& aliases,
                 const std::string& file) {
 
   int bg = R_GE_str2col(bg_.c_str());
@@ -773,7 +768,7 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
   R_CheckDeviceAvailable();
   BEGIN_SUSPEND_INTERRUPTS {
     pDevDesc dev = svg_driver_new(stream, bg, width, height, pointsize,
-                                  standalone, aliases, onefile, file);
+                                  standalone, aliases, file);
     if (dev == NULL)
       Rcpp::stop("Failed to start SVG device");
 
@@ -786,10 +781,10 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
 
 // [[Rcpp::export]]
 bool svglite_(std::string file, std::string bg, double width, double height,
-              double pointsize, bool standalone, Rcpp::List aliases, bool onefile) {
+              double pointsize, bool standalone, Rcpp::List aliases) {
 
-  SvgStreamPtr stream(onefile ? new SvgStreamFile(file) : new SvgStreamFile(file, 1));
-  makeDevice(stream, bg, width, height, pointsize, standalone, aliases, onefile, file);
+  SvgStreamPtr stream(new SvgStreamFile(file, 1));
+  makeDevice(stream, bg, width, height, pointsize, standalone, aliases, file);
 
   return true;
 }
@@ -797,10 +792,10 @@ bool svglite_(std::string file, std::string bg, double width, double height,
 // [[Rcpp::export]]
 Rcpp::XPtr<std::stringstream> svgstring_(Rcpp::Environment env, std::string bg,
                                          double width, double height, double pointsize,
-                                         bool standalone, Rcpp::List aliases, bool onefile) {
+                                         bool standalone, Rcpp::List aliases) {
 
   SvgStreamPtr stream(new SvgStreamString(env));
-  makeDevice(stream, bg, width, height, pointsize, standalone, aliases, onefile, "");
+  makeDevice(stream, bg, width, height, pointsize, standalone, aliases, "");
 
   SvgStreamString* strstream = static_cast<SvgStreamString*>(stream.get());
 

@@ -6,8 +6,8 @@
 using namespace Rcpp;
 
 // svglite_
-bool svglite_(std::string file, std::string bg, double width, double height, double pointsize, bool standalone, Rcpp::List aliases, bool onefile);
-RcppExport SEXP _svglite_svglite_(SEXP fileSEXP, SEXP bgSEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP, SEXP aliasesSEXP, SEXP onefileSEXP) {
+bool svglite_(std::string file, std::string bg, double width, double height, double pointsize, bool standalone, Rcpp::List aliases);
+RcppExport SEXP _svglite_svglite_(SEXP fileSEXP, SEXP bgSEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP, SEXP aliasesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -18,14 +18,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type pointsize(pointsizeSEXP);
     Rcpp::traits::input_parameter< bool >::type standalone(standaloneSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type aliases(aliasesSEXP);
-    Rcpp::traits::input_parameter< bool >::type onefile(onefileSEXP);
-    rcpp_result_gen = Rcpp::wrap(svglite_(file, bg, width, height, pointsize, standalone, aliases, onefile));
+    rcpp_result_gen = Rcpp::wrap(svglite_(file, bg, width, height, pointsize, standalone, aliases));
     return rcpp_result_gen;
 END_RCPP
 }
 // svgstring_
-Rcpp::XPtr<std::stringstream> svgstring_(Rcpp::Environment env, std::string bg, double width, double height, double pointsize, bool standalone, Rcpp::List aliases, bool onefile);
-RcppExport SEXP _svglite_svgstring_(SEXP envSEXP, SEXP bgSEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP, SEXP aliasesSEXP, SEXP onefileSEXP) {
+Rcpp::XPtr<std::stringstream> svgstring_(Rcpp::Environment env, std::string bg, double width, double height, double pointsize, bool standalone, Rcpp::List aliases);
+RcppExport SEXP _svglite_svgstring_(SEXP envSEXP, SEXP bgSEXP, SEXP widthSEXP, SEXP heightSEXP, SEXP pointsizeSEXP, SEXP standaloneSEXP, SEXP aliasesSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -36,8 +35,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type pointsize(pointsizeSEXP);
     Rcpp::traits::input_parameter< bool >::type standalone(standaloneSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type aliases(aliasesSEXP);
-    Rcpp::traits::input_parameter< bool >::type onefile(onefileSEXP);
-    rcpp_result_gen = Rcpp::wrap(svgstring_(env, bg, width, height, pointsize, standalone, aliases, onefile));
+    rcpp_result_gen = Rcpp::wrap(svgstring_(env, bg, width, height, pointsize, standalone, aliases));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -54,8 +52,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_svglite_svglite_", (DL_FUNC) &_svglite_svglite_, 8},
-    {"_svglite_svgstring_", (DL_FUNC) &_svglite_svgstring_, 8},
+    {"_svglite_svglite_", (DL_FUNC) &_svglite_svglite_, 7},
+    {"_svglite_svgstring_", (DL_FUNC) &_svglite_svgstring_, 7},
     {"_svglite_get_svg_content", (DL_FUNC) &_svglite_get_svg_content, 1},
     {NULL, NULL, 0}
 };

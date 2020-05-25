@@ -5,7 +5,6 @@
 #include <sstream>
 #include <Rcpp.h>
 #include "utils.h"
-#include <boost/format.hpp>
 
 namespace svglite { namespace internal {
 
@@ -66,21 +65,13 @@ public:
 
   SvgStreamFile(const std::string& path, int pageno) {
 
-    // create the appropriate file name (and add 1 if it exists already)
-    std::string fmtStr;
-    boost::format fmt(path);
-    for (int i = pageno; i < pageno + 1000; i++) {
-      fmtStr = boost::str(fmt % i);
-      if (!fexists(fmtStr))
-        break;
-    }
+    char buf[PATH_MAX+1];
+    snprintf(buf, PATH_MAX, path.c_str(), pageno);
+    buf[PATH_MAX] = '\0';
 
-    if (fexists(fmtStr))
-      Rcpp::stop("could not create non-existing file name after 1000 tries using pattern " + path);
-
-    stream_.open(R_ExpandFileName(fmtStr.c_str()));
+    stream_.open(R_ExpandFileName(buf));
     if (stream_.fail())
-      Rcpp::stop("cannot open stream " + fmtStr);
+      Rcpp::stop("cannot open stream " + std::string(buf));
 
     stream_ << std::fixed << std::setprecision(2);
   }
@@ -90,11 +81,6 @@ public:
   void write(const char* data)    { stream_ << data; }
   void write(char data)           { stream_ << data; }
   void write(const std::string& data) { stream_ << data; }
-
-  bool fexists(const std::string& filename) {
-    std::ifstream f(R_ExpandFileName(filename.c_str()));
-    return f.good();
-  }
 
   // Adding a final newline here creates problems on Windows when
   // seeking back to original position. So we only write the newline
