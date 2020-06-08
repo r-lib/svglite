@@ -63,6 +63,19 @@ public:
     stream_ << std::fixed << std::setprecision(2);
   }
 
+  SvgStreamFile(const std::string& path, int pageno) {
+
+    char buf[PATH_MAX+1];
+    snprintf(buf, PATH_MAX, path.c_str(), pageno);
+    buf[PATH_MAX] = '\0';
+
+    stream_.open(R_ExpandFileName(buf));
+    if (stream_.fail())
+      Rcpp::stop("cannot open stream " + std::string(buf));
+
+    stream_ << std::fixed << std::setprecision(2);
+  }
+
   void write(int data)            { stream_ << data; }
   void write(double data)         { svglite::internal::write_double(stream_, data); }
   void write(const char* data)    { stream_ << data; }
@@ -122,7 +135,17 @@ public:
     if(!svgstr.empty()) {
       svgstr.append("</svg>");
     }
-    env_["svg_string"] = svgstr;
+    if (env_.exists("svg_string")) {
+      Rcpp::CharacterVector str = env_["svg_string"];
+      str.push_back(svgstr);
+      env_["svg_string"] = str;
+    } else {
+      env_["svg_string"] = svgstr;
+    }
+
+    // clear the stream
+    stream_.str(std::string());
+    stream_.clear();
   }
 
   Rcpp::XPtr<std::stringstream> string_src() {

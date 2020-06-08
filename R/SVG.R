@@ -63,6 +63,8 @@
 svglite <- function(file = "Rplots.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,
                     system_fonts = list(), user_fonts = list()) {
+  if (invalid_filename(file))
+    stop("invalid 'file': ", file)
   aliases <- validate_aliases(system_fonts, user_fonts)
   invisible(svglite_(file, bg, width, height, pointsize, standalone, aliases))
 }
@@ -106,4 +108,4 @@ svgstring <- function(width = 10, height = 8, bg = "white",
 }
 
 #' @export
-print.svg <- function(x, ...) cat(x, "\n", sep = "")
+print.svg <- function(x, ...) cat(x, sep = "\n")
