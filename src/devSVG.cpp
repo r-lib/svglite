@@ -415,13 +415,13 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
 
   std::pair<std::string, int> font = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
 
-  int error = glyph_metrics(c, font.first.c_str(), font.second, gc->ps * gc->cex, 1e5, ascent, descent, width);
+  int error = glyph_metrics(c, font.first.c_str(), font.second, gc->ps * gc->cex, 1e4, ascent, descent, width);
   if (error != 0) {
     *ascent = 0;
     *descent = 0;
     *width = 0;
   }
-  double mod = 72./1e5;
+  double mod = 72./1e4;
   *ascent *= mod;
   *descent *= mod;
   *width *= mod;
@@ -622,13 +622,13 @@ double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
 
   double width = 0.0;
 
-  int error = string_width(str, font.first.c_str(), font.second, gc->ps * gc->cex, 1e5, 1, &width);
+  int error = string_width(str, font.first.c_str(), font.second, gc->ps * gc->cex, 1e4, 1, &width);
 
   if (error != 0) {
     width = 0.0;
   }
 
-  return width * 72. / 1e5;
+  return width * 72. / 1e4;
 }
 
 void svg_rect(double x0, double y0, double x1, double y1,
