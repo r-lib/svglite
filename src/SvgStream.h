@@ -34,7 +34,7 @@ class SvgStream {
   }
 
   virtual void flush() = 0;
-  virtual void finish() = 0;
+  virtual void finish(bool close) = 0;
 };
 
 template <typename T>
@@ -91,7 +91,7 @@ public:
     stream_.flush();
   }
 
-  void finish() {
+  void finish(bool close) {
     stream_ << "</svg>\n";
     stream_.flush();
   }
@@ -121,12 +121,12 @@ public:
   void flush() {
   }
 
-  void finish() {
+  void finish(bool close) {
     // When device is closed, stream_ will be destroyed, so we can no longer
     // get the svg string from stream_. In this case, we save the final string
     // to the environment env, so that R can read from env$svg_string even
     // after device is closed.
-    env_["is_closed"] = true;
+    env_["is_closed"] = close;
 
     stream_.flush();
     std::string svgstr = stream_.str();
