@@ -62,11 +62,15 @@
 #' @export
 svglite <- function(file = "Rplots.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,
-                    system_fonts = list(), user_fonts = list()) {
+                    system_fonts = list(), user_fonts = list(), id = NULL) {
   if (invalid_filename(file))
     stop("invalid 'file': ", file)
   aliases <- validate_aliases(system_fonts, user_fonts)
-  invisible(svglite_(file, bg, width, height, pointsize, standalone, aliases))
+  if (is.null(id)) {
+    id <- character(0)
+  }
+  id <- as.character(id)
+  invisible(svglite_(file, bg, width, height, pointsize, standalone, aliases, id))
 }
 
 #' Access current SVG as a string.
@@ -94,12 +98,16 @@ svglite <- function(file = "Rplots.svg", width = 10, height = 8,
 #' @export
 svgstring <- function(width = 10, height = 8, bg = "white",
                       pointsize = 12, standalone = TRUE,
-                      system_fonts = list(), user_fonts = list()) {
+                      system_fonts = list(), user_fonts = list(), id = NULL) {
   aliases <- validate_aliases(system_fonts, user_fonts)
+  if (is.null(id)) {
+    id <- character(0)
+  }
+  id <- as.character(id)
 
   env <- new.env(parent = emptyenv())
   string_src <- svgstring_(env, width = width, height = height, bg = bg,
-    pointsize = pointsize, standalone = standalone, aliases = aliases)
+    pointsize = pointsize, standalone = standalone, aliases = aliases, id = id)
 
   function() {
     svgstr <- if(env$is_closed) env$svg_string else get_svg_content(string_src)
