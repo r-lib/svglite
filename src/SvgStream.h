@@ -34,7 +34,7 @@ class SvgStream {
   }
 
   virtual void flush() = 0;
-  virtual void finish() = 0;
+  virtual void finish(bool close) = 0;
 };
 
 template <typename T>
@@ -63,6 +63,19 @@ public:
     stream_ << std::fixed << std::setprecision(2);
   }
 
+  SvgStreamFile(const std::string& path, int pageno) {
+
+    char buf[PATH_MAX+1];
+    snprintf(buf, PATH_MAX, path.c_str(), pageno);
+    buf[PATH_MAX] = '\0';
+
+    stream_.open(R_ExpandFileName(buf));
+    if (stream_.fail())
+      Rcpp::stop("cannot open stream " + std::string(buf));
+
+    stream_ << std::fixed << std::setprecision(2);
+  }
+
   void write(int data)            { stream_ << data; }
   void write(double data)         { svglite::internal::write_double(stream_, data); }
   void write(const char* data)    { stream_ << data; }
@@ -78,7 +91,7 @@ public:
     stream_.flush();
   }
 
-  void finish() {
+  void finish(bool close) {
     stream_ << "</svg>\n";
     stream_.flush();
   }
@@ -108,12 +121,12 @@ public:
   void flush() {
   }
 
-  void finish() {
+  void finish(bool close) {
     // When device is closed, stream_ will be destroyed, so we can no longer
     // get the svg string from stream_. In this case, we save the final string
     // to the environment env, so that R can read from env$svg_string even
     // after device is closed.
-    env_["is_closed"] = true;
+    env_["is_closed"] = close;
 
     stream_.flush();
     std::string svgstr = stream_.str();
@@ -122,7 +135,17 @@ public:
     if(!svgstr.empty()) {
       svgstr.append("</svg>");
     }
-    env_["svg_string"] = svgstr;
+    if (env_.exists("svg_string")) {
+      Rcpp::CharacterVector str = env_["svg_string"];
+      str.push_back(svgstr);
+      env_["svg_string"] = str;
+    } else {
+      env_["svg_string"] = svgstr;
+    }
+
+    // clear the stream
+    stream_.str(std::string());
+    stream_.clear();
   }
 
   Rcpp::XPtr<std::stringstream> string_src() {
