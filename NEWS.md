@@ -1,5 +1,7 @@
 # svglite (development version)
 
+* Dimensions are now encoded into the top-level `<svg>` tag (#90)
+
 # svglite 1.2.3
 
 * The radius of circles is no longer expressed in pt (#93, @vandenman).
