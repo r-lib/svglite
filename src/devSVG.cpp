@@ -17,12 +17,16 @@
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #include <Rcpp.h>
-#include <gdtools.h>
+#include <systemfonts.h>
 #include <string>
 #include <iomanip>
 #include <sstream>
 #include <boost/shared_ptr.hpp>
 #include <R_ext/GraphicsEngine.h>
+
+extern "C" {
+#include <png.h>
+}
 
 #include "SvgStream.h"
 #include "utils.h"
@@ -40,7 +44,6 @@ public:
   bool standalone;
   Rcpp::List system_aliases;
   Rcpp::List user_aliases;
-  XPtrCairoContext cc;
 
   SVGDesc(SvgStreamPtr stream_, bool standalone_, Rcpp::List aliases_):
       stream(stream_),
@@ -48,8 +51,7 @@ public:
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
       standalone(standalone_),
       system_aliases(Rcpp::wrap(aliases_["system"])),
-      user_aliases(Rcpp::wrap(aliases_["user"])),
-      cc(gdtools::context_create()) {
+      user_aliases(Rcpp::wrap(aliases_["user"])) {
   }
 };
 
@@ -73,6 +75,96 @@ inline bool is_bolditalic(int face) {
 }
 inline bool is_symbol(int face) {
   return face == 5;
+}
+
+const static char encode_lookup[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+const static char pad_character = '=';
+inline std::string base64_encode(const std::uint8_t* buffer, size_t size) {
+  std::string encoded_string;
+  encoded_string.reserve(((size/3) + (size % 3 > 0)) * 4);
+  std::uint32_t temp{};
+  int index = 0;
+  for (size_t idx = 0; idx < size/3; idx++) {
+    temp  = buffer[index++] << 16; //Convert to big endian
+    temp += buffer[index++] << 8;
+    temp += buffer[index++];
+    encoded_string.append(1, encode_lookup[(temp & 0x00FC0000) >> 18]);
+    encoded_string.append(1, encode_lookup[(temp & 0x0003F000) >> 12]);
+    encoded_string.append(1, encode_lookup[(temp & 0x00000FC0) >> 6 ]);
+    encoded_string.append(1, encode_lookup[(temp & 0x0000003F)      ]);
+  }
+  switch (size % 3) {
+  case 1:
+    temp  = buffer[index++] << 16; //Convert to big endian
+    encoded_string.append(1, encode_lookup[(temp & 0x00FC0000) >> 18]);
+    encoded_string.append(1, encode_lookup[(temp & 0x0003F000) >> 12]);
+    encoded_string.append(2, pad_character);
+    break;
+  case 2:
+    temp  = buffer[index++] << 16; //Convert to big endian
+    temp += buffer[index++] << 8;
+    encoded_string.append(1, encode_lookup[(temp & 0x00FC0000) >> 18]);
+    encoded_string.append(1, encode_lookup[(temp & 0x0003F000) >> 12]);
+    encoded_string.append(1, encode_lookup[(temp & 0x00000FC0) >> 6 ]);
+    encoded_string.append(1, pad_character);
+    break;
+  }
+  return encoded_string;
+}
+
+inline std::string raster_to_string(unsigned int *raster, int w, int h, double width, double height, bool interpolate) {
+  h = h < 0 ? -h : h;
+  w = w < 0 ? -w : w;
+  bool resize = false;
+  int w_fac = 1, h_fac = 1;
+  std::vector<unsigned int> raster_resize;
+
+  if (!interpolate && double(w) < width) {
+    resize = true;
+    w_fac = std::ceil(width / w);
+  }
+  if (!interpolate && double(h) < height) {
+    resize = true;
+    h_fac = std::ceil(height / h);
+  }
+
+  if (resize) {
+    int w_new = w * w_fac;
+    int h_new = h * h_fac;
+    raster_resize.reserve(w_new * h_new);
+    for (int i = 0; i < h; ++i) {
+      for (int j = 0; j < w; ++j) {
+        unsigned int val = raster[i * w + j];
+        for (int wrep = 0; wrep < w_fac; ++wrep) {
+          raster_resize.push_back(val);
+        }
+      }
+      for (int hrep = 1; hrep < h_fac; ++hrep) {
+        raster_resize.insert(raster_resize.end(), raster_resize.end() - w_new, raster_resize.end());
+      }
+    }
+    raster = raster_resize.data();
+    w = w_new;
+    h = h_new;
+  }
+
+  png_image image;
+  memset(&image, 0, (sizeof image));
+  image.version = PNG_IMAGE_VERSION;
+  image.format = PNG_FORMAT_RGBA;
+  image.height = h;
+  image.width = w;
+
+  size_t length = 0;
+  // Get memory size
+  bool result = png_image_write_to_memory(&image, nullptr, &length, 0, raster, 0, nullptr);
+
+  // Real write to memory
+  std::vector<std::uint8_t> buffer;
+  buffer.reserve(length);
+  result = png_image_write_to_memory(&image, buffer.data(), &length, 0, raster, 0, nullptr);
+
+  return base64_encode(buffer.data(), length);
 }
 
 inline std::string find_alias_field(std::string& family, Rcpp::List& alias,
@@ -144,6 +236,27 @@ inline std::string fontfile(const char* family_, int face,
     family = "sans";
 
   return find_user_alias(family, user_aliases, face, "file");
+}
+
+inline std::pair<std::string, int> get_font_file(const char* family, int face, Rcpp::List user_aliases) {
+  const char* fontfamily = family;
+  if (is_symbol(face)) {
+    fontfamily = "symbol";
+  } else if (strcmp(family, "") == 0) {
+    fontfamily = "sans";
+  }
+  std::string alias = fontfile(family, face, user_aliases);
+  if (alias.size() > 0) {
+    return {alias, 0};
+  }
+
+  char *path = new char[PATH_MAX+1];
+  path[PATH_MAX] = '\0';
+  int index = locate_font(fontfamily, is_italic(face), is_bold(face), path, PATH_MAX);
+  std::pair<std::string, int> res {path, index};
+  delete[] path;
+
+  return res;
 }
 
 inline void write_escaped(SvgStreamPtr stream, const char* text) {
@@ -296,29 +409,22 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
                      double* descent, double* width, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  bool is_unicode = mbcslocale;
   if (c < 0) {
-    is_unicode = true;
     c = -c;
   }
 
-  // Convert to string - negative implies unicode code point
-  char str[16];
-  if (is_unicode) {
-    Rf_ucstoutf8(str, (unsigned int) c);
-  } else {
-    str[0] = (char) c;
-    str[1] = '\0';
+  std::pair<std::string, int> font = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
+
+  int error = glyph_metrics(c, font.first.c_str(), font.second, gc->ps * gc->cex, 1e5, ascent, descent, width);
+  if (error != 0) {
+    *ascent = 0;
+    *descent = 0;
+    *width = 0;
   }
-
-  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->user_aliases);
-  std::string name = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases);
-  gdtools::context_set_font(svgd->cc, name, gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface), file);
-  FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
-
-  *ascent = fm.ascent;
-  *descent = fm.descent;
-  *width = fm.width;
+  double mod = 72./1e5;
+  *ascent *= mod;
+  *descent *= mod;
+  *width *= mod;
 }
 
 void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
@@ -336,7 +442,8 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   s << std::fixed << std::setprecision(2);
   s << dbl_format(x0) << "|" << dbl_format(x1) << "|" <<
        dbl_format(y0) << "|" << dbl_format(y1);
-  std::string clipid = gdtools::base64_string_encode(s.str());
+  const std::uint8_t* buffer = reinterpret_cast<const std::uint8_t*>(s.str().data());
+  std::string clipid = base64_encode(buffer, s.str().size());
 
   svgd->clipid = clipid;
   svgd->clipx0 = x0;
@@ -511,12 +618,17 @@ void svg_path(double *x, double *y,
 double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->user_aliases);
-  std::string name = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases);
-  gdtools::context_set_font(svgd->cc, name, gc->cex * gc->ps, is_bold(gc->fontface), is_italic(gc->fontface), file);
-  FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
+  std::pair<std::string, int> font = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
 
-  return fm.width;
+  double width = 0.0;
+
+  int error = string_width(str, font.first.c_str(), font.second, gc->ps * gc->cex, 1e5, 1, &width);
+
+  if (error != 0) {
+    width = 0.0;
+  }
+
+  return width * 72. / 1e5;
 }
 
 void svg_rect(double x0, double y0, double x1, double y1,
@@ -597,10 +709,8 @@ void svg_text(double x, double y, const char *str, double rot,
   write_style_str(stream, "font-family", font.c_str());
   write_style_end(stream);
 
-  std::string file = fontfile(gc->fontfamily, gc->fontface, svgd->user_aliases);
-  gdtools::context_set_font(svgd->cc, font, fontsize, is_bold(gc->fontface), is_italic(gc->fontface), file);
-  FontMetric fm = gdtools::context_extents(svgd->cc, std::string(str));
-  (*stream) << " textLength='" << fm.width << "px'";
+  double width = svg_strwidth(str, gc, dd);
+  (*stream) << " textLength='" << width << "px'";
   (*stream) << " lengthAdjust='spacingAndGlyphs'";
   stream->put('>');
 
@@ -635,13 +745,7 @@ void svg_raster(unsigned int *raster, int w, int h,
   if (height < 0)
     height = -height;
 
-  std::vector<unsigned int> raster_(w*h);
-  for (std::vector<unsigned int>::size_type i = 0 ; i < raster_.size(); ++i) {
-    raster_[i] = raster[i] ;
-  }
-
-  std::string base64_str = gdtools::raster_to_str(raster_, w, h, width, height,
-    (Rboolean) interpolate);
+  std::string base64_str = raster_to_string(raster, w, h, width, height, interpolate);
 
   // If we specify the clip path inside <image>, the "transform" also
   // affects the clip path, so we need to specify clip path at an outer level
@@ -656,6 +760,10 @@ void svg_raster(unsigned int *raster, int w, int h,
   write_attr_dbl(stream, "height", height);
   write_attr_dbl(stream, "x", x);
   write_attr_dbl(stream, "y", y - height);
+  write_attr_str(stream, "preserveAspectRatio", "none");
+  if (!interpolate) {
+    write_attr_str(stream, "image-rendering", "pixelated");
+  }
 
   if( rot != 0 ){
     (*stream) << tfm::format(" transform='rotate(%0.0f,%.2f,%.2f)'", -1.0 * rot, x, y);

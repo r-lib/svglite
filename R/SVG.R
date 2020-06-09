@@ -58,7 +58,7 @@
 #' @keywords device
 #' @useDynLib svglite
 #' @importFrom Rcpp sourceCpp
-#' @importFrom gdtools raster_view
+#' @importFrom systemfonts match_font
 #' @export
 svglite <- function(file = "Rplots.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,
