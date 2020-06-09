@@ -386,7 +386,7 @@ BEGIN_RCPP
     //http://www.w3.org/wiki/SVG_Links
     (*stream) << " xmlns:xlink='http://www.w3.org/1999/xlink'";
   }
-
+  (*stream) << " width='" << dd->right << "pt' height='" << dd->bottom << "pt'";
   (*stream) << " viewBox='0 0 " << dd->right << ' ' << dd->bottom << "'>\n";
 
   // Initialise clipping the same way R does

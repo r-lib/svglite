@@ -1,5 +1,7 @@
 # svglite (development version)
 
+* Dimensions are now encoded into the top-level `<svg>` tag (#90)
+
 * Opening a new graphics device creates a new file if the filename supports it (#98, @vandenman).
 
 # svglite 1.2.3
