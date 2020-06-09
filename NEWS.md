@@ -1,6 +1,9 @@
 # svglite (development version)
 
-* Opening a new graphics device creates a new file if the filename supports it (#98, @vandenman).
+* Opening a new graphics device creates a new file if the filename supports it 
+  (#98, @vandenman).
+* SVG's can now get a top-level id so that style definitions doesn't spill into 
+  the surrounding HTML (#91)
 
 # svglite 1.2.3
 
