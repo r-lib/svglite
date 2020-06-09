@@ -129,10 +129,9 @@ all point sizes directly as big points (e.g. the `ps` graphical
 parameter and the `fontsize` argument of device functions). The
 default font size is 12pt.
 
-Text metrics are computed by Cairo thanks to David Gohel's gdtools
-package. gdtools instantiates a PDF Cairo surface scaled in big
-points. When svglite needs to compute metrics for a string of text, it
-supplies the current scaled font size to Cairo: `cex * ps`.
+Text metrics are computed by systemfonts, which uses freetype to extract metrics 
+for each glyph and calculate string dimensions from that. Text metrics are 
+calculated at 1000dpi based on `cex * ps` font size.
 
 The Base graphics system also makes use of the obscure `cra` parameter
 and its relatives (`cin`, `cxy`, and `csi`). `cra` serves as a crude
