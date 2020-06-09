@@ -13,6 +13,7 @@ svglite(
   standalone = TRUE,
   system_fonts = list(),
   user_fonts = list(),
+  id = NULL,
   file
 )
 }
@@ -41,6 +42,10 @@ strings containing a path to a font file, or a list containing
 \code{name} and \code{file} elements with \code{name} indicating
 the font alias in the SVG output and \code{file} the path to a
 font file.}
+
+\item{id}{A character vector of ids to assign to the generated SVG's. If
+creating more SVG files than supplied ids the exceeding SVG's will not have
+an id tag and a warning will be thrown.}
 
 \item{file}{Identical to `filename`. Provided for backward compatibility.}
 }

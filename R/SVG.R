@@ -31,6 +31,9 @@
 #'   \code{name} and \code{file} elements with \code{name} indicating
 #'   the font alias in the SVG output and \code{file} the path to a
 #'   font file.
+#' @param id A character vector of ids to assign to the generated SVG's. If
+#'   creating more SVG files than supplied ids the exceeding SVG's will not have
+#'   an id tag and a warning will be thrown.
 #' @param file Identical to `filename`. Provided for backward compatibility.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
 #'   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
@@ -63,14 +66,18 @@
 #' @export
 svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,
-                    system_fonts = list(), user_fonts = list(), file) {
+                    system_fonts = list(), user_fonts = list(), id = NULL, file) {
   if (!missing(file)) {
     filename <- file
   }
   if (invalid_filename(filename))
     stop("invalid 'file': ", filename)
   aliases <- validate_aliases(system_fonts, user_fonts)
-  invisible(svglite_(filename, bg, width, height, pointsize, standalone, aliases))
+  if (is.null(id)) {
+    id <- character(0)
+  }
+  id <- as.character(id)
+  invisible(svglite_(filename, bg, width, height, pointsize, standalone, aliases, id))
 }
 
 #' Access current SVG as a string.
@@ -98,12 +105,16 @@ svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
 #' @export
 svgstring <- function(width = 10, height = 8, bg = "white",
                       pointsize = 12, standalone = TRUE,
-                      system_fonts = list(), user_fonts = list()) {
+                      system_fonts = list(), user_fonts = list(), id = NULL) {
   aliases <- validate_aliases(system_fonts, user_fonts)
+  if (is.null(id)) {
+    id <- character(0)
+  }
+  id <- as.character(id)
 
   env <- new.env(parent = emptyenv())
   string_src <- svgstring_(env, width = width, height = height, bg = bg,
-    pointsize = pointsize, standalone = standalone, aliases = aliases)
+    pointsize = pointsize, standalone = standalone, aliases = aliases, id = id)
 
   function() {
     svgstr <- env$svg_string

@@ -41,9 +41,10 @@ public:
   const std::string file;
   Rcpp::List system_aliases;
   Rcpp::List user_aliases;
+  Rcpp::CharacterVector ids;
   XPtrCairoContext cc;
 
-  SVGDesc(SvgStreamPtr stream_, bool standalone_, Rcpp::List aliases_, const std::string& file_):
+  SVGDesc(SvgStreamPtr stream_, bool standalone_, Rcpp::List aliases_, const std::string& file_, CharacterVector ids_):
       stream(stream_),
       pageno(0),
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
@@ -51,6 +52,7 @@ public:
       file(file_),
       system_aliases(Rcpp::wrap(aliases_["system"])),
       user_aliases(Rcpp::wrap(aliases_["user"])),
+      ids(ids_),
       cc(gdtools::context_create()) {
   }
 
@@ -300,6 +302,19 @@ inline void write_style_linetype(SvgStreamPtr stream, const pGEcontext gc, bool 
   }
 }
 
+std::string get_id(SVGDesc *svgd) {
+  if (svgd->ids.size() == 0) {
+    return "";
+  }
+  if (svgd->ids.size() == 1) {
+    return std::string(svgd->ids[0]);
+  }
+  if (svgd->pageno >= svgd->ids.size()) {
+    Rf_warning("No id supplied for page no %i", svgd->pageno + 1);
+    return "";
+  }
+  return std::string(svgd->ids[svgd->pageno]);
+}
 
 // Callback functions for graphics device --------------------------------------
 
@@ -370,6 +385,15 @@ BEGIN_RCPP
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
 
+  std::string id = get_id(svgd);
+  bool has_id = id.size() > 0;
+  std::string selector;
+  if (has_id) {
+    selector = "#" + id + " line, #" + id + " polyline, #" + id + " polygon, #" + id + " path, #" + id + " rect, #" + id + " circle";
+  } else {
+    selector = "line, polyline, polygon, path, rect, circle";
+  }
+
   if (svgd->pageno > 0) {
 
     // close existing file, create a new one, and update stream
@@ -386,7 +410,12 @@ BEGIN_RCPP
     //http://www.w3.org/wiki/SVG_Links
     (*stream) << " xmlns:xlink='http://www.w3.org/1999/xlink'";
   }
+  
+  if (has_id)
+    (*stream) << " id='" << id << "'";
+
   (*stream) << " width='" << dd->right << "pt' height='" << dd->bottom << "pt'";
+
   (*stream) << " viewBox='0 0 " << dd->right << ' ' << dd->bottom << "'>\n";
 
   // Initialise clipping the same way R does
@@ -398,7 +427,7 @@ BEGIN_RCPP
   // Setting default styles
   (*stream) << "<defs>\n";
   (*stream) << "  <style type='text/css'><![CDATA[\n";
-  (*stream) << "    line, polyline, polygon, path, rect, circle {\n";
+  (*stream) << "    " << selector << " {\n";
   (*stream) << "      fill: none;\n";
   (*stream) << "      stroke: #000000;\n";
   (*stream) << "      stroke-linecap: round;\n";
@@ -689,7 +718,7 @@ void svg_raster(unsigned int *raster, int w, int h,
 pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
                         double height, double pointsize,
                         bool standalone, Rcpp::List& aliases,
-                        const std::string& file) {
+                        const std::string& file, Rcpp::CharacterVector id) {
 
   pDevDesc dd = (DevDesc*) calloc(1, sizeof(DevDesc));
   if (dd == NULL)
@@ -754,13 +783,13 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->haveTransparency = 2;
   dd->haveTransparentBg = 2;
 
-  dd->deviceSpecific = new SVGDesc(stream, standalone, aliases, file);
+  dd->deviceSpecific = new SVGDesc(stream, standalone, aliases, file, id);
   return dd;
 }
 
 void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double height,
                 double pointsize, bool standalone, Rcpp::List& aliases,
-                const std::string& file) {
+                const std::string& file, Rcpp::CharacterVector id) {
 
   int bg = R_GE_str2col(bg_.c_str());
 
@@ -768,7 +797,7 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
   R_CheckDeviceAvailable();
   BEGIN_SUSPEND_INTERRUPTS {
     pDevDesc dev = svg_driver_new(stream, bg, width, height, pointsize,
-                                  standalone, aliases, file);
+                                  standalone, aliases, file, id);
     if (dev == NULL)
       Rcpp::stop("Failed to start SVG device");
 
@@ -781,10 +810,11 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
 
 // [[Rcpp::export]]
 bool svglite_(std::string file, std::string bg, double width, double height,
-              double pointsize, bool standalone, Rcpp::List aliases) {
+              double pointsize, bool standalone, Rcpp::List aliases,
+              Rcpp::CharacterVector id) {
 
   SvgStreamPtr stream(new SvgStreamFile(file, 1));
-  makeDevice(stream, bg, width, height, pointsize, standalone, aliases, file);
+  makeDevice(stream, bg, width, height, pointsize, standalone, aliases, file, id);
 
   return true;
 }
@@ -792,10 +822,11 @@ bool svglite_(std::string file, std::string bg, double width, double height,
 // [[Rcpp::export]]
 Rcpp::XPtr<std::stringstream> svgstring_(Rcpp::Environment env, std::string bg,
                                          double width, double height, double pointsize,
-                                         bool standalone, Rcpp::List aliases) {
+                                         bool standalone, Rcpp::List aliases,
+                                         Rcpp::CharacterVector id) {
 
   SvgStreamPtr stream(new SvgStreamString(env));
-  makeDevice(stream, bg, width, height, pointsize, standalone, aliases, "");
+  makeDevice(stream, bg, width, height, pointsize, standalone, aliases, "", id);
 
   SvgStreamString* strstream = static_cast<SvgStreamString*>(stream.get());
 
