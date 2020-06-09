@@ -1,5 +1,11 @@
 # svglite (development version)
 
+* svglite now uses systemfonts for text metric calculations and font family 
+  lookup.
+* svglite now directly encodes raster data into png instead of rendering it 
+  through cairo. If the provided raster is smaller than the final requested size
+  it will be resized.
+
 # svglite 1.2.3
 
 * The radius of circles is no longer expressed in pt (#93, @vandenman).
