@@ -13,7 +13,7 @@
 #' used to create the svg, and the computer used to render the
 #' svg. See the \code{fonts} vignette for more information.
 #'
-#' @param file The file where output will appear.
+#' @param filename The file where output will appear.
 #' @param height,width Height and width in inches.
 #' @param bg Default background color for the plot (defaults to "white").
 #' @param pointsize Default point size.
@@ -34,6 +34,7 @@
 #' @param id A character vector of ids to assign to the generated SVG's. If
 #'   creating more SVG files than supplied ids the exceeding SVG's will not have
 #'   an id tag and a warning will be thrown.
+#' @param file Identical to `filename`. Provided for backward compatibility.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
 #'   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
 #' @author This driver was written by T Jake Luciani
@@ -63,17 +64,20 @@
 #' @importFrom Rcpp sourceCpp
 #' @importFrom gdtools raster_view
 #' @export
-svglite <- function(file = "Rplots.svg", width = 10, height = 8,
+svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,
-                    system_fonts = list(), user_fonts = list(), id = NULL) {
-  if (invalid_filename(file))
-    stop("invalid 'file': ", file)
+                    system_fonts = list(), user_fonts = list(), id = NULL, file) {
+  if (!missing(file)) {
+    filename <- file
+  }
+  if (invalid_filename(filename))
+    stop("invalid 'file': ", filename)
   aliases <- validate_aliases(system_fonts, user_fonts)
   if (is.null(id)) {
     id <- character(0)
   }
   id <- as.character(id)
-  invisible(svglite_(file, bg, width, height, pointsize, standalone, aliases, id))
+  invisible(svglite_(filename, bg, width, height, pointsize, standalone, aliases, id))
 }
 
 #' Access current SVG as a string.
@@ -113,7 +117,10 @@ svgstring <- function(width = 10, height = 8, bg = "white",
     pointsize = pointsize, standalone = standalone, aliases = aliases, id = id)
 
   function() {
-    svgstr <- if(env$is_closed) env$svg_string else get_svg_content(string_src)
+    svgstr <- env$svg_string
+    if(!env$is_closed) {
+      svgstr <- c(svgstr, get_svg_content(string_src))
+    }
     structure(svgstr, class = "svg")
   }
 }

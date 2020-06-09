@@ -5,7 +5,7 @@
 \title{An SVG Graphics Driver}
 \usage{
 svglite(
-  file = "Rplots.svg",
+  filename = "Rplot\%03d.svg",
   width = 10,
   height = 8,
   bg = "white",
@@ -13,11 +13,12 @@ svglite(
   standalone = TRUE,
   system_fonts = list(),
   user_fonts = list(),
-  id = NULL
+  id = NULL,
+  file
 )
 }
 \arguments{
-\item{file}{The file where output will appear.}
+\item{filename}{The file where output will appear.}
 
 \item{height, width}{Height and width in inches.}
 
@@ -45,6 +46,8 @@ font file.}
 \item{id}{A character vector of ids to assign to the generated SVG's. If
 creating more SVG files than supplied ids the exceeding SVG's will not have
 an id tag and a warning will be thrown.}
+
+\item{file}{Identical to `filename`. Provided for backward compatibility.}
 }
 \description{
 This function produces graphics compliant to the current w3 svg XML

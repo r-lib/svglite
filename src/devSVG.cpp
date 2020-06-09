@@ -57,7 +57,7 @@ public:
   }
 
   void nextFile() {
-    stream->finish();
+    stream->finish(false);
     if (typeid(*stream) == typeid(SvgStreamFile)) {
       SvgStreamPtr newStream(new SvgStreamFile(file, pageno + 1));
       stream = newStream;
@@ -454,7 +454,7 @@ VOID_END_RCPP
 
 void svg_close(pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  svgd->stream->finish();
+  svgd->stream->finish(true);
   delete(svgd);
 }
 
