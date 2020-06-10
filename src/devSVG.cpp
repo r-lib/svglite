@@ -47,7 +47,7 @@ public:
   Rcpp::List user_aliases;
   Rcpp::CharacterVector ids;
 
-  SVGDesc(SvgStreamPtr stream_, bool standalone_, Rcpp::List aliases_, const std::string& file_, CharacterVector ids_):
+  SVGDesc(SvgStreamPtr stream_, bool standalone_, Rcpp::List aliases_, const std::string& file_, Rcpp::CharacterVector ids_):
       stream(stream_),
       pageno(0),
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
@@ -518,7 +518,7 @@ BEGIN_RCPP
     //http://www.w3.org/wiki/SVG_Links
     (*stream) << " xmlns:xlink='http://www.w3.org/1999/xlink'";
   }
-  
+
   if (has_id)
     (*stream) << " id='" << id << "'";
 
