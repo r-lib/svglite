@@ -54,9 +54,8 @@ public:
       standalone(standalone_),
       file(file_),
       system_aliases(Rcpp::wrap(aliases_["system"])),
-      user_aliases(Rcpp::wrap(aliases_["user"])) {
       user_aliases(Rcpp::wrap(aliases_["user"])),
-      ids(ids_)
+      ids(ids_) {
   }
 
   void nextFile() {
