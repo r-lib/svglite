@@ -31,3 +31,4 @@ if (require("xml2")) {
   xml_find_all(x, ".//text")
 }
 }
+\keyword{internal}

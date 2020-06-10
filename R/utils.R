@@ -4,7 +4,7 @@ mini_plot <- function(...) graphics::plot(..., axes = FALSE, xlab = "", ylab = "
 plot_dim <- function(dim = c(NA, NA)) {
   if (any(is.na(dim))) {
     if (length(grDevices::dev.list()) == 0) {
-      default_dim <- c(7, 7)
+      default_dim <- c(10, 8)
     } else {
       default_dim <- grDevices::dev.size()
     }
