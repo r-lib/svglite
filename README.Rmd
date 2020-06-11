@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 [![R build status](https://github.com/r-lib/svglite/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/svglite/actions) [![Codecov test coverage](https://codecov.io/gh/r-lib/svglite/branch/master/graph/badge.svg)](https://codecov.io/gh/r-lib/svglite?branch=master) [![CRAN Status Badge](http://www.r-pkg.org/badges/version/svglite)](https://cran.r-project.org/package=svglite) <!-- badges: end -->
 
-svglite is a graphics device that produces clean svg output, suitable for use on the web, or hand editing. Compared to the built-in `svg()`, svglite is considerably faster, produces smaller files, and leaves text as is.
+svglite is a graphics device that produces clean svg output, suitable for use on the web, or hand editing. Compared to the built-in `svg()`, svglite produces smaller files, and leaves text as is.
 
 ## Installation
 
@@ -32,29 +32,31 @@ devtools::install_github("r-lib/svglite")
 
 ## Benchmarks
 
-Compared to the base svg device, svglite is quite a bit faster:
+While the performance of `svglite()` and `svg()` is comparable (with a slight upper hand to svglite)
 
-```{r}
+```{r, message=FALSE}
 library(svglite)
+
 x <- runif(1e3)
 y <- runif(1e3)
-
 tmp1 <- tempfile()
 tmp2 <- tempfile()
-system.time({
+
+svglite_test <- function() {
   svglite(tmp1)
   plot(x, y)
   dev.off()
-})
-
-system.time({
+}
+svg_test <- function() {
   svg(tmp2, onefile = TRUE)
   plot(x, y)
   dev.off()
-})
+}
+
+plot(bench::mark(svglite_test(), svg_test()), type = 'ridge')
 ```
 
-It also produces considerably smaller files:
+It produces considerably smaller files:
 
 ```{r}
 file.size(tmp1) / 1024
