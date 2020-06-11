@@ -18,3 +18,4 @@ alternative to \code{\link{svgstring}()}.
 \examples{
 stringSVG(plot(1:10))
 }
+\keyword{internal}

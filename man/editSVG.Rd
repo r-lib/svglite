@@ -24,3 +24,4 @@ if (interactive()) {
   editSVG(contour(volcano))
 }
 }
+\keyword{internal}

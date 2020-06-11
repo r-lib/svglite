@@ -5,6 +5,7 @@
 #'
 #' @param code Plotting code to execute.
 #' @param ... Other arguments passed on to \code{\link{svglite}}.
+#' @keywords internal
 #' @export
 #' @examples
 #' if (require("htmltools")) {
@@ -25,6 +26,7 @@ htmlSVG <- function(code, ...) {
 #' @return A \code{xml2::xml_document} object.
 #' @inheritParams htmlSVG
 #' @inheritParams svglite
+#' @keywords internal
 #' @export
 #' @examples
 #' if (require("xml2")) {
@@ -47,6 +49,7 @@ xmlSVG <- function(code, ..., standalone = FALSE, height = 7, width = 7) {
 #'
 #' @inheritParams htmlSVG
 #' @inheritParams svglite
+#' @keywords internal
 #' @export
 #' @examples
 #' if (interactive()) {
@@ -71,6 +74,7 @@ editSVG <- function(code, ..., width = NA, height = NA) {
 #' alternative to \code{\link{svgstring}()}.
 #'
 #' @inheritParams htmlSVG
+#' @keywords internal
 #' @export
 #' @examples
 #' stringSVG(plot(1:10))

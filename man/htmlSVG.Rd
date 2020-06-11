@@ -21,3 +21,4 @@ if (require("htmltools")) {
   htmlSVG(hist(rnorm(100)))
 }
 }
+\keyword{internal}
