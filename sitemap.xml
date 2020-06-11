@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://svglite.r-lib.org/index.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/reference/editSVG.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/reference/htmlSVG.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/reference/stringSVG.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/reference/svglite.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/reference/svgstring.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/reference/xmlSVG.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/articles/fonts.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/articles/releases/svglite-1.2.0.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/articles/scaling.html</loc>
+  </url>
+</urlset>
