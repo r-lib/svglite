@@ -1,0 +1,12 @@
+PKG_CPPFLAGS = -I../windows/baselibs-3.5.0/include \
+	-DSTRICT_R_HEADERS
+
+PKG_LIBS = -L../windows/baselibs-3.5.0/lib${R_ARCH} -lpng
+
+all: clean winlibs
+
+winlibs:
+	"${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" "../tools/winlibs.R" ${VERSION}
+
+clean:
+	rm -f $(OBJECTS)
