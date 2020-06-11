@@ -3,7 +3,7 @@ RWINLIB = ../windows/baselibs-3.5.0
 PKG_CPPFLAGS = -I${RWINLIB}/include \
 	-DSTRICT_R_HEADERS
 
-PKG_LIBS = -L${RWINLIB}/lib${R_ARCH} -lpng
+PKG_LIBS = -L${RWINLIB}/lib${R_ARCH} -lpng -lz
 
 all: clean winlibs
 
