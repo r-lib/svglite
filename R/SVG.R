@@ -23,7 +23,7 @@
 #'   fonts installed on your system. If unspecified, the R default
 #'   families \code{sans}, \code{serif}, \code{mono} and \code{symbol}
 #'   are aliased to the family returned by
-#'   \code{\link[gdtools]{match_family}()}.
+#'   \code{\link[systemfonts]{font_info}()}.
 #' @param user_fonts Named list of fonts to be aliased with font files
 #'   provided by the user rather than fonts properly installed on the
 #'   system. The aliases can be fonts from the fontquiver package,
@@ -48,7 +48,7 @@
 #' dev.off()
 #'
 #' # Supply system font aliases. First check the font can be located:
-#' gdtools::match_family("Verdana")
+#' systemfonts::match_font("Verdana")
 #'
 #' # Then supply a list of aliases:
 #' fonts <- list(sans = "Verdana", mono = "Times New Roman")
@@ -62,7 +62,7 @@
 #' @keywords device
 #' @useDynLib svglite
 #' @importFrom Rcpp sourceCpp
-#' @importFrom gdtools raster_view
+#' @importFrom systemfonts match_font
 #' @export
 svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,

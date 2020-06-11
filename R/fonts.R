@@ -18,6 +18,11 @@ alias_lookup <- function() {
   )
 }
 
+#' @importFrom systemfonts font_info
+match_family <- function(font, bold = FALSE, italic = FALSE) {
+  font_info(font, bold = bold, italic = italic)$family[1]
+}
+
 validate_aliases <- function(system_fonts, user_fonts) {
   system_fonts <- compact(lapply(system_fonts, compact))
   user_fonts <- compact(lapply(user_fonts, compact))
@@ -32,7 +37,7 @@ validate_aliases <- function(system_fonts, user_fonts) {
 
   # Add missing system fonts for base families
   missing_aliases <- setdiff(r_font_families, aliases)
-  system_fonts[missing_aliases] <- lapply(alias_lookup()[missing_aliases], gdtools::match_family)
+  system_fonts[missing_aliases] <- lapply(alias_lookup()[missing_aliases], match_family)
 
   list(
     system = system_fonts,
@@ -45,7 +50,7 @@ validate_system_alias <- function(alias) {
     stop("System fonts must be scalar character vector", call. = FALSE)
   }
 
-  matched <- gdtools::match_family(alias)
+  matched <- match_family(alias)
   if (alias != matched) {
     warning(call. = FALSE,
       "System font `", alias, "` not found. ",

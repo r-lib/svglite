@@ -1,5 +1,12 @@
 # svglite (development version)
 
+* svglite now uses systemfonts for text metric calculations and font family 
+  lookup.
+  
+* svglite now directly encodes raster data into png instead of rendering it 
+  through cairo. If the provided raster is smaller than the final requested size
+  it will be resized.
+  
 * SVG's can now get a top-level id so that style definitions doesn't spill into 
   the surrounding HTML (#91)
   

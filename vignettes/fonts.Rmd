@@ -158,25 +158,13 @@ dev.off()
 
 ## Debugging font matching
 
-The C library Fontconfig is used as backend to find fonts installed on
-the system. Fontconfig is the standard interface to system fonts on
-Linux systems. It is also provided on macOS alongside the X11 graphics
-system and comes with R on Windows. A warning is issued if Fontconfig
-cannot find a system font. The gdtools package provides tools in case
-you have trouble with a particular font:
+The systemfonts package is used to match font family names to fonts installed on
+the system. systemfonts will always return a valid font, but if the requested 
+font is badly misspelled or missing, a default will be returned. To test if the 
+expected font is matched you can use the `match_font()` and `font_info()` 
+functions from systemfonts:
 
-```{r, eval=FALSE}
-gdtools::match_family("Helvetica")
-gdtools::match_font("Helvetica", bold = TRUE)
+```{r}
+systemfonts::match_font("Helvetica")
+systemfonts::font_info("Helvetica", bold = TRUE)
 ```
-
-Sometimes Fontconfig cannot find a font because it is not configured
-correctly. Use the `debug` argument to find out which configuration
-files Fontconfig is currently using:
-
-```{r, eval=FALSE}
-gdtools::match_family("Helvetica", debug = "config")
-```
-
-See <https://www.freedesktop.org/software/fontconfig/fontconfig-user.html>
-for more information on configuring Fontconfig.
