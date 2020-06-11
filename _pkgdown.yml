@@ -1,0 +1,10 @@
+destination: docs
+url: https://svglite.r-lib.org
+
+authors:
+  Thomas Lin Pedersen:
+    href: https://data-imaginist.com
+
+template:
+  params:
+    ganalytics: UA-115082821-1

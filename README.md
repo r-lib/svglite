@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# svglite
+# svglite <a href='https://svglite.r-lib.org'><img src='man/figures/logo.png' align="right" height="131.5" /></a>
 
 <!-- badges: start -->
 
@@ -60,9 +60,9 @@ It produces considerably smaller files:
 
 ``` r
 file.size(tmp1) / 1024
-#> [1] 131.6211
+#> [1] 131.6777
 file.size(tmp2) / 1024
-#> [1] 320.8945
+#> [1] 320.7891
 ```
 
 In both cases, compressing to make `.svgz` is worthwhile:
@@ -76,7 +76,7 @@ gz <- function(in_path, out_path = tempfile()) {
   invisible(out_path)
 }
 file.size(gz(tmp1)) / 1024
-#> [1] 9.898438
+#> [1] 9.964844
 file.size(gz(tmp2)) / 1024
-#> [1] 38.61914
+#> [1] 38.52051
 ```
