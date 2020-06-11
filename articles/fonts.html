@@ -199,12 +199,22 @@
 <div id="debugging-font-matching" class="section level2">
 <h2 class="hasAnchor">
 <a href="#debugging-font-matching" class="anchor"></a>Debugging font matching</h2>
-<p>The C library Fontconfig is used as backend to find fonts installed on the system. Fontconfig is the standard interface to system fonts on Linux systems. It is also provided on macOS alongside the X11 graphics system and comes with R on Windows. A warning is issued if Fontconfig cannot find a system font. The gdtools package provides tools in case you have trouble with a particular font:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="kw pkg">gdtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/gdtools/man/match_family.html">match_family</a></span>(<span class="st">"Helvetica"</span>)
-<span class="kw pkg">gdtools</span><span class="kw ns">::</span><span class="fu">match_font</span>(<span class="st">"Helvetica"</span>, <span class="kw">bold</span> <span class="kw">=</span> <span class="fl">TRUE</span>)</pre></body></html></div>
-<p>Sometimes Fontconfig cannot find a font because it is not configured correctly. Use the <code>debug</code> argument to find out which configuration files Fontconfig is currently using:</p>
-<div class="sourceCode" id="cb7"><html><body><pre class="r"><span class="kw pkg">gdtools</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/gdtools/man/match_family.html">match_family</a></span>(<span class="st">"Helvetica"</span>, <span class="kw">debug</span> <span class="kw">=</span> <span class="st">"config"</span>)</pre></body></html></div>
-<p>See <a href="https://www.freedesktop.org/software/fontconfig/fontconfig-user.html" class="uri">https://www.freedesktop.org/software/fontconfig/fontconfig-user.html</a> for more information on configuring Fontconfig.</p>
+<p>The systemfonts package is used to match font family names to fonts installed on the system. systemfonts will always return a valid font, but if the requested font is badly misspelled or missing, a default will be returned. To test if the expected font is matched you can use the <code>match_font()</code> and <code>font_info()</code> functions from systemfonts:</p>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="kw pkg">systemfonts</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/systemfonts/man/match_font.html">match_font</a></span>(<span class="st">"Helvetica"</span>)
+<span class="co">#&gt; $path</span>
+<span class="co">#&gt; [1] "/System/Library/Fonts/Helvetica.ttc"</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $index</span>
+<span class="co">#&gt; [1] 0</span>
+<span class="kw pkg">systemfonts</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/systemfonts/man/font_info.html">font_info</a></span>(<span class="st">"Helvetica"</span>, <span class="kw">bold</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
+<span class="co">#&gt;                                  path index    family style italic bold</span>
+<span class="co">#&gt; 1 /System/Library/Fonts/Helvetica.ttc     1 Helvetica  Bold  FALSE TRUE</span>
+<span class="co">#&gt;   monospace kerning color scalable vertical n_glyphs n_sizes n_charmaps</span>
+<span class="co">#&gt; 1     FALSE   FALSE FALSE     TRUE    FALSE     2252       0         10</span>
+<span class="co">#&gt;                                          bbox max_ascend max_descend</span>
+<span class="co">#&gt; 1 -12.218750, 17.234375, -5.765625, 13.906250   9.234375   -2.765625</span>
+<span class="co">#&gt;   max_advance_width max_advance_height lineheight underline_pos underline_size</span>
+<span class="co">#&gt; 1                18                 12         12     -1.203125        0.59375</span></pre></body></html></div>
 </div>
   </div>
 

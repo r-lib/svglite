@@ -183,7 +183,7 @@ xml header and default namespace.</p></td>
 fonts installed on your system. If unspecified, the R default
 families <code>sans</code>, <code>serif</code>, <code>mono</code> and <code>symbol</code>
 are aliased to the family returned by
-<code><a href='https://rdrr.io/pkg/gdtools/man/match_family.html'>match_family</a>()</code>.</p></td>
+<code><a href='https://rdrr.io/pkg/systemfonts/man/font_info.html'>font_info</a>()</code>.</p></td>
     </tr>
     <tr>
       <th>user_fonts</th>
@@ -238,7 +238,12 @@ svg. See the <code>fonts</code> vignette for more information.</p>
 <span class='fu'><a href='https://rdrr.io/r/grDevices/dev.html'>dev.off</a></span>()</div><div class='output co'>#&gt; pdf 
 #&gt;   2 </div><div class='input'>
 <span class='co'># Supply system font aliases. First check the font can be located:</span>
-<span class='kw pkg'>gdtools</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/gdtools/man/match_family.html'>match_family</a></span>(<span class='st'>"Verdana"</span>)</div><div class='output co'>#&gt; [1] "Verdana"</div><div class='input'>
+<span class='kw pkg'>systemfonts</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/systemfonts/man/match_font.html'>match_font</a></span>(<span class='st'>"Verdana"</span>)</div><div class='output co'>#&gt; $path
+#&gt; [1] "/System/Library/Fonts/Supplemental/Verdana.ttf"
+#&gt; 
+#&gt; $index
+#&gt; [1] 0
+#&gt; </div><div class='input'>
 <span class='co'># Then supply a list of aliases:</span>
 <span class='no'>fonts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>sans</span> <span class='kw'>=</span> <span class='st'>"Verdana"</span>, <span class='kw'>mono</span> <span class='kw'>=</span> <span class='st'>"Times New Roman"</span>)
 <span class='fu'>svglite</span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='st'>"Rplots.svg"</span>), <span class='kw'>system_fonts</span> <span class='kw'>=</span> <span class='no'>fonts</span>)
