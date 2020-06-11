@@ -125,6 +125,10 @@ inline std::string base64_encode(const std::uint8_t* buffer, size_t size) {
   return encoded_string;
 }
 
+static void png_memory_write(png_structp  png_ptr, png_bytep data, png_size_t length) {
+  std::vector<uint8_t> *p = (std::vector<uint8_t>*)png_get_io_ptr(png_ptr);
+  p->insert(p->end(), data, data + length);
+}
 inline std::string raster_to_string(unsigned int *raster, int w, int h, double width, double height, bool interpolate) {
   h = h < 0 ? -h : h;
   w = w < 0 ? -w : w;
@@ -161,23 +165,38 @@ inline std::string raster_to_string(unsigned int *raster, int w, int h, double w
     h = h_new;
   }
 
-  png_image image;
-  memset(&image, 0, (sizeof image));
-  image.version = PNG_IMAGE_VERSION;
-  image.format = PNG_FORMAT_RGBA;
-  image.height = h;
-  image.width = w;
+  png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+  if (!png) {
+    return "";
+  }
+  png_infop info = png_create_info_struct(png);
+  if (!info) {
+    return "";
+  }
+  if (setjmp(png_jmpbuf(png))) {
+    return "";
+  }
+  png_set_IHDR(
+    png,
+    info,
+    w, h,
+    8,
+    PNG_COLOR_TYPE_RGBA,
+    PNG_INTERLACE_NONE,
+    PNG_COMPRESSION_TYPE_DEFAULT,
+    PNG_FILTER_TYPE_DEFAULT
+  );
+  std::vector<uint8_t*> rows(h);
+  for (int y = 0; y < h; ++y) {
+    rows[y] = (uint8_t*)raster + y * w * 4;
+  }
 
-  size_t length = 0;
-  // Get memory size
-  bool result = png_image_write_to_memory(&image, nullptr, &length, 0, raster, 0, nullptr);
-
-  // Real write to memory
   std::vector<std::uint8_t> buffer;
-  buffer.reserve(length);
-  result = png_image_write_to_memory(&image, buffer.data(), &length, 0, raster, 0, nullptr);
+  png_set_rows(png, info, &rows[0]);
+  png_set_write_fn(png, &buffer, png_memory_write, NULL);
+  png_write_png(png, info, PNG_TRANSFORM_IDENTITY, NULL);
 
-  return base64_encode(buffer.data(), length);
+  return base64_encode(buffer.data(), buffer.size());
 }
 
 inline std::string find_alias_field(std::string& family, Rcpp::List& alias,
