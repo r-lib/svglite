@@ -21,7 +21,7 @@
 #include <string>
 #include <iomanip>
 #include <sstream>
-#include <boost/shared_ptr.hpp>
+#include <memory>
 #include <R_ext/GraphicsEngine.h>
 
 extern "C" {
@@ -31,7 +31,7 @@ extern "C" {
 #include "SvgStream.h"
 #include "utils.h"
 
-typedef boost::shared_ptr<SvgStream> SvgStreamPtr;
+typedef std::shared_ptr<SvgStream> SvgStreamPtr;
 
 // SVG device metadata
 class SVGDesc {
