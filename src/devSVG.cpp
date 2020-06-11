@@ -386,13 +386,6 @@ BEGIN_RCPP
   SvgStreamPtr stream = svgd->stream;
 
   std::string id = get_id(svgd);
-  bool has_id = id.size() > 0;
-  std::string selector;
-  if (has_id) {
-    selector = "#" + id + " line, #" + id + " polyline, #" + id + " polygon, #" + id + " path, #" + id + " rect, #" + id + " circle";
-  } else {
-    selector = "line, polyline, polygon, path, rect, circle";
-  }
 
   if (svgd->pageno > 0) {
 
@@ -411,8 +404,10 @@ BEGIN_RCPP
     (*stream) << " xmlns:xlink='http://www.w3.org/1999/xlink'";
   }
 
-  if (has_id)
+  if (id.size() > 0)
     (*stream) << " id='" << id << "'";
+
+  (*stream) << " class='svglite'";
 
   (*stream) << " width='" << dd->right << "pt' height='" << dd->bottom << "pt'";
 
@@ -427,7 +422,7 @@ BEGIN_RCPP
   // Setting default styles
   (*stream) << "<defs>\n";
   (*stream) << "  <style type='text/css'><![CDATA[\n";
-  (*stream) << "    " << selector << " {\n";
+  (*stream) << "    .svglite line, .svglite polyline, .svglite polygon, .svglite path, . svglite rect, .svglite circle {\n";
   (*stream) << "      fill: none;\n";
   (*stream) << "      stroke: #000000;\n";
   (*stream) << "      stroke-linecap: round;\n";
