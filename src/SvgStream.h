@@ -21,6 +21,7 @@ void write_double(T& stream, double data) {
 
 class SvgStream {
   std::unordered_set<std::string> clip_ids;
+  bool clipping = false;
 
   public:
 
@@ -28,11 +29,14 @@ class SvgStream {
     return clip_ids.find(id) != clip_ids.end();
   }
   void add_clip_id(std::string id) {
+    clipping = true;
     clip_ids.insert(id);
   }
   void clear_clip_ids() {
+    clipping = false;
     clip_ids.clear();
   }
+  bool is_clipping() {return clipping;}
 
   virtual ~SvgStream() {};
 
@@ -104,6 +108,9 @@ public:
   }
 
   void finish(bool close) {
+    if (is_clipping()) {
+      stream_ << "</g>\n";
+    }
     stream_ << "</svg>\n";
     stream_.flush();
     clear_clip_ids();
@@ -146,6 +153,9 @@ public:
     // If the current svg is empty, we also make the string empty
     // Otherwise append "</svg>" to make it a valid SVG
     if(!svgstr.empty()) {
+      if (is_clipping()) {
+        svgstr.append("</g>");
+      }
       svgstr.append("</svg>");
     }
     if (env_.exists("svg_string")) {

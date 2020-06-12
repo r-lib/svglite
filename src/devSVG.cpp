@@ -502,18 +502,25 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   svgd->clipy0 = ymin;
   svgd->clipy1 = ymax;
 
-  // Is this clip region already defined?
-  if (stream->has_clip_id(clipid)) {
-    return;
+  if (stream->is_clipping()) {
+    (*stream) << "</g>\n";
   }
-  stream->add_clip_id(clipid);
+  // Is this clip region already defined?
+  if (!stream->has_clip_id(clipid)) {
+    stream->add_clip_id(clipid);
 
-  (*stream) << "<defs>\n";
-  (*stream) << "  <clipPath id='cp" << svgd->clipid << "'>\n";
-  (*stream) << "    <rect x='" << xmin << "' y='" << ymin <<
-    "' width='" << (xmax - xmin) << "' height='" << (ymax - ymin) << "' />\n";
-  (*stream) << "  </clipPath>\n";
-  (*stream) << "</defs>\n";
+    (*stream) << "<defs>\n";
+    (*stream) << "  <clipPath id='cp" << svgd->clipid << "'>\n";
+    (*stream) << "    <rect x='" << xmin << "' y='" << ymin <<
+      "' width='" << (xmax - xmin) << "' height='" << (ymax - ymin) << "' />\n";
+    (*stream) << "  </clipPath>\n";
+    (*stream) << "</defs>\n";
+  }
+
+  (*stream) << "<g";
+  write_attr_clip(stream, svgd->clipid);
+  (*stream) << ">\n";
+
   stream->flush();
 }
 
@@ -604,8 +611,6 @@ void svg_line(double x1, double y1, double x2, double y2,
   write_style_linetype(stream, gc, true);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipid);
-
   (*stream) << " />\n";
   stream->flush();
 }
@@ -628,8 +633,6 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   if (filled)
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
-
-  write_attr_clip(stream, svgd->clipid);
 
   (*stream) << " />\n";
   stream->flush();
@@ -678,8 +681,6 @@ void svg_path(double *x, double *y,
   write_style_linetype(stream, gc);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipid);
-
   (*stream) << " />\n";
   stream->flush();
 }
@@ -715,8 +716,6 @@ void svg_rect(double x0, double y0, double x1, double y1,
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipid);
-
   (*stream) << " />\n";
   stream->flush();
 }
@@ -734,8 +733,6 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipid);
-
   (*stream) << " />\n";
   stream->flush();
 }
@@ -744,14 +741,6 @@ void svg_text(double x, double y, const char *str, double rot,
               double hadj, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
-
-  // If we specify the clip path inside <text>, the "transform" also
-  // affects the clip path, so we need to specify clip path at an outer level
-  if (svgd->clipid.size()) {
-    (*stream) << "<g";
-    write_attr_clip(stream, svgd->clipid);
-    stream->put('>');
-  }
 
   (*stream) << "<text";
 
@@ -787,9 +776,6 @@ void svg_text(double x, double y, const char *str, double rot,
 
   (*stream) << "</text>";
 
-  if (svgd->clipid.size())
-    (*stream) << "</g>";
-
   stream->put('\n');
   stream->flush();
 }
@@ -816,14 +802,6 @@ void svg_raster(unsigned int *raster, int w, int h,
 
   std::string base64_str = raster_to_string(raster, w, h, width, height, interpolate);
 
-  // If we specify the clip path inside <image>, the "transform" also
-  // affects the clip path, so we need to specify clip path at an outer level
-  if (svgd->clipid.size()) {
-    (*stream) << "<g";
-    write_attr_clip(stream, svgd->clipid);
-    stream->put('>');
-  }
-
   (*stream) << "<image";
   write_attr_dbl(stream, "width", width);
   write_attr_dbl(stream, "height", height);
@@ -840,9 +818,6 @@ void svg_raster(unsigned int *raster, int w, int h,
 
   (*stream) << " xlink:href='data:image/png;base64," << base64_str << '\'';
   (*stream) << "/>";
-
-  if (svgd->clipid.size())
-    (*stream) << "</g>";
 
   stream->put('\n');
   stream->flush();
