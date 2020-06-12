@@ -140,10 +140,8 @@
 <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(<span class="fu">svglite_test</span>(), <span class="fu">svg_test</span>()), <span class="kw">type</span> <span class="kw">=</span> <span class="st">'ridge'</span>)</pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-3-1.png" width="100%"></p>
 <p>It produces considerably smaller files:</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/file.info.html">file.size</a></span>(<span class="no">tmp1</span>) / <span class="fl">1024</span>
-<span class="co">#&gt; [1] 131.6777</span>
-<span class="fu"><a href="https://rdrr.io/r/base/file.info.html">file.size</a></span>(<span class="no">tmp2</span>) / <span class="fl">1024</span>
-<span class="co">#&gt; [1] 320.7891</span></pre></div>
+<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/file.info.html">file.size</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tmp1</span>, <span class="no">tmp2</span>)) / <span class="fl">1024</span>
+<span class="co">#&gt; [1]  74.54492 321.01172</span></pre></div>
 <p>In both cases, compressing to make <code>.svgz</code> is worthwhile:</p>
 <div class="sourceCode" id="cb4"><pre class="r"><span class="no">gz</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">in_path</span>, <span class="no">out_path</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>()) {
   <span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html">gzfile</a></span>(<span class="no">out_path</span>, <span class="st">"w"</span>)
@@ -153,9 +151,9 @@
   <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span>(<span class="no">out_path</span>)
 }
 <span class="fu"><a href="https://rdrr.io/r/base/file.info.html">file.size</a></span>(<span class="fu">gz</span>(<span class="no">tmp1</span>)) / <span class="fl">1024</span>
-<span class="co">#&gt; [1] 9.964844</span>
+<span class="co">#&gt; [1] 9.416992</span>
 <span class="fu"><a href="https://rdrr.io/r/base/file.info.html">file.size</a></span>(<span class="fu">gz</span>(<span class="no">tmp2</span>)) / <span class="fl">1024</span>
-<span class="co">#&gt; [1] 38.52051</span></pre></div>
+<span class="co">#&gt; [1] 38.55762</span></pre></div>
 </div>
 </div>
   </div>
