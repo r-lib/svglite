@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <unordered_set>
 #include <Rcpp.h>
 #include "utils.h"
 
@@ -19,7 +20,19 @@ void write_double(T& stream, double data) {
 
 
 class SvgStream {
+  std::unordered_set<std::string> clip_ids;
+
   public:
+
+  bool has_clip_id(std::string id) {
+    return clip_ids.find(id) != clip_ids.end();
+  }
+  void add_clip_id(std::string id) {
+    clip_ids.insert(id);
+  }
+  void clear_clip_ids() {
+    clip_ids.clear();
+  }
 
   virtual ~SvgStream() {};
 
@@ -88,12 +101,12 @@ public:
   void flush() {
     stream_ << "</svg>";
     stream_.seekp(-6, std::ios_base::cur);
-    stream_.flush();
   }
 
   void finish(bool close) {
     stream_ << "</svg>\n";
     stream_.flush();
+    clear_clip_ids();
   }
 
   ~SvgStreamFile() {
@@ -146,6 +159,7 @@ public:
     // clear the stream
     stream_.str(std::string());
     stream_.clear();
+    clear_clip_ids();
   }
 
   Rcpp::XPtr<std::stringstream> string_src() {

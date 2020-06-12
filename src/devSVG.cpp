@@ -502,6 +502,12 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   svgd->clipy0 = ymin;
   svgd->clipy1 = ymax;
 
+  // Is this clip region already defined?
+  if (stream->has_clip_id(clipid)) {
+    return;
+  }
+  stream->add_clip_id(clipid);
+
   (*stream) << "<defs>\n";
   (*stream) << "  <clipPath id='cp" << svgd->clipid << "'>\n";
   (*stream) << "    <rect x='" << xmin << "' y='" << ymin <<
