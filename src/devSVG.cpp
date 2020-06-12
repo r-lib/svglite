@@ -476,30 +476,36 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
 
+  double xmin = std::min(x0, x1);
+  double xmax = std::max(x0, x1);
+  double ymin = std::min(y0, y1);
+  double ymax = std::max(y0, y1);
+
   // Avoid duplication
-  if (std::abs(x0 - svgd->clipx0) < 0.01 &&
-      std::abs(x1 - svgd->clipx1) < 0.01 &&
-      std::abs(y0 - svgd->clipy0) < 0.01 &&
-      std::abs(y1 - svgd->clipy1) < 0.01)
+  if (std::abs(xmin - svgd->clipx0) < 0.01 &&
+      std::abs(xmax - svgd->clipx1) < 0.01 &&
+      std::abs(ymin - svgd->clipy0) < 0.01 &&
+      std::abs(ymax - svgd->clipy1) < 0.01)
     return;
 
   std::ostringstream s;
   s << std::fixed << std::setprecision(2);
-  s << dbl_format(x0) << "|" << dbl_format(x1) << "|" <<
-       dbl_format(y0) << "|" << dbl_format(y1);
-  const std::uint8_t* buffer = reinterpret_cast<const std::uint8_t*>(s.str().data());
-  std::string clipid = base64_encode(buffer, s.str().size());
+  s << dbl_format(xmin) << "|" << dbl_format(xmax) << "|" <<
+    dbl_format(ymin) << "|" << dbl_format(ymax);
+  std::string str = s.str();
+  const std::uint8_t* buffer = reinterpret_cast<const std::uint8_t*>(str.data());
+  std::string clipid = base64_encode(buffer, str.size());
 
   svgd->clipid = clipid;
-  svgd->clipx0 = x0;
-  svgd->clipx1 = x1;
-  svgd->clipy0 = y0;
-  svgd->clipy1 = y1;
+  svgd->clipx0 = xmin;
+  svgd->clipx1 = xmax;
+  svgd->clipy0 = ymin;
+  svgd->clipy1 = ymax;
 
   (*stream) << "<defs>\n";
   (*stream) << "  <clipPath id='cp" << svgd->clipid << "'>\n";
-  (*stream) << "    <rect x='" << std::min(x0, x1) << "' y='" << std::min(y0, y1) <<
-    "' width='" << std::abs(x1 - x0) << "' height='" << std::abs(y1 - y0) << "' />\n";
+  (*stream) << "    <rect x='" << xmin << "' y='" << ymin <<
+    "' width='" << (xmax - xmin) << "' height='" << (ymax - ymin) << "' />\n";
   (*stream) << "  </clipPath>\n";
   (*stream) << "</defs>\n";
   stream->flush();
