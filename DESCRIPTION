@@ -23,10 +23,10 @@ SystemRequirements:
 Depends:
     R (>= 3.0.0)
 Imports:
-    Rcpp,
+    cpp11,
     systemfonts (>= 0.2.3)
 LinkingTo:
-    Rcpp,
+    cpp11,
     systemfonts
 Suggests:
     htmltools,
@@ -36,6 +36,7 @@ Suggests:
     fontquiver (>= 0.2.0),
     knitr,
     rmarkdown
+Remotes: r-lib/cpp11
 License: GPL (>= 2)
 URL: https://github.com/r-lib/svglite
 BugReports: https://github.com/r-lib/svglite/issues

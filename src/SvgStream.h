@@ -3,8 +3,10 @@
 
 #include <fstream>
 #include <sstream>
-#include <Rcpp.h>
+#include <cpp11.hpp>
+#include <cpp11/external_pointer.hpp>
 #include "utils.h"
+using namespace cpp11;
 
 namespace svglite { namespace internal {
 
@@ -58,7 +60,7 @@ public:
     stream_.open(R_ExpandFileName(path.c_str()));
 
     if (stream_.fail())
-      Rcpp::stop("cannot open stream " + path);
+      stop("cannot open stream %s", path.c_str());
 
     stream_ << std::fixed << std::setprecision(2);
   }
@@ -71,7 +73,7 @@ public:
 
     stream_.open(R_ExpandFileName(buf));
     if (stream_.fail())
-      Rcpp::stop("cannot open stream " + std::string(buf));
+      stop("cannot open stream %s", buf);
 
     stream_ << std::fixed << std::setprecision(2);
   }
@@ -136,8 +138,8 @@ public:
       svgstr.append("</svg>");
     }
     if (env_.exists("svg_string")) {
-      Rcpp::CharacterVector str = env_["svg_string"];
-      str.push_back(svgstr);
+      writable::strings str = env_["svg_string"];
+      str.push_back(as_sexp(svgstr));
       env_["svg_string"] = str;
     } else {
       env_["svg_string"] = svgstr;
@@ -148,10 +150,10 @@ public:
     stream_.clear();
   }
 
-  Rcpp::XPtr<std::stringstream> string_src() {
+  external_pointer<std::stringstream> string_src() {
     // `false` means this pointer should not be "deleted" by R
     // The object will be automatically destroyed when device is closed
-    return Rcpp::XPtr<std::stringstream>(&stream_, false);
+    return external_pointer<std::stringstream>(&stream_);
   }
 };
 

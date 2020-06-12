@@ -16,13 +16,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-#include <Rcpp.h>
+#include <cpp11.hpp>
 #include <systemfonts.h>
 #include <string>
 #include <iomanip>
 #include <sstream>
 #include <memory>
 #include <R_ext/GraphicsEngine.h>
+
+using namespace cpp11;
 
 extern "C" {
 #include <png.h>
@@ -43,18 +45,18 @@ public:
   double clipx0, clipx1, clipy0, clipy1;  // Save the previous clip path to avoid duplication
   bool standalone;
   const std::string file;
-  Rcpp::List system_aliases;
-  Rcpp::List user_aliases;
-  Rcpp::CharacterVector ids;
+  list system_aliases;
+  list user_aliases;
+  strings ids;
 
-  SVGDesc(SvgStreamPtr stream_, bool standalone_, Rcpp::List aliases_, const std::string& file_, Rcpp::CharacterVector ids_):
+  SVGDesc(SvgStreamPtr stream_, bool standalone_, list aliases_, const std::string& file_, strings ids_):
       stream(stream_),
       pageno(0),
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
       standalone(standalone_),
       file(file_),
-      system_aliases(Rcpp::wrap(aliases_["system"])),
-      user_aliases(Rcpp::wrap(aliases_["user"])),
+      system_aliases(as_cpp<list>(aliases_["system"])),
+      user_aliases(as_cpp<list>(aliases_["user"])),
       ids(ids_) {
   }
 
@@ -199,22 +201,22 @@ inline std::string raster_to_string(unsigned int *raster, int w, int h, double w
   return base64_encode(buffer.data(), buffer.size());
 }
 
-inline std::string find_alias_field(std::string& family, Rcpp::List& alias,
+inline std::string find_alias_field(std::string& family, list& alias,
                                     const char* face, const char* field) {
-  if (alias.containsElementNamed(face)) {
-    Rcpp::List font = alias[face];
-    if (font.containsElementNamed(field))
-      return font[field];
+  if (alias[face] != R_NilValue) {
+    list font(alias[face]);
+    if (font[field] != R_NilValue)
+      return as_cpp<std::string>(font[field]);
   }
   return std::string();
 }
 
 inline std::string find_user_alias(std::string& family,
-                                   Rcpp::List const& aliases,
+                                   list const& aliases,
                                    int face, const char* field) {
   std::string out;
-  if (aliases.containsElementNamed(family.c_str())) {
-    Rcpp::List alias = aliases[family];
+  if (aliases[family.c_str()] != R_NilValue) {
+    list alias(aliases[family.c_str()]);
     if (is_bolditalic(face))
       out = find_alias_field(family, alias, "bolditalic", field);
     else if (is_bold(face))
@@ -230,19 +232,19 @@ inline std::string find_user_alias(std::string& family,
 }
 
 inline std::string find_system_alias(std::string& family,
-                                     Rcpp::List const& aliases) {
+                                     list const& aliases) {
   std::string out;
-  if (aliases.containsElementNamed(family.c_str())) {
-    SEXP alias = aliases[family];
+  if (aliases[family.c_str()] != R_NilValue) {
+    sexp alias = aliases[family.c_str()];
     if (TYPEOF(alias) == STRSXP && Rf_length(alias) == 1)
-      out = Rcpp::as<std::string>(alias);
+      out = as_cpp<std::string>(alias);
   }
   return out;
 }
 
 inline std::string fontname(const char* family_, int face,
-                            Rcpp::List const& system_aliases,
-                            Rcpp::List const& user_aliases) {
+                            list const& system_aliases,
+                            list const& user_aliases) {
   std::string family(family_);
   if (face == 5)
     family = "symbol";
@@ -260,7 +262,7 @@ inline std::string fontname(const char* family_, int face,
 }
 
 inline std::string fontfile(const char* family_, int face,
-                            Rcpp::List user_aliases) {
+                            list user_aliases) {
   std::string family(family_);
   if (face == 5)
     family = "symbol";
@@ -270,7 +272,7 @@ inline std::string fontfile(const char* family_, int face,
   return find_user_alias(family, user_aliases, face, "file");
 }
 
-inline std::pair<std::string, int> get_font_file(const char* family, int face, Rcpp::List user_aliases) {
+inline std::pair<std::string, int> get_font_file(const char* family, int face, list user_aliases) {
   const char* fontfamily = family;
   if (is_symbol(face)) {
     fontfamily = "symbol";
@@ -506,8 +508,6 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
 }
 
 void svg_new_page(const pGEcontext gc, pDevDesc dd) {
-BEGIN_RCPP
-
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
 
@@ -570,8 +570,6 @@ BEGIN_RCPP
 
   svgd->stream->flush();
   svgd->pageno++;
-
-VOID_END_RCPP
 }
 
 void svg_close(pDevDesc dd) {
@@ -839,8 +837,8 @@ void svg_raster(unsigned int *raster, int w, int h,
 
 pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
                         double height, double pointsize,
-                        bool standalone, Rcpp::List& aliases,
-                        const std::string& file, Rcpp::CharacterVector id) {
+                        bool standalone, list& aliases,
+                        const std::string& file, strings id) {
 
   pDevDesc dd = (DevDesc*) calloc(1, sizeof(DevDesc));
   if (dd == NULL)
@@ -910,8 +908,8 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
 }
 
 void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double height,
-                double pointsize, bool standalone, Rcpp::List& aliases,
-                const std::string& file, Rcpp::CharacterVector id) {
+                double pointsize, bool standalone, list& aliases,
+                const std::string& file, strings id) {
 
   int bg = R_GE_str2col(bg_.c_str());
 
@@ -921,7 +919,7 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
     pDevDesc dev = svg_driver_new(stream, bg, width, height, pointsize,
                                   standalone, aliases, file, id);
     if (dev == NULL)
-      Rcpp::stop("Failed to start SVG device");
+      stop("Failed to start SVG device");
 
     pGEDevDesc dd = GEcreateDevDesc(dev);
     GEaddDevice2(dd, "devSVG");
@@ -930,10 +928,10 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
   } END_SUSPEND_INTERRUPTS;
 }
 
-// [[Rcpp::export]]
+// [[cpp11::export]]
 bool svglite_(std::string file, std::string bg, double width, double height,
-              double pointsize, bool standalone, Rcpp::List aliases,
-              Rcpp::CharacterVector id) {
+              double pointsize, bool standalone, list aliases,
+              strings id) {
 
   SvgStreamPtr stream(new SvgStreamFile(file, 1));
   makeDevice(stream, bg, width, height, pointsize, standalone, aliases, file, id);
@@ -941,11 +939,11 @@ bool svglite_(std::string file, std::string bg, double width, double height,
   return true;
 }
 
-// [[Rcpp::export]]
-Rcpp::XPtr<std::stringstream> svgstring_(Rcpp::Environment env, std::string bg,
+// [[cpp11::export]]
+external_pointer<std::stringstream> svgstring_(Rcpp::Environment env, std::string bg,
                                          double width, double height, double pointsize,
-                                         bool standalone, Rcpp::List aliases,
-                                         Rcpp::CharacterVector id) {
+                                         bool standalone, list aliases,
+                                         strings id) {
 
   SvgStreamPtr stream(new SvgStreamString(env));
   makeDevice(stream, bg, width, height, pointsize, standalone, aliases, "", id);
@@ -955,8 +953,8 @@ Rcpp::XPtr<std::stringstream> svgstring_(Rcpp::Environment env, std::string bg,
   return strstream->string_src();
 }
 
-// [[Rcpp::export]]
-std::string get_svg_content(Rcpp::XPtr<std::stringstream> p) {
+// [[cpp11::export]]
+std::string get_svg_content(external_pointer<std::stringstream> p) {
   p->flush();
   std::string svgstr = p->str();
   // If the current SVG is empty, we also make the string empty
