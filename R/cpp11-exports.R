@@ -8,8 +8,8 @@ svgstring_ <- function(env, bg, width, height, pointsize, standalone, aliases, i
   .Call("_svglite_svgstring_" , env, bg, width, height, pointsize, standalone, aliases, id)
 }
 
-get_svg_content <- function(p){
-  .Call("_svglite_get_svg_content" , p)
+get_svg_content <- function(p_sxp){
+  .Call("_svglite_get_svg_content" , p_sxp)
 }
 
 

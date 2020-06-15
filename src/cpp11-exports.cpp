@@ -11,17 +11,17 @@ extern "C" SEXP _svglite_svglite_(SEXP file, SEXP bg, SEXP width, SEXP height, S
   END_CPP11
 }
 // devSVG.cpp
-cpp11::external_pointer<std::stringstream> svgstring_(cpp11::environment env, std::string bg, double width, double height, double pointsize, bool standalone, cpp11::list aliases, cpp11::strings id);
+SEXP svgstring_(cpp11::environment env, std::string bg, double width, double height, double pointsize, bool standalone, cpp11::list aliases, cpp11::strings id);
 extern "C" SEXP _svglite_svgstring_(SEXP env, SEXP bg, SEXP width, SEXP height, SEXP pointsize, SEXP standalone, SEXP aliases, SEXP id) {
   BEGIN_CPP11
     return cpp11::as_sexp(svgstring_(cpp11::unmove(cpp11::as_cpp<cpp11::environment>(env)), cpp11::unmove(cpp11::as_cpp<std::string>(bg)), cpp11::unmove(cpp11::as_cpp<double>(width)), cpp11::unmove(cpp11::as_cpp<double>(height)), cpp11::unmove(cpp11::as_cpp<double>(pointsize)), cpp11::unmove(cpp11::as_cpp<bool>(standalone)), cpp11::unmove(cpp11::as_cpp<cpp11::list>(aliases)), cpp11::unmove(cpp11::as_cpp<cpp11::strings>(id))));
   END_CPP11
 }
 // devSVG.cpp
-std::string get_svg_content(cpp11::external_pointer<std::stringstream> p);
-extern "C" SEXP _svglite_get_svg_content(SEXP p) {
+std::string get_svg_content(SEXP p_sxp);
+extern "C" SEXP _svglite_get_svg_content(SEXP p_sxp) {
   BEGIN_CPP11
-    return cpp11::as_sexp(get_svg_content(cpp11::unmove(cpp11::as_cpp<cpp11::external_pointer<std::stringstream>>(p))));
+    return cpp11::as_sexp(get_svg_content(cpp11::unmove(cpp11::as_cpp<SEXP>(p_sxp))));
   END_CPP11
 }
 

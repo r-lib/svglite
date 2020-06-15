@@ -935,7 +935,7 @@ bool svglite_(std::string file, std::string bg, double width, double height,
 }
 
 [[cpp11::export]]
-cpp11::external_pointer<std::stringstream> svgstring_(cpp11::environment env, std::string bg,
+SEXP svgstring_(cpp11::environment env, std::string bg,
                                          double width, double height, double pointsize,
                                          bool standalone, cpp11::list aliases,
                                          cpp11::strings id) {
@@ -945,11 +945,13 @@ cpp11::external_pointer<std::stringstream> svgstring_(cpp11::environment env, st
 
   SvgStreamString* strstream = static_cast<SvgStreamString*>(stream.get());
 
-  return {strstream->string_src()};
+  cpp11::external_pointer<std::stringstream> out(strstream->string_src());
+  return cpp11::as_sexp(out);
 }
 
 [[cpp11::export]]
-std::string get_svg_content(cpp11::external_pointer<std::stringstream> p) {
+std::string get_svg_content(SEXP p_sxp) {
+  cpp11::external_pointer<std::stringstream> p(p_sxp);
   p->flush();
   std::string svgstr = p->str();
   // If the current SVG is empty, we also make the string empty
