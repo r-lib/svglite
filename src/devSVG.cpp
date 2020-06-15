@@ -561,7 +561,7 @@ BEGIN_RCPP
   // Setting default styles
   (*stream) << "<defs>\n";
   (*stream) << "  <style type='text/css'><![CDATA[\n";
-  (*stream) << "    .svglite line, .svglite polyline, .svglite polygon, .svglite path, . svglite rect, .svglite circle {\n";
+  (*stream) << "    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {\n";
   (*stream) << "      fill: none;\n";
   (*stream) << "      stroke: #000000;\n";
   (*stream) << "      stroke-linecap: round;\n";
