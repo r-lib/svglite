@@ -103,8 +103,8 @@ public:
   // seeking back to original position. So we only write the newline
   // in finish()
   void flush() {
-    stream_ << "</svg>";
-    stream_.seekp(-6, std::ios_base::cur);
+    stream_ << "</g>\n</svg>";
+    stream_.seekp(-11, std::ios_base::cur);
   }
 
   void finish(bool close) {
@@ -154,7 +154,7 @@ public:
     // Otherwise append "</svg>" to make it a valid SVG
     if(!svgstr.empty()) {
       if (is_clipping()) {
-        svgstr.append("</g>");
+        svgstr.append("</g>\n");
       }
       svgstr.append("</svg>");
     }

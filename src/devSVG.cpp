@@ -558,12 +558,6 @@ BEGIN_RCPP
 
   (*stream) << " viewBox='0 0 " << dd->right << ' ' << dd->bottom << "'>\n";
 
-  // Initialise clipping the same way R does
-  svgd->clipx0 = 0;
-  svgd->clipy0 = dd->bottom;
-  svgd->clipx1 = dd->right;
-  svgd->clipy1 = 0;
-
   // Setting default styles
   (*stream) << "<defs>\n";
   (*stream) << "  <style type='text/css'><![CDATA[\n";
@@ -586,6 +580,15 @@ BEGIN_RCPP
     write_style_col(stream, "fill", dd->startfill);
   write_style_end(stream);
   (*stream) << "/>\n";
+
+
+  // Initialise clipping - make sure the stored clipping is bogus to force
+  // svg_clip to do its thing
+  svgd->clipx0 = R_PosInf;
+  svgd->clipy0 = R_NegInf;
+  svgd->clipx1 = R_NegInf;
+  svgd->clipy1 = R_PosInf;
+  svg_clip(0, dd->right, dd->bottom, 0, dd);
 
   svgd->stream->flush();
   svgd->pageno++;
