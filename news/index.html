@@ -161,6 +161,8 @@
 <li><p>Dimensions are now encoded into the top-level <code>&lt;svg&gt;</code> tag (<a href='https://github.com/r-lib/svglite/issues/90'>#90</a>)</p></li>
 <li><p>Opening a new graphics device creates a new file if the filename supports it (<a href='https://github.com/r-lib/svglite/issues/98'>#98</a>, <a href='https://github.com/vandenman'>@vandenman</a>).</p></li>
 <li><p>The <em>inline</em> devices now defaults to the same dimensions as <code><a href="../reference/svglite.html">svglite()</a></code> (<a href='https://github.com/r-lib/svglite/issues/89'>#89</a>)</p></li>
+<li><p>Clip defs are now only written if they don’t already exist (<a href='https://github.com/r-lib/svglite/issues/110'>#110</a>)</p></li>
+<li><p>Clipping is now defined with outer groups instead of on each element (<a href='https://github.com/r-lib/svglite/issues/109'>#109</a>)</p></li>
 </ul>
 </div>
     <div id="svglite-123" class="section level1">
