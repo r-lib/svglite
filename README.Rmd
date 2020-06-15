@@ -61,8 +61,7 @@ plot(bench::mark(svglite_test(), svg_test()), type = 'ridge')
 It produces considerably smaller files:
 
 ```{r}
-file.size(tmp1) / 1024
-file.size(tmp2) / 1024
+file.size(c(tmp1, tmp2)) / 1024
 ```
 
 In both cases, compressing to make `.svgz` is worthwhile:

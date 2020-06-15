@@ -5,6 +5,7 @@
 #include <sstream>
 #include <cpp11.hpp>
 #include <cpp11/external_pointer.hpp>
+#include <unordered_set>
 #include "utils.h"
 using namespace cpp11;
 
@@ -21,7 +22,23 @@ void write_double(T& stream, double data) {
 
 
 class SvgStream {
+  std::unordered_set<std::string> clip_ids;
+  bool clipping = false;
+
   public:
+
+  bool has_clip_id(std::string id) {
+    return clip_ids.find(id) != clip_ids.end();
+  }
+  void add_clip_id(std::string id) {
+    clipping = true;
+    clip_ids.insert(id);
+  }
+  void clear_clip_ids() {
+    clipping = false;
+    clip_ids.clear();
+  }
+  bool is_clipping() {return clipping;}
 
   virtual ~SvgStream() {};
 
@@ -88,14 +105,17 @@ public:
   // seeking back to original position. So we only write the newline
   // in finish()
   void flush() {
-    stream_ << "</svg>";
-    stream_.seekp(-6, std::ios_base::cur);
-    stream_.flush();
+    stream_ << "</g>\n</svg>";
+    stream_.seekp(-11, std::ios_base::cur);
   }
 
   void finish(bool close) {
+    if (is_clipping()) {
+      stream_ << "</g>\n";
+    }
     stream_ << "</svg>\n";
     stream_.flush();
+    clear_clip_ids();
   }
 
   ~SvgStreamFile() {
@@ -135,6 +155,9 @@ public:
     // If the current svg is empty, we also make the string empty
     // Otherwise append "</svg>" to make it a valid SVG
     if(!svgstr.empty()) {
+      if (is_clipping()) {
+        svgstr.append("</g>\n");
+      }
       svgstr.append("</svg>");
     }
     if (env_.exists("svg_string")) {
@@ -148,6 +171,7 @@ public:
     // clear the stream
     stream_.str(std::string());
     stream_.clear();
+    clear_clip_ids();
   }
 
   external_pointer<std::stringstream> string_src() {

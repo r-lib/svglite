@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 288.00 288.00'>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='288.00pt' height='288.00pt' viewBox='0 0 288.00 288.00'>
 <defs>
   <style type='text/css'><![CDATA[
-    line, polyline, polygon, path, rect, circle {
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
       fill: none;
       stroke: #000000;
       stroke-linecap: round;
@@ -13,21 +13,34 @@
 </defs>
 <rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
 <defs>
-  <clipPath id='cpODYuNDB8MTU4LjQwfDIwOC44MHwxMzYuODA='>
+  <clipPath id='cpMC4wMHwyODguMDB8MC4wMHwyODguMDA='>
+    <rect x='0.00' y='0.00' width='288.00' height='288.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHwyODguMDB8MC4wMHwyODguMDA=)'>
+</g>
+<defs>
+  <clipPath id='cpODYuNDB8MTU4LjQwfDEzNi44MHwyMDguODA='>
     <rect x='86.40' y='136.80' width='72.00' height='72.00' />
   </clipPath>
 </defs>
-<rect x='122.40' y='100.80' width='72.00' height='72.00' style='stroke-width: 0.75; fill: #0000FF;' clip-path='url(#cpODYuNDB8MTU4LjQwfDIwOC44MHwxMzYuODA=)' />
+<g clip-path='url(#cpODYuNDB8MTU4LjQwfDEzNi44MHwyMDguODA=)'>
+<rect x='122.40' y='100.80' width='72.00' height='72.00' style='stroke-width: 0.75; fill: #0000FF;' />
+</g>
 <defs>
-  <clipPath id='cpMTU4LjQwfDIzMC40MHwxMzYuODB8NjQuODA='>
+  <clipPath id='cpMTU4LjQwfDIzMC40MHw2NC44MHwxMzYuODA='>
     <rect x='158.40' y='64.80' width='72.00' height='72.00' />
   </clipPath>
 </defs>
-<g clip-path='url(#cpMTU4LjQwfDIzMC40MHwxMzYuODB8NjQuODA=)'><text transform='translate(119.42,130.95) rotate(-30)' style='font-size: 24.00px; font-family: Bitstream Vera Sans;' textLength='97.67px' lengthAdjust='spacingAndGlyphs'>Clipping</text></g>
+<g clip-path='url(#cpMTU4LjQwfDIzMC40MHw2NC44MHwxMzYuODA=)'>
+<text transform='translate(119.42,130.95) rotate(-30)' style='font-size: 24.00px; font-family: Bitstream Vera Sans;' textLength='97.67px' lengthAdjust='spacingAndGlyphs'>Clipping</text>
+</g>
 <defs>
-  <clipPath id='cpODYuNDB8MTU4LjQwfDEzNi44MHw2NC44MA=='>
+  <clipPath id='cpODYuNDB8MTU4LjQwfDY0LjgwfDEzNi44MA=='>
     <rect x='86.40' y='64.80' width='72.00' height='72.00' />
   </clipPath>
 </defs>
-<line x1='59.04' y1='100.80' x2='257.76' y2='100.80' style='stroke-width: 0.75; stroke: #FF0000;' clip-path='url(#cpODYuNDB8MTU4LjQwfDEzNi44MHw2NC44MA==)' />
+<g clip-path='url(#cpODYuNDB8MTU4LjQwfDY0LjgwfDEzNi44MA==)'>
+<line x1='59.04' y1='100.80' x2='257.76' y2='100.80' style='stroke-width: 0.75; stroke: #FF0000;' />
+</g>
 </svg>

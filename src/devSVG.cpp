@@ -478,32 +478,51 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
 
+  double xmin = std::min(x0, x1);
+  double xmax = std::max(x0, x1);
+  double ymin = std::min(y0, y1);
+  double ymax = std::max(y0, y1);
+
   // Avoid duplication
-  if (std::abs(x0 - svgd->clipx0) < 0.01 &&
-      std::abs(x1 - svgd->clipx1) < 0.01 &&
-      std::abs(y0 - svgd->clipy0) < 0.01 &&
-      std::abs(y1 - svgd->clipy1) < 0.01)
+  if (std::abs(xmin - svgd->clipx0) < 0.01 &&
+      std::abs(xmax - svgd->clipx1) < 0.01 &&
+      std::abs(ymin - svgd->clipy0) < 0.01 &&
+      std::abs(ymax - svgd->clipy1) < 0.01)
     return;
 
   std::ostringstream s;
   s << std::fixed << std::setprecision(2);
-  s << dbl_format(x0) << "|" << dbl_format(x1) << "|" <<
-       dbl_format(y0) << "|" << dbl_format(y1);
-  const std::uint8_t* buffer = reinterpret_cast<const std::uint8_t*>(s.str().data());
-  std::string clipid = base64_encode(buffer, s.str().size());
+  s << dbl_format(xmin) << "|" << dbl_format(xmax) << "|" <<
+    dbl_format(ymin) << "|" << dbl_format(ymax);
+  std::string str = s.str();
+  const std::uint8_t* buffer = reinterpret_cast<const std::uint8_t*>(str.data());
+  std::string clipid = base64_encode(buffer, str.size());
 
   svgd->clipid = clipid;
-  svgd->clipx0 = x0;
-  svgd->clipx1 = x1;
-  svgd->clipy0 = y0;
-  svgd->clipy1 = y1;
+  svgd->clipx0 = xmin;
+  svgd->clipx1 = xmax;
+  svgd->clipy0 = ymin;
+  svgd->clipy1 = ymax;
 
-  (*stream) << "<defs>\n";
-  (*stream) << "  <clipPath id='cp" << svgd->clipid << "'>\n";
-  (*stream) << "    <rect x='" << std::min(x0, x1) << "' y='" << std::min(y0, y1) <<
-    "' width='" << std::abs(x1 - x0) << "' height='" << std::abs(y1 - y0) << "' />\n";
-  (*stream) << "  </clipPath>\n";
-  (*stream) << "</defs>\n";
+  if (stream->is_clipping()) {
+    (*stream) << "</g>\n";
+  }
+  // Is this clip region already defined?
+  if (!stream->has_clip_id(clipid)) {
+    stream->add_clip_id(clipid);
+
+    (*stream) << "<defs>\n";
+    (*stream) << "  <clipPath id='cp" << svgd->clipid << "'>\n";
+    (*stream) << "    <rect x='" << xmin << "' y='" << ymin <<
+      "' width='" << (xmax - xmin) << "' height='" << (ymax - ymin) << "' />\n";
+    (*stream) << "  </clipPath>\n";
+    (*stream) << "</defs>\n";
+  }
+
+  (*stream) << "<g";
+  write_attr_clip(stream, svgd->clipid);
+  (*stream) << ">\n";
+
   stream->flush();
 }
 
@@ -539,16 +558,10 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
 
   (*stream) << " viewBox='0 0 " << dd->right << ' ' << dd->bottom << "'>\n";
 
-  // Initialise clipping the same way R does
-  svgd->clipx0 = 0;
-  svgd->clipy0 = dd->bottom;
-  svgd->clipx1 = dd->right;
-  svgd->clipy1 = 0;
-
   // Setting default styles
   (*stream) << "<defs>\n";
   (*stream) << "  <style type='text/css'><![CDATA[\n";
-  (*stream) << "    .svglite line, .svglite polyline, .svglite polygon, .svglite path, . svglite rect, .svglite circle {\n";
+  (*stream) << "    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {\n";
   (*stream) << "      fill: none;\n";
   (*stream) << "      stroke: #000000;\n";
   (*stream) << "      stroke-linecap: round;\n";
@@ -567,6 +580,15 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
     write_style_col(stream, "fill", dd->startfill);
   write_style_end(stream);
   (*stream) << "/>\n";
+
+
+  // Initialise clipping - make sure the stored clipping is bogus to force
+  // svg_clip to do its thing
+  svgd->clipx0 = R_PosInf;
+  svgd->clipy0 = R_NegInf;
+  svgd->clipx1 = R_NegInf;
+  svgd->clipy1 = R_PosInf;
+  svg_clip(0, dd->right, dd->bottom, 0, dd);
 
   svgd->stream->flush();
   svgd->pageno++;
@@ -590,8 +612,6 @@ void svg_line(double x1, double y1, double x2, double y2,
   write_style_linetype(stream, gc, true);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipid);
-
   (*stream) << " />\n";
   stream->flush();
 }
@@ -614,8 +634,6 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   if (filled)
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
-
-  write_attr_clip(stream, svgd->clipid);
 
   (*stream) << " />\n";
   stream->flush();
@@ -664,8 +682,6 @@ void svg_path(double *x, double *y,
   write_style_linetype(stream, gc);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipid);
-
   (*stream) << " />\n";
   stream->flush();
 }
@@ -701,8 +717,6 @@ void svg_rect(double x0, double y0, double x1, double y1,
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipid);
-
   (*stream) << " />\n";
   stream->flush();
 }
@@ -720,8 +734,6 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
 
-  write_attr_clip(stream, svgd->clipid);
-
   (*stream) << " />\n";
   stream->flush();
 }
@@ -730,14 +742,6 @@ void svg_text(double x, double y, const char *str, double rot,
               double hadj, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
-
-  // If we specify the clip path inside <text>, the "transform" also
-  // affects the clip path, so we need to specify clip path at an outer level
-  if (svgd->clipid.size()) {
-    (*stream) << "<g";
-    write_attr_clip(stream, svgd->clipid);
-    stream->put('>');
-  }
 
   (*stream) << "<text";
 
@@ -773,9 +777,6 @@ void svg_text(double x, double y, const char *str, double rot,
 
   (*stream) << "</text>";
 
-  if (svgd->clipid.size())
-    (*stream) << "</g>";
-
   stream->put('\n');
   stream->flush();
 }
@@ -802,14 +803,6 @@ void svg_raster(unsigned int *raster, int w, int h,
 
   std::string base64_str = raster_to_string(raster, w, h, width, height, interpolate);
 
-  // If we specify the clip path inside <image>, the "transform" also
-  // affects the clip path, so we need to specify clip path at an outer level
-  if (svgd->clipid.size()) {
-    (*stream) << "<g";
-    write_attr_clip(stream, svgd->clipid);
-    stream->put('>');
-  }
-
   (*stream) << "<image";
   write_attr_dbl(stream, "width", width);
   write_attr_dbl(stream, "height", height);
@@ -826,9 +819,6 @@ void svg_raster(unsigned int *raster, int w, int h,
 
   (*stream) << " xlink:href='data:image/png;base64," << base64_str << '\'';
   (*stream) << "/>";
-
-  if (svgd->clipid.size())
-    (*stream) << "</g>";
 
   stream->put('\n');
   stream->flush();

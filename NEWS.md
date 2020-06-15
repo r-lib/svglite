@@ -16,6 +16,10 @@
 
 * The _inline_ devices now defaults to the same dimensions as `svglite()` (#89)
 
+* Clip defs are now only written if they don't already exist (#110)
+
+* Clipping is now defined with outer groups instead of on each element (#109)
+
 # svglite 1.2.3
 
 * The radius of circles is no longer expressed in pt (#93, @vandenman).

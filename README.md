@@ -59,10 +59,8 @@ plot(bench::mark(svglite_test(), svg_test()), type = 'ridge')
 It produces considerably smaller files:
 
 ``` r
-file.size(tmp1) / 1024
-#> [1] 131.6777
-file.size(tmp2) / 1024
-#> [1] 320.7891
+file.size(c(tmp1, tmp2)) / 1024
+#> [1]  74.54492 321.01172
 ```
 
 In both cases, compressing to make `.svgz` is worthwhile:
@@ -76,7 +74,7 @@ gz <- function(in_path, out_path = tempfile()) {
   invisible(out_path)
 }
 file.size(gz(tmp1)) / 1024
-#> [1] 9.964844
+#> [1] 9.416992
 file.size(gz(tmp2)) / 1024
-#> [1] 38.52051
+#> [1] 38.55762
 ```
