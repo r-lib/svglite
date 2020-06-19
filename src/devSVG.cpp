@@ -879,12 +879,14 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->metricInfo = svg_metric_info;
   dd->cap = NULL;
   dd->raster = svg_raster;
+#if R_GE_version >= 13
   dd->setPattern      = svg_set_pattern;
   dd->releasePattern  = svg_release_pattern;
   dd->setClipPath     = svg_set_clip_path;
   dd->releaseClipPath = svg_release_clip_path;
   dd->setMask         = svg_set_mask;
   dd->releaseMask     = svg_release_mask;
+#endif
 
   // UTF-8 support
   dd->wantSymbolUTF8 = (Rboolean) 1;
@@ -917,6 +919,10 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->displayListOn = FALSE;
   dd->haveTransparency = 2;
   dd->haveTransparentBg = 2;
+
+#if R_GE_version >= 13
+  dd->deviceVersion = R_GE_definitions;
+#endif
 
   dd->deviceSpecific = new SVGDesc(stream, standalone, aliases, file, id);
   return dd;
