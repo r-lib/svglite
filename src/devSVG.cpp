@@ -206,7 +206,7 @@ inline std::string raster_to_string(unsigned int *raster, int w, int h, double w
   return base64_encode(buffer.data(), buffer.size());
 }
 
-inline std::string find_alias_field(std::string& family, cpp11::list& alias,
+inline std::string find_alias_field(std::string family, cpp11::list& alias,
                                     const char* face, const char* field) {
   if (alias[face] != R_NilValue) {
     cpp11::list font(alias[face]);
@@ -216,7 +216,7 @@ inline std::string find_alias_field(std::string& family, cpp11::list& alias,
   return std::string();
 }
 
-inline std::string find_user_alias(std::string& family,
+inline std::string find_user_alias(std::string family,
                                    cpp11::list const& aliases,
                                    int face, const char* field) {
   std::string out;
@@ -236,7 +236,7 @@ inline std::string find_user_alias(std::string& family,
   return out;
 }
 
-inline std::string find_system_alias(std::string& family,
+inline std::string find_system_alias(std::string family,
                                      cpp11::list const& aliases) {
   std::string out;
   if (aliases[family.c_str()] != R_NilValue) {
@@ -284,7 +284,7 @@ inline std::pair<std::string, int> get_font_file(const char* family, int face, c
   } else if (strcmp(family, "") == 0) {
     fontfamily = "sans";
   }
-  std::string alias = fontfile(family, face, user_aliases);
+  std::string alias = fontfile(fontfamily, face, user_aliases);
   if (alias.size() > 0) {
     return {alias, 0};
   }
