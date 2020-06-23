@@ -945,7 +945,7 @@ cpp11::external_pointer<std::stringstream> svgstring_(cpp11::environment env, st
 
   SvgStreamString* strstream = static_cast<SvgStreamString*>(stream.get());
 
-  return {strstream->string_src()};
+  return {strstream->string_src(), false};
 }
 
 [[cpp11::export]]

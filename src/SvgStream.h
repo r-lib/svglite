@@ -165,8 +165,8 @@ public:
       svgstr.append("</svg>");
     }
     if (env_.exists("svg_string")) {
-      cpp11::writable::strings str = cpp11::as_cpp<cpp11::writable::strings>(env_["svg_string"]);
-      str.push_back(cpp11::as_sexp(svgstr));
+      cpp11::writable::strings str(env_["svg_string"]);
+      str.push_back(svgstr.c_str());
       env_["svg_string"] = str;
     } else {
       env_["svg_string"] = svgstr;
