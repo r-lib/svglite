@@ -61,7 +61,7 @@
 #'
 #' @keywords device
 #' @useDynLib svglite
-#' @importFrom Rcpp sourceCpp
+#' @importFrom cpp11 cpp_source
 #' @importFrom systemfonts match_font
 #' @export
 svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
