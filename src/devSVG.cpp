@@ -923,7 +923,7 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
   } END_SUSPEND_INTERRUPTS;
 }
 
-[[cpp11::export]]
+[[cpp11::register]]
 bool svglite_(std::string file, std::string bg, double width, double height,
               double pointsize, bool standalone, cpp11::list aliases,
               cpp11::strings id) {
@@ -934,7 +934,7 @@ bool svglite_(std::string file, std::string bg, double width, double height,
   return true;
 }
 
-[[cpp11::export]]
+[[cpp11::register]]
 cpp11::external_pointer<std::stringstream> svgstring_(cpp11::environment env, std::string bg,
                                          double width, double height, double pointsize,
                                          bool standalone, cpp11::list aliases,
@@ -948,7 +948,7 @@ cpp11::external_pointer<std::stringstream> svgstring_(cpp11::environment env, st
   return {strstream->string_src(), false};
 }
 
-[[cpp11::export]]
+[[cpp11::register]]
 std::string get_svg_content(cpp11::external_pointer<std::stringstream> p) {
   p->flush();
   std::string svgstr = p->str();
