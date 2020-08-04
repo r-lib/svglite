@@ -830,6 +830,23 @@ void svg_raster(unsigned int *raster, int w, int h,
   stream->flush();
 }
 
+SEXP svg_set_pattern(SEXP pattern, pDevDesc dd) {
+    return R_NilValue;
+}
+
+void svg_release_pattern(SEXP ref, pDevDesc dd) {} 
+
+SEXP svg_set_clip_path(SEXP path, SEXP ref, pDevDesc dd) {
+    return R_NilValue;
+}
+
+void svg_release_clip_path(SEXP ref, pDevDesc dd) {}
+
+SEXP svg_set_mask(SEXP path, SEXP ref, pDevDesc dd) {
+    return R_NilValue;
+}
+
+void svg_release_mask(SEXP ref, pDevDesc dd) {}
 
 pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
                         double height, double pointsize,
@@ -866,6 +883,14 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->metricInfo = svg_metric_info;
   dd->cap = NULL;
   dd->raster = svg_raster;
+#if R_GE_version >= 13
+  dd->setPattern      = svg_set_pattern;
+  dd->releasePattern  = svg_release_pattern;
+  dd->setClipPath     = svg_set_clip_path;
+  dd->releaseClipPath = svg_release_clip_path;
+  dd->setMask         = svg_set_mask;
+  dd->releaseMask     = svg_release_mask;
+#endif
 
   // UTF-8 support
   dd->wantSymbolUTF8 = (Rboolean) 1;
@@ -898,6 +923,10 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->displayListOn = FALSE;
   dd->haveTransparency = 2;
   dd->haveTransparentBg = 2;
+
+#if R_GE_version >= 13
+  dd->deviceVersion = R_GE_definitions;
+#endif
 
   dd->deviceSpecific = new SVGDesc(stream, standalone, aliases, file, id);
   return dd;
@@ -960,3 +989,4 @@ std::string get_svg_content(cpp11::external_pointer<std::stringstream> p) {
   }
   return svgstr;
 }
+
