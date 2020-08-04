@@ -749,6 +749,20 @@ void svg_text(double x, double y, const char *str, double rot,
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
 
+  int adj = 0;
+  double rad = rot * 2 * M_PI / 360;
+  if (hadj == 0.5) {
+    double offset = svg_strwidth(str, gc, dd) / 2;
+    adj = 1;
+    x -= offset * cos(-rad);
+    y -= offset * sin(-rad);
+  } else if (hadj == 1) {
+    double offset = svg_strwidth(str, gc, dd);
+    adj = 2;
+    x -= offset * cos(-rad);
+    y -= offset * sin(-rad);
+  }
+
   (*stream) << "<text";
 
   if (rot == 0) {
@@ -769,6 +783,10 @@ void svg_text(double x, double y, const char *str, double rot,
     write_style_str(stream, "font-style", "italic");
   if (!is_black(gc->col))
     write_style_col(stream, "fill", gc->col);
+  if (adj == 1)
+    write_style_str(stream, "text-align", "center");
+  if (adj == 2)
+    write_style_str(stream, "text-align", "right");
 
   std::string font = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases);
   write_style_str(stream, "font-family", font.c_str());
@@ -834,7 +852,7 @@ SEXP svg_set_pattern(SEXP pattern, pDevDesc dd) {
     return R_NilValue;
 }
 
-void svg_release_pattern(SEXP ref, pDevDesc dd) {} 
+void svg_release_pattern(SEXP ref, pDevDesc dd) {}
 
 SEXP svg_set_clip_path(SEXP path, SEXP ref, pDevDesc dd) {
     return R_NilValue;
@@ -918,7 +936,7 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
 
   // Capabilities
   dd->canClip = TRUE;
-  dd->canHAdj = 0;
+  dd->canHAdj = 1;
   dd->canChangeGamma = FALSE;
   dd->displayListOn = FALSE;
   dd->haveTransparency = 2;

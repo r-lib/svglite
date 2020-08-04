@@ -24,6 +24,8 @@
 
 * svgz output is now supported natively (#6)
 
+* Text adjustments are now encoded in css where possible (#107)
+
 # svglite 1.2.3
 
 * The radius of circles is no longer expressed in pt (#93, @vandenman).
