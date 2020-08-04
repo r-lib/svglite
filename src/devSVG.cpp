@@ -16,6 +16,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
 //  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+extern "C" {
+#include <png.h>
+}
+
 #include <cpp11/list.hpp>
 #include <cpp11/strings.hpp>
 #include <cpp11/as.hpp>
@@ -29,10 +34,6 @@
 #include <memory>
 #include <vector>
 #include <R_ext/GraphicsEngine.h>
-
-extern "C" {
-#include <png.h>
-}
 
 #include "SvgStream.h"
 #include "utils.h"
