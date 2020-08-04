@@ -23,10 +23,10 @@ SystemRequirements:
 Depends:
     R (>= 3.0.0)
 Imports:
-    Rcpp,
+    cpp11,
     systemfonts (>= 0.2.3)
 LinkingTo:
-    Rcpp,
+    cpp11,
     systemfonts
 Suggests:
     htmltools,
@@ -39,5 +39,5 @@ Suggests:
 License: GPL (>= 2)
 URL: https://svglite.r-lib.org, https://github.com/r-lib/svglite
 BugReports: https://github.com/r-lib/svglite/issues
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.0.9000
 VignetteBuilder: knitr

@@ -3,8 +3,11 @@
 
 #include <fstream>
 #include <sstream>
+#include <cpp11/protect.hpp>
+#include <cpp11/environment.hpp>
+#include <cpp11/strings.hpp>
+#include <cpp11/as.hpp>
 #include <unordered_set>
-#include <Rcpp.h>
 #include "utils.h"
 
 namespace svglite { namespace internal {
@@ -45,6 +48,7 @@ class SvgStream {
   virtual void write(const char* data) = 0;
   virtual void write(const std::string& data) = 0;
   virtual void write(char data) = 0;
+  virtual bool is_file_stream() = 0;
 
   void put(char data) {
     write(data);
@@ -75,7 +79,7 @@ public:
     stream_.open(R_ExpandFileName(path.c_str()));
 
     if (stream_.fail())
-      Rcpp::stop("cannot open stream " + path);
+      cpp11::stop("cannot open stream %s", path.c_str());
 
     stream_ << std::fixed << std::setprecision(2);
   }
@@ -88,7 +92,7 @@ public:
 
     stream_.open(R_ExpandFileName(buf));
     if (stream_.fail())
-      Rcpp::stop("cannot open stream " + std::string(buf));
+      cpp11::stop("cannot open stream %s", buf);
 
     stream_ << std::fixed << std::setprecision(2);
   }
@@ -98,13 +102,18 @@ public:
   void write(const char* data)    { stream_ << data; }
   void write(char data)           { stream_ << data; }
   void write(const std::string& data) { stream_ << data; }
+  bool is_file_stream() {return true; }
 
   // Adding a final newline here creates problems on Windows when
   // seeking back to original position. So we only write the newline
   // in finish()
   void flush() {
     stream_ << "</g>\n</svg>";
+#ifdef _WIN32
+    stream_.seekp(-12, std::ios_base::cur);
+#else
     stream_.seekp(-11, std::ios_base::cur);
+#endif
   }
 
   void finish(bool close) {
@@ -124,10 +133,10 @@ public:
 
 class SvgStreamString : public SvgStream {
   std::stringstream stream_;
-  Rcpp::Environment env_;
+  cpp11::environment env_;
 
 public:
-  SvgStreamString(Rcpp::Environment env): env_(env) {
+  SvgStreamString(cpp11::environment env): env_(env) {
     stream_ << std::fixed << std::setprecision(2);
     env_["is_closed"] = false;
   }
@@ -137,6 +146,7 @@ public:
   void write(const char* data)        { stream_ << data; }
   void write(char data)               { stream_ << data; }
   void write(const std::string& data) { stream_ << data; }
+  bool is_file_stream() {return false; }
 
   void flush() {
   }
@@ -159,8 +169,8 @@ public:
       svgstr.append("</svg>");
     }
     if (env_.exists("svg_string")) {
-      Rcpp::CharacterVector str = env_["svg_string"];
-      str.push_back(svgstr);
+      cpp11::writable::strings str(env_["svg_string"]);
+      str.push_back(svgstr.c_str());
       env_["svg_string"] = str;
     } else {
       env_["svg_string"] = svgstr;
@@ -172,10 +182,8 @@ public:
     clear_clip_ids();
   }
 
-  Rcpp::XPtr<std::stringstream> string_src() {
-    // `false` means this pointer should not be "deleted" by R
-    // The object will be automatically destroyed when device is closed
-    return Rcpp::XPtr<std::stringstream>(&stream_, false);
+  std::stringstream* string_src() {
+    return &stream_;
   }
 };
 
