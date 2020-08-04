@@ -100,4 +100,14 @@ invalid_filename <- function(filename) {
   return(grepl("%", stripped_file))
 
 }
-
+#' Convert an svg file to svgz, overwriting the old file
+#' @param file the path to the file to convert
+#' @keywords internal
+#' @export
+create_svgz <- function(file) {
+  svg <- readLines(file)
+  out <- gzfile(file, "w")
+  writeLines(svg, out)
+  close(out)
+  invisible(NULL)
+}

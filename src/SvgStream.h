@@ -6,7 +6,9 @@
 #include <cpp11/protect.hpp>
 #include <cpp11/environment.hpp>
 #include <cpp11/strings.hpp>
+#include <cpp11/r_string.hpp>
 #include <cpp11/as.hpp>
+#include <cpp11/function.hpp>
 #include <unordered_set>
 #include "utils.h"
 
@@ -73,10 +75,16 @@ SvgStream& operator<<(SvgStream& object, const double& data) {
 
 class SvgStreamFile : public SvgStream {
   std::ofstream stream_;
+  bool compress = false;
+  std::string file = "";
 
 public:
   SvgStreamFile(const std::string& path) {
-    stream_.open(R_ExpandFileName(path.c_str()));
+    std::string svgz_ext = path.size() > 5 ? path.substr(path.size() - 5) : "";
+    compress = iequals(svgz_ext, ".svgz");
+    file = R_ExpandFileName(path.c_str());
+
+    stream_.open(file.c_str());
 
     if (stream_.fail())
       cpp11::stop("cannot open stream %s", path.c_str());
@@ -85,12 +93,15 @@ public:
   }
 
   SvgStreamFile(const std::string& path, int pageno) {
+    std::string svgz_ext = path.size() > 5 ? path.substr(path.size() - 5) : "";
+    compress = iequals(svgz_ext, ".svgz");
 
     char buf[PATH_MAX+1];
     snprintf(buf, PATH_MAX, path.c_str(), pageno);
     buf[PATH_MAX] = '\0';
+    file = R_ExpandFileName(buf);
 
-    stream_.open(R_ExpandFileName(buf));
+    stream_.open(file.c_str());
     if (stream_.fail())
       cpp11::stop("cannot open stream %s", buf);
 
@@ -117,12 +128,18 @@ public:
   }
 
   void finish(bool close) {
+    const auto compressor = cpp11::package("svglite")["create_svgz"];
+
     if (is_clipping()) {
       stream_ << "</g>\n";
     }
     stream_ << "</svg>\n";
     stream_.flush();
     clear_clip_ids();
+
+    if (compress) {
+      compressor(cpp11::r_string(file));
+    }
   }
 
   ~SvgStreamFile() {
