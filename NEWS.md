@@ -26,6 +26,8 @@
 
 * Text adjustments are now encoded in css where possible (#107)
 
+* The use of textLength CSS property can now be turned of (#118)
+
 # svglite 1.2.3
 
 * The radius of circles is no longer expressed in pt (#93, @vandenman).

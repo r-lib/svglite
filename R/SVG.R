@@ -34,6 +34,15 @@
 #' @param id A character vector of ids to assign to the generated SVG's. If
 #'   creating more SVG files than supplied ids the exceeding SVG's will not have
 #'   an id tag and a warning will be thrown.
+#' @param fix_text_size Should the width of strings be fixed so that it doesn't
+#'   change between svg renderers depending on their font rendering? Defaults to
+#'   `TRUE`. If `TRUE` each string will have the `textLength` CSS property set
+#'   to the width calculated by systemfonts and
+#'   `lengthAdjust='spacingAndGlyphs'`. Setting this to `FALSE` can be
+#'   beneficial for heavy post-processing that may change content or style of
+#'   strings, but may lead to inconsistencies between strings and graphic
+#'   elements that depend on the dimensions of the string (e.g. label borders
+#'   and background).
 #' @param file Identical to `filename`. Provided for backward compatibility.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
 #'   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
@@ -66,7 +75,8 @@
 #' @export
 svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,
-                    system_fonts = list(), user_fonts = list(), id = NULL, file) {
+                    system_fonts = list(), user_fonts = list(), id = NULL,
+                    fix_text_size = TRUE, file) {
   if (!missing(file)) {
     filename <- file
   }
@@ -77,7 +87,7 @@ svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
     id <- character(0)
   }
   id <- as.character(id)
-  invisible(svglite_(filename, bg, width, height, pointsize, standalone, aliases, id))
+  invisible(svglite_(filename, bg, width, height, pointsize, standalone, aliases, id, fix_text_size))
 }
 
 #' Access current SVG as a string.
@@ -105,7 +115,8 @@ svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
 #' @export
 svgstring <- function(width = 10, height = 8, bg = "white",
                       pointsize = 12, standalone = TRUE,
-                      system_fonts = list(), user_fonts = list(), id = NULL) {
+                      system_fonts = list(), user_fonts = list(), id = NULL,
+                      fix_text_size = TRUE) {
   aliases <- validate_aliases(system_fonts, user_fonts)
   if (is.null(id)) {
     id <- character(0)
@@ -114,7 +125,8 @@ svgstring <- function(width = 10, height = 8, bg = "white",
 
   env <- new.env(parent = emptyenv())
   string_src <- svgstring_(env, width = width, height = height, bg = bg,
-    pointsize = pointsize, standalone = standalone, aliases = aliases, id = id)
+    pointsize = pointsize, standalone = standalone, aliases = aliases, id = id,
+    fix_text_size)
 
   function() {
     svgstr <- env$svg_string

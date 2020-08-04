@@ -14,6 +14,7 @@ svglite(
   system_fonts = list(),
   user_fonts = list(),
   id = NULL,
+  fix_text_size = TRUE,
   file
 )
 }
@@ -46,6 +47,16 @@ font file.}
 \item{id}{A character vector of ids to assign to the generated SVG's. If
 creating more SVG files than supplied ids the exceeding SVG's will not have
 an id tag and a warning will be thrown.}
+
+\item{fix_text_size}{Should the width of strings be fixed so that it doesn't
+change between svg renderers depending on their font rendering? Defaults to
+`TRUE`. If `TRUE` each string will have the `textLength` CSS property set
+to the width calculated by systemfonts and
+`lengthAdjust='spacingAndGlyphs'`. Setting this to `FALSE` can be
+beneficial for heavy post-processing that may change content or style of
+strings, but may lead to inconsistencies between strings and graphic
+elements that depend on the dimensions of the string (e.g. label borders
+and background).}
 
 \item{file}{Identical to `filename`. Provided for backward compatibility.}
 }
