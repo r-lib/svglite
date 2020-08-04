@@ -36,9 +36,8 @@ Suggests:
     fontquiver (>= 0.2.0),
     knitr,
     rmarkdown
-Remotes: r-lib/cpp11
 License: GPL (>= 2)
 URL: https://svglite.r-lib.org, https://github.com/r-lib/svglite
 BugReports: https://github.com/r-lib/svglite/issues
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.0.9000
 VignetteBuilder: knitr
