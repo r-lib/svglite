@@ -788,11 +788,9 @@ void svg_text(double x, double y, const char *str, double rot,
     write_style_col(stream, "fill", gc->col);
   if (adj == 1) {
     write_style_str(stream, "text-align", "center");
-    write_style_str(stream, "text-anchor", "middle");
   }
   if (adj == 2) {
     write_style_str(stream, "text-align", "right");
-    write_style_str(stream, "text-anchor", "end");
   }
 
   std::string font = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases);
