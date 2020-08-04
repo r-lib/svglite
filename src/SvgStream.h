@@ -109,7 +109,11 @@ public:
   // in finish()
   void flush() {
     stream_ << "</g>\n</svg>";
+#ifdef _WIN32
+    stream_.seekp(-12, std::ios_base::cur);
+else
     stream_.seekp(-11, std::ios_base::cur);
+#endif
   }
 
   void finish(bool close) {
