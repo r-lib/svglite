@@ -111,7 +111,7 @@ public:
     stream_ << "</g>\n</svg>";
 #ifdef _WIN32
     stream_.seekp(-12, std::ios_base::cur);
-else
+#else
     stream_.seekp(-11, std::ios_base::cur);
 #endif
   }
