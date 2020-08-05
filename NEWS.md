@@ -28,6 +28,8 @@
 
 * The use of textLength CSS property can now be turned of (#118)
 
+* web font imports can now be given when creating an svg (#108)
+
 # svglite 1.2.3
 
 * The radius of circles is no longer expressed in pt (#93, @vandenman).

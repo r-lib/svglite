@@ -12,6 +12,7 @@ svgstring(
   standalone = TRUE,
   system_fonts = list(),
   user_fonts = list(),
+  web_fonts = list(),
   id = NULL,
   fix_text_size = TRUE
 )
@@ -41,6 +42,13 @@ strings containing a path to a font file, or a list containing
 \code{name} and \code{file} elements with \code{name} indicating
 the font alias in the SVG output and \code{file} the path to a
 font file.}
+
+\item{web_fonts}{A list containing web fonts to use in the SVG. The fonts
+will still need to be available locally on the computer running the code,
+but viewers of the final SVG will not need the font if specified as a web
+font. Web fonts can either be specified using [font_face()] or given as a
+single string in which case they are taken to be URL's for an `@import`
+directive to e.g. Google Fonts.}
 
 \item{id}{A character vector of ids to assign to the generated SVG's. If
 creating more SVG files than supplied ids the exceeding SVG's will not have

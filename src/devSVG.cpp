@@ -54,9 +54,12 @@ public:
   const std::string file;
   cpp11::list system_aliases;
   cpp11::list user_aliases;
+  const std::string webfonts;
   cpp11::strings ids;
 
-  SVGDesc(SvgStreamPtr stream_, bool standalone_, cpp11::list aliases_, const std::string& file_, cpp11::strings ids_, bool fix_text_size_):
+  SVGDesc(SvgStreamPtr stream_, bool standalone_, cpp11::list aliases_,
+          const std::string webfonts_, const std::string& file_, cpp11::strings ids_,
+          bool fix_text_size_):
       stream(stream_),
       pageno(0),
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
@@ -65,6 +68,7 @@ public:
       file(file_),
       system_aliases(cpp11::as_cpp<cpp11::list>(aliases_["system"])),
       user_aliases(cpp11::as_cpp<cpp11::list>(aliases_["user"])),
+      webfonts(webfonts_),
       ids(ids_) {
   }
 
@@ -569,6 +573,7 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   // Setting default styles
   (*stream) << "<defs>\n";
   (*stream) << "  <style type='text/css'><![CDATA[\n";
+  (*stream) <<      svgd->webfonts;
   (*stream) << "    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {\n";
   (*stream) << "      fill: none;\n";
   (*stream) << "      stroke: #000000;\n";
@@ -875,6 +880,7 @@ void svg_release_mask(SEXP ref, pDevDesc dd) {}
 pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
                         double height, double pointsize,
                         bool standalone, cpp11::list& aliases,
+                        const std::string& webfonts,
                         const std::string& file, cpp11::strings id,
                         bool fix_text_size) {
 
@@ -953,13 +959,15 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->deviceVersion = R_GE_definitions;
 #endif
 
-  dd->deviceSpecific = new SVGDesc(stream, standalone, aliases, file, id, fix_text_size);
+  dd->deviceSpecific = new SVGDesc(stream, standalone, aliases, webfonts, file,
+                                   id, fix_text_size);
   return dd;
 }
 
 void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double height,
                 double pointsize, bool standalone, cpp11::list& aliases,
-                const std::string& file, cpp11::strings id, bool fix_text_size) {
+                const std::string& webfonts, const std::string& file,
+                cpp11::strings id, bool fix_text_size) {
 
   int bg = R_GE_str2col(bg_.c_str());
 
@@ -967,7 +975,7 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
   R_CheckDeviceAvailable();
   BEGIN_SUSPEND_INTERRUPTS {
     pDevDesc dev = svg_driver_new(stream, bg, width, height, pointsize,
-                                  standalone, aliases, file, id, fix_text_size);
+                                  standalone, aliases, webfonts, file, id, fix_text_size);
     if (dev == NULL)
       cpp11::stop("Failed to start SVG device");
 
@@ -981,10 +989,11 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
 [[cpp11::register]]
 bool svglite_(std::string file, std::string bg, double width, double height,
               double pointsize, bool standalone, cpp11::list aliases,
-              cpp11::strings id, bool fix_text_size) {
+              std::string webfonts, cpp11::strings id, bool fix_text_size) {
 
   SvgStreamPtr stream(new SvgStreamFile(file, 1));
-  makeDevice(stream, bg, width, height, pointsize, standalone, aliases, file, id, fix_text_size);
+  makeDevice(stream, bg, width, height, pointsize, standalone, aliases, webfonts,
+             file, id, fix_text_size);
 
   return true;
 }
@@ -993,10 +1002,12 @@ bool svglite_(std::string file, std::string bg, double width, double height,
 cpp11::external_pointer<std::stringstream> svgstring_(cpp11::environment env, std::string bg,
                                          double width, double height, double pointsize,
                                          bool standalone, cpp11::list aliases,
-                                         cpp11::strings id, bool fix_text_size) {
+                                         std::string webfonts, cpp11::strings id,
+                                         bool fix_text_size) {
 
   SvgStreamPtr stream(new SvgStreamString(env));
-  makeDevice(stream, bg, width, height, pointsize, standalone, aliases, "", id, fix_text_size);
+  makeDevice(stream, bg, width, height, pointsize, standalone, aliases, webfonts,
+             "", id, fix_text_size);
 
   SvgStreamString* strstream = static_cast<SvgStreamString*>(stream.get());
 
