@@ -15,7 +15,9 @@ Badge](http://www.r-pkg.org/badges/version/svglite)](https://cran.r-project.org/
 
 svglite is a graphics device that produces clean svg output, suitable
 for use on the web, or hand editing. Compared to the built-in `svg()`,
-svglite produces smaller files, and leaves text as is.
+svglite produces smaller files, and leaves text as is, making it easier
+to edit the result after creation. It also support multiple nice
+features such as embedding of web fonts.
 
 ## Installation
 
@@ -29,8 +31,8 @@ devtools::install_github("r-lib/svglite")
 
 ## Benchmarks
 
-While the performance of `svglite()` and `svg()` is comparable (with a
-slight upper hand to svglite)
+While the performance of `svglite()` and `svg()` is comparable (with an
+upper hand to svglite)…
 
 ``` r
 library(svglite)
@@ -56,14 +58,16 @@ plot(bench::mark(svglite_test(), svg_test()), type = 'ridge')
 
 <img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
-It produces considerably smaller files:
+…it produces considerably smaller files:
 
 ``` r
 file.size(c(tmp1, tmp2)) / 1024
-#> [1]  74.54492 321.01172
+#> [1]  74.88281 320.84668
 ```
 
-In both cases, compressing to make `.svgz` is worthwhile:
+In both cases, compressing to make `.svgz` is worthwhile. svglite
+supports compressed output directly and just need a `.svgz` extension in
+the filename to trigger it:
 
 ``` r
 gz <- function(in_path, out_path = tempfile()) {
@@ -73,8 +77,11 @@ gz <- function(in_path, out_path = tempfile()) {
   
   invisible(out_path)
 }
-file.size(gz(tmp1)) / 1024
-#> [1] 9.416992
-file.size(gz(tmp2)) / 1024
-#> [1] 38.55762
+tmp3 <- tempfile(fileext = ".svgz")
+svglite(tmp3)
+plot(x, y)
+invisible(dev.off())
+
+file.size(c(tmp3, gz(tmp2))) / 1024
+#> [1]  9.427734 38.589844
 ```
