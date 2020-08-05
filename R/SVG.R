@@ -49,6 +49,9 @@
 #'   strings, but may lead to inconsistencies between strings and graphic
 #'   elements that depend on the dimensions of the string (e.g. label borders
 #'   and background).
+#' @param scaling A scaling factor to apply to the rendered line width and text
+#'   size. Useful for getting the right sizing at the dimension that you
+#'   need.
 #' @param file Identical to `filename`. Provided for backward compatibility.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
 #'   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
@@ -82,7 +85,7 @@
 svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,
                     system_fonts = list(), user_fonts = list(), web_fonts = list(), id = NULL,
-                    fix_text_size = TRUE, file) {
+                    fix_text_size = TRUE, scaling = 1, file) {
   if (!missing(file)) {
     filename <- file
   }
@@ -94,7 +97,7 @@ svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
     id <- character(0)
   }
   id <- as.character(id)
-  invisible(svglite_(filename, bg, width, height, pointsize, standalone, aliases, web_fonts, id, fix_text_size))
+  invisible(svglite_(filename, bg, width, height, pointsize, standalone, aliases, web_fonts, id, fix_text_size, scaling))
 }
 
 #' Access current SVG as a string.
@@ -123,7 +126,8 @@ svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
 svgstring <- function(width = 10, height = 8, bg = "white",
                       pointsize = 12, standalone = TRUE,
                       system_fonts = list(), user_fonts = list(),
-                      web_fonts = list(), id = NULL, fix_text_size = TRUE) {
+                      web_fonts = list(), id = NULL, fix_text_size = TRUE,
+                      scaling = 1) {
   aliases <- validate_aliases(system_fonts, user_fonts)
   web_fonts <- validate_web_fonts(web_fonts)
   if (is.null(id)) {
@@ -134,7 +138,7 @@ svgstring <- function(width = 10, height = 8, bg = "white",
   env <- new.env(parent = emptyenv())
   string_src <- svgstring_(env, width = width, height = height, bg = bg,
     pointsize = pointsize, standalone = standalone, aliases = aliases,
-    webfonts = web_fonts, id = id, fix_text_size)
+    webfonts = web_fonts, id = id, fix_text_size, scaling)
 
   function() {
     svgstr <- env$svg_string

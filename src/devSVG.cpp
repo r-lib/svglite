@@ -51,6 +51,7 @@ public:
   double clipx0, clipx1, clipy0, clipy1;  // Save the previous clip path to avoid duplication
   bool standalone;
   bool fix_text_size;
+  double scaling;
   const std::string file;
   cpp11::list system_aliases;
   cpp11::list user_aliases;
@@ -59,12 +60,13 @@ public:
 
   SVGDesc(SvgStreamPtr stream_, bool standalone_, cpp11::list aliases_,
           const std::string webfonts_, const std::string& file_, cpp11::strings ids_,
-          bool fix_text_size_):
+          bool fix_text_size_, double scaling_):
       stream(stream_),
       pageno(0),
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
       standalone(standalone_),
       fix_text_size(fix_text_size_),
+      scaling(scaling_),
       file(file_),
       system_aliases(cpp11::as_cpp<cpp11::list>(aliases_["system"])),
       user_aliases(cpp11::as_cpp<cpp11::list>(aliases_["user"])),
@@ -384,11 +386,12 @@ inline double scale_lty(int lty, double lwd) {
 }
 
 // Writing style attributes related to line types
-inline void write_style_linetype(SvgStreamPtr stream, const pGEcontext gc, bool first = false) {
+inline void write_style_linetype(SvgStreamPtr stream, const pGEcontext gc, double scaling, bool first = false) {
   int lty = gc->lty;
+  double lwd = gc->lwd * scaling;
 
   // 1 lwd = 1/96", but units in rest of document are 1/72"
-  write_style_dbl(stream, "stroke-width", gc->lwd / 96.0 * 72, first);
+  write_style_dbl(stream, "stroke-width", lwd / 96.0 * 72, first);
 
   // Default is "stroke: #000000;" as declared in <style>
   if (!is_black(gc->col))
@@ -404,11 +407,11 @@ inline void write_style_linetype(SvgStreamPtr stream, const pGEcontext gc, bool 
     // https://github.com/wch/r-source/blob/trunk/src/include/R_ext/GraphicsEngine.h#L337
     (*stream) << " stroke-dasharray: ";
     // First number
-    (*stream) << scale_lty(lty, gc->lwd);
+    (*stream) << scale_lty(lty, lwd);
     lty = lty >> 4;
     // Remaining numbers
     for(int i = 1 ; i < 8 && lty & 15; i++) {
-      (*stream) << ',' << scale_lty(lty, gc->lwd);
+      (*stream) << ',' << scale_lty(lty, lwd);
       lty = lty >> 4;
     }
     stream->put(';');
@@ -474,7 +477,7 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
 
   std::pair<std::string, int> font = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
 
-  int error = glyph_metrics(c, font.first.c_str(), font.second, gc->ps * gc->cex, 1e4, ascent, descent, width);
+  int error = glyph_metrics(c, font.first.c_str(), font.second, gc->ps * gc->cex * svgd->scaling, 1e4, ascent, descent, width);
   if (error != 0) {
     *ascent = 0;
     *descent = 0;
@@ -622,7 +625,7 @@ void svg_line(double x1, double y1, double x2, double y2,
     x2 << "' y2='" << y2 << '\'';
 
   write_style_begin(stream);
-  write_style_linetype(stream, gc, true);
+  write_style_linetype(stream, gc, svgd->scaling, true);
   write_style_end(stream);
 
   (*stream) << " />\n";
@@ -643,7 +646,7 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   stream->put('\'');
 
   write_style_begin(stream);
-  write_style_linetype(stream, gc, true);
+  write_style_linetype(stream, gc, svgd->scaling, true);
   if (filled)
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
@@ -692,7 +695,7 @@ void svg_path(double *x, double *y,
   write_style_str(stream, "fill-rule", winding ? "nonzero" : "evenodd", true);
   if (is_filled(gc->fill))
     write_style_col(stream, "fill", gc->fill);
-  write_style_linetype(stream, gc);
+  write_style_linetype(stream, gc, svgd->scaling);
   write_style_end(stream);
 
   (*stream) << " />\n";
@@ -706,7 +709,7 @@ double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
 
   double width = 0.0;
 
-  int error = string_width(str, font.first.c_str(), font.second, gc->ps * gc->cex, 1e4, 1, &width);
+  int error = string_width(str, font.first.c_str(), font.second, gc->ps * gc->cex * svgd->scaling, 1e4, 1, &width);
 
   if (error != 0) {
     width = 0.0;
@@ -725,7 +728,7 @@ void svg_rect(double x0, double y0, double x1, double y1,
     "' width='" << fabs(x1 - x0) << "' height='" << fabs(y1 - y0) << '\'';
 
   write_style_begin(stream);
-  write_style_linetype(stream, gc, true);
+  write_style_linetype(stream, gc, svgd->scaling, true);
   if (is_filled(gc->fill))
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
@@ -742,7 +745,7 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
   (*stream) << "<circle cx='" << x << "' cy='" << y << "' r='" << r << "'";
 
   write_style_begin(stream);
-  write_style_linetype(stream, gc, true);
+  write_style_linetype(stream, gc, svgd->scaling, true);
   if (is_filled(gc->fill))
     write_style_col(stream, "fill", gc->fill);
   write_style_end(stream);
@@ -784,7 +787,7 @@ void svg_text(double x, double y, const char *str, double rot,
   double fontsize = gc->cex * gc->ps;
 
   write_style_begin(stream);
-  write_style_fontsize(stream, fontsize, true);
+  write_style_fontsize(stream, fontsize * svgd->scaling, true);
   if (is_bold(gc->fontface))
     write_style_str(stream, "font-weight", "bold");
   if (is_italic(gc->fontface))
@@ -882,7 +885,7 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
                         bool standalone, cpp11::list& aliases,
                         const std::string& webfonts,
                         const std::string& file, cpp11::strings id,
-                        bool fix_text_size) {
+                        bool fix_text_size, double scaling) {
 
   pDevDesc dd = (DevDesc*) calloc(1, sizeof(DevDesc));
   if (dd == NULL)
@@ -937,15 +940,15 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
 
   // Magic constants copied from other graphics devices
   // nominal character sizes in pts
-  dd->cra[0] = 0.9 * pointsize;
-  dd->cra[1] = 1.2 * pointsize;
+  dd->cra[0] = 0.9 * pointsize * scaling;
+  dd->cra[1] = 1.2 * pointsize * scaling;
   // character alignment offsets
   dd->xCharOffset = 0.4900;
   dd->yCharOffset = 0.3333;
   dd->yLineBias = 0.2;
   // inches per pt
-  dd->ipr[0] = 1.0 / 72.0;
-  dd->ipr[1] = 1.0 / 72.0;
+  dd->ipr[0] = 1.0 / (72.0 * scaling);
+  dd->ipr[1] = 1.0 / (72.0 * scaling);
 
   // Capabilities
   dd->canClip = TRUE;
@@ -960,14 +963,14 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
 #endif
 
   dd->deviceSpecific = new SVGDesc(stream, standalone, aliases, webfonts, file,
-                                   id, fix_text_size);
+                                   id, fix_text_size, scaling);
   return dd;
 }
 
 void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double height,
                 double pointsize, bool standalone, cpp11::list& aliases,
                 const std::string& webfonts, const std::string& file,
-                cpp11::strings id, bool fix_text_size) {
+                cpp11::strings id, bool fix_text_size, double scaling) {
 
   int bg = R_GE_str2col(bg_.c_str());
 
@@ -975,7 +978,8 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
   R_CheckDeviceAvailable();
   BEGIN_SUSPEND_INTERRUPTS {
     pDevDesc dev = svg_driver_new(stream, bg, width, height, pointsize,
-                                  standalone, aliases, webfonts, file, id, fix_text_size);
+                                  standalone, aliases, webfonts, file, id,
+                                  fix_text_size, scaling);
     if (dev == NULL)
       cpp11::stop("Failed to start SVG device");
 
@@ -989,11 +993,12 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
 [[cpp11::register]]
 bool svglite_(std::string file, std::string bg, double width, double height,
               double pointsize, bool standalone, cpp11::list aliases,
-              std::string webfonts, cpp11::strings id, bool fix_text_size) {
+              std::string webfonts, cpp11::strings id, bool fix_text_size,
+              double scaling) {
 
   SvgStreamPtr stream(new SvgStreamFile(file, 1));
   makeDevice(stream, bg, width, height, pointsize, standalone, aliases, webfonts,
-             file, id, fix_text_size);
+             file, id, fix_text_size, scaling);
 
   return true;
 }
@@ -1003,11 +1008,11 @@ cpp11::external_pointer<std::stringstream> svgstring_(cpp11::environment env, st
                                          double width, double height, double pointsize,
                                          bool standalone, cpp11::list aliases,
                                          std::string webfonts, cpp11::strings id,
-                                         bool fix_text_size) {
+                                         bool fix_text_size, double scaling) {
 
   SvgStreamPtr stream(new SvgStreamString(env));
   makeDevice(stream, bg, width, height, pointsize, standalone, aliases, webfonts,
-             "", id, fix_text_size);
+             "", id, fix_text_size, scaling);
 
   SvgStreamString* strstream = static_cast<SvgStreamString*>(stream.get());
 

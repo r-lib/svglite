@@ -30,6 +30,8 @@
 
 * web font imports can now be given when creating an svg (#108)
 
+* Add scaling argument to devices to control line-width and text scaling (#115)
+
 # svglite 1.2.3
 
 * The radius of circles is no longer expressed in pt (#93, @vandenman).

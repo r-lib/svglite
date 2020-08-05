@@ -16,6 +16,7 @@ svglite(
   web_fonts = list(),
   id = NULL,
   fix_text_size = TRUE,
+  scaling = 1,
   file
 )
 }
@@ -65,6 +66,10 @@ beneficial for heavy post-processing that may change content or style of
 strings, but may lead to inconsistencies between strings and graphic
 elements that depend on the dimensions of the string (e.g. label borders
 and background).}
+
+\item{scaling}{A scaling factor to apply to the rendered line width and text
+size. Useful for getting the right sizing at the dimension that you
+need.}
 
 \item{file}{Identical to `filename`. Provided for backward compatibility.}
 }
