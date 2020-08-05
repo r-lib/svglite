@@ -158,7 +158,7 @@ alternative to svgstring()." />
 alternative to <code><a href='svgstring.html'>svgstring</a>()</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>stringSVG</span>(<span class='no'>code</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>stringSVG</span>(<span class='kw'>code</span>, <span class='kw'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,7 +175,7 @@ alternative to <code><a href='svgstring.html'>svgstring</a>()</code>.</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>stringSVG</span>(<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='fl'>1</span>:<span class='fl'>10</span>))</div><div class='output co'>#&gt; <span class='message'>Saving 7" x 7" image</span></div><div class='output co'>#&gt; &lt;?xml version='1.0' encoding='UTF-8' ?&gt;
+    <pre class="examples"><div class='input'><span class='fu'>stringSVG</span>(<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>))</div><div class='output co'>#&gt; <span class='message'>Saving 7" x 7" image</span></div><div class='output co'>#&gt; &lt;?xml version='1.0' encoding='UTF-8' ?&gt;
 #&gt; &lt;svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='504.00pt' height='504.00pt' viewBox='0 0 504.00 504.00'&gt;
 #&gt; &lt;defs&gt;
 #&gt;   &lt;style type='text/css'&gt;&lt;![CDATA[
@@ -220,25 +220,25 @@ alternative to <code><a href='svgstring.html'>svgstring</a>()</code>.</p>
 #&gt; &lt;line x1='287.73' y1='430.56' x2='287.73' y2='437.76' style='stroke-width: 0.75;' /&gt;
 #&gt; &lt;line x1='373.07' y1='430.56' x2='373.07' y2='437.76' style='stroke-width: 0.75;' /&gt;
 #&gt; &lt;line x1='458.40' y1='430.56' x2='458.40' y2='437.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;text x='113.73' y='456.48' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;2&lt;/text&gt;
-#&gt; &lt;text x='199.06' y='456.48' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;4&lt;/text&gt;
-#&gt; &lt;text x='284.40' y='456.48' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;6&lt;/text&gt;
-#&gt; &lt;text x='369.73' y='456.48' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;8&lt;/text&gt;
-#&gt; &lt;text x='451.73' y='456.48' style='font-size: 12.00px; font-family: Arial;' textLength='13.35px' lengthAdjust='spacingAndGlyphs'&gt;10&lt;/text&gt;
+#&gt; &lt;text x='113.73' y='456.48' style='font-size: 12.00px; text-align: center; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;2&lt;/text&gt;
+#&gt; &lt;text x='199.06' y='456.48' style='font-size: 12.00px; text-align: center; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;4&lt;/text&gt;
+#&gt; &lt;text x='284.40' y='456.48' style='font-size: 12.00px; text-align: center; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;6&lt;/text&gt;
+#&gt; &lt;text x='369.73' y='456.48' style='font-size: 12.00px; text-align: center; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;8&lt;/text&gt;
+#&gt; &lt;text x='451.73' y='456.48' style='font-size: 12.00px; text-align: center; font-family: Arial;' textLength='13.35px' lengthAdjust='spacingAndGlyphs'&gt;10&lt;/text&gt;
 #&gt; &lt;line x1='59.04' y1='378.58' x2='59.04' y2='72.80' style='stroke-width: 0.75;' /&gt;
 #&gt; &lt;line x1='59.04' y1='378.58' x2='51.84' y2='378.58' style='stroke-width: 0.75;' /&gt;
 #&gt; &lt;line x1='59.04' y1='302.13' x2='51.84' y2='302.13' style='stroke-width: 0.75;' /&gt;
 #&gt; &lt;line x1='59.04' y1='225.69' x2='51.84' y2='225.69' style='stroke-width: 0.75;' /&gt;
 #&gt; &lt;line x1='59.04' y1='149.24' x2='51.84' y2='149.24' style='stroke-width: 0.75;' /&gt;
 #&gt; &lt;line x1='59.04' y1='72.80' x2='51.84' y2='72.80' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;text transform='translate(41.76,381.91) rotate(-90)' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;2&lt;/text&gt;
-#&gt; &lt;text transform='translate(41.76,305.47) rotate(-90)' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;4&lt;/text&gt;
-#&gt; &lt;text transform='translate(41.76,229.03) rotate(-90)' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;6&lt;/text&gt;
-#&gt; &lt;text transform='translate(41.76,152.58) rotate(-90)' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;8&lt;/text&gt;
-#&gt; &lt;text transform='translate(41.76,79.47) rotate(-90)' style='font-size: 12.00px; font-family: Arial;' textLength='13.35px' lengthAdjust='spacingAndGlyphs'&gt;10&lt;/text&gt;
+#&gt; &lt;text transform='translate(41.76,381.91) rotate(-90)' style='font-size: 12.00px; text-align: center; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;2&lt;/text&gt;
+#&gt; &lt;text transform='translate(41.76,305.47) rotate(-90)' style='font-size: 12.00px; text-align: center; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;4&lt;/text&gt;
+#&gt; &lt;text transform='translate(41.76,229.03) rotate(-90)' style='font-size: 12.00px; text-align: center; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;6&lt;/text&gt;
+#&gt; &lt;text transform='translate(41.76,152.58) rotate(-90)' style='font-size: 12.00px; text-align: center; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;8&lt;/text&gt;
+#&gt; &lt;text transform='translate(41.76,79.47) rotate(-90)' style='font-size: 12.00px; text-align: center; font-family: Arial;' textLength='13.35px' lengthAdjust='spacingAndGlyphs'&gt;10&lt;/text&gt;
 #&gt; &lt;polyline points='59.04,430.56 473.76,430.56 473.76,59.04 59.04,59.04 59.04,430.56 ' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;text x='251.72' y='485.28' style='font-size: 12.00px; font-family: Arial;' textLength='29.35px' lengthAdjust='spacingAndGlyphs'&gt;Index&lt;/text&gt;
-#&gt; &lt;text transform='translate(12.96,256.48) rotate(-90)' style='font-size: 12.00px; font-family: Arial;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'&gt;1:10&lt;/text&gt;
+#&gt; &lt;text x='251.72' y='485.28' style='font-size: 12.00px; text-align: center; font-family: Arial;' textLength='29.35px' lengthAdjust='spacingAndGlyphs'&gt;Index&lt;/text&gt;
+#&gt; &lt;text transform='translate(12.96,256.48) rotate(-90)' style='font-size: 12.00px; text-align: center; font-family: Arial;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'&gt;1:10&lt;/text&gt;
 #&gt; &lt;/g&gt;
 #&gt; &lt;/svg&gt;</div></pre>
   </div>

@@ -98,7 +98,7 @@
 
       
 
-      </header><div class="row">
+      </header><script src="svglite-1.2.0_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>svglite 1.2.0</h1>
@@ -113,7 +113,9 @@
     
 <p>Today we are pleased to release a new version of svglite. This release fixes many bugs, includes new documentation vignettes, and improves fonts support.</p>
 <p>You can install svglite with:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"svglite"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span>(<span class="st">"svglite"</span>)
+</pre></div>
 <div id="font-handling" class="section level2">
 <h2 class="hasAnchor">
 <a href="#font-handling" class="anchor"></a>Font handling</h2>
@@ -126,10 +128,12 @@
 <ol style="list-style-type: decimal">
 <li>
 <p><code>system_fonts</code> allows you to specify the name of a font installed on your computer. This is useful, for example, if you’d like to use a font with better CJK support:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu"><a href="../../reference/svglite.html">svglite</a></span>(<span class="st">"Rplots.svg"</span>, <span class="kw">system_fonts</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(<span class="kw">sans</span> <span class="kw">=</span> <span class="st">"Arial Unicode MS"</span>))
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="fu"><a href="../../reference/svglite.html">svglite</a></span>(<span class="st">"Rplots.svg"</span>, system_fonts = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(sans = <span class="st">"Arial Unicode MS"</span>))
 <span class="fu"><a href="https://rdrr.io/r/graphics/frame.html">plot.new</a></span>()
 <span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="st">"正規分布"</span>)
-<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>()</pre></body></html></div>
+<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>()
+</pre></div>
 </li>
 <li><p><code>user_fonts</code> allows you to specify a font installed in a R package (like <a href="https://github.com/lionel-/fontquiver">fontquiver</a>). This is needed if you want to generate identical plot across different operating systems, and are using in the upcoming <a href="https://github.com/lionel-/vdiffr">vdiffr package</a> which provides graphical unit tests.</p></li>
 </ol>

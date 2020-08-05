@@ -4,7 +4,13 @@
     <loc>https://svglite.r-lib.org/index.html</loc>
   </url>
   <url>
+    <loc>https://svglite.r-lib.org/reference/create_svgz.html</loc>
+  </url>
+  <url>
     <loc>https://svglite.r-lib.org/reference/editSVG.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/reference/font_face.html</loc>
   </url>
   <url>
     <loc>https://svglite.r-lib.org/reference/htmlSVG.html</loc>

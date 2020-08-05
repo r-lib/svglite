@@ -159,10 +159,16 @@
 <li><p>svglite now directly encodes raster data into png instead of rendering it through cairo. If the provided raster is smaller than the final requested size it will be resized.</p></li>
 <li><p>SVG’s can now get a top-level id so that style definitions doesn’t spill into the surrounding HTML (<a href='https://github.com/r-lib/svglite/issues/91'>#91</a>)</p></li>
 <li><p>Dimensions are now encoded into the top-level <code>&lt;svg&gt;</code> tag (<a href='https://github.com/r-lib/svglite/issues/90'>#90</a>)</p></li>
-<li><p>Opening a new graphics device creates a new file if the filename supports it (<a href='https://github.com/r-lib/svglite/issues/98'>#98</a>, <a href='https://github.com/vandenman'>@vandenman</a>).</p></li>
+<li><p>Starting a new page creates a new file if the filename supports it (<a href='https://github.com/r-lib/svglite/issues/98'>#98</a>, <a href='https://github.com/vandenman'>@vandenman</a>).</p></li>
 <li><p>The <em>inline</em> devices now defaults to the same dimensions as <code><a href="../reference/svglite.html">svglite()</a></code> (<a href='https://github.com/r-lib/svglite/issues/89'>#89</a>)</p></li>
 <li><p>Clip defs are now only written if they don’t already exist (<a href='https://github.com/r-lib/svglite/issues/110'>#110</a>)</p></li>
 <li><p>Clipping is now defined with outer groups instead of on each element (<a href='https://github.com/r-lib/svglite/issues/109'>#109</a>)</p></li>
+<li><p>svglite now uses cpp11 instead of Rcpp (<a href='https://github.com/r-lib/svglite/issues/100'>#100</a>)</p></li>
+<li><p>svgz output is now supported natively (<a href='https://github.com/r-lib/svglite/issues/6'>#6</a>)</p></li>
+<li><p>Text adjustments are now encoded in css where possible (<a href='https://github.com/r-lib/svglite/issues/107'>#107</a>)</p></li>
+<li><p>The use of textLength CSS property can now be turned of (<a href='https://github.com/r-lib/svglite/issues/118'>#118</a>)</p></li>
+<li><p>web font imports can now be given when creating an svg (<a href='https://github.com/r-lib/svglite/issues/108'>#108</a>)</p></li>
+<li><p>Add scaling argument to devices to control line-width and text scaling (<a href='https://github.com/r-lib/svglite/issues/115'>#115</a>)</p></li>
 </ul>
 </div>
     <div id="svglite-123" class="section level1">

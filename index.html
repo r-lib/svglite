@@ -107,53 +107,64 @@
 </h1></div>
 <!-- badges: start -->
 
-<p>svglite is a graphics device that produces clean svg output, suitable for use on the web, or hand editing. Compared to the built-in <code><a href="https://rdrr.io/r/grDevices/cairo.html">svg()</a></code>, svglite produces smaller files, and leaves text as is.</p>
+<p>svglite is a graphics device that produces clean svg output, suitable for use on the web, or hand editing. Compared to the built-in <code><a href="https://rdrr.io/r/grDevices/cairo.html">svg()</a></code>, svglite produces smaller files, and leaves text as is, making it easier to edit the result after creation. It also support multiple nice features such as embedding of web fonts.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>svglite is available on CRAN using <code><a href="https://rdrr.io/r/utils/install.packages.html">install.packages("svglite")</a></code>. You can install the development version from github with:</p>
-<div class="sourceCode" id="cb1"><pre class="r"><span class="co"># install.packages("devtools")</span>
-<span class="kw pkg">devtools</span><span class="kw ns">::</span><span class="fu">install_github</span>(<span class="st">"r-lib/svglite"</span>)</pre></div>
+<div class="sourceCode" id="cb1"><pre class="downlit">
+<span class="co"># install.packages("devtools")</span>
+<span class="kw">devtools</span>::<span class="fu">install_github</span>(<span class="st">"r-lib/svglite"</span>)
+</pre></div>
 </div>
 <div id="benchmarks" class="section level2">
 <h2 class="hasAnchor">
 <a href="#benchmarks" class="anchor"></a>Benchmarks</h2>
-<p>While the performance of <code><a href="reference/svglite.html">svglite()</a></code> and <code><a href="https://rdrr.io/r/grDevices/cairo.html">svg()</a></code> is comparable (with a slight upper hand to svglite)</p>
-<div class="sourceCode" id="cb2"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">svglite</span>)
+<p>While the performance of <code><a href="reference/svglite.html">svglite()</a></code> and <code><a href="https://rdrr.io/r/grDevices/cairo.html">svg()</a></code> is comparable (with an upper hand to svglite)…</p>
+<div class="sourceCode" id="cb2"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="kw"><a href="https://svglite.r-lib.org">svglite</a></span>)
 
-<span class="no">x</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="fl">1e3</span>)
-<span class="no">y</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="fl">1e3</span>)
-<span class="no">tmp1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>()
-<span class="no">tmp2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>()
+<span class="kw">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="fl">1e3</span>)
+<span class="kw">y</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Uniform.html">runif</a></span>(<span class="fl">1e3</span>)
+<span class="kw">tmp1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>()
+<span class="kw">tmp2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>()
 
-<span class="no">svglite_test</span> <span class="kw">&lt;-</span> <span class="kw">function</span>() {
-  <span class="fu"><a href="reference/svglite.html">svglite</a></span>(<span class="no">tmp1</span>)
-  <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">x</span>, <span class="no">y</span>)
+<span class="kw">svglite_test</span> <span class="op">&lt;-</span> <span class="fu">function</span>() {
+  <span class="fu"><a href="reference/svglite.html">svglite</a></span>(<span class="kw">tmp1</span>)
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="kw">x</span>, <span class="kw">y</span>)
   <span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>()
 }
-<span class="no">svg_test</span> <span class="kw">&lt;-</span> <span class="kw">function</span>() {
-  <span class="fu"><a href="https://rdrr.io/r/grDevices/cairo.html">svg</a></span>(<span class="no">tmp2</span>, <span class="kw">onefile</span> <span class="kw">=</span> <span class="fl">TRUE</span>)
-  <span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="no">x</span>, <span class="no">y</span>)
+<span class="kw">svg_test</span> <span class="op">&lt;-</span> <span class="fu">function</span>() {
+  <span class="fu"><a href="https://rdrr.io/r/grDevices/cairo.html">svg</a></span>(<span class="kw">tmp2</span>, onefile = <span class="fl">TRUE</span>)
+  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="kw">x</span>, <span class="kw">y</span>)
   <span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>()
 }
 
-<span class="fu"><a href="https://rdrr.io/r/base/plot.html">plot</a></span>(<span class="kw pkg">bench</span><span class="kw ns">::</span><span class="fu">mark</span>(<span class="fu">svglite_test</span>(), <span class="fu">svg_test</span>()), <span class="kw">type</span> <span class="kw">=</span> <span class="st">'ridge'</span>)</pre></div>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="kw">bench</span>::<span class="fu">mark</span>(<span class="fu">svglite_test</span>(), <span class="fu">svg_test</span>()), type = <span class="st">'ridge'</span>)
+</pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-3-1.png" width="100%"></p>
-<p>It produces considerably smaller files:</p>
-<div class="sourceCode" id="cb3"><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/file.info.html">file.size</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="no">tmp1</span>, <span class="no">tmp2</span>)) / <span class="fl">1024</span>
-<span class="co">#&gt; [1]  74.54492 321.01172</span></pre></div>
-<p>In both cases, compressing to make <code>.svgz</code> is worthwhile:</p>
-<div class="sourceCode" id="cb4"><pre class="r"><span class="no">gz</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">in_path</span>, <span class="no">out_path</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>()) {
-  <span class="no">out</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html">gzfile</a></span>(<span class="no">out_path</span>, <span class="st">"w"</span>)
-  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="no">in_path</span>), <span class="no">out</span>)
-  <span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span>(<span class="no">out</span>)
-
-  <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span>(<span class="no">out_path</span>)
+<p>…it produces considerably smaller files:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit">
+<span class="fu"><a href="https://rdrr.io/r/base/file.info.html">file.size</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">tmp1</span>, <span class="kw">tmp2</span>)) <span class="op">/</span> <span class="fl">1024</span>
+<span class="co">#&gt; [1]  74.88281 320.84668</span>
+</pre></div>
+<p>In both cases, compressing to make <code>.svgz</code> is worthwhile. svglite supports compressed output directly and just need a <code>.svgz</code> extension in the filename to trigger it:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit">
+<span class="kw">gz</span> <span class="op">&lt;-</span> <span class="fu">function</span>(<span class="kw">in_path</span>, <span class="kw">out_path</span> = <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>()) {
+  <span class="kw">out</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html">gzfile</a></span>(<span class="kw">out_path</span>, <span class="st">"w"</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/writeLines.html">writeLines</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/readLines.html">readLines</a></span>(<span class="kw">in_path</span>), <span class="kw">out</span>)
+  <span class="fu"><a href="https://rdrr.io/r/base/connections.html">close</a></span>(<span class="kw">out</span>)
+  
+  <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span>(<span class="kw">out_path</span>)
 }
-<span class="fu"><a href="https://rdrr.io/r/base/file.info.html">file.size</a></span>(<span class="fu">gz</span>(<span class="no">tmp1</span>)) / <span class="fl">1024</span>
-<span class="co">#&gt; [1] 9.416992</span>
-<span class="fu"><a href="https://rdrr.io/r/base/file.info.html">file.size</a></span>(<span class="fu">gz</span>(<span class="no">tmp2</span>)) / <span class="fl">1024</span>
-<span class="co">#&gt; [1] 38.55762</span></pre></div>
+<span class="kw">tmp3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span>(fileext = <span class="st">".svgz"</span>)
+<span class="fu"><a href="reference/svglite.html">svglite</a></span>(<span class="kw">tmp3</span>)
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="kw">x</span>, <span class="kw">y</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span>(<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>())
+
+<span class="fu"><a href="https://rdrr.io/r/base/file.info.html">file.size</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="kw">tmp3</span>, <span class="fu">gz</span>(<span class="kw">tmp2</span>))) <span class="op">/</span> <span class="fl">1024</span>
+<span class="co">#&gt; [1]  9.427734 38.589844</span>
+</pre></div>
 </div>
 </div>
   </div>

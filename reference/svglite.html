@@ -159,16 +159,19 @@ standard. The driver output is currently NOT specifying a DOCTYPE DTD.</p>
     </div>
 
     <pre class="usage"><span class='fu'>svglite</span>(
-  <span class='kw'>filename</span> <span class='kw'>=</span> <span class='st'>"Rplot%03d.svg"</span>,
-  <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>10</span>,
-  <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>8</span>,
-  <span class='kw'>bg</span> <span class='kw'>=</span> <span class='st'>"white"</span>,
-  <span class='kw'>pointsize</span> <span class='kw'>=</span> <span class='fl'>12</span>,
-  <span class='kw'>standalone</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>system_fonts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>user_fonts</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
-  <span class='kw'>id</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
-  <span class='no'>file</span>
+  filename = <span class='st'>"Rplot%03d.svg"</span>,
+  width = <span class='fl'>10</span>,
+  height = <span class='fl'>8</span>,
+  bg = <span class='st'>"white"</span>,
+  pointsize = <span class='fl'>12</span>,
+  standalone = <span class='fl'>TRUE</span>,
+  system_fonts = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  user_fonts = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  web_fonts = <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(),
+  id = <span class='kw'>NULL</span>,
+  fix_text_size = <span class='fl'>TRUE</span>,
+  scaling = <span class='fl'>1</span>,
+  <span class='kw'>file</span>
 )</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -214,10 +217,37 @@ the font alias in the SVG output and <code>file</code> the path to a
 font file.</p></td>
     </tr>
     <tr>
+      <th>web_fonts</th>
+      <td><p>A list containing web fonts to use in the SVG. The fonts
+will still need to be available locally on the computer running the code,
+but viewers of the final SVG will not need the font if specified as a web
+font. Web fonts can either be specified using [font_face()] or given as a
+single string in which case they are taken to be URL's for an `@import`
+directive to e.g. Google Fonts.</p></td>
+    </tr>
+    <tr>
       <th>id</th>
       <td><p>A character vector of ids to assign to the generated SVG's. If
 creating more SVG files than supplied ids the exceeding SVG's will not have
 an id tag and a warning will be thrown.</p></td>
+    </tr>
+    <tr>
+      <th>fix_text_size</th>
+      <td><p>Should the width of strings be fixed so that it doesn't
+change between svg renderers depending on their font rendering? Defaults to
+`TRUE`. If `TRUE` each string will have the `textLength` CSS property set
+to the width calculated by systemfonts and
+`lengthAdjust='spacingAndGlyphs'`. Setting this to `FALSE` can be
+beneficial for heavy post-processing that may change content or style of
+strings, but may lead to inconsistencies between strings and graphic
+elements that depend on the dimensions of the string (e.g. label borders
+and background).</p></td>
+    </tr>
+    <tr>
+      <th>scaling</th>
+      <td><p>A scaling factor to apply to the rendered line width and text
+size. Useful for getting the right sizing at the dimension that you
+need.</p></td>
     </tr>
     <tr>
       <th>file</th>
@@ -252,24 +282,25 @@ svg. See the <code>fonts</code> vignette for more information.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Save to file</span>
 <span class='fu'>svglite</span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='st'>"Rplots.svg"</span>))
-<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='fl'>1</span>:<span class='fl'>11</span>, (-<span class='fl'>5</span>:<span class='fl'>5</span>)^<span class='fl'>2</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>'b'</span>, <span class='kw'>main</span> <span class='kw'>=</span> <span class='st'>"Simple Example"</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='fl'>1</span><span class='op'>:</span><span class='fl'>11</span>, (<span class='op'>-</span><span class='fl'>5</span><span class='op'>:</span><span class='fl'>5</span>)<span class='op'>^</span><span class='fl'>2</span>, type = <span class='st'>'b'</span>, main = <span class='st'>"Simple Example"</span>)
 <span class='fu'><a href='https://rdrr.io/r/grDevices/dev.html'>dev.off</a></span>()</div><div class='output co'>#&gt; pdf 
 #&gt;   2 </div><div class='input'>
 <span class='co'># Supply system font aliases. First check the font can be located:</span>
-<span class='kw pkg'>systemfonts</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/systemfonts/man/match_font.html'>match_font</a></span>(<span class='st'>"Verdana"</span>)</div><div class='output co'>#&gt; $path
+<span class='kw'>systemfonts</span>::<span class='fu'><a href='https://rdrr.io/pkg/systemfonts/man/match_font.html'>match_font</a></span>(<span class='st'>"Verdana"</span>)</div><div class='output co'>#&gt; $path
 #&gt; [1] "/System/Library/Fonts/Supplemental/Verdana.ttf"
 #&gt; 
 #&gt; $index
 #&gt; [1] 0
 #&gt; </div><div class='input'>
 <span class='co'># Then supply a list of aliases:</span>
-<span class='no'>fonts</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(<span class='kw'>sans</span> <span class='kw'>=</span> <span class='st'>"Verdana"</span>, <span class='kw'>mono</span> <span class='kw'>=</span> <span class='st'>"Times New Roman"</span>)
-<span class='fu'>svglite</span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='st'>"Rplots.svg"</span>), <span class='kw'>system_fonts</span> <span class='kw'>=</span> <span class='no'>fonts</span>)
+<span class='kw'>fonts</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span>(sans = <span class='st'>"Verdana"</span>, mono = <span class='st'>"Times New Roman"</span>)
+<span class='fu'>svglite</span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempfile</a></span>(<span class='st'>"Rplots.svg"</span>), system_fonts = <span class='kw'>fonts</span>)
 <span class='fu'><a href='https://rdrr.io/r/graphics/frame.html'>plot.new</a></span>()
-<span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span>(<span class='fl'>0.5</span>, <span class='fl'>0.5</span>, <span class='st'>"Some text"</span>, <span class='kw'>family</span> <span class='kw'>=</span> <span class='st'>"mono"</span>)
+<span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span>(<span class='fl'>0.5</span>, <span class='fl'>0.5</span>, <span class='st'>"Some text"</span>, family = <span class='st'>"mono"</span>)
 <span class='fu'><a href='https://rdrr.io/r/grDevices/dev.html'>dev.off</a></span>()</div><div class='output co'>#&gt; pdf 
 #&gt;   2 </div><div class='input'>
-<span class='co'># See the fonts vignettes for more options to deal with fonts</span></div></pre>
+<span class='co'># See the fonts vignettes for more options to deal with fonts</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

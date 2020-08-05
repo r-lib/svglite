@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • svglite</title>
+<title>Create a font-face specification — font_face • svglite</title>
 
 <!-- favicons -->
 <link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
@@ -46,7 +46,11 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Create a font-face specification — font_face" />
+<meta property="og:description" content="Webfonts in SVG and HTML can either be specified manually using the
+`@font-face` at-rule, or imported from e.g. Google Fonts using the `@import`
+at-rule. `font_face()` helps you create a valid `@font-face` block for the
+`web_fonts` argument in [svglite()] and [svgstring()] functions." />
 <meta property="og:image" content="https://svglite.r-lib.org/logo.svg" />
 
 
@@ -76,7 +80,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -144,54 +148,108 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Create a font-face specification</h1>
+    <small class="dont-index">Source: <a href='https://github.com/r-lib/svglite/blob/master/R/fonts.R'><code>R/fonts.R</code></a></small>
+    <div class="hidden name"><code>font_face.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p>Webfonts in SVG and HTML can either be specified manually using the
+`@font-face` at-rule, or imported from e.g. Google Fonts using the `@import`
+at-rule. `font_face()` helps you create a valid `@font-face` block for the
+`web_fonts` argument in [svglite()] and [svgstring()] functions.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>font_face</span>(
+  <span class='kw'>family</span>,
+  woff2 = <span class='kw'>NULL</span>,
+  woff = <span class='kw'>NULL</span>,
+  ttf = <span class='kw'>NULL</span>,
+  otf = <span class='kw'>NULL</span>,
+  eot = <span class='kw'>NULL</span>,
+  svg = <span class='kw'>NULL</span>,
+  local = <span class='kw'>NULL</span>,
+  weight = <span class='kw'>NULL</span>,
+  style = <span class='kw'>NULL</span>,
+  range = <span class='kw'>NULL</span>,
+  variant = <span class='kw'>NULL</span>,
+  stretch = <span class='kw'>NULL</span>,
+  feature_setting = <span class='kw'>NULL</span>,
+  variation_setting = <span class='kw'>NULL</span>
+)</pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="font_face.html">font_face()</a></code> </p>
-        </td>
-        <td><p>Create a font-face specification</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="svglite.html">svglite()</a></code> </p>
-        </td>
-        <td><p>An SVG Graphics Driver</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="svgstring.html">svgstring()</a></code> </p>
-        </td>
-        <td><p>Access current SVG as a string.</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>family</th>
+      <td><p>The font family name this font should respond to.</p></td>
+    </tr>
+    <tr>
+      <th>woff2, woff, ttf, otf, eot, svg</th>
+      <td><p>URLs to the font in different formats. At
+least one must be given. Best browser support is provided by the woff
+format.</p></td>
+    </tr>
+    <tr>
+      <th>local</th>
+      <td><p>One or more font names that local installations of the font may
+have. If a local font is found with either of the given names it will be
+used and no download will happen.</p></td>
+    </tr>
+    <tr>
+      <th>weight</th>
+      <td><p>An optional value for the `font-weight` descriptor</p></td>
+    </tr>
+    <tr>
+      <th>style</th>
+      <td><p>An optional value for the `font-style` descriptor</p></td>
+    </tr>
+    <tr>
+      <th>range</th>
+      <td><p>An optional value for the `unicode-range` descriptor Will give
+the range of unicode values that this font will support</p></td>
+    </tr>
+    <tr>
+      <th>variant</th>
+      <td><p>An optional value for the `font-variant` descriptor</p></td>
+    </tr>
+    <tr>
+      <th>stretch</th>
+      <td><p>An optional value for the `font-stretch` descriptor</p></td>
+    </tr>
+    <tr>
+      <th>feature_setting</th>
+      <td><p>An optional value for the `font-feature-settings`
+descriptor It is recommended to avoid using this if possible</p></td>
+    </tr>
+    <tr>
+      <th>variation_setting</th>
+      <td><p>An optional value for the `font-variation-settings`
+descriptor.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A character string with the `@font-face` block.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>font_face</span>(
+  family = <span class='st'>"MyHelvetica"</span>,
+  ttf = <span class='st'>"MgOpenModernaBold.ttf"</span>,
+  local = <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"Helvetica Neue Bold"</span>, <span class='st'>"HelveticaNeue-Bold"</span>),
+  weight = <span class='st'>"bold"</span>
+)</div><div class='output co'>#&gt;     @font-face {
+#&gt;       font-family: "MyHelvetica";
+#&gt;       src: local("Helvetica Neue Bold"),
+#&gt;            local("HelveticaNeue-Bold"),
+#&gt;            url("MgOpenModernaBold.ttf") format("truetype");
+#&gt;       font-weight: bold;
+#&gt;     }</div><div class='input'></div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

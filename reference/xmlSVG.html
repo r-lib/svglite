@@ -156,7 +156,7 @@
     <p>This is useful primarily for testing. Requires the <code>xml2</code> package.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>xmlSVG</span>(<span class='no'>code</span>, <span class='no'>...</span>, <span class='kw'>standalone</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>height</span> <span class='kw'>=</span> <span class='fl'>7</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>7</span>)</pre>
+    <pre class="usage"><span class='fu'>xmlSVG</span>(<span class='kw'>code</span>, <span class='kw'>...</span>, standalone = <span class='fl'>FALSE</span>, height = <span class='fl'>7</span>, width = <span class='fl'>7</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -189,12 +189,12 @@ xml header and default namespace.</p></td>
     <p>A <code>xml2::xml_document</code> object.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/library.html'>require</a></span>(<span class='st'>"xml2"</span>)) {
-  <span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>xmlSVG</span>(<span class='fu'><a href='https://rdrr.io/r/base/plot.html'>plot</a></span>(<span class='fl'>1</span>, <span class='kw'>axes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>))
-  <span class='no'>x</span>
-  <span class='fu'><a href='http://xml2.r-lib.org/reference/xml_find_all.html'>xml_find_all</a></span>(<span class='no'>x</span>, <span class='st'>".//text"</span>)
+    <pre class="examples"><div class='input'><span class='co'>if</span> (<span class='fu'><a href='https://rdrr.io/r/base/library.html'>require</a></span>(<span class='st'><a href='https://xml2.r-lib.org'>"xml2"</a></span>)) {
+  <span class='kw'>x</span> <span class='op'>&lt;-</span> <span class='fu'>xmlSVG</span>(<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span>(<span class='fl'>1</span>, axes = <span class='fl'>FALSE</span>))
+  <span class='kw'>x</span>
+  <span class='fu'><a href='http://xml2.r-lib.org/reference/xml_find_all.html'>xml_find_all</a></span>(<span class='kw'>x</span>, <span class='st'>".//text"</span>)
 }</div><div class='output co'>#&gt; <span class='message'>Loading required package: xml2</span></div><div class='output co'>#&gt; {xml_nodeset (2)}
-#&gt; [1] &lt;text x="251.72" y="485.28" style="font-size: 12.00px; font-family: Arial ...
+#&gt; [1] &lt;text x="251.72" y="485.28" style="font-size: 12.00px; text-align: center ...
 #&gt; [2] &lt;text transform="translate(12.96,248.14) rotate(-90)" style="font-size: 1 ...</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
