@@ -759,21 +759,6 @@ void svg_text(double x, double y, const char *str, double rot,
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
   SvgStreamPtr stream = svgd->stream;
 
-  double width = svg_strwidth(str, gc, dd);
-  int adj = 0;
-  double rad = rot * 2 * M_PI / 360;
-  if (hadj == 0.5) {
-    double offset = width / 2;
-    adj = 1;
-    x -= offset * cos(-rad);
-    y -= offset * sin(-rad);
-  } else if (hadj == 1) {
-    double offset = width;
-    adj = 2;
-    x -= offset * cos(-rad);
-    y -= offset * sin(-rad);
-  }
-
   (*stream) << "<text";
 
   if (rot == 0) {
@@ -786,6 +771,12 @@ void svg_text(double x, double y, const char *str, double rot,
 
   double fontsize = gc->cex * gc->ps;
 
+  if (hadj == 0.5) {
+    write_attr_str(stream, "text-anchor", "middle");
+  } else if (hadj == 1) {
+    write_attr_str(stream, "text-anchor", "end");
+  }
+
   write_style_begin(stream);
   write_style_fontsize(stream, fontsize * svgd->scaling, true);
   if (is_bold(gc->fontface))
@@ -794,18 +785,13 @@ void svg_text(double x, double y, const char *str, double rot,
     write_style_str(stream, "font-style", "italic");
   if (!is_black(gc->col))
     write_style_col(stream, "fill", gc->col);
-  if (adj == 1) {
-    write_style_str(stream, "text-align", "center");
-  }
-  if (adj == 2) {
-    write_style_str(stream, "text-align", "right");
-  }
 
   std::string font = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases);
   write_style_str(stream, "font-family", font.c_str());
   write_style_end(stream);
 
   if (svgd->fix_text_size) {
+    double width = svg_strwidth(str, gc, dd);
     (*stream) << " textLength='" << width << "px'";
     (*stream) << " lengthAdjust='spacingAndGlyphs'";
   }
