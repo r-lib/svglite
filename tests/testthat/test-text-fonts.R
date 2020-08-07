@@ -19,7 +19,7 @@ test_that("metrics are computed for different weight/style", {
     text(1, 1, "text", font = 4)
   })
   text <- xml_find_all(x, ".//text")
-  x <- xml_attr(text, "x")
+  x <- xml_attr(text, "textLength")
   expect_false(any(x[2:3] == x[1]))
 })
 
@@ -66,7 +66,7 @@ test_that("metrics are computed for different fonts", {
     text(0.5, 0.9, "a", family = "mono")
   })
   text <- xml_find_all(x, ".//text")
-  x_attr <- xml_attr(text, "x")
+  x_attr <- xml_attr(text, "textLength")
   y_attr <- xml_attr(text, "y")
 
   expect_false(x_attr[[1]] == x_attr[[2]])
