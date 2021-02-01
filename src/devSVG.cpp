@@ -187,9 +187,11 @@ inline std::string raster_to_string(unsigned int *raster, int w, int h, double w
   }
   png_infop info = png_create_info_struct(png);
   if (!info) {
+    png_destroy_write_struct(&png, (png_infopp)NULL);
     return "";
   }
   if (setjmp(png_jmpbuf(png))) {
+    png_destroy_write_struct(&png, &info);
     return "";
   }
   png_set_IHDR(
@@ -211,6 +213,7 @@ inline std::string raster_to_string(unsigned int *raster, int w, int h, double w
   png_set_rows(png, info, &rows[0]);
   png_set_write_fn(png, &buffer, png_memory_write, NULL);
   png_write_png(png, info, PNG_TRANSFORM_IDENTITY, NULL);
+  png_destroy_write_struct(&png, &info);
 
   return base64_encode(buffer.data(), buffer.size());
 }
