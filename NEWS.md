@@ -3,6 +3,9 @@
 * svglite now uses systemfonts for text metric calculations and font family 
   lookup.
   
+* svglite can now encode OpenType font features into the CSS if the used font
+  contains registered features
+  
 * svglite now directly encodes raster data into png instead of rendering it 
   through cairo. If the provided raster is smaller than the final requested size
   it will be resized.
@@ -26,11 +29,12 @@
 
 * Text adjustments are now encoded in css where possible (#107)
 
-* The use of textLength CSS property can now be turned of (#118)
+* The use of textLength CSS property can now be turned off (#118)
 
 * web font imports can now be given when creating an svg (#108)
 
 * Add scaling argument to devices to control line-width and text scaling (#115)
+
 
 # svglite 1.2.3
 

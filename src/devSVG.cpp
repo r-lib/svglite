@@ -258,7 +258,7 @@ inline std::string find_system_alias(std::string family,
 
 inline std::string fontname(const char* family_, int face,
                             cpp11::list const& system_aliases,
-                            cpp11::list const& user_aliases) {
+                            cpp11::list const& user_aliases, FontSettings& font) {
   std::string family(family_);
   if (face == 5)
     family = "symbol";
@@ -266,13 +266,20 @@ inline std::string fontname(const char* family_, int face,
     family = "sans";
 
   std::string alias = find_system_alias(family, system_aliases);
-  if (!alias.size())
+  if (!alias.size()) {
     alias = find_user_alias(family, user_aliases, face, "name");
+  }
 
-  if (alias.size())
+  if (alias.size()) {
     return alias;
-  else
-    return family;
+  }
+
+  std::string family_name = "";
+  family_name.resize(100);
+  if (get_font_family(font.file, font.index, &family_name[0], 100)) {
+    return family_name;
+  }
+  return family;
 }
 
 inline std::string fontfile(const char* family_, int face,
@@ -286,7 +293,7 @@ inline std::string fontfile(const char* family_, int face,
   return find_user_alias(family, user_aliases, face, "file");
 }
 
-inline std::pair<std::string, int> get_font_file(const char* family, int face, cpp11::list user_aliases) {
+inline FontSettings get_font_file(const char* family, int face, cpp11::list user_aliases) {
   const char* fontfamily = family;
   if (is_symbol(face)) {
     fontfamily = "symbol";
@@ -295,16 +302,14 @@ inline std::pair<std::string, int> get_font_file(const char* family, int face, c
   }
   std::string alias = fontfile(fontfamily, face, user_aliases);
   if (alias.size() > 0) {
-    return {alias, 0};
+    FontSettings result = {};
+    std::strncpy(result.file, alias.c_str(), PATH_MAX);
+    result.index = 0;
+    result.n_features = 0;
+    return result;
   }
 
-  char *path = new char[PATH_MAX+1];
-  path[PATH_MAX] = '\0';
-  int index = locate_font(fontfamily, is_italic(face), is_bold(face), path, PATH_MAX);
-  std::pair<std::string, int> res {path, index};
-  delete[] path;
-
-  return res;
+  return locate_font_with_features(fontfamily, is_italic(face), is_bold(face));
 }
 
 inline void write_escaped(SvgStreamPtr stream, const char* text) {
@@ -362,6 +367,12 @@ inline void write_style_col(SvgStreamPtr stream, const char* attr, int col, bool
 
 // Writing style attributes whose values are double type
 inline void write_style_dbl(SvgStreamPtr stream, const char* attr, double value, bool first = false) {
+  if(!first)  (*stream) << ' ';
+  (*stream) << attr << ": " << value << ';';
+}
+
+// Writing style attributes whose values are int type
+inline void write_style_int(SvgStreamPtr stream, const char* attr, int value, bool first = false) {
   if(!first)  (*stream) << ' ';
   (*stream) << attr << ": " << value << ';';
 }
@@ -475,9 +486,9 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
     c = -c;
   }
 
-  std::pair<std::string, int> font = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
+  FontSettings font = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
 
-  int error = glyph_metrics(c, font.first.c_str(), font.second, gc->ps * gc->cex * svgd->scaling, 1e4, ascent, descent, width);
+  int error = glyph_metrics(c, font.file, font.index, gc->ps * gc->cex * svgd->scaling, 1e4, ascent, descent, width);
   if (error != 0) {
     *ascent = 0;
     *descent = 0;
@@ -705,11 +716,11 @@ void svg_path(double *x, double *y,
 double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  std::pair<std::string, int> font = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
+  FontSettings font = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
 
   double width = 0.0;
 
-  int error = string_width(str, font.first.c_str(), font.second, gc->ps * gc->cex * svgd->scaling, 1e4, 1, &width);
+  int error = string_width(str, font.file, font.index, gc->ps * gc->cex * svgd->scaling, 1e4, 1, &width);
 
   if (error != 0) {
     width = 0.0;
@@ -779,15 +790,33 @@ void svg_text(double x, double y, const char *str, double rot,
 
   write_style_begin(stream);
   write_style_fontsize(stream, fontsize * svgd->scaling, true);
-  if (is_bold(gc->fontface))
-    write_style_str(stream, "font-weight", "bold");
+
+  FontSettings font_info = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
+  int weight = get_font_weight(font_info.file, font_info.index);
+
+  if (weight != 400)
+    write_style_int(stream, "font-weight", weight);
   if (is_italic(gc->fontface))
     write_style_str(stream, "font-style", "italic");
   if (!is_black(gc->col))
     write_style_col(stream, "fill", gc->col);
 
-  std::string font = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases);
+  std::string font = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases, font_info);
   write_style_str(stream, "font-family", font.c_str());
+
+  if (font_info.n_features > 0) {
+    (*stream) << " font-feature-settings: ";
+    for (int i = 0; i < font_info.n_features; ++i) {
+      std::string feature = "";
+      feature += font_info.features[i].feature[0];
+      feature += font_info.features[i].feature[1];
+      feature += font_info.features[i].feature[2];
+      feature += font_info.features[i].feature[3];
+      (*stream) << "\"" << feature << "\" " << font_info.features[i].setting;
+      (*stream) << (i == font_info.n_features - 1 ? ";" : ",");
+    }
+  }
+
   write_style_end(stream);
 
   if (svgd->fix_text_size) {
