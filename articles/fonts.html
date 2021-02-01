@@ -51,12 +51,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -84,7 +78,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/r-lib/svglite/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -103,7 +97,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Specifying fonts</h1>
             
-            <h4 class="date">2020-08-07</h4>
+            <h4 class="date">2021-02-01</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/r-lib/svglite/blob/master/vignettes/fonts.Rmd"><code>vignettes/fonts.Rmd</code></a></small>
       <div class="hidden name"><code>fonts.Rmd</code></div>
@@ -147,90 +141,88 @@
 <h2 class="hasAnchor">
 <a href="#system-font-aliases" class="anchor"></a>System font aliases</h2>
 <p><code>system_fonts</code> takes a named list of font families as argument. The names typically correspond to standard R faces but they can also alias non-standard families (though this is less useful):</p>
-<div class="sourceCode" id="cb1"><pre class="downlit">
-<span class="kw">fonts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-  sans = <span class="st">"Helvetica"</span>,
-  mono = <span class="st">"Consolas"</span>,
-  `Times New Roman` = <span class="st">"DejaVu Serif"</span>
-)
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fonts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+  sans <span class="op">=</span> <span class="st">"Helvetica"</span>,
+  mono <span class="op">=</span> <span class="st">"Consolas"</span>,
+  `Times New Roman` <span class="op">=</span> <span class="st">"DejaVu Serif"</span>
+<span class="op">)</span>
 
-<span class="kw">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svgstring.html">svgstring</a></span>(system_fonts = <span class="kw">fonts</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="fl">1</span><span class="op">:</span><span class="fl">10</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="st">"Some text"</span>, family = <span class="st">"mono"</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span>(<span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="st">"Other text"</span>, family = <span class="st">"Times New Roman"</span>)
-<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>()
-<span class="fu">ss</span>()
-</pre></div>
+<span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svgstring.html">svgstring</a></span><span class="op">(</span>system_fonts <span class="op">=</span> <span class="va">fonts</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="st">"Some text"</span>, family <span class="op">=</span> <span class="st">"mono"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="st">"Other text"</span>, family <span class="op">=</span> <span class="st">"Times New Roman"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span><span class="op">(</span><span class="op">)</span>
+<span class="fu">ss</span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>If you need support for non-latin characters, choose fonts with good Unicode coverage. “Arial Unicode MS” is a sans serif font with good coverage that is available on macOS and Windows systems (on the latter, only if MS Office is installed). Note that this font does not support kerning and has no bold or italic faces.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit">
-<span class="fu"><a href="../reference/svglite.html">svglite</a></span>(<span class="st">"Rplots.svg"</span>, system_fonts = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(sans = <span class="st">"Arial Unicode MS"</span>))
-<span class="fu"><a href="https://rdrr.io/r/graphics/frame.html">plot.new</a></span>()
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="st">"正規分布"</span>)
-<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>()
-</pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="../reference/svglite.html">svglite</a></span><span class="op">(</span><span class="st">"Rplots.svg"</span>, system_fonts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>sans <span class="op">=</span> <span class="st">"Arial Unicode MS"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/frame.html">plot.new</a></span><span class="op">(</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="st">"正規分布"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>The <a href="https://www.google.com/get/noto/">Noto fontset</a> provided by Google as well as the <a href="https://github.com/adobe-fonts/source-han-sans">Han Sans family</a> by Adobe have excellent coverage but may not be available at the time of rendering. This can be a concern if you distribute the SVG files on the Internet.</p>
 </div>
 <div id="user-font-aliases" class="section level2">
 <h2 class="hasAnchor">
 <a href="#user-font-aliases" class="anchor"></a>User font aliases</h2>
 <p>In addition to system fonts, you can also provide fonts that are not necessarily installed on the system (i.e., fonts that live in user space). The main reason to do this is to generate reproducible SVG files as different platforms can have different versions of a font and thus produce different text metrics. The <code>user_fonts</code> arguments takes either paths to font files, fonts from the <code>fontquiver</code> package, or a list that specifies the alias. Whereas <code>system_fonts</code> gets a named list of families as argument, <code>user_fonts</code> takes a named tree of lists of families (<code>sans</code>, <code>serif</code>, <code>mono</code> and <code>symbol</code>) and faces (<code>plain</code>, <code>italic</code>, <code>bold</code>, <code>bolditalic</code>, <code>symbol</code>):</p>
-<div class="sourceCode" id="cb3"><pre class="downlit">
-<span class="co"># Using ttf files from fontquiver here, but it could be any ttf</span>
-<span class="kw">some_file</span> <span class="op">&lt;-</span> <span class="kw">fontquiver</span>::<span class="fu"><a href="https://rdrr.io/pkg/fontquiver/man/fonts.html">font</a></span>(<span class="st">"Liberation"</span>, <span class="st">"Sans"</span>, <span class="st">"Regular"</span>)<span class="op">$</span><span class="kw">ttf</span>
-<span class="kw">other_file</span> <span class="op">&lt;-</span> <span class="kw">fontquiver</span>::<span class="fu"><a href="https://rdrr.io/pkg/fontquiver/man/fonts.html">font</a></span>(<span class="st">"Liberation"</span>, <span class="st">"Sans"</span>, <span class="st">"Italic"</span>)<span class="op">$</span><span class="kw">ttf</span>
-<span class="kw">serif_file</span> <span class="op">&lt;-</span> <span class="kw">fontquiver</span>::<span class="fu"><a href="https://rdrr.io/pkg/fontquiver/man/fonts.html">font</a></span>(<span class="st">"Liberation"</span>, <span class="st">"serif"</span>, <span class="st">"Italic"</span>)<span class="op">$</span><span class="kw">ttf</span>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Using ttf files from fontquiver here, but it could be any ttf</span>
+<span class="va">some_file</span> <span class="op">&lt;-</span> <span class="fu">fontquiver</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fontquiver/man/fonts.html">font</a></span><span class="op">(</span><span class="st">"Liberation"</span>, <span class="st">"Sans"</span>, <span class="st">"Regular"</span><span class="op">)</span><span class="op">$</span><span class="va">ttf</span>
+<span class="va">other_file</span> <span class="op">&lt;-</span> <span class="fu">fontquiver</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fontquiver/man/fonts.html">font</a></span><span class="op">(</span><span class="st">"Liberation"</span>, <span class="st">"Sans"</span>, <span class="st">"Italic"</span><span class="op">)</span><span class="op">$</span><span class="va">ttf</span>
+<span class="va">serif_file</span> <span class="op">&lt;-</span> <span class="fu">fontquiver</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fontquiver/man/fonts.html">font</a></span><span class="op">(</span><span class="st">"Liberation"</span>, <span class="st">"serif"</span>, <span class="st">"Italic"</span><span class="op">)</span><span class="op">$</span><span class="va">ttf</span>
 
 <span class="co"># The outer named list contains families while the inner named list</span>
 <span class="co"># contains faces:</span>
-<span class="kw">fonts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-  sans = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(
-    plain = <span class="kw">some_file</span>,
-    italic = <span class="kw">other_file</span>
-  ),
-  serif = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(plain = <span class="kw">serif_file</span>)
-)
+<span class="va">fonts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+  sans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
+    plain <span class="op">=</span> <span class="va">some_file</span>,
+    italic <span class="op">=</span> <span class="va">other_file</span>
+  <span class="op">)</span>,
+  serif <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plain <span class="op">=</span> <span class="va">serif_file</span><span class="op">)</span>
+<span class="op">)</span>
 
-<span class="kw">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svglite.html">svglite</a></span>(<span class="st">"plot.svg"</span>, user_fonts = <span class="kw">fonts</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/frame.html">plot.new</a></span>()
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="st">"Sans Plain text"</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span>(<span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="st">"Sans Italic text"</span>, font = <span class="fl">3</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span>(<span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="st">"Serif text"</span>, family = <span class="st">"serif"</span>)
-<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>()
-</pre></div>
+<span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svglite.html">svglite</a></span><span class="op">(</span><span class="st">"plot.svg"</span>, user_fonts <span class="op">=</span> <span class="va">fonts</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/frame.html">plot.new</a></span><span class="op">(</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="st">"Sans Plain text"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="st">"Sans Italic text"</span>, font <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">0.8</span>, <span class="st">"Serif text"</span>, family <span class="op">=</span> <span class="st">"serif"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>You can also control which font gets written in the <code>font-family</code> fields of SVGs by supplying a list containing <code>alias</code> and <code>file</code> elements:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit">
-<span class="kw">file_with_alias</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(alias = <span class="st">"Foobar Font"</span>, file = <span class="kw">other_file</span>)
-<span class="kw">fonts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(sans = <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span>(plain = <span class="kw">file_with_alias</span>))
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">file_with_alias</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>alias <span class="op">=</span> <span class="st">"Foobar Font"</span>, file <span class="op">=</span> <span class="va">other_file</span><span class="op">)</span>
+<span class="va">fonts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>sans <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>plain <span class="op">=</span> <span class="va">file_with_alias</span><span class="op">)</span><span class="op">)</span>
 
-<span class="kw">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svgstring.html">svgstring</a></span>(user_fonts = <span class="kw">fonts</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="fl">1</span><span class="op">:</span><span class="fl">10</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="st">"Sans text"</span>)
-<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>()
-<span class="fu">ss</span>()
-</pre></div>
+<span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svgstring.html">svgstring</a></span><span class="op">(</span>user_fonts <span class="op">=</span> <span class="va">fonts</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="st">"Sans text"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span><span class="op">(</span><span class="op">)</span>
+<span class="fu">ss</span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><code>fontquiver</code> fonts are particularly useful for creating reproducible SVG files. The <code>vdiffr</code> package uses svglite with fontquiver fonts to create visual unit tests reliably across platforms. The Liberation fontset is appropriate for this usage because it features all 12 combinations of standard R families and faces. In addition fontquiver provides Symbola for the symbol font. The function <code><a href="https://rdrr.io/pkg/fontquiver/man/font_families.html">fontquiver::font_families()</a></code> produces a list with the appropriate structure and can be directly supplied to svglite:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit">
-<span class="kw">fonts</span> <span class="op">&lt;-</span> <span class="kw">fontquiver</span>::<span class="fu"><a href="https://rdrr.io/pkg/fontquiver/man/font_families.html">font_families</a></span>(<span class="st">"Liberation"</span>)
-<span class="kw">fonts</span><span class="op">$</span><span class="kw">symbol</span><span class="op">$</span><span class="kw">symbol</span> <span class="op">&lt;-</span> <span class="kw">fontquiver</span>::<span class="fu"><a href="https://rdrr.io/pkg/fontquiver/man/fonts.html">font_symbol</a></span>(<span class="st">"Symbola"</span>)
-<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span>(<span class="kw">fonts</span>, <span class="fl">2</span>)
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fonts</span> <span class="op">&lt;-</span> <span class="fu">fontquiver</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fontquiver/man/font_families.html">font_families</a></span><span class="op">(</span><span class="st">"Liberation"</span><span class="op">)</span>
+<span class="va">fonts</span><span class="op">$</span><span class="va">symbol</span><span class="op">$</span><span class="va">symbol</span> <span class="op">&lt;-</span> <span class="fu">fontquiver</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fontquiver/man/fonts.html">font_symbol</a></span><span class="op">(</span><span class="st">"Symbola"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op">(</span><span class="va">fonts</span>, <span class="fl">2</span><span class="op">)</span>
 
-<span class="fu"><a href="../reference/svglite.html">svglite</a></span>(<span class="st">"reproducible.svg"</span>, user_fonts = <span class="kw">fonts</span>)
-<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span>(<span class="fl">1</span><span class="op">:</span><span class="fl">10</span>)
-<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span>()
-</pre></div>
+<span class="fu"><a href="../reference/svglite.html">svglite</a></span><span class="op">(</span><span class="st">"reproducible.svg"</span>, user_fonts <span class="op">=</span> <span class="va">fonts</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
 <div id="debugging-font-matching" class="section level2">
 <h2 class="hasAnchor">
 <a href="#debugging-font-matching" class="anchor"></a>Debugging font matching</h2>
 <p>The systemfonts package is used to match font family names to fonts installed on the system. systemfonts will always return a valid font, but if the requested font is badly misspelled or missing, a default will be returned. To test if the expected font is matched you can use the <code>match_font()</code> and <code>font_info()</code> functions from systemfonts:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit">
-<span class="kw">systemfonts</span>::<span class="fu"><a href="https://rdrr.io/pkg/systemfonts/man/match_font.html">match_font</a></span>(<span class="st">"Helvetica"</span>)
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/systemfonts/man/match_font.html">match_font</a></span><span class="op">(</span><span class="st">"Helvetica"</span><span class="op">)</span>
 <span class="co">#&gt; $path</span>
 <span class="co">#&gt; [1] "/System/Library/Fonts/Helvetica.ttc"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $index</span>
 <span class="co">#&gt; [1] 0</span>
-<span class="kw">systemfonts</span>::<span class="fu"><a href="https://rdrr.io/pkg/systemfonts/man/font_info.html">font_info</a></span>(<span class="st">"Helvetica"</span>, bold = <span class="fl">TRUE</span>)
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $features</span>
+<span class="co">#&gt; NULL</span>
+<span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/systemfonts/man/font_info.html">font_info</a></span><span class="op">(</span><span class="st">"Helvetica"</span>, bold <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co">#&gt;                                  path index    family style italic bold</span>
 <span class="co">#&gt; 1 /System/Library/Fonts/Helvetica.ttc     1 Helvetica  Bold  FALSE TRUE</span>
 <span class="co">#&gt;   monospace kerning color scalable vertical n_glyphs n_sizes n_charmaps</span>
@@ -238,8 +230,7 @@
 <span class="co">#&gt;                                          bbox max_ascend max_descend</span>
 <span class="co">#&gt; 1 -12.218750, 17.234375, -5.765625, 13.906250   9.234375   -2.765625</span>
 <span class="co">#&gt;   max_advance_width max_advance_height lineheight underline_pos underline_size</span>
-<span class="co">#&gt; 1                18                 12         12     -1.203125        0.59375</span>
-</pre></div>
+<span class="co">#&gt; 1                18                 12         12     -1.203125        0.59375</span></code></pre></div>
 </div>
   </div>
 
@@ -258,7 +249,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.9000.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
 </div>
 
       </footer>
