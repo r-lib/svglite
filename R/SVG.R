@@ -78,8 +78,7 @@
 #' # See the fonts vignettes for more options to deal with fonts
 #'
 #' @keywords device
-#' @useDynLib svglite
-#' @importFrom cpp11 cpp_source
+#' @useDynLib svglite, .registration = TRUE
 #' @importFrom systemfonts match_font
 #' @export
 svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
