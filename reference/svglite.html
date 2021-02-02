@@ -167,6 +167,7 @@ standard. The driver output is currently NOT specifying a DOCTYPE DTD.</p>
   id <span class='op'>=</span> <span class='cn'>NULL</span>,
   fix_text_size <span class='op'>=</span> <span class='cn'>TRUE</span>,
   scaling <span class='op'>=</span> <span class='fl'>1</span>,
+  keep_valid <span class='op'>=</span> <span class='cn'>FALSE</span>,
   <span class='va'>file</span>
 <span class='op'>)</span></pre>
 
@@ -244,6 +245,13 @@ and background).</p></td>
       <td><p>A scaling factor to apply to the rendered line width and text
 size. Useful for getting the right sizing at the dimension that you
 need.</p></td>
+    </tr>
+    <tr>
+      <th>keep_valid</th>
+      <td><p>Should the svgfile be a valid svg file while it is being
+written to? Setting this to `TRUE` will incur a considerable performance
+hit (&gt;50<!-- % additional rendering time) so this should only be set to `TRUE` -->
+if the file is being parsed while it is still being written to.</p></td>
     </tr>
     <tr>
       <th>file</th>

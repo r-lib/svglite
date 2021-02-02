@@ -113,7 +113,7 @@
 <div id="benchmarks" class="section level2">
 <h2 class="hasAnchor">
 <a href="#benchmarks" class="anchor"></a>Benchmarks</h2>
-<p>While the performance of <code><a href="reference/svglite.html">svglite()</a></code> and <code><a href="https://rdrr.io/r/grDevices/cairo.html">svg()</a></code> is comparable (with an upper hand to svglite)…</p>
+<p><code><a href="reference/svglite.html">svglite()</a></code> is considerably faster than <code><a href="https://rdrr.io/r/grDevices/cairo.html">svg()</a></code>:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://svglite.r-lib.org">svglite</a></span><span class="op">)</span>
 
@@ -135,10 +135,10 @@
 
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span><span class="fu">svglite_test</span><span class="op">(</span><span class="op">)</span>, <span class="fu">svg_test</span><span class="op">(</span><span class="op">)</span><span class="op">)</span>, type <span class="op">=</span> <span class="st">'ridge'</span><span class="op">)</span></code></pre></div>
 <p><img src="reference/figures/README-unnamed-chunk-3-1.png" width="100%"></p>
-<p>…it produces considerably smaller files:</p>
+<p>…and it produces considerably smaller files:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/file.info.html">file.size</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">tmp1</span>, <span class="va">tmp2</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1024</span>
-<span class="co">#&gt; [1]  74.88281 320.84668</span></code></pre></div>
+<span class="co">#&gt; [1]  74.9082 321.0928</span></code></pre></div>
 <p>In both cases, compressing to make <code>.svgz</code> is worthwhile. svglite supports compressed output directly and just need a <code>.svgz</code> extension in the filename to trigger it:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">gz</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">in_path</span>, <span class="va">out_path</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span>
@@ -154,7 +154,7 @@
 <span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/file.info.html">file.size</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">tmp3</span>, <span class="fu">gz</span><span class="op">(</span><span class="va">tmp2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1024</span>
-<span class="co">#&gt; [1]  9.427734 38.589844</span></code></pre></div>
+<span class="co">#&gt; [1]  9.395508 38.591797</span></code></pre></div>
 </div>
 </div>
   </div>
