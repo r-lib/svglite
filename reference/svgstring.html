@@ -215,8 +215,8 @@ font file.</p></td>
       <td><p>A list containing web fonts to use in the SVG. The fonts
 will still need to be available locally on the computer running the code,
 but viewers of the final SVG will not need the font if specified as a web
-font. Web fonts can either be specified using [font_face()] or given as a
-single string in which case they are taken to be URL's for an `@import`
+font. Web fonts can either be specified using <code><a href='font_face.html'>font_face()</a></code> or given as a
+single string in which case they are taken to be URL's for an <code>@import</code>
 directive to e.g. Google Fonts.</p></td>
     </tr>
     <tr>
@@ -229,9 +229,9 @@ an id tag and a warning will be thrown.</p></td>
       <th>fix_text_size</th>
       <td><p>Should the width of strings be fixed so that it doesn't
 change between svg renderers depending on their font rendering? Defaults to
-`TRUE`. If `TRUE` each string will have the `textLength` CSS property set
+<code>TRUE</code>. If <code>TRUE</code> each string will have the <code>textLength</code> CSS property set
 to the width calculated by systemfonts and
-`lengthAdjust='spacingAndGlyphs'`. Setting this to `FALSE` can be
+<code>lengthAdjust='spacingAndGlyphs'</code>. Setting this to <code>FALSE</code> can be
 beneficial for heavy post-processing that may change content or style of
 strings, but may lead to inconsistencies between strings and graphic
 elements that depend on the dimensions of the string (e.g. label borders
@@ -248,7 +248,7 @@ need.</p></td>
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A function with no arguments: call the function to get the
-  current value of the string.</p>
+current value of the string.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>See <code><a href='svglite.html'>svglite</a>()</code> documentation for information about

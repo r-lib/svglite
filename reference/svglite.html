@@ -218,8 +218,8 @@ font file.</p></td>
       <td><p>A list containing web fonts to use in the SVG. The fonts
 will still need to be available locally on the computer running the code,
 but viewers of the final SVG will not need the font if specified as a web
-font. Web fonts can either be specified using [font_face()] or given as a
-single string in which case they are taken to be URL's for an `@import`
+font. Web fonts can either be specified using <code><a href='font_face.html'>font_face()</a></code> or given as a
+single string in which case they are taken to be URL's for an <code>@import</code>
 directive to e.g. Google Fonts.</p></td>
     </tr>
     <tr>
@@ -232,9 +232,9 @@ an id tag and a warning will be thrown.</p></td>
       <th>fix_text_size</th>
       <td><p>Should the width of strings be fixed so that it doesn't
 change between svg renderers depending on their font rendering? Defaults to
-`TRUE`. If `TRUE` each string will have the `textLength` CSS property set
+<code>TRUE</code>. If <code>TRUE</code> each string will have the <code>textLength</code> CSS property set
 to the width calculated by systemfonts and
-`lengthAdjust='spacingAndGlyphs'`. Setting this to `FALSE` can be
+<code>lengthAdjust='spacingAndGlyphs'</code>. Setting this to <code>FALSE</code> can be
 beneficial for heavy post-processing that may change content or style of
 strings, but may lead to inconsistencies between strings and graphic
 elements that depend on the dimensions of the string (e.g. label borders
@@ -249,13 +249,13 @@ need.</p></td>
     <tr>
       <th>keep_valid</th>
       <td><p>Should the svgfile be a valid svg file while it is being
-written to? Setting this to `TRUE` will incur a considerable performance
-hit (&gt;50<!-- % additional rendering time) so this should only be set to `TRUE` -->
+written to? Setting this to <code>TRUE</code> will incur a considerable performance
+hit (&gt;50% additional rendering time) so this should only be set to <code>TRUE</code>
 if the file is being parsed while it is still being written to.</p></td>
     </tr>
     <tr>
       <th>file</th>
-      <td><p>Identical to `filename`. Provided for backward compatibility.</p></td>
+      <td><p>Identical to <code>filename</code>. Provided for backward compatibility.</p></td>
     </tr>
     </table>
 
@@ -273,15 +273,15 @@ svg. See the <code>fonts</code> vignette for more information.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p><em>W3C Scalable Vector Graphics (SVG)</em>:
-  <a href='http://www.w3.org/Graphics/SVG/Overview.htm8'>http://www.w3.org/Graphics/SVG/Overview.htm8</a></p>
+<a href='http://www.w3.org/Graphics/SVG/Overview.htm8'>http://www.w3.org/Graphics/SVG/Overview.htm8</a></p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='https://rdrr.io/r/grDevices/pictex.html'>pictex</a></code>, <code><a href='https://rdrr.io/r/grDevices/postscript.html'>postscript</a></code>, <code><a href='https://rdrr.io/r/grDevices/Devices.html'>Devices</a></code></p></div>
     <h2 class="hasAnchor" id="author"><a class="anchor" href="#author"></a>Author</h2>
 
     <p>This driver was written by T Jake Luciani
-  <a href='mailto:jakeluciani@yahoo.com'>jakeluciani@yahoo.com</a> 2012: updated by Matthieu Decorde
-  <a href='mailto:matthieu.decorde@ens-lyon.fr'>matthieu.decorde@ens-lyon.fr</a></p>
+<a href='mailto:jakeluciani@yahoo.com'>jakeluciani@yahoo.com</a> 2012: updated by Matthieu Decorde
+<a href='mailto:matthieu.decorde@ens-lyon.fr'>matthieu.decorde@ens-lyon.fr</a></p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># Save to file</span>
