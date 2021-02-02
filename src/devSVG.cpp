@@ -29,6 +29,7 @@ extern "C" {
 #include <cpp11/protect.hpp>
 #include <systemfonts.h>
 #include <string>
+#include <cstring>
 #include <iomanip>
 #include <sstream>
 #include <memory>
