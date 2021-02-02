@@ -797,8 +797,13 @@ void svg_text(double x, double y, const char *str, double rot,
   FontSettings font_info = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
   int weight = get_font_weight(font_info.file, font_info.index);
 
-  if (weight != 400)
-    write_style_int(stream, "font-weight", weight);
+  if (weight != 400) {
+    if (weight == 700) {
+      write_style_str(stream, "font-weight", "bold");
+    } else {
+      write_style_int(stream, "font-weight", weight);
+    }
+  }
   if (is_italic(gc->fontface))
     write_style_str(stream, "font-style", "italic");
   if (!is_black(gc->col))
