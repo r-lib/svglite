@@ -31,8 +31,7 @@ devtools::install_github("r-lib/svglite")
 
 ## Benchmarks
 
-While the performance of `svglite()` and `svg()` is comparable (with an
-upper hand to svglite)…
+`svglite()` is considerably faster than `svg()`:
 
 ``` r
 library(svglite)
@@ -58,11 +57,11 @@ plot(bench::mark(svglite_test(), svg_test()), type = 'ridge')
 
 <img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
-…it produces considerably smaller files:
+…and it produces considerably smaller files:
 
 ``` r
 file.size(c(tmp1, tmp2)) / 1024
-#> [1]  74.88281 320.84668
+#> [1]  74.9082 321.0928
 ```
 
 In both cases, compressing to make `.svgz` is worthwhile. svglite
@@ -83,5 +82,5 @@ plot(x, y)
 invisible(dev.off())
 
 file.size(c(tmp3, gz(tmp2))) / 1024
-#> [1]  9.427734 38.589844
+#> [1]  9.395508 38.591797
 ```

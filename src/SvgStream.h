@@ -77,9 +77,10 @@ class SvgStreamFile : public SvgStream {
   std::ofstream stream_;
   bool compress = false;
   std::string file = "";
+  bool keep_valid = false;
 
 public:
-  SvgStreamFile(const std::string& path) {
+  SvgStreamFile(const std::string& path, bool _keep_valid = false) : keep_valid(_keep_valid) {
     std::string svgz_ext = path.size() > 5 ? path.substr(path.size() - 5) : "";
     compress = iequals(svgz_ext, ".svgz");
     file = R_ExpandFileName(path.c_str());
@@ -92,7 +93,7 @@ public:
     stream_ << std::fixed << std::setprecision(2);
   }
 
-  SvgStreamFile(const std::string& path, int pageno) {
+  SvgStreamFile(const std::string& path, int pageno, bool _keep_valid = false) : keep_valid(_keep_valid) {
     std::string svgz_ext = path.size() > 5 ? path.substr(path.size() - 5) : "";
     compress = iequals(svgz_ext, ".svgz");
 
@@ -119,6 +120,10 @@ public:
   // seeking back to original position. So we only write the newline
   // in finish()
   void flush() {
+    if (!keep_valid) {
+      return;
+    }
+
     stream_ << "</g>\n</svg>";
 #ifdef _WIN32
     stream_.seekp(-12, std::ios_base::cur);

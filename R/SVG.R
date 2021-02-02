@@ -52,6 +52,10 @@
 #' @param scaling A scaling factor to apply to the rendered line width and text
 #'   size. Useful for getting the right sizing at the dimension that you
 #'   need.
+#' @param keep_valid Should the svgfile be a valid svg file while it is being
+#'   written to? Setting this to `TRUE` will incur a considerable performance
+#'   hit (>50% additional rendering time) so this should only be set to `TRUE`
+#'   if the file is being parsed while it is still being written to.
 #' @param file Identical to `filename`. Provided for backward compatibility.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
 #'   \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
@@ -84,7 +88,7 @@
 svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
                     bg = "white", pointsize = 12, standalone = TRUE,
                     system_fonts = list(), user_fonts = list(), web_fonts = list(), id = NULL,
-                    fix_text_size = TRUE, scaling = 1, file) {
+                    fix_text_size = TRUE, scaling = 1, keep_valid = FALSE, file) {
   if (!missing(file)) {
     filename <- file
   }
@@ -96,7 +100,7 @@ svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
     id <- character(0)
   }
   id <- as.character(id)
-  invisible(svglite_(filename, bg, width, height, pointsize, standalone, aliases, web_fonts, id, fix_text_size, scaling))
+  invisible(svglite_(filename, bg, width, height, pointsize, standalone, aliases, web_fonts, id, fix_text_size, scaling, keep_valid))
 }
 
 #' Access current SVG as a string.

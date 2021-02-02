@@ -17,6 +17,7 @@ svglite(
   id = NULL,
   fix_text_size = TRUE,
   scaling = 1,
+  keep_valid = FALSE,
   file
 )
 }
@@ -70,6 +71,11 @@ and background).}
 \item{scaling}{A scaling factor to apply to the rendered line width and text
 size. Useful for getting the right sizing at the dimension that you
 need.}
+
+\item{keep_valid}{Should the svgfile be a valid svg file while it is being
+written to? Setting this to `TRUE` will incur a considerable performance
+hit (>50% additional rendering time) so this should only be set to `TRUE`
+if the file is being parsed while it is still being written to.}
 
 \item{file}{Identical to `filename`. Provided for backward compatibility.}
 }

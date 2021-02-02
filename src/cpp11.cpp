@@ -5,10 +5,10 @@
 #include "cpp11/declarations.hpp"
 
 // devSVG.cpp
-bool svglite_(std::string file, std::string bg, double width, double height, double pointsize, bool standalone, cpp11::list aliases, std::string webfonts, cpp11::strings id, bool fix_text_size, double scaling);
-extern "C" SEXP _svglite_svglite_(SEXP file, SEXP bg, SEXP width, SEXP height, SEXP pointsize, SEXP standalone, SEXP aliases, SEXP webfonts, SEXP id, SEXP fix_text_size, SEXP scaling) {
+bool svglite_(std::string file, std::string bg, double width, double height, double pointsize, bool standalone, cpp11::list aliases, std::string webfonts, cpp11::strings id, bool fix_text_size, double scaling, bool keep_valid);
+extern "C" SEXP _svglite_svglite_(SEXP file, SEXP bg, SEXP width, SEXP height, SEXP pointsize, SEXP standalone, SEXP aliases, SEXP webfonts, SEXP id, SEXP fix_text_size, SEXP scaling, SEXP keep_valid) {
   BEGIN_CPP11
-    return cpp11::as_sexp(svglite_(cpp11::as_cpp<cpp11::decay_t<std::string>>(file), cpp11::as_cpp<cpp11::decay_t<std::string>>(bg), cpp11::as_cpp<cpp11::decay_t<double>>(width), cpp11::as_cpp<cpp11::decay_t<double>>(height), cpp11::as_cpp<cpp11::decay_t<double>>(pointsize), cpp11::as_cpp<cpp11::decay_t<bool>>(standalone), cpp11::as_cpp<cpp11::decay_t<cpp11::list>>(aliases), cpp11::as_cpp<cpp11::decay_t<std::string>>(webfonts), cpp11::as_cpp<cpp11::decay_t<cpp11::strings>>(id), cpp11::as_cpp<cpp11::decay_t<bool>>(fix_text_size), cpp11::as_cpp<cpp11::decay_t<double>>(scaling)));
+    return cpp11::as_sexp(svglite_(cpp11::as_cpp<cpp11::decay_t<std::string>>(file), cpp11::as_cpp<cpp11::decay_t<std::string>>(bg), cpp11::as_cpp<cpp11::decay_t<double>>(width), cpp11::as_cpp<cpp11::decay_t<double>>(height), cpp11::as_cpp<cpp11::decay_t<double>>(pointsize), cpp11::as_cpp<cpp11::decay_t<bool>>(standalone), cpp11::as_cpp<cpp11::decay_t<cpp11::list>>(aliases), cpp11::as_cpp<cpp11::decay_t<std::string>>(webfonts), cpp11::as_cpp<cpp11::decay_t<cpp11::strings>>(id), cpp11::as_cpp<cpp11::decay_t<bool>>(fix_text_size), cpp11::as_cpp<cpp11::decay_t<double>>(scaling), cpp11::as_cpp<cpp11::decay_t<bool>>(keep_valid)));
   END_CPP11
 }
 // devSVG.cpp
@@ -29,12 +29,12 @@ extern "C" SEXP _svglite_get_svg_content(SEXP p) {
 extern "C" {
 /* .Call calls */
 extern SEXP _svglite_get_svg_content(SEXP);
-extern SEXP _svglite_svglite_(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
+extern SEXP _svglite_svglite_(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 extern SEXP _svglite_svgstring_(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
 
 static const R_CallMethodDef CallEntries[] = {
     {"_svglite_get_svg_content", (DL_FUNC) &_svglite_get_svg_content,  1},
-    {"_svglite_svglite_",        (DL_FUNC) &_svglite_svglite_,        11},
+    {"_svglite_svglite_",        (DL_FUNC) &_svglite_svglite_,        12},
     {"_svglite_svgstring_",      (DL_FUNC) &_svglite_svgstring_,      11},
     {NULL, NULL, 0}
 };
