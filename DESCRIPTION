@@ -24,7 +24,7 @@ Depends:
     R (>= 3.0.0)
 Imports:
     cpp11,
-    systemfonts (>= 0.2.3)
+    systemfonts (>= 1.0.0)
 LinkingTo:
     cpp11,
     systemfonts
