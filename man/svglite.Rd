@@ -50,8 +50,8 @@ font file.}
 \item{web_fonts}{A list containing web fonts to use in the SVG. The fonts
 will still need to be available locally on the computer running the code,
 but viewers of the final SVG will not need the font if specified as a web
-font. Web fonts can either be specified using [font_face()] or given as a
-single string in which case they are taken to be URL's for an `@import`
+font. Web fonts can either be specified using \code{\link[=font_face]{font_face()}} or given as a
+single string in which case they are taken to be URL's for an \verb{@import}
 directive to e.g. Google Fonts.}
 
 \item{id}{A character vector of ids to assign to the generated SVG's. If
@@ -60,9 +60,9 @@ an id tag and a warning will be thrown.}
 
 \item{fix_text_size}{Should the width of strings be fixed so that it doesn't
 change between svg renderers depending on their font rendering? Defaults to
-`TRUE`. If `TRUE` each string will have the `textLength` CSS property set
+\code{TRUE}. If \code{TRUE} each string will have the \code{textLength} CSS property set
 to the width calculated by systemfonts and
-`lengthAdjust='spacingAndGlyphs'`. Setting this to `FALSE` can be
+\code{lengthAdjust='spacingAndGlyphs'}. Setting this to \code{FALSE} can be
 beneficial for heavy post-processing that may change content or style of
 strings, but may lead to inconsistencies between strings and graphic
 elements that depend on the dimensions of the string (e.g. label borders
@@ -73,11 +73,11 @@ size. Useful for getting the right sizing at the dimension that you
 need.}
 
 \item{keep_valid}{Should the svgfile be a valid svg file while it is being
-written to? Setting this to `TRUE` will incur a considerable performance
-hit (>50% additional rendering time) so this should only be set to `TRUE`
+written to? Setting this to \code{TRUE} will incur a considerable performance
+hit (>50\% additional rendering time) so this should only be set to \code{TRUE}
 if the file is being parsed while it is still being written to.}
 
-\item{file}{Identical to `filename`. Provided for backward compatibility.}
+\item{file}{Identical to \code{filename}. Provided for backward compatibility.}
 }
 \description{
 This function produces graphics compliant to the current w3 svg XML
@@ -115,14 +115,14 @@ dev.off()
 }
 \references{
 \emph{W3C Scalable Vector Graphics (SVG)}:
-  \url{http://www.w3.org/Graphics/SVG/Overview.htm8}
+\url{http://www.w3.org/Graphics/SVG/Overview.htm8}
 }
 \seealso{
 \code{\link{pictex}}, \code{\link{postscript}}, \code{\link{Devices}}
 }
 \author{
 This driver was written by T Jake Luciani
-  \email{jakeluciani@yahoo.com} 2012: updated by Matthieu Decorde
-  \email{matthieu.decorde@ens-lyon.fr}
+\email{jakeluciani@yahoo.com} 2012: updated by Matthieu Decorde
+\email{matthieu.decorde@ens-lyon.fr}
 }
 \keyword{device}

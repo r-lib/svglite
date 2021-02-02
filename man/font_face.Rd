@@ -33,31 +33,31 @@ format.}
 have. If a local font is found with either of the given names it will be
 used and no download will happen.}
 
-\item{weight}{An optional value for the `font-weight` descriptor}
+\item{weight}{An optional value for the \code{font-weight} descriptor}
 
-\item{style}{An optional value for the `font-style` descriptor}
+\item{style}{An optional value for the \code{font-style} descriptor}
 
-\item{range}{An optional value for the `unicode-range` descriptor Will give
+\item{range}{An optional value for the \code{unicode-range} descriptor Will give
 the range of unicode values that this font will support}
 
-\item{variant}{An optional value for the `font-variant` descriptor}
+\item{variant}{An optional value for the \code{font-variant} descriptor}
 
-\item{stretch}{An optional value for the `font-stretch` descriptor}
+\item{stretch}{An optional value for the \code{font-stretch} descriptor}
 
-\item{feature_setting}{An optional value for the `font-feature-settings`
+\item{feature_setting}{An optional value for the \code{font-feature-settings}
 descriptor It is recommended to avoid using this if possible}
 
-\item{variation_setting}{An optional value for the `font-variation-settings`
+\item{variation_setting}{An optional value for the \code{font-variation-settings}
 descriptor.}
 }
 \value{
-A character string with the `@font-face` block.
+A character string with the \verb{@font-face} block.
 }
 \description{
 Webfonts in SVG and HTML can either be specified manually using the
-`@font-face` at-rule, or imported from e.g. Google Fonts using the `@import`
-at-rule. `font_face()` helps you create a valid `@font-face` block for the
-`web_fonts` argument in [svglite()] and [svgstring()] functions.
+\verb{@font-face} at-rule, or imported from e.g. Google Fonts using the \verb{@import}
+at-rule. \code{font_face()} helps you create a valid \verb{@font-face} block for the
+\code{web_fonts} argument in \code{\link[=svglite]{svglite()}} and \code{\link[=svgstring]{svgstring()}} functions.
 }
 \examples{
 font_face(
