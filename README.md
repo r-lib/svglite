@@ -64,8 +64,8 @@ bench::mark(svglite_test(), svg_test(), min_iterations = 250)
 #> # A tibble: 2 x 6
 #>   expression          min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 svglite_test()   3.38ms   3.93ms     232.      638KB    6.69 
-#> 2 svg_test()      11.21ms   12.3ms      78.5     177KB    0.315
+#> 1 svglite_test()   3.32ms   3.81ms     249.      638KB    7.16 
+#> 2 svg_test()      11.26ms  12.39ms      77.0     177KB    0.309
 ```
 
 ### File size
@@ -124,6 +124,6 @@ installed.
 
 ## Code of Conduct
 
-Please note that the svglite project is released with a \[Contributor
-Code of Conduct\](<https://svglite.r-lib.org/CODE_OF_CONDUCT.html).> By
+Please note that the svglite project is released with a [Contributor
+Code of Conduct](https://svglite.r-lib.org/CODE_OF_CONDUCT.html). By
 contributing to this project, you agree to abide by its terms.
