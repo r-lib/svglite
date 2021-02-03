@@ -626,10 +626,11 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   svgd->clipy0 = R_NegInf;
   svgd->clipx1 = R_NegInf;
   svgd->clipy1 = R_PosInf;
+  svgd->is_inited = true;
+
   svg_clip(0, dd->right, dd->bottom, 0, dd);
 
   svgd->stream->flush();
-  svgd->is_inited = true;
   svgd->pageno++;
 }
 
