@@ -166,7 +166,8 @@
 <li><p>The use of textLength CSS property can now be turned off (<a href='https://github.com/r-lib/svglite/issues/118'>#118</a>)</p></li>
 <li><p>web font imports can now be given when creating an svg (<a href='https://github.com/r-lib/svglite/issues/108'>#108</a>)</p></li>
 <li><p>Add scaling argument to devices to control line-width and text scaling (<a href='https://github.com/r-lib/svglite/issues/115'>#115</a>)</p></li>
-<li><p>svg files that are being written are now only valid at all times if <code>keep_valid</code> is set to <code>TRUE</code> in the <code><a href="../reference/svglite.html">svglite()</a></code> call.</p></li>
+<li><p>svg files that are being written are now only valid at all times if <code>always_valid</code> is set to <code>TRUE</code> in the <code><a href="../reference/svglite.html">svglite()</a></code> call.</p></li>
+<li><p>svglite now guards against attempts at writing to the device before a new page has been requested (<a href='https://github.com/r-lib/svglite/issues/126'>#126</a>)</p></li>
 </ul>
 </div>
     <div id="svglite-123" class="section level1">
