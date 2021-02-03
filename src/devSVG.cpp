@@ -48,6 +48,7 @@ public:
   SvgStreamPtr stream;
 
   int pageno;
+  bool is_inited;
   std::string clipid;  // ID for the clip path
   double clipx0, clipx1, clipy0, clipy1;  // Save the previous clip path to avoid duplication
   bool standalone;
@@ -65,6 +66,7 @@ public:
           bool fix_text_size_, double scaling_, bool always_valid_):
       stream(stream_),
       pageno(0),
+      is_inited(false),
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
       standalone(standalone_),
       fix_text_size(fix_text_size_),
@@ -508,6 +510,9 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
 
 void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (!svgd->is_inited) {
+    return;
+  }
   SvgStreamPtr stream = svgd->stream;
 
   double xmin = std::min(x0, x1);
@@ -624,18 +629,24 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   svg_clip(0, dd->right, dd->bottom, 0, dd);
 
   svgd->stream->flush();
+  svgd->is_inited = true;
   svgd->pageno++;
 }
 
 void svg_close(pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  svgd->stream->finish(true);
+  if (svgd->is_inited) {
+    svgd->stream->finish(true);
+  }
   delete(svgd);
 }
 
 void svg_line(double x1, double y1, double x2, double y2,
               const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (!svgd->is_inited) {
+    return;
+  }
   SvgStreamPtr stream = svgd->stream;
 
   (*stream) << "<line x1='" << x1 << "' y1='" << y1 << "' x2='" <<
@@ -653,6 +664,9 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
               pDevDesc dd, const char* node_name) {
 
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (!svgd->is_inited) {
+    return;
+  }
   SvgStreamPtr stream = svgd->stream;
 
   (*stream) << "<" << node_name << " points='";
@@ -687,6 +701,9 @@ void svg_path(double *x, double *y,
               Rboolean winding,
               const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (!svgd->is_inited) {
+    return;
+  }
   SvgStreamPtr stream = svgd->stream;
 
   // Create path data
@@ -738,6 +755,9 @@ double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
 void svg_rect(double x0, double y0, double x1, double y1,
               const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (!svgd->is_inited) {
+    return;
+  }
   SvgStreamPtr stream = svgd->stream;
 
   // x and y give top-left position
@@ -757,6 +777,9 @@ void svg_rect(double x0, double y0, double x1, double y1,
 void svg_circle(double x, double y, double r, const pGEcontext gc,
                        pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (!svgd->is_inited) {
+    return;
+  }
   SvgStreamPtr stream = svgd->stream;
 
   (*stream) << "<circle cx='" << x << "' cy='" << y << "' r='" << r << "'";
@@ -774,6 +797,9 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
 void svg_text(double x, double y, const char *str, double rot,
               double hadj, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (!svgd->is_inited) {
+    return;
+  }
   SvgStreamPtr stream = svgd->stream;
 
   (*stream) << "<text";
@@ -860,6 +886,9 @@ void svg_raster(unsigned int *raster, int w, int h,
                 Rboolean interpolate,
                 const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (!svgd->is_inited) {
+    return;
+  }
   SvgStreamPtr stream = svgd->stream;
 
   if (height < 0)

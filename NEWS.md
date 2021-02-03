@@ -38,6 +38,9 @@
 * svg files that are being written are now only valid at all times if `always_valid`
   is set to `TRUE` in the `svglite()` call.
 
+* svglite now guards against attempts at writing to the device before a new page 
+  has been requested (#126)
+
 
 # svglite 1.2.3
 
