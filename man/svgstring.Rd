@@ -30,16 +30,18 @@ svgstring(
 \item{standalone}{Produce a standalone svg file? If \code{FALSE}, omits
 xml header and default namespace.}
 
-\item{system_fonts}{Named list of font names to be aliased with
-fonts installed on your system. If unspecified, the R default
-families \code{sans}, \code{serif}, \code{mono} and \code{symbol}
-are aliased to the family returned by
+\item{system_fonts}{\ifelse{html}{\out{<a href='https://www.tidyverse.org/lifecycle/#superseded'><img src='figures/lifecycle-superseded.svg' alt='Superseded lifecycle'></a>}}{\strong{Superseded}} \emph{Consider using
+\code{\link[systemfonts:register_font]{systemfonts::register_font()}} instead}. Named list of font
+names to be aliased with fonts installed on your system. If unspecified,
+the R default families \code{sans}, \code{serif}, \code{mono} and
+\code{symbol} are aliased to the family returned by
 \code{\link[systemfonts]{font_info}()}.}
 
-\item{user_fonts}{Named list of fonts to be aliased with font files
-provided by the user rather than fonts properly installed on the
-system. The aliases can be fonts from the fontquiver package,
-strings containing a path to a font file, or a list containing
+\item{user_fonts}{\ifelse{html}{\out{<a href='https://www.tidyverse.org/lifecycle/#superseded'><img src='figures/lifecycle-superseded.svg' alt='Superseded lifecycle'></a>}}{\strong{Superseded}} \emph{Consider using
+\code{\link[systemfonts:register_font]{systemfonts::register_font()}} instead}. Named list of fonts to
+be aliased with font files provided by the user rather than fonts properly
+installed on the system. The aliases can be fonts from the fontquiver
+package, strings containing a path to a font file, or a list containing
 \code{name} and \code{file} elements with \code{name} indicating
 the font alias in the SVG output and \code{file} the path to a
 font file.}

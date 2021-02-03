@@ -19,15 +19,17 @@
 #' @param pointsize Default point size.
 #' @param standalone Produce a standalone svg file? If \code{FALSE}, omits
 #'   xml header and default namespace.
-#' @param system_fonts Named list of font names to be aliased with
-#'   fonts installed on your system. If unspecified, the R default
-#'   families \code{sans}, \code{serif}, \code{mono} and \code{symbol}
-#'   are aliased to the family returned by
+#' @param system_fonts `r lifecycle::badge('superseded')` *Consider using
+#'   [systemfonts::register_font()] instead*. Named list of font
+#'   names to be aliased with fonts installed on your system. If unspecified,
+#'   the R default families \code{sans}, \code{serif}, \code{mono} and
+#'   \code{symbol} are aliased to the family returned by
 #'   \code{\link[systemfonts]{font_info}()}.
-#' @param user_fonts Named list of fonts to be aliased with font files
-#'   provided by the user rather than fonts properly installed on the
-#'   system. The aliases can be fonts from the fontquiver package,
-#'   strings containing a path to a font file, or a list containing
+#' @param user_fonts `r lifecycle::badge('superseded')` *Consider using
+#'   [systemfonts::register_font()] instead*. Named list of fonts to
+#'   be aliased with font files provided by the user rather than fonts properly
+#'   installed on the system. The aliases can be fonts from the fontquiver
+#'   package, strings containing a path to a font file, or a list containing
 #'   \code{name} and \code{file} elements with \code{name} indicating
 #'   the font alias in the SVG output and \code{file} the path to a
 #'   font file.
