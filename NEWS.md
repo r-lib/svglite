@@ -35,7 +35,7 @@
 
 * Add scaling argument to devices to control line-width and text scaling (#115)
 
-* svg files that are being written are now only valid at all times if `keep_valid`
+* svg files that are being written are now only valid at all times if `always_valid`
   is set to `TRUE` in the `svglite()` call.
 
 

@@ -53,7 +53,7 @@ public:
   bool standalone;
   bool fix_text_size;
   double scaling;
-  bool keep_valid;
+  bool always_valid;
   const std::string file;
   cpp11::list system_aliases;
   cpp11::list user_aliases;
@@ -62,14 +62,14 @@ public:
 
   SVGDesc(SvgStreamPtr stream_, bool standalone_, cpp11::list aliases_,
           const std::string webfonts_, const std::string& file_, cpp11::strings ids_,
-          bool fix_text_size_, double scaling_, bool keep_valid_):
+          bool fix_text_size_, double scaling_, bool always_valid_):
       stream(stream_),
       pageno(0),
       clipx0(0), clipx1(0), clipy0(0), clipy1(0),
       standalone(standalone_),
       fix_text_size(fix_text_size_),
       scaling(scaling_),
-      keep_valid(keep_valid_),
+      always_valid(always_valid_),
       file(file_),
       system_aliases(cpp11::as_cpp<cpp11::list>(aliases_["system"])),
       user_aliases(cpp11::as_cpp<cpp11::list>(aliases_["user"])),
@@ -80,7 +80,7 @@ public:
   void nextFile() {
     stream->finish(false);
     if (stream->is_file_stream()) {
-      SvgStreamPtr newStream(new SvgStreamFile(file, pageno + 1, keep_valid));
+      SvgStreamPtr newStream(new SvgStreamFile(file, pageno + 1, always_valid));
       stream = newStream;
     }
     clipid.clear();
@@ -911,7 +911,7 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
                         bool standalone, cpp11::list& aliases,
                         const std::string& webfonts,
                         const std::string& file, cpp11::strings id,
-                        bool fix_text_size, double scaling, bool keep_valid) {
+                        bool fix_text_size, double scaling, bool always_valid) {
 
   pDevDesc dd = (DevDesc*) calloc(1, sizeof(DevDesc));
   if (dd == NULL)
@@ -989,7 +989,7 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
 #endif
 
   dd->deviceSpecific = new SVGDesc(stream, standalone, aliases, webfonts, file,
-                                   id, fix_text_size, scaling, keep_valid);
+                                   id, fix_text_size, scaling, always_valid);
   return dd;
 }
 
@@ -997,7 +997,7 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
                 double pointsize, bool standalone, cpp11::list& aliases,
                 const std::string& webfonts, const std::string& file,
                 cpp11::strings id, bool fix_text_size, double scaling,
-                bool keep_valid) {
+                bool always_valid) {
 
   int bg = R_GE_str2col(bg_.c_str());
 
@@ -1006,7 +1006,7 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
   BEGIN_SUSPEND_INTERRUPTS {
     pDevDesc dev = svg_driver_new(stream, bg, width, height, pointsize,
                                   standalone, aliases, webfonts, file, id,
-                                  fix_text_size, scaling, keep_valid);
+                                  fix_text_size, scaling, always_valid);
     if (dev == NULL)
       cpp11::stop("Failed to start SVG device");
 
@@ -1021,11 +1021,11 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
 bool svglite_(std::string file, std::string bg, double width, double height,
               double pointsize, bool standalone, cpp11::list aliases,
               std::string webfonts, cpp11::strings id, bool fix_text_size,
-              double scaling, bool keep_valid) {
+              double scaling, bool always_valid) {
 
-  SvgStreamPtr stream(new SvgStreamFile(file, 1, keep_valid));
+  SvgStreamPtr stream(new SvgStreamFile(file, 1, always_valid));
   makeDevice(stream, bg, width, height, pointsize, standalone, aliases, webfonts,
-             file, id, fix_text_size, scaling, keep_valid);
+             file, id, fix_text_size, scaling, always_valid);
 
   return true;
 }

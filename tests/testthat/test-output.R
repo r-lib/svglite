@@ -18,9 +18,9 @@ test_that("different string and file output produce identical svg", {
   expect_equal(out1, out2)
 })
 
-test_that("intermediate outputs are always valid svg if keep_valid=TRUE", {
+test_that("intermediate outputs are always valid svg if always_valid=TRUE", {
   path <- tempfile()
-  svglite(path, keep_valid = TRUE)
+  svglite(path, always_valid = TRUE)
 
   expect_valid_svg <- function() {
     expect_error(xml2::read_xml(path), NA)

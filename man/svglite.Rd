@@ -17,7 +17,7 @@ svglite(
   id = NULL,
   fix_text_size = TRUE,
   scaling = 1,
-  keep_valid = FALSE,
+  always_valid = FALSE,
   file
 )
 }
@@ -72,7 +72,7 @@ and background).}
 size. Useful for getting the right sizing at the dimension that you
 need.}
 
-\item{keep_valid}{Should the svgfile be a valid svg file while it is being
+\item{always_valid}{Should the svgfile be a valid svg file while it is being
 written to? Setting this to \code{TRUE} will incur a considerable performance
 hit (>50\% additional rendering time) so this should only be set to \code{TRUE}
 if the file is being parsed while it is still being written to.}

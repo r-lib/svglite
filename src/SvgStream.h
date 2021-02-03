@@ -77,10 +77,10 @@ class SvgStreamFile : public SvgStream {
   std::ofstream stream_;
   bool compress = false;
   std::string file = "";
-  bool keep_valid = false;
+  bool always_valid = false;
 
 public:
-  SvgStreamFile(const std::string& path, bool _keep_valid = false) : keep_valid(_keep_valid) {
+  SvgStreamFile(const std::string& path, bool _always_valid = false) : always_valid(_always_valid) {
     std::string svgz_ext = path.size() > 5 ? path.substr(path.size() - 5) : "";
     compress = iequals(svgz_ext, ".svgz");
     file = R_ExpandFileName(path.c_str());
@@ -93,7 +93,7 @@ public:
     stream_ << std::fixed << std::setprecision(2);
   }
 
-  SvgStreamFile(const std::string& path, int pageno, bool _keep_valid = false) : keep_valid(_keep_valid) {
+  SvgStreamFile(const std::string& path, int pageno, bool _always_valid = false) : always_valid(_always_valid) {
     std::string svgz_ext = path.size() > 5 ? path.substr(path.size() - 5) : "";
     compress = iequals(svgz_ext, ".svgz");
 
@@ -120,7 +120,7 @@ public:
   // seeking back to original position. So we only write the newline
   // in finish()
   void flush() {
-    if (!keep_valid) {
+    if (!always_valid) {
       return;
     }
 
