@@ -64,8 +64,8 @@ bench::mark(svglite_test(), svg_test(), min_iterations = 250)
 #> # A tibble: 2 x 6
 #>   expression          min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 svglite_test()   3.32ms   3.81ms     249.      638KB    7.16 
-#> 2 svg_test()      11.26ms  12.39ms      77.0     177KB    0.309
+#> 1 svglite_test()   3.31ms   3.87ms     247.      561KB     5.05
+#> 2 svg_test()      10.57ms  12.19ms      76.3     177KB     1.24
 ```
 
 ### File size
@@ -95,7 +95,7 @@ invisible(dev.off())
 
 # svglite - svgz
 fs::file_size(tmp3)
-#> 9.39K
+#> 9.38K
 ```
 
 ### Editability
