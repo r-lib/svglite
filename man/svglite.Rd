@@ -105,7 +105,7 @@ dev.off()
 }
 \references{
 \emph{W3C Scalable Vector Graphics (SVG)}:
-\url{http://www.w3.org/Graphics/SVG/Overview.htm8}
+\url{http://www.w3.org/Graphics/SVG/}
 }
 \seealso{
 \code{\link{pictex}}, \code{\link{postscript}}, \code{\link{Devices}}

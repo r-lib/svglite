@@ -35,7 +35,7 @@ requires some CSS tricks to get this behaviour, see
 Aspect ratio is preserved by default when the figure is scaled up or
 down. The details of how the aspect ratio is preserved can be adjusted
 in multiple ways via the `preserveAspectRatio` attribute. See
-<https://sarasoueidan.com/blog/svg-coordinate-systems/> for more
+<https://www.sarasoueidan.com/blog/svg-coordinate-systems/> for more
 information about this property.
 
 Other useful resource: <https://css-tricks.com/scale-svg/>
@@ -100,7 +100,7 @@ As other graphics devices, svglite is scaled in big points (1/72 inch)
 rather than pica points (1/72.27 inch). Note that in LaTeX and in the
 `grid` graphics system on which ggplot2 is based, points refer to pica
 points. Big points are denoted in LaTeX by `bp` and in CSS by `pt`. We
-use the latter notation. See <http://tex.stackexchange.com/a/200968/19755>
+use the latter notation. See <https://tex.stackexchange.com/a/200968/19755>
 for some historical background about these units.
 
 The conversion between device units and physical dimensions is

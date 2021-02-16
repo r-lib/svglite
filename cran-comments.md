@@ -1,11 +1,21 @@
-Fix `...` documentation as requested by CRAN. Switch maintainer
+Big release with a lot of infrastructure changes and bug fixes. No breaking 
+changes or detected problems with reverse dependencies
 
 ## Test environments
-* local R installation, R 3.6.0
-* ubuntu 16.04 (on travis-ci), R 3.6.0
-* win-builder (devel)
+
+* GitHub Actions (ubuntu-16.04): devel, release, oldrel, 3.5, 3.4, 3.3
+* GitHub Actions (windows): release, oldrel
+* GitHub Actions (macOS): release
+* win-builder: devel
 
 ## R CMD check results
 
 0 errors | 0 warnings | 0 note
 
+## revdepcheck results
+
+We checked 33 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+
+ * We saw 0 new problems
+ * We failed to check 0 packages
+ 
