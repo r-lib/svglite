@@ -1,4 +1,4 @@
-# svglite (development version)
+# svglite 2.0.0
 
 * svglite now uses systemfonts for text metric calculations and font family 
   lookup.
