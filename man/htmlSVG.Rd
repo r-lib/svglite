@@ -2,7 +2,7 @@
 % Please edit documentation in R/inlineSVG.R
 \name{htmlSVG}
 \alias{htmlSVG}
-\title{Run plotting code and view svg in RStudio Viewer or web broswer.}
+\title{Run plotting code and view svg in RStudio Viewer or web browser.}
 \usage{
 htmlSVG(code, ...)
 }
@@ -16,7 +16,7 @@ This is useful primarily for testing. Requires the \code{htmltools}
 package.
 }
 \examples{
-if (require("htmltools")) {
+if (interactive() && require("htmltools")) {
   htmlSVG(plot(1:10))
   htmlSVG(hist(rnorm(100)))
 }
