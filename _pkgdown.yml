@@ -8,3 +8,21 @@ authors:
 template:
   params:
     ganalytics: UA-115082821-1
+
+navbar:
+  left:
+    - icon: fa-home fa-lg
+      href: index.html
+    - text: Reference
+      href: reference/index.html
+    - text: News
+      menu:
+      - text: "Release notes"
+      - text: "Version 2.0.0"
+        href: "https://www.tidyverse.org/blog/2021/02/svglite-2-0-0/"
+      - text: "------------------"
+      - text: "Change log"
+        href: news/index.html
+  right:
+    - icon: fa-github fa-lg
+      href: https://github.com/r-lib/svglite
