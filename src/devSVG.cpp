@@ -605,6 +605,7 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   (*stream) << "      stroke-linecap: round;\n";
   (*stream) << "      stroke-linejoin: round;\n";
   (*stream) << "      stroke-miterlimit: 10.00;\n";
+  (*stream) << "      white-space: pre;\n";
   (*stream) << "    }\n";
   (*stream) << "  ]]></style>\n";
   (*stream) << "</defs>\n";

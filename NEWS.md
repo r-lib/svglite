@@ -1,5 +1,7 @@
 # svglite (development version)
 
+* svglite now renders leading white-space in <text> nodes. (#131, @hrbrmstr)
+
 # svglite 2.0.0
 
 * svglite now uses systemfonts for text metric calculations and font family 

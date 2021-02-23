@@ -8,6 +8,17 @@ style_attr <- function(nodes, attr) {
          NA_character_)
 }
 
+test_that("ensure text leading white space will be rendered" , {
+  x <- xmlSVG(plot.new())
+  expect_true(
+    grepl(
+      "white-space: pre",
+      xml_text(xml_find_first(x, ".//defs/style[@type = 'text/css']"))
+    )
+  )
+  expect_equal(style_attr(xml_find_first(x, ".//rect"), "fill"), "#FFFFFF")
+})
+
 test_that("adds default background", {
   x <- xmlSVG(plot.new())
   expect_equal(style_attr(xml_find_first(x, ".//rect"), "fill"), "#FFFFFF")
