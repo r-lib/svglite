@@ -8,6 +8,8 @@
       stroke-linecap: round;
       stroke-linejoin: round;
       stroke-miterlimit: 10.00;
+    }
+    .svglite text {
       white-space: pre;
     }
   ]]></style>
