@@ -393,9 +393,12 @@ inline void write_style_fontsize(SvgStreamPtr stream, double value, bool first =
 }
 
 // Writing style attributes whose values are strings
-inline void write_style_str(SvgStreamPtr stream, const char* attr, const char* value, bool first = false) {
+inline void write_style_str(SvgStreamPtr stream, const char* attr, const char* value, bool first = false, bool quote = false) {
   if(!first)  (*stream) << ' ';
-  (*stream) << attr << ": " << value << ';';
+  // (*stream) << attr << ": " << value << ';';
+  (*stream) << attr << ": ";
+  if(quote) (*stream) << '"' << value << "\";";
+  else (*stream) << value << "\";";
 }
 
 inline double scale_lty(int lty, double lwd) {
@@ -840,7 +843,7 @@ void svg_text(double x, double y, const char *str, double rot,
     write_style_col(stream, "fill", gc->col);
 
   std::string font = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases, font_info);
-  write_style_str(stream, "font-family", font.c_str());
+  write_style_str(stream, "font-family", font.c_str(), false, true);
 
   if (font_info.n_features > 0) {
     (*stream) << " font-feature-settings: ";
