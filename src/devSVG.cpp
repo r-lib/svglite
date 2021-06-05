@@ -839,7 +839,7 @@ void svg_text(double x, double y, const char *str, double rot,
   if (!is_black(gc->col))
     write_style_col(stream, "fill", gc->col);
 
-  std::string font = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases, font_info).c_str();
+  std::string font = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases, font_info);
   write_style_str(stream, "font-family", ('"' + std::string(font.c_str()) + '"').c_str());
 
   if (font_info.n_features > 0) {
