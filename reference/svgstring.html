@@ -77,9 +77,15 @@ the current value as a string." />
 </script>
 
 
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -93,41 +99,43 @@ the current value as a string." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">svglite</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    News
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Release notes</li>
     <li>
-      <a href="../articles/fonts.html">Specifying fonts</a>
+      <a href="https://www.tidyverse.org/blog/2021/02/svglite-2-0-0/">Version 2.0.0</a>
     </li>
+    <li class="divider"></li>
     <li>
-      <a href="../articles/releases/svglite-1.2.0.html">svglite 1.2.0</a>
-    </li>
-    <li>
-      <a href="../articles/scaling.html">Scaling Issues</a>
+      <a href="../news/index.html">Change log</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/r-lib/svglite/">
-    <span class="fab fa-github fa-lg"></span>
+  <a href="https://github.com/r-lib/svglite">
+    <span class="fa fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -154,7 +162,7 @@ the current value as a string." />
 the current value as a string.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>svgstring</span><span class='op'>(</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>svgstring</span><span class='op'>(</span>
   width <span class='op'>=</span> <span class='fl'>10</span>,
   height <span class='op'>=</span> <span class='fl'>8</span>,
   bg <span class='op'>=</span> <span class='st'>"white"</span>,
@@ -166,7 +174,7 @@ the current value as a string.</p>
   id <span class='op'>=</span> <span class='cn'>NULL</span>,
   fix_text_size <span class='op'>=</span> <span class='cn'>TRUE</span>,
   scaling <span class='op'>=</span> <span class='fl'>1</span>
-<span class='op'>)</span></pre>
+<span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -194,18 +202,20 @@ xml header and default namespace.</p></td>
     </tr>
     <tr>
       <th>system_fonts</th>
-      <td><p>Named list of font names to be aliased with
-fonts installed on your system. If unspecified, the R default
-families <code>sans</code>, <code>serif</code>, <code>mono</code> and <code>symbol</code>
-are aliased to the family returned by
+      <td><p><a href='https://www.tidyverse.org/lifecycle/#superseded'><img src='figures/lifecycle-superseded.svg' alt='Superseded lifecycle'></a> <em>Consider using
+<code><a href='https://rdrr.io/pkg/systemfonts/man/register_font.html'>systemfonts::register_font()</a></code> instead</em>. Named list of font
+names to be aliased with fonts installed on your system. If unspecified,
+the R default families <code>sans</code>, <code>serif</code>, <code>mono</code> and
+<code>symbol</code> are aliased to the family returned by
 <code><a href='https://rdrr.io/pkg/systemfonts/man/font_info.html'>font_info</a>()</code>.</p></td>
     </tr>
     <tr>
       <th>user_fonts</th>
-      <td><p>Named list of fonts to be aliased with font files
-provided by the user rather than fonts properly installed on the
-system. The aliases can be fonts from the fontquiver package,
-strings containing a path to a font file, or a list containing
+      <td><p><a href='https://www.tidyverse.org/lifecycle/#superseded'><img src='figures/lifecycle-superseded.svg' alt='Superseded lifecycle'></a> <em>Consider using
+<code><a href='https://rdrr.io/pkg/systemfonts/man/register_font.html'>systemfonts::register_font()</a></code> instead</em>. Named list of fonts to
+be aliased with font files provided by the user rather than fonts properly
+installed on the system. The aliases can be fonts from the fontquiver
+package, strings containing a path to a font file, or a list containing
 <code>name</code> and <code>file</code> elements with <code>name</code> indicating
 the font alias in the SVG output and <code>file</code> the path to a
 font file.</p></td>
@@ -255,133 +265,141 @@ current value of the string.</p>
 specifying fonts.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'>svgstring</span><span class='op'>(</span><span class='op'>)</span>; <span class='fu'>s</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </div><div class='input'>
-<span class='fu'><a href='https://rdrr.io/r/graphics/frame.html'>plot.new</a></span><span class='op'>(</span><span class='op'>)</span>; <span class='fu'>s</span><span class='op'>(</span><span class='op'>)</span>;
-</div><div class='output co'>#&gt; &lt;?xml version='1.0' encoding='UTF-8' ?&gt;
-#&gt; &lt;svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'&gt;
-#&gt; &lt;defs&gt;
-#&gt;   &lt;style type='text/css'&gt;&lt;![CDATA[
-#&gt;     .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
-#&gt;       fill: none;
-#&gt;       stroke: #000000;
-#&gt;       stroke-linecap: round;
-#&gt;       stroke-linejoin: round;
-#&gt;       stroke-miterlimit: 10.00;
-#&gt;     }
-#&gt;   ]]&gt;&lt;/style&gt;
-#&gt; &lt;/defs&gt;
-#&gt; &lt;rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/&gt;
-#&gt; &lt;defs&gt;
-#&gt;   &lt;clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='&gt;
-#&gt;     &lt;rect x='0.00' y='0.00' width='720.00' height='576.00' /&gt;
-#&gt;   &lt;/clipPath&gt;
-#&gt; &lt;/defs&gt;
-#&gt; &lt;g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'&gt;
-#&gt; &lt;/g&gt;
-#&gt; &lt;/svg&gt;</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.5</span>, <span class='st'>"Hi!"</span><span class='op'>)</span>; <span class='fu'>s</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &lt;?xml version='1.0' encoding='UTF-8' ?&gt;
-#&gt; &lt;svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'&gt;
-#&gt; &lt;defs&gt;
-#&gt;   &lt;style type='text/css'&gt;&lt;![CDATA[
-#&gt;     .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
-#&gt;       fill: none;
-#&gt;       stroke: #000000;
-#&gt;       stroke-linecap: round;
-#&gt;       stroke-linejoin: round;
-#&gt;       stroke-miterlimit: 10.00;
-#&gt;     }
-#&gt;   ]]&gt;&lt;/style&gt;
-#&gt; &lt;/defs&gt;
-#&gt; &lt;rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/&gt;
-#&gt; &lt;defs&gt;
-#&gt;   &lt;clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='&gt;
-#&gt;     &lt;rect x='0.00' y='0.00' width='720.00' height='576.00' /&gt;
-#&gt;   &lt;/clipPath&gt;
-#&gt; &lt;/defs&gt;
-#&gt; &lt;g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'&gt;
-#&gt; &lt;/g&gt;
-#&gt; &lt;defs&gt;
-#&gt;   &lt;clipPath id='cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng=='&gt;
-#&gt;     &lt;rect x='59.04' y='59.04' width='630.72' height='443.52' /&gt;
-#&gt;   &lt;/clipPath&gt;
-#&gt; &lt;/defs&gt;
-#&gt; &lt;g clip-path='url(#cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng==)'&gt;
-#&gt; &lt;text x='374.40' y='285.11' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='14.67px' lengthAdjust='spacingAndGlyphs'&gt;Hi!&lt;/text&gt;
-#&gt; &lt;/g&gt;
-#&gt; &lt;/svg&gt;</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/grDevices/dev.html'>dev.off</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; agg_png 
-#&gt;       2 </div><div class='input'>
-<span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'>svgstring</span><span class='op'>(</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'>s</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; &lt;?xml version='1.0' encoding='UTF-8' ?&gt;
-#&gt; &lt;svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'&gt;
-#&gt; &lt;defs&gt;
-#&gt;   &lt;style type='text/css'&gt;&lt;![CDATA[
-#&gt;     .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
-#&gt;       fill: none;
-#&gt;       stroke: #000000;
-#&gt;       stroke-linecap: round;
-#&gt;       stroke-linejoin: round;
-#&gt;       stroke-miterlimit: 10.00;
-#&gt;     }
-#&gt;   ]]&gt;&lt;/style&gt;
-#&gt; &lt;/defs&gt;
-#&gt; &lt;rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/&gt;
-#&gt; &lt;defs&gt;
-#&gt;   &lt;clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='&gt;
-#&gt;     &lt;rect x='0.00' y='0.00' width='720.00' height='576.00' /&gt;
-#&gt;   &lt;/clipPath&gt;
-#&gt; &lt;/defs&gt;
-#&gt; &lt;g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'&gt;
-#&gt; &lt;/g&gt;
-#&gt; &lt;defs&gt;
-#&gt;   &lt;clipPath id='cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng=='&gt;
-#&gt;     &lt;rect x='59.04' y='59.04' width='630.72' height='443.52' /&gt;
-#&gt;   &lt;/clipPath&gt;
-#&gt; &lt;/defs&gt;
-#&gt; &lt;g clip-path='url(#cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng==)'&gt;
-#&gt; &lt;circle cx='666.40' cy='486.13' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='496.53' cy='453.65' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='380.80' cy='448.27' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='492.22' cy='260.34' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='82.40' cy='75.47' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;/g&gt;
-#&gt; &lt;g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'&gt;
-#&gt; &lt;line x1='63.75' y1='502.56' x2='660.95' y2='502.56' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='63.75' y1='502.56' x2='63.75' y2='509.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='149.06' y1='502.56' x2='149.06' y2='509.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='234.38' y1='502.56' x2='234.38' y2='509.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='319.69' y1='502.56' x2='319.69' y2='509.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='405.00' y1='502.56' x2='405.00' y2='509.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='490.32' y1='502.56' x2='490.32' y2='509.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='575.63' y1='502.56' x2='575.63' y2='509.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='660.95' y1='502.56' x2='660.95' y2='509.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;text x='63.75' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-1.8&lt;/text&gt;
-#&gt; &lt;text x='149.06' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-1.6&lt;/text&gt;
-#&gt; &lt;text x='234.38' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-1.4&lt;/text&gt;
-#&gt; &lt;text x='319.69' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-1.2&lt;/text&gt;
-#&gt; &lt;text x='405.00' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-1.0&lt;/text&gt;
-#&gt; &lt;text x='490.32' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-0.8&lt;/text&gt;
-#&gt; &lt;text x='575.63' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-0.6&lt;/text&gt;
-#&gt; &lt;text x='660.95' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-0.4&lt;/text&gt;
-#&gt; &lt;line x1='59.04' y1='439.25' x2='59.04' y2='70.17' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='59.04' y1='439.25' x2='51.84' y2='439.25' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='59.04' y1='316.22' x2='51.84' y2='316.22' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='59.04' y1='193.19' x2='51.84' y2='193.19' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='59.04' y1='70.17' x2='51.84' y2='70.17' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;text transform='translate(41.76,439.25) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-0.5&lt;/text&gt;
-#&gt; &lt;text transform='translate(41.76,316.22) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'&gt;0.0&lt;/text&gt;
-#&gt; &lt;text transform='translate(41.76,193.19) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'&gt;0.5&lt;/text&gt;
-#&gt; &lt;text transform='translate(41.76,70.17) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'&gt;1.0&lt;/text&gt;
-#&gt; &lt;polyline points='59.04,502.56 689.76,502.56 689.76,59.04 59.04,59.04 59.04,502.56 ' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;text x='374.40' y='557.28' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='46.00px' lengthAdjust='spacingAndGlyphs'&gt;rnorm(5)&lt;/text&gt;
-#&gt; &lt;text transform='translate(12.96,280.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='46.00px' lengthAdjust='spacingAndGlyphs'&gt;rnorm(5)&lt;/text&gt;
-#&gt; &lt;/g&gt;
-#&gt; &lt;/svg&gt;</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/grDevices/dev.html'>dev.off</a></span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; agg_png 
-#&gt;       2 </div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'>svgstring</span><span class='op'>(</span><span class='op'>)</span>; <span class='fu'>s</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/frame.html'>plot.new</a></span><span class='op'>(</span><span class='op'>)</span>; <span class='fu'>s</span><span class='op'>(</span><span class='op'>)</span>;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;?xml version='1.0' encoding='UTF-8' ?&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;style type='text/css'&gt;&lt;![CDATA[</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       fill: none;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke: #000000;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke-linecap: round;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke-linejoin: round;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke-miterlimit: 10.00;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   ]]&gt;&lt;/style&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;rect x='0.00' y='0.00' width='720.00' height='576.00' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/clipPath&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/g&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/svg&gt;</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/text.html'>text</a></span><span class='op'>(</span><span class='fl'>0.5</span>, <span class='fl'>0.5</span>, <span class='st'>"Hi!"</span><span class='op'>)</span>; <span class='fu'>s</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;?xml version='1.0' encoding='UTF-8' ?&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;style type='text/css'&gt;&lt;![CDATA[</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       fill: none;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke: #000000;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke-linecap: round;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke-linejoin: round;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke-miterlimit: 10.00;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   ]]&gt;&lt;/style&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;rect x='0.00' y='0.00' width='720.00' height='576.00' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/clipPath&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/g&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;clipPath id='cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng=='&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;rect x='59.04' y='59.04' width='630.72' height='443.52' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/clipPath&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;g clip-path='url(#cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng==)'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='374.40' y='285.11' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='14.67px' lengthAdjust='spacingAndGlyphs'&gt;Hi!&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/g&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/svg&gt;</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/grDevices/dev.html'>dev.off</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> agg_png </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       2 </span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>s</span> <span class='op'>&lt;-</span> <span class='fu'>svgstring</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span>, <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>5</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>s</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;?xml version='1.0' encoding='UTF-8' ?&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;style type='text/css'&gt;&lt;![CDATA[</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       fill: none;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke: #000000;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke-linecap: round;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke-linejoin: round;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke-miterlimit: 10.00;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   ]]&gt;&lt;/style&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;clipPath id='cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA='&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;rect x='0.00' y='0.00' width='720.00' height='576.00' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/clipPath&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/g&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;clipPath id='cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng=='&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;rect x='59.04' y='59.04' width='630.72' height='443.52' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/clipPath&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;g clip-path='url(#cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng==)'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='280.43' cy='75.47' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='596.48' cy='486.13' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='82.40' cy='268.44' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='546.67' cy='268.01' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='666.40' cy='273.33' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/g&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='70.42' y1='502.56' x2='643.19' y2='502.56' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='70.42' y1='502.56' x2='70.42' y2='509.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='165.88' y1='502.56' x2='165.88' y2='509.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='261.35' y1='502.56' x2='261.35' y2='509.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='356.81' y1='502.56' x2='356.81' y2='509.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='452.27' y1='502.56' x2='452.27' y2='509.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='547.73' y1='502.56' x2='547.73' y2='509.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='643.19' y1='502.56' x2='643.19' y2='509.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='70.42' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-2.5&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='165.88' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-2.0&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='261.35' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-1.5&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='356.81' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-1.0&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='452.27' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-0.5&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='547.73' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'&gt;0.0&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='643.19' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'&gt;0.5&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='441.64' x2='59.04' y2='95.99' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='441.64' x2='51.84' y2='441.64' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='372.51' x2='51.84' y2='372.51' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='303.38' x2='51.84' y2='303.38' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='234.25' x2='51.84' y2='234.25' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='165.12' x2='51.84' y2='165.12' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='95.99' x2='51.84' y2='95.99' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(41.76,441.64) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-1.5&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(41.76,372.51) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-1.0&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(41.76,303.38) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='20.68px' lengthAdjust='spacingAndGlyphs'&gt;-0.5&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(41.76,234.25) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'&gt;0.0&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(41.76,165.12) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'&gt;0.5&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(41.76,95.99) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='16.68px' lengthAdjust='spacingAndGlyphs'&gt;1.0&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;polygon points='59.04,502.56 689.76,502.56 689.76,59.04 59.04,59.04 ' style='stroke-width: 0.75; fill: none;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='374.40' y='557.28' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='46.00px' lengthAdjust='spacingAndGlyphs'&gt;rnorm(5)&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(12.96,280.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='46.00px' lengthAdjust='spacingAndGlyphs'&gt;rnorm(5)&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/g&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/svg&gt;</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/grDevices/dev.html'>dev.off</a></span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> agg_png </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       2 </span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -393,11 +411,11 @@ specifying fonts.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='http://hadley.nz'>Hadley Wickham</a>, Lionel Henry, <a href='https://data-imaginist.com'>Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise.</p>
+  <p><p>Developed by <a href="http://hadley.nz" class="external-link">Hadley Wickham</a>, Lionel Henry, <a href="https://data-imaginist.com" class="external-link">Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -405,6 +423,8 @@ specifying fonts.</p>
 
   
 
+
+  
 
   </body>
 </html>

@@ -1,7 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://svglite.r-lib.org/404.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/CODE_OF_CONDUCT.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/articles/fonts.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/articles/releases/svglite-1.2.0.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/articles/scaling.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/authors.html</loc>
+  </url>
+  <url>
     <loc>https://svglite.r-lib.org/index.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/news/index.html</loc>
   </url>
   <url>
     <loc>https://svglite.r-lib.org/reference/create_svgz.html</loc>
@@ -14,6 +38,9 @@
   </url>
   <url>
     <loc>https://svglite.r-lib.org/reference/htmlSVG.html</loc>
+  </url>
+  <url>
+    <loc>https://svglite.r-lib.org/reference/index.html</loc>
   </url>
   <url>
     <loc>https://svglite.r-lib.org/reference/reexports.html</loc>
@@ -29,14 +56,5 @@
   </url>
   <url>
     <loc>https://svglite.r-lib.org/reference/xmlSVG.html</loc>
-  </url>
-  <url>
-    <loc>https://svglite.r-lib.org/articles/fonts.html</loc>
-  </url>
-  <url>
-    <loc>https://svglite.r-lib.org/articles/releases/svglite-1.2.0.html</loc>
-  </url>
-  <url>
-    <loc>https://svglite.r-lib.org/articles/scaling.html</loc>
   </url>
 </urlset>

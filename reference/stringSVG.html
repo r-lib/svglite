@@ -77,9 +77,15 @@ alternative to svgstring()." />
 </script>
 
 
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -93,41 +99,43 @@ alternative to svgstring()." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">svglite</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.3.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9000</span>
       </span>
     </div>
 
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
+  <a href="../index.html">
+    <span class="fa fa-home fa-lg"></span>
+     
+  </a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
+    News
      
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
+    <li class="dropdown-header">Release notes</li>
     <li>
-      <a href="../articles/fonts.html">Specifying fonts</a>
+      <a href="https://www.tidyverse.org/blog/2021/02/svglite-2-0-0/">Version 2.0.0</a>
     </li>
+    <li class="divider"></li>
     <li>
-      <a href="../articles/releases/svglite-1.2.0.html">svglite 1.2.0</a>
-    </li>
-    <li>
-      <a href="../articles/scaling.html">Scaling Issues</a>
+      <a href="../news/index.html">Change log</a>
     </li>
   </ul>
-</li>
-<li>
-  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/r-lib/svglite/">
-    <span class="fab fa-github fa-lg"></span>
+  <a href="https://github.com/r-lib/svglite">
+    <span class="fa fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -154,7 +162,7 @@ alternative to svgstring()." />
 alternative to <code><a href='svgstring.html'>svgstring</a>()</code>.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>stringSVG</span><span class='op'>(</span><span class='va'>code</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>stringSVG</span><span class='op'>(</span><span class='va'>code</span>, <span class='va'>...</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -171,73 +179,75 @@ alternative to <code><a href='svgstring.html'>svgstring</a>()</code>.</p>
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='fu'>stringSVG</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Saving 6.67" x 6.67" image</span></div><div class='output co'>#&gt; &lt;?xml version='1.0' encoding='UTF-8' ?&gt;
-#&gt; &lt;svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='480.00pt' height='480.00pt' viewBox='0 0 480.00 480.00'&gt;
-#&gt; &lt;defs&gt;
-#&gt;   &lt;style type='text/css'&gt;&lt;![CDATA[
-#&gt;     .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
-#&gt;       fill: none;
-#&gt;       stroke: #000000;
-#&gt;       stroke-linecap: round;
-#&gt;       stroke-linejoin: round;
-#&gt;       stroke-miterlimit: 10.00;
-#&gt;     }
-#&gt;   ]]&gt;&lt;/style&gt;
-#&gt; &lt;/defs&gt;
-#&gt; &lt;rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/&gt;
-#&gt; &lt;defs&gt;
-#&gt;   &lt;clipPath id='cpMC4wMHw0ODAuMDB8MC4wMHw0ODAuMDA='&gt;
-#&gt;     &lt;rect x='0.00' y='0.00' width='480.00' height='480.00' /&gt;
-#&gt;   &lt;/clipPath&gt;
-#&gt; &lt;/defs&gt;
-#&gt; &lt;g clip-path='url(#cpMC4wMHw0ODAuMDB8MC4wMHw0ODAuMDA=)'&gt;
-#&gt; &lt;/g&gt;
-#&gt; &lt;defs&gt;
-#&gt;   &lt;clipPath id='cpNTkuMDR8NDQ5Ljc2fDU5LjA0fDQwNi41Ng=='&gt;
-#&gt;     &lt;rect x='59.04' y='59.04' width='390.72' height='347.52' /&gt;
-#&gt;   &lt;/clipPath&gt;
-#&gt; &lt;/defs&gt;
-#&gt; &lt;g clip-path='url(#cpNTkuMDR8NDQ5Ljc2fDU5LjA0fDQwNi41Ng==)'&gt;
-#&gt; &lt;circle cx='73.51' cy='393.69' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='113.71' cy='357.94' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='153.91' cy='322.18' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='194.10' cy='286.43' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='234.30' cy='250.68' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='274.50' cy='214.92' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='314.70' cy='179.17' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='354.89' cy='143.42' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='395.09' cy='107.66' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;circle cx='435.29' cy='71.91' r='2.70' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;/g&gt;
-#&gt; &lt;g clip-path='url(#cpMC4wMHw0ODAuMDB8MC4wMHw0ODAuMDA=)'&gt;
-#&gt; &lt;line x1='113.71' y1='406.56' x2='435.29' y2='406.56' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='113.71' y1='406.56' x2='113.71' y2='413.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='194.10' y1='406.56' x2='194.10' y2='413.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='274.50' y1='406.56' x2='274.50' y2='413.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='354.89' y1='406.56' x2='354.89' y2='413.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='435.29' y1='406.56' x2='435.29' y2='413.76' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;text x='113.71' y='432.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;2&lt;/text&gt;
-#&gt; &lt;text x='194.10' y='432.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;4&lt;/text&gt;
-#&gt; &lt;text x='274.50' y='432.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;6&lt;/text&gt;
-#&gt; &lt;text x='354.89' y='432.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;8&lt;/text&gt;
-#&gt; &lt;text x='435.29' y='432.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='13.35px' lengthAdjust='spacingAndGlyphs'&gt;10&lt;/text&gt;
-#&gt; &lt;line x1='59.04' y1='357.94' x2='59.04' y2='71.91' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='59.04' y1='357.94' x2='51.84' y2='357.94' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='59.04' y1='286.43' x2='51.84' y2='286.43' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='59.04' y1='214.92' x2='51.84' y2='214.92' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='59.04' y1='143.42' x2='51.84' y2='143.42' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;line x1='59.04' y1='71.91' x2='51.84' y2='71.91' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;text transform='translate(41.76,357.94) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;2&lt;/text&gt;
-#&gt; &lt;text transform='translate(41.76,286.43) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;4&lt;/text&gt;
-#&gt; &lt;text transform='translate(41.76,214.92) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;6&lt;/text&gt;
-#&gt; &lt;text transform='translate(41.76,143.42) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;8&lt;/text&gt;
-#&gt; &lt;text transform='translate(41.76,71.91) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='13.35px' lengthAdjust='spacingAndGlyphs'&gt;10&lt;/text&gt;
-#&gt; &lt;polyline points='59.04,406.56 449.76,406.56 449.76,59.04 59.04,59.04 59.04,406.56 ' style='stroke-width: 0.75;' /&gt;
-#&gt; &lt;text x='254.40' y='461.28' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='29.35px' lengthAdjust='spacingAndGlyphs'&gt;Index&lt;/text&gt;
-#&gt; &lt;text transform='translate(12.96,232.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'&gt;1:10&lt;/text&gt;
-#&gt; &lt;/g&gt;
-#&gt; &lt;/svg&gt;</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='fu'>stringSVG</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Saving 6.67" x 6.67" image</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;?xml version='1.0' encoding='UTF-8' ?&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='480.00pt' height='480.00pt' viewBox='0 0 480.00 480.00'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;style type='text/css'&gt;&lt;![CDATA[</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       fill: none;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke: #000000;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke-linecap: round;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke-linejoin: round;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       stroke-miterlimit: 10.00;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     }</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   ]]&gt;&lt;/style&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;clipPath id='cpMC4wMHw0ODAuMDB8MC4wMHw0ODAuMDA='&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;rect x='0.00' y='0.00' width='480.00' height='480.00' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/clipPath&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;g clip-path='url(#cpMC4wMHw0ODAuMDB8MC4wMHw0ODAuMDA=)'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/g&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;clipPath id='cpNTkuMDR8NDQ5Ljc2fDU5LjA0fDQwNi41Ng=='&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     &lt;rect x='59.04' y='59.04' width='390.72' height='347.52' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   &lt;/clipPath&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/defs&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;g clip-path='url(#cpNTkuMDR8NDQ5Ljc2fDU5LjA0fDQwNi41Ng==)'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='73.51' cy='393.69' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='113.71' cy='357.94' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='153.91' cy='322.18' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='194.10' cy='286.43' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='234.30' cy='250.68' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='274.50' cy='214.92' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='314.70' cy='179.17' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='354.89' cy='143.42' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='395.09' cy='107.66' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;circle cx='435.29' cy='71.91' r='2.70' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/g&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;g clip-path='url(#cpMC4wMHw0ODAuMDB8MC4wMHw0ODAuMDA=)'&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='113.71' y1='406.56' x2='435.29' y2='406.56' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='113.71' y1='406.56' x2='113.71' y2='413.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='194.10' y1='406.56' x2='194.10' y2='413.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='274.50' y1='406.56' x2='274.50' y2='413.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='354.89' y1='406.56' x2='354.89' y2='413.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='435.29' y1='406.56' x2='435.29' y2='413.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='113.71' y='432.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;2&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='194.10' y='432.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;4&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='274.50' y='432.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;6&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='354.89' y='432.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;8&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='435.29' y='432.48' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='13.35px' lengthAdjust='spacingAndGlyphs'&gt;10&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='357.94' x2='59.04' y2='71.91' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='357.94' x2='51.84' y2='357.94' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='286.43' x2='51.84' y2='286.43' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='214.92' x2='51.84' y2='214.92' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='143.42' x2='51.84' y2='143.42' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;line x1='59.04' y1='71.91' x2='51.84' y2='71.91' style='stroke-width: 0.75;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(41.76,357.94) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;2&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(41.76,286.43) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;4&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(41.76,214.92) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;6&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(41.76,143.42) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='6.67px' lengthAdjust='spacingAndGlyphs'&gt;8&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(41.76,71.91) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='13.35px' lengthAdjust='spacingAndGlyphs'&gt;10&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;polygon points='59.04,406.56 449.76,406.56 449.76,59.04 59.04,59.04 ' style='stroke-width: 0.75; fill: none;' /&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text x='254.40' y='461.28' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='29.35px' lengthAdjust='spacingAndGlyphs'&gt;Index&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;text transform='translate(12.96,232.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: Arial;' textLength='23.36px' lengthAdjust='spacingAndGlyphs'&gt;1:10&lt;/text&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/g&gt;</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;/svg&gt;</span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -249,11 +259,11 @@ alternative to <code><a href='svgstring.html'>svgstring</a>()</code>.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by <a href='http://hadley.nz'>Hadley Wickham</a>, Lionel Henry, <a href='https://data-imaginist.com'>Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise.</p>
+  <p><p>Developed by <a href="http://hadley.nz" class="external-link">Hadley Wickham</a>, Lionel Henry, <a href="https://data-imaginist.com" class="external-link">Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.9000.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
@@ -261,6 +271,8 @@ alternative to <code><a href='svgstring.html'>svgstring</a>()</code>.</p>
 
   
 
+
+  
 
   </body>
 </html>
