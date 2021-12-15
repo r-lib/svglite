@@ -34,6 +34,7 @@ extern "C" {
 #include <sstream>
 #include <memory>
 #include <vector>
+#include <unordered_set>
 #include <R_ext/GraphicsEngine.h>
 
 #include "SvgStream.h"
@@ -61,6 +62,17 @@ public:
   const std::string webfonts;
   cpp11::strings ids;
 
+  // Caches
+  std::unordered_set<unsigned int> clip_cache;
+  unsigned int clip_cache_next_id;
+  bool is_recording_clip;
+
+  std::unordered_set<unsigned int> mask_cache;
+  unsigned int mask_cache_next_id;
+
+  std::unordered_set<unsigned int> pattern_cache;
+  unsigned int pattern_cache_next_id;
+
   SVGDesc(SvgStreamPtr stream_, bool standalone_, cpp11::list aliases_,
           const std::string webfonts_, const std::string& file_, cpp11::strings ids_,
           bool fix_text_size_, double scaling_, bool always_valid_):
@@ -76,7 +88,11 @@ public:
       system_aliases(cpp11::as_cpp<cpp11::list>(aliases_["system"])),
       user_aliases(cpp11::as_cpp<cpp11::list>(aliases_["user"])),
       webfonts(webfonts_),
-      ids(ids_) {
+      ids(ids_),
+      clip_cache_next_id(0),
+      is_recording_clip(false),
+      mask_cache_next_id(0),
+      pattern_cache_next_id(0) {
   }
 
   void nextFile() {
@@ -645,7 +661,7 @@ void svg_close(pDevDesc dd) {
 void svg_line(double x1, double y1, double x2, double y2,
               const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  if (!svgd->is_inited) {
+  if (!svgd->is_inited || svgd->is_recording_clip) {
     return;
   }
   SvgStreamPtr stream = svgd->stream;
@@ -665,10 +681,20 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
               pDevDesc dd, const char* node_name) {
 
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  if (!svgd->is_inited) {
+  if (n == 0 || !svgd->is_inited || (!filled && svgd->is_recording_clip)) {
     return;
   }
   SvgStreamPtr stream = svgd->stream;
+
+  if (svgd->is_recording_clip) {
+    (*stream) << "M " << x[0] << ',' << y[0] << ' ';
+    for (int i = 1; i < n; i++) {
+      (*stream) << "L " << x[i] << ',' << y[i] << ' ';
+    }
+    stream->put('Z');
+
+    return;
+  }
 
   (*stream) << "<" << node_name << " points='";
 
@@ -708,7 +734,10 @@ void svg_path(double *x, double *y,
   SvgStreamPtr stream = svgd->stream;
 
   // Create path data
-  (*stream) << "<path d='";
+  if (!svgd->is_recording_clip) {
+    (*stream) << "<path d='";
+  }
+
   int ind = 0;
   for (int i = 0; i < npoly; i++) {
     // Move to the first point of the sub-path
@@ -721,6 +750,9 @@ void svg_path(double *x, double *y,
     }
     // Close the sub-path
     stream->put('Z');
+  }
+  if (svgd->is_recording_clip) {
+    return;
   }
   // Finish path data
   stream->put('\'');
@@ -761,6 +793,13 @@ void svg_rect(double x0, double y0, double x1, double y1,
   }
   SvgStreamPtr stream = svgd->stream;
 
+  if (svgd->is_recording_clip) {
+    (*stream) << "M " << x0 << ',' << y0 << " L " << x0 << ',' << y1 <<
+      " L " << x1 << ',' << y1 << " L " << x1 << ',' << y0;
+    stream->put('Z');
+    return;
+  }
+
   // x and y give top-left position
   (*stream) << "<rect x='" << fmin(x0, x1) << "' y='" << fmin(y0, y1) <<
     "' width='" << fabs(x1 - x0) << "' height='" << fabs(y1 - y0) << '\'';
@@ -783,6 +822,14 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
   }
   SvgStreamPtr stream = svgd->stream;
 
+  if (svgd->is_recording_clip) {
+    (*stream) << "M " << x-r << ',' << y <<
+      " a " << r << ',' << r << " 0 1,1 " << r*2 << ",0 " <<
+      " a " << r << ',' << r << " 0 1,1 " << -r*2 << ",0 ";
+    stream->put('Z');
+    return;
+  }
+
   (*stream) << "<circle cx='" << x << "' cy='" << y << "' r='" << r << "'";
 
   write_style_begin(stream);
@@ -798,7 +845,7 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
 void svg_text(double x, double y, const char *str, double rot,
               double hadj, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  if (!svgd->is_inited) {
+  if (!svgd->is_inited || svgd->is_recording_clip) {
     return;
   }
   SvgStreamPtr stream = svgd->stream;
@@ -887,7 +934,7 @@ void svg_raster(unsigned int *raster, int w, int h,
                 Rboolean interpolate,
                 const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  if (!svgd->is_inited) {
+  if (!svgd->is_inited || svgd->is_recording_clip) {
     return;
   }
   SvgStreamPtr stream = svgd->stream;
@@ -925,10 +972,91 @@ SEXP svg_set_pattern(SEXP pattern, pDevDesc dd) {
 void svg_release_pattern(SEXP ref, pDevDesc dd) {}
 
 SEXP svg_set_clip_path(SEXP path, SEXP ref, pDevDesc dd) {
-    return R_NilValue;
+  int key;
+  if (Rf_isNull(path)) {
+    return Rf_ScalarInteger(-1);
+  }
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (Rf_isNull(ref)) {
+    key = svgd->clip_cache_next_id;
+    svgd->clip_cache_next_id++;
+  } else {
+    key = INTEGER(ref)[0];
+    if (key < 0) {
+      return Rf_ScalarInteger(key);
+    }
+  }
+
+  SvgStreamPtr stream = svgd->stream;
+  if (stream->is_clipping()) {
+    (*stream) << "</g>\n";
+  }
+
+  auto clip_cache_iter = svgd->clip_cache.find(key);
+  // Check if path exists
+  if (clip_cache_iter == svgd->clip_cache.end()) {
+
+    bool new_clip_is_even_odd = false;
+#if R_GE_version >= 15
+    new_clip_is_even_odd = R_GE_clipPathFillRule(path) == R_GE_evenOddRule;
+#endif
+
+
+    (*stream) << "<defs>\n";
+    (*stream) << "  <clipPath id='cp-" << key << "'>\n";
+    (*stream) << "    <path d='";
+
+    svgd->is_recording_clip = true;
+
+    SEXP R_fcall = PROTECT(Rf_lang1(path));
+    Rf_eval(R_fcall, R_GlobalEnv);
+    UNPROTECT(1);
+
+    svgd->is_recording_clip = false;
+
+    (*stream) << "'";
+    if (new_clip_is_even_odd) {
+      (*stream) << "fill-rule='evenodd'";
+    }
+    (*stream) << "/>\n  </clipPath>\n";
+    (*stream) << "</defs>\n";
+
+    svgd->clip_cache.insert(key);
+  }
+
+  (*stream) << "<g";
+  write_attr_clip(stream, "-" + std::to_string(key));
+  (*stream) << ">\n";
+
+  svgd->clipx0 = 0;
+  svgd->clipx1 = 0;
+  svgd->clipy0 = 0;
+  svgd->clipy1 = 0;
+
+  return Rf_ScalarInteger(key);
 }
 
-void svg_release_clip_path(SEXP ref, pDevDesc dd) {}
+void svg_release_clip_path(SEXP ref, pDevDesc dd) {
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (Rf_isNull(ref)) {
+    svgd->clip_cache.clear();
+    return;
+  }
+
+  int key = INTEGER(ref)[0];
+
+  if (key < 0) {
+    return;
+  }
+
+  auto it = svgd->clip_cache.find(key);
+  // Check if path exists
+  if (it != svgd->clip_cache.end()) {
+    svgd->clip_cache.erase(it);
+  }
+
+  return;
+}
 
 SEXP svg_set_mask(SEXP path, SEXP ref, pDevDesc dd) {
     return R_NilValue;
