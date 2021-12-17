@@ -3,6 +3,7 @@
 
 #include "svglite_types.h"
 #include "cpp11/declarations.hpp"
+#include <R_ext/Visibility.h>
 
 // devSVG.cpp
 bool svglite_(std::string file, std::string bg, double width, double height, double pointsize, bool standalone, cpp11::list aliases, std::string webfonts, cpp11::strings id, bool fix_text_size, double scaling, bool always_valid);
@@ -27,11 +28,6 @@ extern "C" SEXP _svglite_get_svg_content(SEXP p) {
 }
 
 extern "C" {
-/* .Call calls */
-extern SEXP _svglite_get_svg_content(SEXP);
-extern SEXP _svglite_svglite_(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
-extern SEXP _svglite_svgstring_(SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP, SEXP);
-
 static const R_CallMethodDef CallEntries[] = {
     {"_svglite_get_svg_content", (DL_FUNC) &_svglite_get_svg_content,  1},
     {"_svglite_svglite_",        (DL_FUNC) &_svglite_svglite_,        12},
@@ -40,7 +36,7 @@ static const R_CallMethodDef CallEntries[] = {
 };
 }
 
-extern "C" void R_init_svglite(DllInfo* dll){
+extern "C" attribute_visible void R_init_svglite(DllInfo* dll){
   R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
   R_useDynamicSymbols(dll, FALSE);
   R_forceSymbols(dll, TRUE);

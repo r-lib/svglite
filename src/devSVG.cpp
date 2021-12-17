@@ -120,10 +120,6 @@ inline bool is_black(int col) {
     (R_ALPHA(col) == 255);
 }
 
-inline bool is_filled(int col) {
-  return R_ALPHA(col) != 0;
-}
-
 inline bool is_bold(int face) {
   return face == 2 || face == 4;
 }
@@ -392,11 +388,8 @@ inline void write_style_end(SvgStreamPtr stream) {
 }
 
 // Writing style attributes related to colors
-inline void write_style_col(SvgStreamPtr stream, const char* attr, int col, bool first = false) {
+inline void write_style_col(SvgStreamPtr stream, const char* attr, int col) {
   int alpha = R_ALPHA(col);
-
-  if(!first)  (*stream) << ' ';
-
   if (alpha == 0) {
     (*stream) << attr << ": none;";
     return;
@@ -405,6 +398,34 @@ inline void write_style_col(SvgStreamPtr stream, const char* attr, int col, bool
     if (alpha != 255)
       (*stream) << ' ' << attr << "-opacity: " << alpha / 255.0 << ';';
   }
+}
+
+// Writing style attributes related to stroke
+inline void write_style_stroke(SvgStreamPtr stream, int col, bool first = false) {
+  // Default is "stroke: #000000;" as declared in <style>
+  if (is_black(col)) {
+    return;
+  }
+
+  if(!first)  (*stream) << ' ';
+  write_style_col(stream, "stroke", col);
+}
+
+// Writing style attributes related to colors
+inline void write_style_fill(SvgStreamPtr stream, const pGEcontext gc, bool first = false) {
+  int pattern = -1;
+#if R_GE_version >= 13
+  pattern = Rf_isNull(gc->patternFill) ? -1 : INTEGER(gc->patternFill)[0];
+#endif
+
+  if(!first)  (*stream) << ' ';
+
+  if (pattern != -1) {
+    (*stream) << "fill: url(#pat-" << pattern << ");";
+    return;
+  }
+
+  write_style_col(stream, "fill", gc->fill);
 }
 
 // Writing style attributes whose values are double type
@@ -447,8 +468,7 @@ inline void write_style_linetype(SvgStreamPtr stream, const pGEcontext gc, doubl
   write_style_dbl(stream, "stroke-width", lwd / 96.0 * 72, first);
 
   // Default is "stroke: #000000;" as declared in <style>
-  if (!is_black(gc->col))
-    write_style_col(stream, "stroke", gc->col);
+  write_style_stroke(stream, gc->col);
 
   // Set line pattern type
   switch (lty) {
@@ -602,9 +622,11 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   SvgStreamPtr stream = svgd->stream;
 
   std::string id = get_id(svgd);
+  svgd->clip_cache_next_id = 0;
+  svgd->mask_cache_next_id = 0;
+  svgd->pattern_cache_next_id = 0;
 
   if (svgd->pageno > 0) {
-
     // close existing file, create a new one, and update stream
     svgd->nextFile();
     stream = svgd->stream;
@@ -646,10 +668,11 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   (*stream) << "<rect width='100%' height='100%'";
   write_style_begin(stream);
   write_style_str(stream, "stroke", "none", true);
-  if (is_filled(gc->fill))
+  if (R_ALPHA(gc->fill) != 0) {
     write_style_col(stream, "fill", gc->fill);
-  else
+  } else {
     write_style_col(stream, "fill", dd->startfill);
+  }
   write_style_end(stream);
   (*stream) << "/>\n";
 
@@ -725,8 +748,9 @@ void svg_poly(int n, double *x, double *y, int filled, const pGEcontext gc,
   write_attr_mask(stream, svgd->current_mask);
   write_style_begin(stream);
   write_style_linetype(stream, gc, svgd->scaling, true);
-  if (filled)
-    write_style_col(stream, "fill", gc->fill);
+  if (filled) {
+    write_style_fill(stream, gc);
+  }
   write_style_end(stream);
 
   (*stream) << " />\n";
@@ -781,8 +805,7 @@ void svg_path(double *x, double *y,
   write_style_begin(stream);
   // Specify fill rule
   write_style_str(stream, "fill-rule", winding ? "nonzero" : "evenodd", true);
-  if (is_filled(gc->fill))
-    write_style_col(stream, "fill", gc->fill);
+  write_style_fill(stream, gc);
   write_style_linetype(stream, gc, svgd->scaling);
   write_style_end(stream);
 
@@ -828,8 +851,7 @@ void svg_rect(double x0, double y0, double x1, double y1,
   write_attr_mask(stream, svgd->current_mask);
   write_style_begin(stream);
   write_style_linetype(stream, gc, svgd->scaling, true);
-  if (is_filled(gc->fill))
-    write_style_col(stream, "fill", gc->fill);
+  write_style_fill(stream, gc);
   write_style_end(stream);
 
   (*stream) << " />\n";
@@ -857,8 +879,7 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
   write_attr_mask(stream, svgd->current_mask);
   write_style_begin(stream);
   write_style_linetype(stream, gc, svgd->scaling, true);
-  if (is_filled(gc->fill))
-    write_style_col(stream, "fill", gc->fill);
+  write_style_fill(stream, gc);
   write_style_end(stream);
 
   (*stream) << " />\n";
@@ -991,10 +1012,141 @@ void svg_raster(unsigned int *raster, int w, int h,
 }
 
 SEXP svg_set_pattern(SEXP pattern, pDevDesc dd) {
-    return R_NilValue;
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (Rf_isNull(pattern)) {
+    return Rf_ScalarInteger(-1);
+  }
+  int key = svgd->pattern_cache_next_id;
+  svgd->pattern_cache_next_id++;
+
+#if R_GE_version >= 13
+
+  SvgStreamPtr stream = svgd->stream;
+  std::string extend = "spreadMethod=";
+
+  // Cache current clipping and break out of clipping group
+  bool was_clipping = svgd->is_clipping;
+  std::string old_clipid = svgd->clipid;
+  double clipx0 = svgd->clipx0;
+  double clipx1 = svgd->clipx1;
+  double clipy0 = svgd->clipy0;
+  double clipy1 = svgd->clipy1;
+  if (was_clipping) {
+    (*stream) << "</g>\n";
+  }
+  svgd->set_clipping(false);
+
+  (*stream) << "<defs>\n";
+
+  switch(R_GE_patternType(pattern)) {
+  case R_GE_linearGradientPattern:
+    switch(R_GE_linearGradientExtend(pattern)) {
+    case R_GE_patternExtendNone: ;
+    case R_GE_patternExtendPad: extend += "'pad'"; break;
+    case R_GE_patternExtendReflect: extend += "'reflect'"; break;
+    case R_GE_patternExtendRepeat: extend += "'repeat"; break;
+    }
+    (*stream) << "<linearGradient id='pat-" << key << "' gradientUnits='userSpaceOnUse' " << extend;
+    write_attr_dbl(stream, "x1", R_GE_linearGradientX1(pattern));
+    write_attr_dbl(stream, "y1", R_GE_linearGradientY1(pattern));
+    write_attr_dbl(stream, "x2", R_GE_linearGradientX2(pattern));
+    write_attr_dbl(stream, "y2", R_GE_linearGradientY2(pattern));
+    (*stream) << ">\n";
+    for (int i = 0; i < R_GE_linearGradientNumStops(pattern); ++i) {
+      int col = R_GE_linearGradientColour(pattern, i);
+      (*stream) << "  <stop offset='" << R_GE_linearGradientStop(pattern, i);
+      (*stream) << tfm::format("' stop-color='#%02X%02X%02X'", R_RED(col), R_GREEN(col), R_BLUE(col));
+      (*stream) << " stop-opacity='" << double(R_ALPHA(col))/255.0 << "'/>\n";
+    }
+    (*stream) << "</linearGradient>\n";
+    break;
+  case R_GE_radialGradientPattern:
+    switch(R_GE_radialGradientExtend(pattern)) {
+    case R_GE_patternExtendNone: ;
+    case R_GE_patternExtendPad: extend += "'pad'"; break;
+    case R_GE_patternExtendReflect: extend += "'reflect'"; break;
+    case R_GE_patternExtendRepeat: extend += "'repeat"; break;
+    }
+    (*stream) << "<radialGradient id='pat-" << key << "' gradientUnits='userSpaceOnUse' " << extend;
+    write_attr_dbl(stream, "fx", R_GE_radialGradientCX1(pattern));
+    write_attr_dbl(stream, "fy", R_GE_radialGradientCY1(pattern));
+    write_attr_dbl(stream, "fr", R_GE_radialGradientR1(pattern));
+    write_attr_dbl(stream, "cx", R_GE_radialGradientCX2(pattern));
+    write_attr_dbl(stream, "cy", R_GE_radialGradientCY2(pattern));
+    write_attr_dbl(stream, "r", R_GE_radialGradientR2(pattern));
+    (*stream) << ">\n";
+    for (int i = 0; i < R_GE_radialGradientNumStops(pattern); ++i) {
+      int col = R_GE_radialGradientColour(pattern, i);
+      (*stream) << "  <stop offset='" << R_GE_radialGradientStop(pattern, i);
+      (*stream) << tfm::format("' stop-color='#%02X%02X%02X'", R_RED(col), R_GREEN(col), R_BLUE(col));
+      (*stream) << " stop-opacity='" << double(R_ALPHA(col))/255.0 << "'/>\n";
+    }
+    (*stream) << "</radialGradient>\n";
+    break;
+  case R_GE_tilingPattern:
+    (*stream) << "<pattern id='pat-" << key << "' patternUnits='userSpaceOnUse' ";
+    write_attr_dbl(stream, "width", R_GE_tilingPatternWidth(pattern));
+    write_attr_dbl(stream, "height", fabs(R_GE_tilingPatternHeight(pattern)));
+    write_attr_dbl(stream, "x", R_GE_tilingPatternX(pattern));
+    write_attr_dbl(stream, "y", R_GE_tilingPatternY(pattern));
+    (*stream) << ">\n<g transform='translate(" << -R_GE_tilingPatternX(pattern);
+    (*stream) << "," << -R_GE_tilingPatternY(pattern) + fabs(R_GE_tilingPatternHeight(pattern)) << ")'>\n";
+
+    int old_mask = svgd->current_mask;
+    svgd->current_mask = -1;
+
+    SEXP R_fcall = PROTECT(Rf_lang1(R_GE_tilingPatternFunction(pattern)));
+    Rf_eval(R_fcall, R_GlobalEnv);
+    UNPROTECT(1);
+
+    svgd->current_mask = old_mask;
+
+    if (svgd->is_clipping) {
+      (*stream) << "</g>\n";
+    }
+    svgd->set_clipping(false);
+    (*stream) << "</g>\n</pattern>\n";
+    break;
+  }
+
+  (*stream) << "</defs>\n";
+
+  // Resume old clipping if it was happening
+  if (was_clipping) {
+    (*stream) << "<g";
+    svgd->clipid = old_clipid;
+    svgd->clipx0 = clipx0;
+    svgd->clipx1 = clipx1;
+    svgd->clipy0 = clipy0;
+    svgd->clipy1 = clipy1;
+    write_attr_clip(stream, svgd->clipid);
+    (*stream) << ">\n";
+    svgd->set_clipping(true);
+  }
+
+#endif
+
+  svgd->pattern_cache.insert(key);
+
+  return Rf_ScalarInteger(key);
 }
 
-void svg_release_pattern(SEXP ref, pDevDesc dd) {}
+void svg_release_pattern(SEXP ref, pDevDesc dd) {
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (Rf_isNull(ref)) {
+    svgd->pattern_cache.clear();
+    return;
+  }
+
+  unsigned int key = INTEGER(ref)[0];
+  auto it = svgd->pattern_cache.find(key);
+  // Check if path exists
+  if (it != svgd->pattern_cache.end()) {
+    svgd->pattern_cache.erase(it);
+  }
+
+  return;
+}
 
 SEXP svg_set_clip_path(SEXP path, SEXP ref, pDevDesc dd) {
   int key;
