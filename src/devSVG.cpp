@@ -307,6 +307,7 @@ inline std::string fontname(const char* family_, int face,
   std::string family_name = "";
   family_name.resize(100);
   if (get_font_family(font.file, font.index, &family_name[0], 100)) {
+    family_name.erase(family_name.find('\0'));
     return family_name;
   }
   return family;
@@ -935,6 +936,7 @@ void svg_text(double x, double y, const char *str, double rot,
     write_style_col(stream, "fill", gc->col);
 
   std::string font = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases, font_info);
+  font = "\"" + font + "\"";
   write_style_str(stream, "font-family", font.c_str());
 
   if (font_info.n_features > 0) {
