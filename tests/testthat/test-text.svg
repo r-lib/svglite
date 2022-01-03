@@ -25,7 +25,7 @@
   </clipPath>
 </defs>
 <g clip-path='url(#cpNTkuMDR8MjU3Ljc2fDU5LjA0fDIxNC41Ng==)'>
-<text x='158.40' y='140.11' text-anchor='middle' style='font-size: 12.00px; font-family: Bitstream Vera Sans;' textLength='87.39px' lengthAdjust='spacingAndGlyphs'>This is a string</text>
+<text x='158.40' y='140.11' text-anchor='middle' style='font-size: 12.00px; font-family: "Bitstream Vera Sans";' textLength='87.39px' lengthAdjust='spacingAndGlyphs'>This is a string</text>
 <rect x='114.71' y='132.43' width='87.39' height='8.75' style='stroke-width: 0.75;' />
 </g>
 </svg>

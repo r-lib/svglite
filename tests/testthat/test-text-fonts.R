@@ -25,7 +25,7 @@ test_that("metrics are computed for different weight/style", {
 
 test_that("symbol font family is 'Symbol'", {
   symbol_font <- alias_lookup()["symbol"]
-  matched_symbol_font <- match_family(symbol_font)
+  matched_symbol_font <- paste0('"', match_family(symbol_font), '"')
 
   x <- xmlSVG({
     plot(c(0,2), c(0,2), type = "n", axes = FALSE, xlab = "", ylab = "")
@@ -54,8 +54,8 @@ test_that("fonts are aliased", {
   text <- xml_find_all(x, ".//text")
   families <- style_attr(text, "font-family")
 
-  expect_false(families[[1]] == "serif")
-  expect_true(all(families[2:3] == c(matched, "Bitstream Vera Sans Mono")))
+  expect_false(families[[1]] == '"serif"')
+  expect_true(all(families[2:3] == paste0('"', c(matched, "Bitstream Vera Sans Mono"), '"')))
 })
 
 test_that("metrics are computed for different fonts", {
