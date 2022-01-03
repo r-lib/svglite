@@ -418,14 +418,16 @@ inline void write_style_fill(SvgStreamPtr stream, const pGEcontext gc, bool firs
   pattern = Rf_isNull(gc->patternFill) ? -1 : INTEGER(gc->patternFill)[0];
 #endif
 
-  if(!first)  (*stream) << ' ';
-
   if (pattern != -1) {
+    if(!first)  (*stream) << ' ';
     (*stream) << "fill: url(#pat-" << pattern << ");";
     return;
   }
 
-  write_style_col(stream, "fill", gc->fill);
+  if (R_ALPHA(gc->fill) != 0) {
+    if(!first)  (*stream) << ' ';
+    write_style_col(stream, "fill", gc->fill);
+  }
 }
 
 // Writing style attributes whose values are double type
@@ -668,6 +670,7 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   (*stream) << "<rect width='100%' height='100%'";
   write_style_begin(stream);
   write_style_str(stream, "stroke", "none", true);
+  (*stream) << ' ';
   if (R_ALPHA(gc->fill) != 0) {
     write_style_col(stream, "fill", gc->fill);
   } else {
