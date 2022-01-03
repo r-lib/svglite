@@ -1,5 +1,10 @@
 # svglite (development version)
 
+* Add new graphics engine features:
+  - Path clipping
+  - Masking
+  - Pattern and gradient fills
+
 # svglite 2.0.0
 
 * svglite now uses systemfonts for text metric calculations and font family 

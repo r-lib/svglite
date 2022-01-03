@@ -33,12 +33,13 @@ class SvgStream {
   bool has_clip_id(std::string id) {
     return clip_ids.find(id) != clip_ids.end();
   }
+  void set_clipping(bool clip) {
+    clipping = clip;
+  }
   void add_clip_id(std::string id) {
-    clipping = true;
     clip_ids.insert(id);
   }
   void clear_clip_ids() {
-    clipping = false;
     clip_ids.clear();
   }
   bool is_clipping() {return clipping;}
