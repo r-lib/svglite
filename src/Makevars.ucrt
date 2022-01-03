@@ -1,2 +1,11 @@
 CRT=-ucrt
 include Makevars.win
+
+PKG_CPPFLAGS = -DSTRICT_R_HEADERS
+
+PKG_LIBS = -lpng -lz
+
+all: clean
+
+clean:
+	rm -f $(OBJECTS)
