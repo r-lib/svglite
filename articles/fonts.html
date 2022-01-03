@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">svglite</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.9000</span>
       </span>
     </div>
 
@@ -73,7 +73,8 @@
       <a href="https://www.tidyverse.org/blog/2021/02/svglite-2-0-0/" class="external-link">Version 2.0.0</a>
     </li>
     <li class="divider">
-    <li>
+    </li>
+<li>
       <a href="../news/index.html">Change log</a>
     </li>
   </ul>
@@ -101,9 +102,9 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Specifying fonts</h1>
             
-            <h4 data-toc-skip class="date">2021-07-23</h4>
+            <h4 data-toc-skip class="date">2022-01-03</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/svglite/blob/master/vignettes/fonts.Rmd" class="external-link"><code>vignettes/fonts.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/svglite/blob/HEAD/vignettes/fonts.Rmd" class="external-link"><code>vignettes/fonts.Rmd</code></a></small>
       <div class="hidden name"><code>fonts.Rmd</code></div>
 
     </div>
@@ -141,9 +142,9 @@
 </tbody>
 </table>
 <p>One downside to these default fonts is that they do not have good coverage of characters for non-latin alphabets. This can be fixed by using the arguments <code>system_fonts</code> and <code>user_fonts</code> which provide control over which fonts to use during SVG generation and rendering.</p>
-<div id="system-font-aliases" class="section level2">
-<h2 class="hasAnchor">
-<a href="#system-font-aliases" class="anchor" aria-hidden="true"></a>System font aliases</h2>
+<div class="section level2">
+<h2 id="system-font-aliases">System font aliases<a class="anchor" aria-label="anchor" href="#system-font-aliases"></a>
+</h2>
 <p><code>system_fonts</code> takes a named list of font families as argument. The names typically correspond to standard R faces but they can also alias non-standard families (though this is less useful):</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fonts</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>
@@ -166,9 +167,9 @@
 <span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>The <a href="https://www.google.com/get/noto/" class="external-link">Noto fontset</a> provided by Google as well as the <a href="https://github.com/adobe-fonts/source-han-sans" class="external-link">Han Sans family</a> by Adobe have excellent coverage but may not be available at the time of rendering. This can be a concern if you distribute the SVG files on the Internet.</p>
 </div>
-<div id="user-font-aliases" class="section level2">
-<h2 class="hasAnchor">
-<a href="#user-font-aliases" class="anchor" aria-hidden="true"></a>User font aliases</h2>
+<div class="section level2">
+<h2 id="user-font-aliases">User font aliases<a class="anchor" aria-label="anchor" href="#user-font-aliases"></a>
+</h2>
 <p>In addition to system fonts, you can also provide fonts that are not necessarily installed on the system (i.e., fonts that live in user space). The main reason to do this is to generate reproducible SVG files as different platforms can have different versions of a font and thus produce different text metrics. The <code>user_fonts</code> arguments takes either paths to font files, fonts from the <code>fontquiver</code> package, or a list that specifies the alias. Whereas <code>system_fonts</code> gets a named list of families as argument, <code>user_fonts</code> takes a named tree of lists of families (<code>sans</code>, <code>serif</code>, <code>mono</code> and <code>symbol</code>) and faces (<code>plain</code>, <code>italic</code>, <code>bold</code>, <code>bolditalic</code>, <code>symbol</code>):</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># Using ttf files from fontquiver here, but it could be any ttf</span>
@@ -212,14 +213,14 @@
 <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="debugging-font-matching" class="section level2">
-<h2 class="hasAnchor">
-<a href="#debugging-font-matching" class="anchor" aria-hidden="true"></a>Debugging font matching</h2>
+<div class="section level2">
+<h2 id="debugging-font-matching">Debugging font matching<a class="anchor" aria-label="anchor" href="#debugging-font-matching"></a>
+</h2>
 <p>The systemfonts package is used to match font family names to fonts installed on the system. systemfonts will always return a valid font, but if the requested font is badly misspelled or missing, a default will be returned. To test if the expected font is matched you can use the <code>match_font()</code> and <code>font_info()</code> functions from systemfonts:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/systemfonts/man/match_font.html" class="external-link">match_font</a></span><span class="op">(</span><span class="st">"Helvetica"</span><span class="op">)</span>
 <span class="co">#&gt; $path</span>
-<span class="co">#&gt; [1] "/System/Library/Fonts/Helvetica.ttc"</span>
+<span class="co">#&gt; [1] "/usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf"</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; $index</span>
 <span class="co">#&gt; [1] 0</span>
@@ -227,14 +228,16 @@
 <span class="co">#&gt; $features</span>
 <span class="co">#&gt; NULL</span>
 <span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/systemfonts/man/font_info.html" class="external-link">font_info</a></span><span class="op">(</span><span class="st">"Helvetica"</span>, bold <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt;                                  path index    family style italic bold</span>
-<span class="co">#&gt; 1 /System/Library/Fonts/Helvetica.ttc     1 Helvetica  Bold  FALSE TRUE</span>
-<span class="co">#&gt;   monospace weight  width kerning color scalable vertical n_glyphs n_sizes</span>
-<span class="co">#&gt; 1     FALSE   bold normal   FALSE FALSE     TRUE    FALSE     2252       0</span>
-<span class="co">#&gt;   n_charmaps                                        bbox max_ascend max_descend</span>
-<span class="co">#&gt; 1         10 -12.218750, 17.234375, -5.765625, 13.906250   9.234375   -2.765625</span>
+<span class="co">#&gt;                                                           path index</span>
+<span class="co">#&gt; 1 /usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf     0</span>
+<span class="co">#&gt;            family style italic bold monospace weight  width kerning color</span>
+<span class="co">#&gt; 1 Liberation Sans  Bold  FALSE TRUE     FALSE   bold normal    TRUE FALSE</span>
+<span class="co">#&gt;   scalable vertical n_glyphs n_sizes n_charmaps</span>
+<span class="co">#&gt; 1     TRUE    FALSE      681       0          3</span>
+<span class="co">#&gt;                                         bbox max_ascend max_descend</span>
+<span class="co">#&gt; 1 -2.203125, 12.750000, -3.640625, 12.406250   10.85938   -2.546875</span>
 <span class="co">#&gt;   max_advance_width max_advance_height lineheight underline_pos underline_size</span>
-<span class="co">#&gt; 1                18                 12         12     -1.203125        0.59375</span></code></pre></div>
+<span class="co">#&gt; 1            13.375           13.79688   13.79688     -0.640625       1.265625</span></code></pre></div>
 </div>
   </div>
 
@@ -250,12 +253,12 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="http://hadley.nz" class="external-link external-link">Hadley Wickham</a>, Lionel Henry, <a href="https://data-imaginist.com" class="external-link external-link">Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise.</p>
+<p>Developed by <a href="http://hadley.nz" class="external-link">Hadley Wickham</a>, Lionel Henry, <a href="https://data-imaginist.com" class="external-link">Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>

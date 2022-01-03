@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">svglite</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.9000</span>
       </span>
     </div>
 
@@ -73,7 +73,8 @@
       <a href="https://www.tidyverse.org/blog/2021/02/svglite-2-0-0/" class="external-link">Version 2.0.0</a>
     </li>
     <li class="divider">
-    <li>
+    </li>
+<li>
       <a href="../../news/index.html">Change log</a>
     </li>
   </ul>
@@ -102,7 +103,7 @@
       <h1 data-toc-skip>svglite 1.2.0</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/svglite/blob/master/vignettes/releases/svglite-1.2.0.Rmd" class="external-link"><code>vignettes/releases/svglite-1.2.0.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/svglite/blob/HEAD/vignettes/releases/svglite-1.2.0.Rmd" class="external-link"><code>vignettes/releases/svglite-1.2.0.Rmd</code></a></small>
       <div class="hidden name"><code>svglite-1.2.0.Rmd</code></div>
 
     </div>
@@ -113,9 +114,9 @@
 <p>You can install svglite with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"svglite"</span><span class="op">)</span></code></pre></div>
-<div id="font-handling" class="section level2">
-<h2 class="hasAnchor">
-<a href="#font-handling" class="anchor" aria-hidden="true"></a>Font handling</h2>
+<div class="section level2">
+<h2 id="font-handling">Font handling<a class="anchor" aria-label="anchor" href="#font-handling"></a>
+</h2>
 <p>Fonts are tricky with SVG because they are needed at two stages:</p>
 <ul>
 <li><p>When creating the SVG file, the fonts are needed in order to correctly measure the amount space each character occupies. This is particularly important for plot that use <code>plotmath</code>.</p></li>
@@ -135,9 +136,9 @@
 </ol>
 <p>For more details, see <code><a href="../../articles/fonts.html">vignette("fonts")</a></code>.</p>
 </div>
-<div id="text-scaling" class="section level2">
-<h2 class="hasAnchor">
-<a href="#text-scaling" class="anchor" aria-hidden="true"></a>Text scaling</h2>
+<div class="section level2">
+<h2 id="text-scaling">Text scaling<a class="anchor" aria-label="anchor" href="#text-scaling"></a>
+</h2>
 <p>This update also fixes many bugs. The most important is that text is now properly scaled within the plot, and we provide a vignette that describes the details: <code><a href="../../articles/scaling.html">vignette("scaling")</a></code>. It documents, for instance, how to include a svglite graphic in a web page with the figure text consistently scaled with the surrounding text.</p>
 <p>Find a full list of changes in the <a href="https://github.com/hadley/svglite/releases/tag/v1.2.0" class="external-link">release notes</a>.</p>
 </div>
@@ -155,12 +156,12 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="http://hadley.nz" class="external-link external-link">Hadley Wickham</a>, Lionel Henry, <a href="https://data-imaginist.com" class="external-link external-link">Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise.</p>
+<p>Developed by <a href="http://hadley.nz" class="external-link">Hadley Wickham</a>, Lionel Henry, <a href="https://data-imaginist.com" class="external-link">Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>

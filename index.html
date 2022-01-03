@@ -47,7 +47,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">svglite</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.9000</span>
       </span>
     </div>
 
@@ -71,10 +71,11 @@
   <ul class="dropdown-menu" role="menu">
 <li class="dropdown-header">Release notes</li>
     <li>
-      <a href="https://www.tidyverse.org/blog/2021/02/svglite-2-0-0/">Version 2.0.0</a>
+      <a href="https://www.tidyverse.org/blog/2021/02/svglite-2-0-0/" class="external-link">Version 2.0.0</a>
     </li>
     <li class="divider">
-    <li>
+    </li>
+<li>
       <a href="news/index.html">Change log</a>
     </li>
   </ul>
@@ -82,7 +83,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/r-lib/svglite">
+  <a href="https://github.com/r-lib/svglite" class="external-link">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -99,29 +100,29 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="svglite-" class="section level1">
-<div class="page-header"><h1 class="hasAnchor">
-<a href="#svglite-" class="anchor" aria-hidden="true"></a>svglite <a href="https://svglite.r-lib.org"><img src="reference/figures/logo.png" align="right" height="131.5"></a>
+<div class="section level1">
+<div class="page-header"><h1 id="svglite-">svglite <a href="https://svglite.r-lib.org"><img src="reference/figures/logo.png" align="right" height="131.5"></a>
+<a class="anchor" aria-label="anchor" href="#svglite-"></a>
 </h1></div>
 <!-- badges: start -->
 
 <!-- badges: end -->
 <p>svglite is a graphics device that produces clean svg output, suitable for use on the web, or hand editing. Compared to the built-in <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code>, svglite produces smaller files, and leaves text as is, making it easier to edit the result after creation. It also support multiple nice features such as embedding of web fonts.</p>
-<div id="installation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#installation" class="anchor" aria-hidden="true"></a>Installation</h2>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
 <p>svglite is available on CRAN using <code>install.packages("svglite")</code>. You can install the development version from github with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
 <span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r-lib/svglite"</span><span class="op">)</span></code></pre></div>
 </div>
-<div id="motivation" class="section level2">
-<h2 class="hasAnchor">
-<a href="#motivation" class="anchor" aria-hidden="true"></a>Motivation</h2>
+<div class="section level2">
+<h2 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
+</h2>
 <p>The grDevices package bundled with R already comes with an SVG device (using the eponymous <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code> call). The development of svglite is motivated by the following considerations:</p>
-<div id="speed" class="section level3">
-<h3 class="hasAnchor">
-<a href="#speed" class="anchor" aria-hidden="true"></a>Speed</h3>
+<div class="section level3">
+<h3 id="speed">Speed<a class="anchor" aria-label="anchor" href="#speed"></a>
+</h3>
 <p><code><a href="reference/svglite.html">svglite()</a></code> is considerably faster than <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code>. If you are rendering SVGs dynamically to serve over the web this can be quite important:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://svglite.r-lib.org">svglite</a></span><span class="op">)</span>
@@ -149,17 +150,17 @@
 <span class="co">#&gt; 1 svglite_test()   3.31ms   3.87ms     247.      561KB     5.05</span>
 <span class="co">#&gt; 2 svg_test()      10.57ms  12.19ms      76.3     177KB     1.24</span></code></pre></div>
 </div>
-<div id="file-size" class="section level3">
-<h3 class="hasAnchor">
-<a href="#file-size" class="anchor" aria-hidden="true"></a>File size</h3>
+<div class="section level3">
+<h3 id="file-size">File size<a class="anchor" aria-label="anchor" href="#file-size"></a>
+</h3>
 <p>Another point with high relevance when serving SVGs over the web is the size. <code><a href="reference/svglite.html">svglite()</a></code> produces much smaller files</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># svglite</span>
-<span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="http://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp1</span><span class="op">)</span>
+<span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp1</span><span class="op">)</span>
 <span class="co">#&gt; 74.9K</span>
 
 <span class="co"># svg</span>
-<span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="http://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp2</span><span class="op">)</span>
+<span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp2</span><span class="op">)</span>
 <span class="co">#&gt; 321K</span></code></pre></div>
 <p>In both cases, compressing to make <code>.svgz</code> (gzipped svg) is worthwhile. svglite supports compressed output directly which will be triggered if the provided path has a <code>".svgz"</code> extension.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -169,23 +170,23 @@
 <span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 
 <span class="co"># svglite - svgz</span>
-<span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="http://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp3</span><span class="op">)</span>
+<span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp3</span><span class="op">)</span>
 <span class="co">#&gt; 9.38K</span></code></pre></div>
 </div>
-<div id="editability" class="section level3">
-<h3 class="hasAnchor">
-<a href="#editability" class="anchor" aria-hidden="true"></a>Editability</h3>
+<div class="section level3">
+<h3 id="editability">Editability<a class="anchor" aria-label="anchor" href="#editability"></a>
+</h3>
 <p>One of the main reasons for the size difference between the size of the output of <code><a href="reference/svglite.html">svglite()</a></code> and <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code> is the fact that <code><a href="reference/svglite.html">svglite()</a></code> encodes text as styled <code>&lt;text&gt;</code> elements, whereas <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code> converts the glyphs to polygons and renders these. The latter approach means that the output of <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code> does not require the font to be present on the system that displays the SVG but makes it more or less impossible to edit the text after the fact. svglite focuses on providing maximal editability of the output, so that you can open up the result in a vector drawing program such as Inkscape or Illustrator and polish the output if you so choose.</p>
 </div>
-<div id="font-support" class="section level3">
-<h3 class="hasAnchor">
-<a href="#font-support" class="anchor" aria-hidden="true"></a>Font support</h3>
+<div class="section level3">
+<h3 id="font-support">Font support<a class="anchor" aria-label="anchor" href="#font-support"></a>
+</h3>
 <p>svglite uses systemfonts for font discovery which means that all installed fonts on your system is available to use. The systemfonts foundation means that fonts registered with <code><a href="https://rdrr.io/pkg/systemfonts/man/register_font.html" class="external-link">register_font()</a></code> or <code><a href="https://rdrr.io/pkg/systemfonts/man/register_variant.html" class="external-link">register_variant()</a></code> will also be available. If any of these contains non-standard weights or OpenType features (e.g. ligatures or tabular numerics) this will be correctly encoded in the style block. systemfonts also allows you to embed webfont <code>@imports</code> in your file to ensure that the file looks as expected even on systems without the used font installed.</p>
 </div>
 </div>
-<div id="code-of-conduct" class="section level2">
-<h2 class="hasAnchor">
-<a href="#code-of-conduct" class="anchor" aria-hidden="true"></a>Code of Conduct</h2>
+<div class="section level2">
+<h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
+</h2>
 <p>Please note that the svglite project is released with a <a href="https://svglite.r-lib.org/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 </div>
@@ -195,12 +196,9 @@
     <div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=svglite">https://​cloud.r-project.org/​package=svglite</a>
-</li>
-<li>Browse source code at <br><a href="https://github.com/r-lib/svglite/">https://​github.com/​r-lib/​svglite/​</a>
-</li>
-<li>Report a bug at <br><a href="https://github.com/r-lib/svglite/issues">https://​github.com/​r-lib/​svglite/​issues</a>
-</li>
+<li><a href="https://cloud.r-project.org/package=svglite" class="external-link">View on CRAN</a></li>
+<li><a href="https://github.com/r-lib/svglite/" class="external-link">Browse source code</a></li>
+<li><a href="https://github.com/r-lib/svglite/issues" class="external-link">Report a bug</a></li>
 </ul>
 </div>
 
@@ -218,18 +216,25 @@
 </ul>
 </div>
 
+<div class="citation">
+<h2 data-toc-skip>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html#citation">Citing svglite</a></li>
+</ul>
+</div>
+
 <div class="developers">
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>
-<a href="http://hadley.nz">Hadley Wickham</a> <br><small class="roles"> Author </small>  </li>
+<a href="http://hadley.nz" class="external-link">Hadley Wickham</a> <br><small class="roles"> Author </small>  </li>
 <li>Lionel Henry <br><small class="roles"> Author </small>  </li>
 <li>
-<a href="https://data-imaginist.com">Thomas Lin Pedersen</a> <br><small class="roles"> Maintainer, author </small> <a href="https://orcid.org/0000-0002-5147-4711" target="orcid.widget" aria-label="ORCID"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<a href="https://data-imaginist.com" class="external-link">Thomas Lin Pedersen</a> <br><small class="roles"> Maintainer, author </small> <a href="https://orcid.org/0000-0002-5147-4711" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
 <li>T Jake Luciani <br><small class="roles"> Author </small>  </li>
 <li>Matthieu Decorde <br><small class="roles"> Author </small>  </li>
 <li>Vaudor Lise <br><small class="roles"> Author </small>  </li>
-<li><a href="authors.html">More on authors...</a></li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 
@@ -239,6 +244,7 @@
 <li><a href="https://github.com/r-lib/svglite/actions" class="external-link"><img src="https://github.com/r-lib/svglite/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
 <li><a href="https://codecov.io/gh/r-lib/svglite?branch=master" class="external-link"><img src="https://codecov.io/gh/r-lib/svglite/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://cran.r-project.org/package=svglite" class="external-link"><img src="http://www.r-pkg.org/badges/version/svglite" alt="CRAN Status Badge"></a></li>
+<li><a href="https://github.com/r-lib/svglite/actions" class="external-link"><img src="https://github.com/r-lib/svglite/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
@@ -253,7 +259,7 @@
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>

@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">svglite</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">2.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.9000</span>
       </span>
     </div>
 
@@ -73,7 +73,8 @@
       <a href="https://www.tidyverse.org/blog/2021/02/svglite-2-0-0/" class="external-link">Version 2.0.0</a>
     </li>
     <li class="divider">
-    <li>
+    </li>
+<li>
       <a href="../news/index.html">Change log</a>
     </li>
   </ul>
@@ -101,29 +102,29 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Scaling Issues</h1>
             
-            <h4 data-toc-skip class="date">2021-07-23</h4>
+            <h4 data-toc-skip class="date">2022-01-03</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/r-lib/svglite/blob/master/vignettes/scaling.Rmd" class="external-link"><code>vignettes/scaling.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/r-lib/svglite/blob/HEAD/vignettes/scaling.Rmd" class="external-link"><code>vignettes/scaling.Rmd</code></a></small>
       <div class="hidden name"><code>scaling.Rmd</code></div>
 
     </div>
 
     
     
-<div id="scaling-svg-outputs" class="section level2">
-<h2 class="hasAnchor">
-<a href="#scaling-svg-outputs" class="anchor" aria-hidden="true"></a>Scaling SVG outputs</h2>
+<div class="section level2">
+<h2 id="scaling-svg-outputs">Scaling SVG outputs<a class="anchor" aria-label="anchor" href="#scaling-svg-outputs"></a>
+</h2>
 <p>The SVG files produced by svglite do not include <code>width</code> and <code>height</code> properties. This is a deliberate choice intended to make it easier to fit fluidly a SVG figure to its enclosing container. The scaling straightforward but requires some understanding of the <code>viewBox</code> SVG attribute which is included in all SVGs produced by svglite. This property defines the aspect ratio of the plot (as well as a <em>user coordinate system</em>, see next section).</p>
-<div id="fluid-scaling" class="section level3">
-<h3 class="hasAnchor">
-<a href="#fluid-scaling" class="anchor" aria-hidden="true"></a>Fluid scaling</h3>
+<div class="section level3">
+<h3 id="fluid-scaling">Fluid scaling<a class="anchor" aria-label="anchor" href="#fluid-scaling"></a>
+</h3>
 <p>The viewBox is determined by the <code>width</code> and <code>height</code> arguments of svglite’s device functions (with 10’’ x 8’’ the default). Although those dimensions are supplied in inches, the viewBox’s user coordinate system is completely unit agnostic. The main effect is thus to determine an aspect ratio. Since dimensions are not provided, the dimensions of the enclosing container are used instead and the SVG is rescaled to fit the container (although Internet Explorer currently requires some CSS tricks to get this behaviour, see <a href="http://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/" class="external-link uri">http://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/</a>).</p>
 <p>Aspect ratio is preserved by default when the figure is scaled up or down. The details of how the aspect ratio is preserved can be adjusted in multiple ways via the <code>preserveAspectRatio</code> attribute. See <a href="https://www.sarasoueidan.com/blog/svg-coordinate-systems/" class="external-link uri">https://www.sarasoueidan.com/blog/svg-coordinate-systems/</a> for more information about this property.</p>
 <p>Other useful resource: <a href="https://css-tricks.com/scale-svg/" class="external-link uri">https://css-tricks.com/scale-svg/</a></p>
 </div>
-<div id="natural-scaling" class="section level3">
-<h3 class="hasAnchor">
-<a href="#natural-scaling" class="anchor" aria-hidden="true"></a>Natural scaling</h3>
+<div class="section level3">
+<h3 id="natural-scaling">Natural scaling<a class="anchor" aria-label="anchor" href="#natural-scaling"></a>
+</h3>
 <p>Another strategy is needed in order to scale the figure to make the text within the SVG consistent with the text in the surrounding web page. That could be useful, for instance, to create a consistent appearance in an HTML presentation. Since the user coordinate system defined by the viewBox is unitless, we need to map the figure to its natural dimensions. This will ensure a correspondence between the scale of the figure and that of the web page.</p>
 <p>As mentioned above, the natural scale of svglite’s figures is in points and is determined by the <code>width</code> and <code>height</code> arguments that you supply to the device functions (10’’ x 8’’ being the default). Although those dimensions are specified in inches, the coordinate system is scaled in points. Counting 72 points per inch, the default SVG surface is thus 720 x 576 pt. Note that the CSS standard defines 12pt to be equal to 16px, the default size of text in most browsers. Since 12pt is the default text size in svglite as well, a SVG scaled to its natural dimensions will appear seamless with web text of 16px. If the text in your web page has another size, you will have to compute a scale factor and adjust the dimensions of the SVG accordingly.</p>
 <p>To sum up, displaying a plot according to its natural dimensions requires providing the user agent with information about what the lengths defined within the SVG actually mean. There are several ways to achieve this. First you can edit the SVG and enclose it in another pair of <code>&lt;svg&gt;</code> tags that defines <code>height</code> and <code>width</code>. The root <code>&lt;svg&gt;</code> element determines the final dimensions of the figure.</p>
@@ -135,12 +136,12 @@
 <div class="sourceCode" id="cb2"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb2-1"><a href="#cb2-1"></a><span class="kw">&lt;img</span><span class="ot"> src=</span><span class="st">"figure.svg"</span><span class="ot"> width=</span><span class="st">"960"</span><span class="ot"> height=</span><span class="st">"768"</span><span class="kw">&gt;</span></span></code></pre></div>
 </div>
 </div>
-<div id="internal-notes" class="section level2">
-<h2 class="hasAnchor">
-<a href="#internal-notes" class="anchor" aria-hidden="true"></a>Internal notes</h2>
-<div id="device-scaling" class="section level3">
-<h3 class="hasAnchor">
-<a href="#device-scaling" class="anchor" aria-hidden="true"></a>Device scaling</h3>
+<div class="section level2">
+<h2 id="internal-notes">Internal notes<a class="anchor" aria-label="anchor" href="#internal-notes"></a>
+</h2>
+<div class="section level3">
+<h3 id="device-scaling">Device scaling<a class="anchor" aria-label="anchor" href="#device-scaling"></a>
+</h3>
 <p>As other graphics devices, svglite is scaled in big points (1/72 inch) rather than pica points (1/72.27 inch). Note that in LaTeX and in the <code>grid</code> graphics system on which ggplot2 is based, points refer to pica points. Big points are denoted in LaTeX by <code>bp</code> and in CSS by <code>pt</code>. We use the latter notation. See <a href="https://tex.stackexchange.com/a/200968/19755" class="external-link uri">https://tex.stackexchange.com/a/200968/19755</a> for some historical background about these units.</p>
 <p>The conversion between device units and physical dimensions is determined by the DevDesc parameter <code>ipr</code>. IPR stands for inches per raster (native device coordinates are sometimes called rasters in R terminology) and is set to 1/72 in svglite. The device’s physical dimensions are set by the following DevDesc parameters (with <code>width</code> and <code>height</code> the plot dimensions set by the user in inches):</p>
 <table class="table">
@@ -169,16 +170,16 @@
 </table>
 <p>A default svglite plot surface is thus 720 x 576 pt.</p>
 </div>
-<div id="scaling-of-graphical-elements" class="section level3">
-<h3 class="hasAnchor">
-<a href="#scaling-of-graphical-elements" class="anchor" aria-hidden="true"></a>Scaling of graphical elements</h3>
+<div class="section level3">
+<h3 id="scaling-of-graphical-elements">Scaling of graphical elements<a class="anchor" aria-label="anchor" href="#scaling-of-graphical-elements"></a>
+</h3>
 <p>It is conventional for the fundamental line width (<code>lwd = 1</code>) to correspond to a line width of 1/96 inch and svglite obeys this convention. Also, like other R graphics devices, svglite interprets all point sizes directly as big points (e.g. the <code>ps</code> graphical parameter and the <code>fontsize</code> argument of device functions). The default font size is 12pt.</p>
 <p>Text metrics are computed by systemfonts, which uses freetype to extract metrics for each glyph and calculate string dimensions from that. Text metrics are calculated at 1000dpi based on <code>cex * ps</code> font size.</p>
 <p>The Base graphics system also makes use of the obscure <code>cra</code> parameter and its relatives (<code>cin</code>, <code>cxy</code>, and <code>csi</code>). <code>cra</code> serves as a crude measure for a default character height and width for the default fontsize provided when the device is called (12pt in svgilte). The main effect of this parameter (more specifically, the height component) is to change the relationship between the margin parameters <code>mar</code>/<code>mai</code> and <code>oma</code>/<code>omi</code>. The margins <code>mar</code> and <code>oma</code> are specified in line units and character height is used as a measure of line spacing to convert margins measured in lines to physical margins. As in other devices, <code>cra[0]</code> is set to <code>0.9 * pointsize</code> and <code>cra[1]</code> to <code>1.2 * pointsize</code>. These parameters are completely unused in the Grid graphics system.</p>
 </div>
-<div id="svg-output" class="section level3">
-<h3 class="hasAnchor">
-<a href="#svg-output" class="anchor" aria-hidden="true"></a>SVG output</h3>
+<div class="section level3">
+<h3 id="svg-output">SVG output<a class="anchor" aria-label="anchor" href="#svg-output"></a>
+</h3>
 <p>The SVG output sets up a viewBox (a user coordinate system) with values scaled in big points.</p>
 <p><strong>viewBox</strong>: The width and height are set to <code>dd-&gt;right</code> and <code>dd-&gt;bottom</code> respectively (these values are determined by the user-supplied figure <code>width</code> and <code>height</code>).</p>
 <p><strong>Line width</strong>: <code>1 lwd</code> should equal 1/96 inch. svglite gets values scaled in device coordinates (big points), so the line width is multiplied by 72/96.</p>
@@ -199,12 +200,12 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="http://hadley.nz" class="external-link external-link">Hadley Wickham</a>, Lionel Henry, <a href="https://data-imaginist.com" class="external-link external-link">Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise.</p>
+<p>Developed by <a href="http://hadley.nz" class="external-link">Hadley Wickham</a>, Lionel Henry, <a href="https://data-imaginist.com" class="external-link">Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link external-link">pkgdown</a> 1.6.1.9001.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
 </div>
 
       </footer>
