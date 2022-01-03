@@ -5,13 +5,11 @@
 
 <!-- badges: start -->
 
-[![R build
-status](https://github.com/r-lib/svglite/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/svglite/actions)
+[![R-CMD-check](https://github.com/r-lib/svglite/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/svglite/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/r-lib/svglite/branch/master/graph/badge.svg)](https://codecov.io/gh/r-lib/svglite?branch=master)
 [![CRAN Status
 Badge](http://www.r-pkg.org/badges/version/svglite)](https://cran.r-project.org/package=svglite)
-[![R-CMD-check](https://github.com/r-lib/svglite/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/svglite/actions)
 
 <!-- badges: end -->
 
