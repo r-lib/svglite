@@ -87,3 +87,15 @@ test_that("creating multiple pages is identical to creating multiple individual 
   expect_identical(readLines(f_multiple_2), readLines(f_single_2), label = "svglite second plot")
 
 })
+
+test_that("ensure text leading white space will be rendered" , {
+  x <- xmlSVG(plot.new())
+  expect_true(
+    grepl(
+      "white-space: pre",
+      xml_text(xml_find_first(x, ".//defs/style[@type = 'text/css']"))
+    )
+  )
+  expect_equal(style_attr(xml_find_first(x, ".//rect"), "fill"), "#FFFFFF")
+})
+
