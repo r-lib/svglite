@@ -46,7 +46,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">svglite</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">2.1.0</span>
       </span>
     </div>
 
@@ -102,7 +102,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Scaling Issues</h1>
             
-            <h4 data-toc-skip class="date">2022-01-03</h4>
+            <h4 data-toc-skip class="date">2022-02-03</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/r-lib/svglite/blob/HEAD/vignettes/scaling.Rmd" class="external-link"><code>vignettes/scaling.Rmd</code></a></small>
       <div class="hidden name"><code>scaling.Rmd</code></div>
@@ -118,7 +118,7 @@
 <div class="section level3">
 <h3 id="fluid-scaling">Fluid scaling<a class="anchor" aria-label="anchor" href="#fluid-scaling"></a>
 </h3>
-<p>The viewBox is determined by the <code>width</code> and <code>height</code> arguments of svglite’s device functions (with 10’’ x 8’’ the default). Although those dimensions are supplied in inches, the viewBox’s user coordinate system is completely unit agnostic. The main effect is thus to determine an aspect ratio. Since dimensions are not provided, the dimensions of the enclosing container are used instead and the SVG is rescaled to fit the container (although Internet Explorer currently requires some CSS tricks to get this behaviour, see <a href="http://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/" class="external-link uri">http://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/</a>).</p>
+<p>The viewBox is determined by the <code>width</code> and <code>height</code> arguments of svglite’s device functions (with 10’’ x 8’’ the default). Although those dimensions are supplied in inches, the viewBox’s user coordinate system is completely unit agnostic. The main effect is thus to determine an aspect ratio. Since dimensions are not provided, the dimensions of the enclosing container are used instead and the SVG is rescaled to fit the container (although Internet Explorer currently requires some CSS tricks to get this behaviour, see <a href="https://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/" class="external-link uri">https://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/</a>).</p>
 <p>Aspect ratio is preserved by default when the figure is scaled up or down. The details of how the aspect ratio is preserved can be adjusted in multiple ways via the <code>preserveAspectRatio</code> attribute. See <a href="https://www.sarasoueidan.com/blog/svg-coordinate-systems/" class="external-link uri">https://www.sarasoueidan.com/blog/svg-coordinate-systems/</a> for more information about this property.</p>
 <p>Other useful resource: <a href="https://css-tricks.com/scale-svg/" class="external-link uri">https://css-tricks.com/scale-svg/</a></p>
 </div>
@@ -200,12 +200,12 @@
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by <a href="http://hadley.nz" class="external-link">Hadley Wickham</a>, Lionel Henry, <a href="https://data-imaginist.com" class="external-link">Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise.</p>
+<p>Developed by Hadley Wickham, Lionel Henry, <a href="https://data-imaginist.com" class="external-link">Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise.</p>
 </div>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.2.</p>
 </div>
 
       </footer>
