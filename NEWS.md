@@ -1,4 +1,4 @@
-# svglite (development version)
+# svglite 2.1.0
 
 * Add new graphics engine features:
   - Path clipping
