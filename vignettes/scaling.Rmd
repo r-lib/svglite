@@ -30,7 +30,7 @@ determine an aspect ratio. Since dimensions are not provided, the
 dimensions of the enclosing container are used instead and the SVG is
 rescaled to fit the container (although Internet Explorer currently
 requires some CSS tricks to get this behaviour, see
-<http://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/>).
+<https://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/>).
 
 Aspect ratio is preserved by default when the figure is scaled up or
 down. The details of how the aspect ratio is preserved can be adjusted
