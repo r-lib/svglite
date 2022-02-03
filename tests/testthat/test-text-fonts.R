@@ -7,6 +7,7 @@ test_that("font sets weight/style", {
     text(0.5, seq(0.9, 0.1, length = 4), "a", font = 1:4)
   })
   text <- xml_find_all(x, ".//text")
+  skip_on_os("windows") # win-builder has issues with systemfonts ATM
   expect_equal(style_attr(text, "font-weight"), c(NA, "bold", NA, "bold"))
   expect_equal(style_attr(text, "font-style"), c(NA, NA, "italic", "italic"))
 })

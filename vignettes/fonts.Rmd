@@ -76,7 +76,7 @@ text(0.5, 0.5, "正規分布")
 dev.off()
 ```
 
-The [Noto fontset](https://www.google.com/get/noto/) provided by
+The [Noto fontset](https://fonts.google.com/noto) provided by
 Google as well as the
 [Han Sans family](https://github.com/adobe-fonts/source-han-sans) by
 Adobe have excellent coverage but may not be available at the time of
