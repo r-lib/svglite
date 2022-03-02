@@ -1,43 +1,47 @@
 Package: svglite
-Version: 2.1.0.9000
 Title: An 'SVG' Graphics Device
-Description: A graphics device for R that produces 'Scalable Vector Graphics'.
-  'svglite' is a fork of the older 'RSvgDevice' package.
+Version: 2.1.0.9000
 Authors@R: c(
-  person("Hadley", "Wickham", , "hadley@rstudio.com", "aut"),
-  person("Lionel", "Henry", , "lionel@rstudio.com", c("aut")),
-  person("Thomas Lin", "Pedersen", , "thomas.pedersen@rstudio.com", c("cre", "aut"), comment = c(ORCID = "0000-0002-5147-4711")),
-  person("T Jake", "Luciani", , "jake@apache.org", "aut"),
-  person("Matthieu", "Decorde", , "matthieu.decorde@ens-lyon.fr", "aut"),
-  person("Vaudor", "Lise", , "lise.vaudor@ens-lyon.fr", "aut"),
-  person("Tony", "Plate", role = "ctb", comment = "Early line dashing code"),
-  person("David", "Gohel", role = "ctb", comment = "Line dashing code and early raster code"),
-  person("Yixuan", "Qiu", role = "ctb", comment = "Improved styles; polypath implementation"),
-  person("Håkon", "Malmedal", role = "ctb", comment = "Opacity code"),
-  person("RStudio", role = "cph")
+    person("Hadley", "Wickham", , "hadley@rstudio.com", role = "aut"),
+    person("Lionel", "Henry", , "lionel@rstudio.com", role = "aut"),
+    person("Thomas Lin", "Pedersen", , "thomas.pedersen@rstudio.com", role = c("cre", "aut"),
+           comment = c(ORCID = "0000-0002-5147-4711")),
+    person("T Jake", "Luciani", , "jake@apache.org", role = "aut"),
+    person("Matthieu", "Decorde", , "matthieu.decorde@ens-lyon.fr", role = "aut"),
+    person("Vaudor", "Lise", , "lise.vaudor@ens-lyon.fr", role = "aut"),
+    person("Tony", "Plate", role = "ctb",
+           comment = "Early line dashing code"),
+    person("David", "Gohel", role = "ctb",
+           comment = "Line dashing code and early raster code"),
+    person("Yixuan", "Qiu", role = "ctb",
+           comment = "Improved styles; polypath implementation"),
+    person("Håkon", "Malmedal", role = "ctb",
+           comment = "Opacity code"),
+    person("RStudio", role = "cph")
   )
-Encoding: UTF-8
-SystemRequirements: 
-    C++11,
-    libpng
+Description: A graphics device for R that produces 'Scalable Vector
+    Graphics'.  'svglite' is a fork of the older 'RSvgDevice' package.
+License: GPL (>= 2)
+URL: https://svglite.r-lib.org, https://github.com/r-lib/svglite
+BugReports: https://github.com/r-lib/svglite/issues
 Depends:
     R (>= 3.0.0)
 Imports:
     systemfonts (>= 1.0.0)
+Suggests:
+    covr,
+    fontquiver (>= 0.2.0),
+    htmltools,
+    knitr,
+    rmarkdown,
+    testthat,
+    xml2 (>= 1.0.0)
 LinkingTo:
     cpp11,
     systemfonts
-Suggests:
-    htmltools,
-    testthat,
-    xml2 (>= 1.0.0),
-    covr,
-    fontquiver (>= 0.2.0),
-    knitr,
-    rmarkdown
-License: GPL (>= 2)
-URL: https://svglite.r-lib.org, https://github.com/r-lib/svglite
-BugReports: https://github.com/r-lib/svglite/issues
-RoxygenNote: 7.1.1
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-VignetteBuilder: knitr
+RoxygenNote: 7.1.1
+SystemRequirements: C++11, libpng
