@@ -1152,8 +1152,6 @@ void svg_release_pattern(SEXP ref, pDevDesc dd) {
   if (it != svgd->pattern_cache.end()) {
     svgd->pattern_cache.erase(it);
   }
-
-  return;
 }
 
 SEXP svg_set_clip_path(SEXP path, SEXP ref, pDevDesc dd) {
@@ -1241,8 +1239,6 @@ void svg_release_clip_path(SEXP ref, pDevDesc dd) {
   if (it != svgd->clip_cache.end()) {
     svgd->clip_cache.erase(it);
   }
-
-  return;
 }
 
 SEXP svg_set_mask(SEXP path, SEXP ref, pDevDesc dd) {
@@ -1331,8 +1327,6 @@ void svg_release_mask(SEXP ref, pDevDesc dd) {
   if (it != svgd->mask_cache.end()) {
     svgd->mask_cache.erase(it);
   }
-
-  return;
 }
 
 pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
