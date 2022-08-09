@@ -12,7 +12,7 @@ inline static double dbl_format(double x) {
     return x;
 }
 
-bool iequals(const std::string& a, const std::string& b) {
+inline bool iequals(const std::string& a, const std::string& b) {
   unsigned int sz = a.size();
   if (b.size() != sz) {
     return false;
