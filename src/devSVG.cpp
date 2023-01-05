@@ -30,6 +30,7 @@ extern "C" {
 #include <systemfonts.h>
 #include <string>
 #include <cstring>
+#include <cstdint>
 #include <iomanip>
 #include <sstream>
 #include <memory>
