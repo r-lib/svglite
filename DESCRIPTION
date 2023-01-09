@@ -2,9 +2,9 @@ Package: svglite
 Title: An 'SVG' Graphics Device
 Version: 2.1.0.9000
 Authors@R: c(
-    person("Hadley", "Wickham", , "hadley@rstudio.com", role = "aut"),
-    person("Lionel", "Henry", , "lionel@rstudio.com", role = "aut"),
-    person("Thomas Lin", "Pedersen", , "thomas.pedersen@rstudio.com", role = c("cre", "aut"),
+    person("Hadley", "Wickham", , "hadley@posit.co", role = "aut"),
+    person("Lionel", "Henry", , "lionel@posit.co", role = "aut"),
+    person("Thomas Lin", "Pedersen", , "thomas.pedersen@posit.co", role = c("cre", "aut"),
            comment = c(ORCID = "0000-0002-5147-4711")),
     person("T Jake", "Luciani", , "jake@apache.org", role = "aut"),
     person("Matthieu", "Decorde", , "matthieu.decorde@ens-lyon.fr", role = "aut"),
