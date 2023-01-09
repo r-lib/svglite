@@ -1,5 +1,7 @@
 # svglite (development version)
 
+* Fix `<cstdint>` include at request of CRAN
+
 # svglite 2.1.0
 
 * Add new graphics engine features:
