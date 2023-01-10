@@ -35,7 +35,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">svglite</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.0.9000</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,7 +89,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Specifying fonts</h1>
             
-            <h4 data-toc-skip class="date">2023-01-05</h4>
+            <h4 data-toc-skip class="date">2023-01-10</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/r-lib/svglite/blob/HEAD/vignettes/fonts.Rmd" class="external-link"><code>vignettes/fonts.Rmd</code></a></small>
       <div class="d-none name"><code>fonts.Rmd</code></div>
@@ -103,7 +103,7 @@ generation to figure out the metrics of graphical elements. The font
 name is then recorded in the <code>font-family</code> property of text
 anchors so that SVG renderers know what fonts to use. svglite does try
 to ensure a consistent figure rendering even when fonts are not
-available at the time of rendering (by supplying the <a href="http://www.w3.org/TR/SVG/text.html#TextElementTextLengthAttribute" class="external-link">textLength</a>
+available at the time of rendering (by supplying the <a href="https://www.w3.org/TR/SVG/text.html#TextElementTextLengthAttribute" class="external-link">textLength</a>
 SVG text attribute). However, the text may look slightly distorted when
 a fallback font is used. This means that for optimal display, the font
 must be available on both the computer used to create the svg, and the
