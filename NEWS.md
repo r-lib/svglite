@@ -1,3 +1,5 @@
+# svglite (development version)
+
 # svglite 2.1.1
 
 * Fix `<cstdint>` include at request of CRAN
