@@ -20,7 +20,7 @@ name is then recorded in the `font-family` property of text anchors so
 that SVG renderers know what fonts to use. svglite does try to ensure
 a consistent figure rendering even when fonts are not available at the
 time of rendering (by supplying the
-[textLength](http://www.w3.org/TR/SVG/text.html#TextElementTextLengthAttribute)
+[textLength](https://www.w3.org/TR/SVG/text.html#TextElementTextLengthAttribute)
 SVG text attribute). However, the text may look slightly distorted
 when a fallback font is used. This means that for optimal display,
 the font must be available on both the computer used to create the

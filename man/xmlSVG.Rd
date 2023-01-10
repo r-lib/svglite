@@ -14,9 +14,7 @@ xmlSVG(code, ..., standalone = FALSE, height = 7, width = 7)
 \item{standalone}{Produce a standalone svg file? If \code{FALSE}, omits
 xml header and default namespace.}
 
-\item{height}{Height and width in inches.}
-
-\item{width}{Height and width in inches.}
+\item{height, width}{Height and width in inches.}
 }
 \value{
 A \code{xml2::xml_document} object.

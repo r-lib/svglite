@@ -60,7 +60,7 @@
 #'   if the file is being parsed while it is still being written to.
 #' @param file Identical to `filename`. Provided for backward compatibility.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
-#'   \url{http://www.w3.org/Graphics/SVG/}
+#'   \url{https://www.w3.org/Graphics/SVG/}
 #' @author This driver was written by T Jake Luciani
 #'   \email{jakeluciani@@yahoo.com} 2012: updated by Matthieu Decorde
 #'   \email{matthieu.decorde@@ens-lyon.fr}

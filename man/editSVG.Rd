@@ -11,9 +11,7 @@ editSVG(code, ..., width = NA, height = NA)
 
 \item{...}{Other arguments passed on to \code{\link{svglite}}.}
 
-\item{width}{Height and width in inches.}
-
-\item{height}{Height and width in inches.}
+\item{height, width}{Height and width in inches.}
 }
 \description{
 This is useful primarily for testing or post-processing the SVG.
