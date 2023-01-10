@@ -16,7 +16,7 @@ Badge](http://www.r-pkg.org/badges/version/svglite)](https://cran.r-project.org/
 svglite is a graphics device that produces clean svg output, suitable
 for use on the web, or hand editing. Compared to the built-in `svg()`,
 svglite produces smaller files, and leaves text as is, making it easier
-to edit the result after creation. It also support multiple nice
+to edit the result after creation. It also supports multiple nice
 features such as embedding of web fonts.
 
 ## Installation
