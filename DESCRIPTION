@@ -1,6 +1,6 @@
 Package: svglite
 Title: An 'SVG' Graphics Device
-Version: 2.1.0.9000
+Version: 2.1.1
 Authors@R: c(
     person("Hadley", "Wickham", , "hadley@posit.co", role = "aut"),
     person("Lionel", "Henry", , "lionel@posit.co", role = "aut"),
