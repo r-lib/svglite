@@ -74,7 +74,7 @@ fs::file_size(tmp1)
 fs::file_size(tmp2)
 ```
 
-In both cases, compressing to make `.svgz` (gzipped svg) is worthwhile. svglite supports compressed output directly which will be triggered if the provided path has a `".svgz"` extension.
+In both cases, compressing to make `.svgz` (gzipped svg) is worthwhile. svglite supports compressed output directly which will be triggered if the provided path has a `".svgz"` (or `".svg.gz"`) extension.
 
 ```{r}
 tmp3 <- tempfile(fileext = ".svgz")

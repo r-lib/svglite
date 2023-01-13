@@ -83,7 +83,8 @@ class SvgStreamFile : public SvgStream {
 public:
   SvgStreamFile(const std::string& path, bool _always_valid = false) : always_valid(_always_valid) {
     std::string svgz_ext = path.size() > 5 ? path.substr(path.size() - 5) : "";
-    compress = iequals(svgz_ext, ".svgz");
+    std::string gz_ext = path.size() > 3 ? path.substr(path.size() - 3) : "";
+    compress = iequals(svgz_ext, ".svgz") || iequals(gz_ext, ".gz");
     file = R_ExpandFileName(path.c_str());
 
     stream_.open(file.c_str());
@@ -96,7 +97,8 @@ public:
 
   SvgStreamFile(const std::string& path, int pageno, bool _always_valid = false) : always_valid(_always_valid) {
     std::string svgz_ext = path.size() > 5 ? path.substr(path.size() - 5) : "";
-    compress = iequals(svgz_ext, ".svgz");
+    std::string gz_ext = path.size() > 3 ? path.substr(path.size() - 3) : "";
+    compress = iequals(svgz_ext, ".svgz") || iequals(gz_ext, ".gz");
 
     char buf[PATH_MAX+1];
     snprintf(buf, PATH_MAX, path.c_str(), pageno);
