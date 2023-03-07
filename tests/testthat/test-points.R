@@ -1,4 +1,3 @@
-context("Points")
 library(xml2)
 
 test_that("radius is not given in points", {

@@ -1,4 +1,3 @@
-context("colour")
 library(xml2)
 
 test_that("transparent blacks are written", {

@@ -1,4 +1,3 @@
-context("Paths")
 library(xml2)
 
 test_that("paths with winding fill mode", {

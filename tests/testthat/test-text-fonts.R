@@ -1,6 +1,3 @@
-
-context("Fonts")
-
 test_that("font sets weight/style", {
   x <- xmlSVG({
     plot.new()

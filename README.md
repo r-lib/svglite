@@ -5,12 +5,11 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/r-lib/svglite/workflows/R-CMD-check/badge.svg)](https://github.com/r-lib/svglite/actions)
+[![R-CMD-check](https://github.com/r-lib/svglite/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r-lib/svglite/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/r-lib/svglite/branch/master/graph/badge.svg)](https://app.codecov.io/gh/r-lib/svglite?branch=master)
+coverage](https://codecov.io/gh/r-lib/svglite/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r-lib/svglite?branch=main)
 [![CRAN Status
 Badge](http://www.r-pkg.org/badges/version/svglite)](https://cran.r-project.org/package=svglite)
-
 <!-- badges: end -->
 
 svglite is a graphics device that produces clean svg output, suitable
@@ -25,8 +24,8 @@ svglite is available on CRAN using `install.packages("svglite")`. You
 can install the development version from github with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("r-lib/svglite")
+# install.packages("pak")
+pak::pak("r-lib/svglite")
 ```
 
 ## Motivation
@@ -59,12 +58,12 @@ svg_test <- function() {
   dev.off()
 }
 
-bench::mark(svglite_test(), svg_test(), min_iterations = 250)
-#> # A tibble: 2 x 6
+bench::mark(svglite_test(), svg_test(), min_iterations = 250, check = FALSE)
+#> # A tibble: 2 × 6
 #>   expression          min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 svglite_test()   3.31ms   3.87ms     247.      561KB     5.05
-#> 2 svg_test()      10.57ms  12.19ms      76.3     177KB     1.24
+#> 1 svglite_test()   2.09ms   2.17ms      447.     691KB    7.27 
+#> 2 svg_test()        6.1ms   6.26ms      159.     179KB    0.637
 ```
 
 ### File size
@@ -75,7 +74,7 @@ size. `svglite()` produces much smaller files
 ``` r
 # svglite
 fs::file_size(tmp1)
-#> 74.9K
+#> 75K
 
 # svg
 fs::file_size(tmp2)
@@ -94,7 +93,7 @@ invisible(dev.off())
 
 # svglite - svgz
 fs::file_size(tmp3)
-#> 9.38K
+#> 9.39K
 ```
 
 ### Editability

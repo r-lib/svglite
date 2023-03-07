@@ -1,5 +1,3 @@
-context("Clipping")
-
 test_that("regression test for no clipping", {
   svglite("test-no-clip.svg", 4, 4, user_fonts = bitstream)
   on.exit(dev.off())

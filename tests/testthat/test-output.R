@@ -1,5 +1,3 @@
-context("Output")
-
 test_that("different string and file output produce identical svg", {
   ## 1. Write to a file
   f1 <- tempfile()

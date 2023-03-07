@@ -1,4 +1,3 @@
-context("Lines")
 library(xml2)
 
 test_that("segments don't have fill", {

@@ -1,4 +1,3 @@
-context("Scale")
 library("grid")
 
 # Tests requiring manual oversight are registered as such. They

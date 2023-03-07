@@ -1,4 +1,3 @@
-context("Rect")
 library(xml2)
 
 test_that("rects equivalent regardless of direction", {

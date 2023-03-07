@@ -1,4 +1,3 @@
-context("devSVG")
 library(xml2)
 
 style_attr <- function(nodes, attr) {
