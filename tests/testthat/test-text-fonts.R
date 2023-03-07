@@ -1,6 +1,3 @@
-
-context("Fonts")
-
 test_that("font sets weight/style", {
   x <- xmlSVG({
     plot.new()
@@ -29,7 +26,7 @@ test_that("symbol font family is 'Symbol'", {
   matched_symbol_font <- paste0('"', match_family(symbol_font), '"')
 
   x <- xmlSVG({
-    plot(c(0,2), c(0,2), type = "n", axes = FALSE, xlab = "", ylab = "")
+    plot(c(0, 2), c(0, 2), type = "n", axes = FALSE, xlab = "", ylab = "")
     text(1, 1, expression(symbol("\042")))
   })
   text <- xml_find_all(x, ".//text")
@@ -51,7 +48,8 @@ test_that("fonts are aliased", {
       text(0.5, 0.1, "a", family = "serif")
       text(0.5, 0.5, "a", family = "sans")
       text(0.5, 0.9, "a", family = "mono")
-    })
+    }
+  )
   text <- xml_find_all(x, ".//text")
   families <- style_attr(text, "font-family")
 

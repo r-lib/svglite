@@ -1,11 +1,11 @@
-context("devSVG")
 library(xml2)
 
 style_attr <- function(nodes, attr) {
   style <- xml_attr(nodes, "style")
   ifelse(grepl(sprintf("%s: [^;]*;", attr), style),
-         gsub(sprintf(".*%s: ([^;]*);.*", attr), "\\1", style),
-         NA_character_)
+    gsub(sprintf(".*%s: ([^;]*);.*", attr), "\\1", style),
+    NA_character_
+  )
 }
 
 test_that("adds default background", {
@@ -37,7 +37,6 @@ test_that("if bg is transparent in par(), use device driver background", {
 })
 
 test_that("creating multiple pages is identical to creating multiple individual svgs", {
-
   set.seed(42)
   df <- data.frame(x = rnorm(20), y = rnorm(20))
   plot_one <- function() plot(df$x, df$y)
@@ -85,10 +84,9 @@ test_that("creating multiple pages is identical to creating multiple individual 
 
   expect_identical(readLines(f_multiple_1), readLines(f_single_1), label = "svglite first plot")
   expect_identical(readLines(f_multiple_2), readLines(f_single_2), label = "svglite second plot")
-
 })
 
-test_that("ensure text leading white space will be rendered" , {
+test_that("ensure text leading white space will be rendered", {
   x <- xmlSVG(plot.new())
   expect_true(
     grepl(
@@ -98,4 +96,3 @@ test_that("ensure text leading white space will be rendered" , {
   )
   expect_equal(style_attr(xml_find_first(x, ".//rect"), "fill"), "#FFFFFF")
 })
-

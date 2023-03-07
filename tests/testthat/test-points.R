@@ -1,4 +1,3 @@
-context("Points")
 library(xml2)
 
 test_that("radius is not given in points", {
@@ -44,4 +43,3 @@ test_that("points are given stroke and fill", {
   circle <- xml_find_all(x, ".//circle")
   expect_equal(style_attr(circle, "fill"), NA_character_)
 })
-

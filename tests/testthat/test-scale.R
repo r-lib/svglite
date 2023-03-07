@@ -1,4 +1,3 @@
-context("Scale")
 library("grid")
 
 # Tests requiring manual oversight are registered as such. They
@@ -13,13 +12,17 @@ test_that("text has correct dimensions", {
   w <- systemfonts::string_width("foobar", path = ttf, index = 0L, res = 1e4) * 72 / 1e4
   h <- max(vapply(systemfonts::glyph_info("foobar", path = ttf, index = 0L, res = 1e4)$bbox, `[[`, numeric(1), "ymax")) * 72 / 1e4
 
-  svglite("test-scale-text.svg", width = w / 72, height = h / 72,
-    user_fonts = fontquiver::font_families("Liberation"))
+  svglite("test-scale-text.svg",
+    width = w / 72, height = h / 72,
+    user_fonts = fontquiver::font_families("Liberation")
+  )
   on.exit(dev.off())
 
   grid.newpage()
-  grid.rect(0, 1, width = unit(w, "bigpts"), height = unit(h, "bigpts"),
-    hjust = 0, vjust = 1, gp = gpar(col = "red", lwd = 1))
+  grid.rect(0, 1,
+    width = unit(w, "bigpts"), height = unit(h, "bigpts"),
+    hjust = 0, vjust = 1, gp = gpar(col = "red", lwd = 1)
+  )
   grid.text("foobar", 0, 1, hjust = 0, vjust = 1, gp = gpar(fontsize = 12))
   pushViewport(viewport())
 })
