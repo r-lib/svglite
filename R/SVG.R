@@ -69,7 +69,7 @@
 #' @examples
 #' # Save to file
 #' svglite(tempfile("Rplots.svg"))
-#' plot(1:11, (-5:5)^2, type = 'b', main = "Simple Example")
+#' plot(1:11, (-5:5)^2, type = "b", main = "Simple Example")
 #' dev.off()
 #'
 #' @keywords device
@@ -83,8 +83,9 @@ svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
   if (!missing(file)) {
     filename <- file
   }
-  if (invalid_filename(filename))
+  if (invalid_filename(filename)) {
     stop("invalid 'file': ", filename)
+  }
   aliases <- validate_aliases(system_fonts, user_fonts)
   web_fonts <- validate_web_fonts(web_fonts)
   if (is.null(id)) {
@@ -105,10 +106,13 @@ svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
 #' @return A function with no arguments: call the function to get the
 #'   current value of the string.
 #' @examples
-#' s <- svgstring(); s()
+#' s <- svgstring()
+#' s()
 #'
-#' plot.new(); s();
-#' text(0.5, 0.5, "Hi!"); s()
+#' plot.new()
+#' s()
+#' text(0.5, 0.5, "Hi!")
+#' s()
 #' dev.off()
 #'
 #' s <- svgstring()
@@ -130,13 +134,15 @@ svgstring <- function(width = 10, height = 8, bg = "white",
   id <- as.character(id)
 
   env <- new.env(parent = emptyenv())
-  string_src <- svgstring_(env, width = width, height = height, bg = bg,
+  string_src <- svgstring_(env,
+    width = width, height = height, bg = bg,
     pointsize = pointsize, standalone = standalone, aliases = aliases,
-    webfonts = web_fonts, id = id, fix_text_size, scaling)
+    webfonts = web_fonts, id = id, fix_text_size, scaling
+  )
 
   function() {
     svgstr <- env$svg_string
-    if(!env$is_closed) {
+    if (!env$is_closed) {
       svgstr <- c(svgstr, get_svg_content(string_src))
     }
     structure(svgstr, class = "svg")

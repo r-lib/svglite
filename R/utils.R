@@ -85,20 +85,20 @@ open_manual_tests <- function() {
 }
 
 invalid_filename <- function(filename) {
-
-  if (!is.character(filename) || length(filename) != 1)
+  if (!is.character(filename) || length(filename) != 1) {
     return(TRUE)
+  }
 
   # strip double occurences of %
   stripped_file <- gsub("%{2}", "", filename)
   # filename is fine if there are no % left
-  if (!grepl("%", stripped_file))
+  if (!grepl("%", stripped_file)) {
     return(FALSE)
+  }
   # remove first allowed pattern, % followed by digits followed by [diouxX]
   stripped_file <- sub("%[#0 ,+-]*[0-9.]*[diouxX]", "", stripped_file)
   # matching leftover % indicates multiple patterns or a single incorrect pattern (e.g., %s)
   return(grepl("%", stripped_file))
-
 }
 #' Convert an svg file to svgz, overwriting the old file
 #' @param file the path to the file to convert
