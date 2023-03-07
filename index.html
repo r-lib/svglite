@@ -92,15 +92,14 @@
 </div>
 <!-- badges: start -->
 
-<!-- badges: end -->
-<p>svglite is a graphics device that produces clean svg output, suitable for use on the web, or hand editing. Compared to the built-in <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code>, svglite produces smaller files, and leaves text as is, making it easier to edit the result after creation. It also support multiple nice features such as embedding of web fonts.</p>
+<p>svglite is a graphics device that produces clean svg output, suitable for use on the web, or hand editing. Compared to the built-in <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code>, svglite produces smaller files, and leaves text as is, making it easier to edit the result after creation. It also supports multiple nice features such as embedding of web fonts.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>svglite is available on CRAN using <code>install.packages("svglite")</code>. You can install the development version from github with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"r-lib/svglite"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co"># install.packages("pak")</span></span>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="http://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"r-lib/svglite"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="motivation">Motivation<a class="anchor" aria-label="anchor" href="#motivation"></a>
@@ -129,12 +128,12 @@
 <span>  <span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span></span>
-<span><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span><span class="fu">svglite_test</span><span class="op">(</span><span class="op">)</span>, <span class="fu">svg_test</span><span class="op">(</span><span class="op">)</span>, min_iterations <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 2 x 6</span></span>
+<span><span class="fu">bench</span><span class="fu">::</span><span class="fu">mark</span><span class="op">(</span><span class="fu">svglite_test</span><span class="op">(</span><span class="op">)</span>, <span class="fu">svg_test</span><span class="op">(</span><span class="op">)</span>, min_iterations <span class="op">=</span> <span class="fl">250</span>, check <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; # A tibble: 2 × 6</span></span>
 <span><span class="co">#&gt;   expression          min   median `itr/sec` mem_alloc `gc/sec`</span></span>
 <span><span class="co">#&gt;   &lt;bch:expr&gt;     &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 svglite_test()   3.31ms   3.87ms     247.      561KB     5.05</span></span>
-<span><span class="co">#&gt; 2 svg_test()      10.57ms  12.19ms      76.3     177KB     1.24</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 svglite_test()   2.08ms   2.23ms      438.     691KB    7.13 </span></span>
+<span><span class="co">#&gt; 2 svg_test()       6.07ms   6.26ms      159.     179KB    0.638</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="file-size">File size<a class="anchor" aria-label="anchor" href="#file-size"></a>
@@ -143,7 +142,7 @@
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># svglite</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp1</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 74.9K</span></span>
+<span><span class="co">#&gt; 75K</span></span>
 <span></span>
 <span><span class="co"># svg</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp2</span><span class="op">)</span></span>
@@ -157,7 +156,7 @@
 <span></span>
 <span><span class="co"># svglite - svgz</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp3</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 9.38K</span></span></code></pre></div>
+<span><span class="co">#&gt; 9.42K</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="editability">Editability<a class="anchor" aria-label="anchor" href="#editability"></a>
@@ -219,7 +218,7 @@
 <li>Matthieu Decorde <br><small class="roles"> Author </small>  </li>
 <li>Vaudor Lise <br><small class="roles"> Author </small>  </li>
 <li>
-<a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a> <br><small class="roles"> Copyright holder, funder </small>  </li>
+<a href="https://www.posit.co" class="external-link"><img src="https://www.tidyverse.org/posit-logo.svg" alt="Posit" height="16" style="margin-bottom: 3px;"></a> <br><small class="roles"> Copyright holder, funder </small>  </li>
 <li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
@@ -227,8 +226,8 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/r-lib/svglite/actions" class="external-link"><img src="https://github.com/r-lib/svglite/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://app.codecov.io/gh/r-lib/svglite?branch=master" class="external-link"><img src="https://codecov.io/gh/r-lib/svglite/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://github.com/r-lib/svglite/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/r-lib/svglite/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/r-lib/svglite?branch=main" class="external-link"><img src="https://codecov.io/gh/r-lib/svglite/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://cran.r-project.org/package=svglite" class="external-link"><img src="http://www.r-pkg.org/badges/version/svglite" alt="CRAN Status Badge"></a></li>
 </ul>
 </div>
@@ -241,7 +240,7 @@
   <footer><div class="container">
   <div class="pkgdown-footer-left">
   <p></p>
-<p>Developed by <a href="http://hadley.nz" class="external-link">Hadley Wickham</a>, <a href="https://github.com/lionel-" class="external-link">Lionel Henry</a>, <a href="https://data-imaginist.com" class="external-link">Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise, <a href="https://www.rstudio.com" class="external-link"><img src="https://www.tidyverse.org/rstudio-logo.svg" alt="RStudio" width="72"></a>.</p>
+<p>Developed by <a href="http://hadley.nz" class="external-link">Hadley Wickham</a>, <a href="https://github.com/lionel-" class="external-link">Lionel Henry</a>, <a href="https://data-imaginist.com" class="external-link">Thomas Lin Pedersen</a>, T Jake Luciani, Matthieu Decorde, Vaudor Lise, <a href="https://www.posit.co" class="external-link"><img src="https://www.tidyverse.org/posit-logo.svg" alt="Posit" height="16" style="margin-bottom: 3px;"></a>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
