@@ -15,7 +15,7 @@ Badge](http://www.r-pkg.org/badges/version/svglite)](https://cran.r-project.org/
 svglite is a graphics device that produces clean svg output, suitable
 for use on the web, or hand editing. Compared to the built-in `svg()`,
 svglite produces smaller files, and leaves text as is, making it easier
-to edit the result after creation. It also support multiple nice
+to edit the result after creation. It also supports multiple nice
 features such as embedding of web fonts.
 
 ## Installation
@@ -62,8 +62,8 @@ bench::mark(svglite_test(), svg_test(), min_iterations = 250, check = FALSE)
 #> # A tibble: 2 × 6
 #>   expression          min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 svglite_test()   2.09ms   2.17ms      447.     691KB    7.27 
-#> 2 svg_test()        6.1ms   6.26ms      159.     179KB    0.637
+#> 1 svglite_test()   2.08ms   2.23ms      438.     691KB    7.13 
+#> 2 svg_test()       6.07ms   6.26ms      159.     179KB    0.638
 ```
 
 ### File size
@@ -93,7 +93,7 @@ invisible(dev.off())
 
 # svglite - svgz
 fs::file_size(tmp3)
-#> 9.39K
+#> 9.42K
 ```
 
 ### Editability
