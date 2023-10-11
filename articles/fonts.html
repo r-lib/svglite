@@ -89,7 +89,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Specifying fonts</h1>
             
-            <h4 data-toc-skip class="date">2023-10-06</h4>
+            <h4 data-toc-skip class="date">2023-10-11</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/r-lib/svglite/blob/HEAD/vignettes/fonts.Rmd" class="external-link"><code>vignettes/fonts.Rmd</code></a></small>
       <div class="d-none name"><code>fonts.Rmd</code></div>
@@ -255,7 +255,7 @@ be returned. To test if the expected font is matched you can use the
 <code>match_font()</code> and <code>font_info()</code> functions from
 systemfonts:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/systemfonts/man/match_font.html" class="external-link">match_font</a></span><span class="op">(</span><span class="st">"Helvetica"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/match_font.html" class="external-link">match_font</a></span><span class="op">(</span><span class="st">"Helvetica"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; $path</span></span>
 <span><span class="co">#&gt; [1] "/usr/share/fonts/opentype/urw-base35/NimbusSans-Regular.otf"</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -264,7 +264,7 @@ systemfonts:</p>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; $features</span></span>
 <span><span class="co">#&gt; NULL</span></span>
-<span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/systemfonts/man/font_info.html" class="external-link">font_info</a></span><span class="op">(</span><span class="st">"Helvetica"</span>, bold <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/font_info.html" class="external-link">font_info</a></span><span class="op">(</span><span class="st">"Helvetica"</span>, bold <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt;                                                       path index</span></span>
 <span><span class="co">#&gt; 1 /usr/share/fonts/opentype/urw-base35/NimbusSans-Bold.otf     0</span></span>
 <span><span class="co">#&gt;        family style italic bold monospace weight  width kerning color</span></span>
