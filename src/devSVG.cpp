@@ -1330,6 +1330,40 @@ void svg_release_mask(SEXP ref, pDevDesc dd) {
   }
 }
 
+SEXP svg_capabilities(SEXP capabilities) {
+#if R_GE_version >= 15
+  // Pattern support
+  SEXP pat = PROTECT(Rf_allocVector(INTSXP, 3));
+  INTEGER(pat)[0] = R_GE_linearGradientPattern;
+  INTEGER(pat)[1] = R_GE_radialGradientPattern;
+  INTEGER(pat)[2] = R_GE_tilingPattern;
+  SET_VECTOR_ELT(capabilities, R_GE_capability_patterns, pat);
+  UNPROTECT(1);
+
+  // Clipping path support
+  SET_VECTOR_ELT(capabilities, R_GE_capability_clippingPaths, Rf_ScalarInteger(1));
+
+  // Mask support
+  SEXP masks = PROTECT(Rf_allocVector(INTSXP, 2));
+  INTEGER(masks)[0] = R_GE_alphaMask;
+  INTEGER(masks)[1] = R_GE_luminanceMask;
+  SET_VECTOR_ELT(capabilities, R_GE_capability_masks, masks);
+  UNPROTECT(1);
+
+  // Group composition
+  SET_VECTOR_ELT(capabilities, R_GE_capability_compositing, Rf_ScalarInteger(0));
+  UNPROTECT(1);
+
+  // Group transformation
+  SET_VECTOR_ELT(capabilities, R_GE_capability_transformations, Rf_ScalarInteger(0));
+
+  // Path stroking and filling
+  SET_VECTOR_ELT(capabilities, R_GE_capability_paths, Rf_ScalarInteger(0));
+
+#endif
+  return capabilities;
+}
+
 pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
                         double height, double pointsize,
                         bool standalone, cpp11::list& aliases,
@@ -1401,7 +1435,13 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->ipr[1] = 1.0 / (72.0 * scaling);
 
   // Capabilities
+#if R_GE_version >= 15
+  dd->capabilities = svg_capabilities;
+#endif
   dd->canClip = TRUE;
+#if R_GE_version >= 14
+  dd->deviceClip = TRUE;
+#endif
   dd->canHAdj = 1;
   dd->canChangeGamma = FALSE;
   dd->displayListOn = FALSE;
@@ -1409,7 +1449,7 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->haveTransparentBg = 2;
 
 #if R_GE_version >= 13
-  dd->deviceVersion = R_GE_definitions;
+  dd->deviceVersion = 15; //R_GE_group;
 #endif
 
   dd->deviceSpecific = new SVGDesc(stream, standalone, aliases, webfonts, file,

@@ -1,6 +1,7 @@
 # svglite (development version)
 
 * Windows: use libpng included with Rtools on R 4.2 and up.
+* Add support for `dev.capabilities()`
 
 # svglite 2.1.1
 
