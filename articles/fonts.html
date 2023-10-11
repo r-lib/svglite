@@ -169,7 +169,7 @@ coverage that is available on macOS and Windows systems (on the latter,
 only if MS Office is installed). Note that this font does not support
 kerning and has no bold or italic faces.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://svglite.r-lib.org/reference/svglite-package.html">svglite</a></span><span class="op">(</span><span class="st">"Rplots.svg"</span>, system_fonts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sans <span class="op">=</span> <span class="st">"Arial Unicode MS"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/svglite.html">svglite</a></span><span class="op">(</span><span class="st">"Rplots.svg"</span>, system_fonts <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>sans <span class="op">=</span> <span class="st">"Arial Unicode MS"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/frame.html" class="external-link">plot.new</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="st">"正規分布"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -210,7 +210,7 @@ package, or a list that specifies the alias. Whereas
 <span>  serif <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>plain <span class="op">=</span> <span class="va">serif_file</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://svglite.r-lib.org/reference/svglite-package.html">svglite</a></span><span class="op">(</span><span class="st">"plot.svg"</span>, user_fonts <span class="op">=</span> <span class="va">fonts</span><span class="op">)</span></span>
+<span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/svglite.html">svglite</a></span><span class="op">(</span><span class="st">"plot.svg"</span>, user_fonts <span class="op">=</span> <span class="va">fonts</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/frame.html" class="external-link">plot.new</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="st">"Sans Plain text"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">0.2</span>, <span class="st">"Sans Italic text"</span>, font <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
@@ -241,7 +241,7 @@ appropriate structure and can be directly supplied to svglite:</p>
 <span><span class="va">fonts</span><span class="op">$</span><span class="va">symbol</span><span class="op">$</span><span class="va">symbol</span> <span class="op">&lt;-</span> <span class="fu">fontquiver</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/fontquiver/man/fonts.html" class="external-link">font_symbol</a></span><span class="op">(</span><span class="st">"Symbola"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">fonts</span>, <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://svglite.r-lib.org/reference/svglite-package.html">svglite</a></span><span class="op">(</span><span class="st">"reproducible.svg"</span>, user_fonts <span class="op">=</span> <span class="va">fonts</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/svglite.html">svglite</a></span><span class="op">(</span><span class="st">"reproducible.svg"</span>, user_fonts <span class="op">=</span> <span class="va">fonts</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>

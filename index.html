@@ -108,7 +108,7 @@
 <div class="section level3">
 <h3 id="speed">Speed<a class="anchor" aria-label="anchor" href="#speed"></a>
 </h3>
-<p><code><a href="https://svglite.r-lib.org/reference/svglite-package.html">svglite()</a></code> is considerably faster than <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code>. If you are rendering SVGs dynamically to serve over the web this can be quite important:</p>
+<p><code><a href="reference/svglite.html">svglite()</a></code> is considerably faster than <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code>. If you are rendering SVGs dynamically to serve over the web this can be quite important:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://svglite.r-lib.org">svglite</a></span><span class="op">)</span></span>
 <span></span>
@@ -118,7 +118,7 @@
 <span><span class="va">tmp2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">svglite_test</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="op">)</span> <span class="op">{</span></span>
-<span>  <span class="fu"><a href="https://svglite.r-lib.org/reference/svglite-package.html">svglite</a></span><span class="op">(</span><span class="va">tmp1</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="reference/svglite.html">svglite</a></span><span class="op">(</span><span class="va">tmp1</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
@@ -138,7 +138,7 @@
 <div class="section level3">
 <h3 id="file-size">File size<a class="anchor" aria-label="anchor" href="#file-size"></a>
 </h3>
-<p>Another point with high relevance when serving SVGs over the web is the size. <code><a href="https://svglite.r-lib.org/reference/svglite-package.html">svglite()</a></code> produces much smaller files</p>
+<p>Another point with high relevance when serving SVGs over the web is the size. <code><a href="reference/svglite.html">svglite()</a></code> produces much smaller files</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># svglite</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp1</span><span class="op">)</span></span>
@@ -150,7 +150,7 @@
 <p>In both cases, compressing to make <code>.svgz</code> (gzipped svg) is worthwhile. svglite supports compressed output directly which will be triggered if the provided path has a <code>".svgz"</code> (or <code>".svg.gz"</code>) extension.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tmp3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".svgz"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://svglite.r-lib.org/reference/svglite-package.html">svglite</a></span><span class="op">(</span><span class="va">tmp3</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/svglite.html">svglite</a></span><span class="op">(</span><span class="va">tmp3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -161,7 +161,7 @@
 <div class="section level3">
 <h3 id="editability">Editability<a class="anchor" aria-label="anchor" href="#editability"></a>
 </h3>
-<p>One of the main reasons for the size difference between the size of the output of <code><a href="https://svglite.r-lib.org/reference/svglite-package.html">svglite()</a></code> and <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code> is the fact that <code><a href="https://svglite.r-lib.org/reference/svglite-package.html">svglite()</a></code> encodes text as styled <code>&lt;text&gt;</code> elements, whereas <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code> converts the glyphs to polygons and renders these. The latter approach means that the output of <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code> does not require the font to be present on the system that displays the SVG but makes it more or less impossible to edit the text after the fact. svglite focuses on providing maximal editability of the output, so that you can open up the result in a vector drawing program such as Inkscape or Illustrator and polish the output if you so choose.</p>
+<p>One of the main reasons for the size difference between the size of the output of <code><a href="reference/svglite.html">svglite()</a></code> and <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code> is the fact that <code><a href="reference/svglite.html">svglite()</a></code> encodes text as styled <code>&lt;text&gt;</code> elements, whereas <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code> converts the glyphs to polygons and renders these. The latter approach means that the output of <code><a href="https://rdrr.io/r/grDevices/cairo.html" class="external-link">svg()</a></code> does not require the font to be present on the system that displays the SVG but makes it more or less impossible to edit the text after the fact. svglite focuses on providing maximal editability of the output, so that you can open up the result in a vector drawing program such as Inkscape or Illustrator and polish the output if you so choose.</p>
 </div>
 <div class="section level3">
 <h3 id="font-support">Font support<a class="anchor" aria-label="anchor" href="#font-support"></a>
