@@ -82,10 +82,13 @@ See \code{\link{svglite}()} documentation for information about
 specifying fonts.
 }
 \examples{
-s <- svgstring(); s()
+s <- svgstring()
+s()
 
-plot.new(); s();
-text(0.5, 0.5, "Hi!"); s()
+plot.new()
+s()
+text(0.5, 0.5, "Hi!")
+s()
 dev.off()
 
 s <- svgstring()

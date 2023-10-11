@@ -99,7 +99,7 @@ svg. See the \code{fonts} vignette for more information.
 \examples{
 # Save to file
 svglite(tempfile("Rplots.svg"))
-plot(1:11, (-5:5)^2, type = 'b', main = "Simple Example")
+plot(1:11, (-5:5)^2, type = "b", main = "Simple Example")
 dev.off()
 
 }
