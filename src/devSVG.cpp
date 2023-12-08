@@ -1352,7 +1352,6 @@ SEXP svg_capabilities(SEXP capabilities) {
 
   // Group composition
   SET_VECTOR_ELT(capabilities, R_GE_capability_compositing, Rf_ScalarInteger(0));
-  UNPROTECT(1);
 
   // Group transformation
   SET_VECTOR_ELT(capabilities, R_GE_capability_transformations, Rf_ScalarInteger(0));

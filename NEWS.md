@@ -1,5 +1,7 @@
 # svglite (development version)
 
+* Fix a stack imbalance bug
+
 # svglite 2.1.2
 
 * Windows: use libpng included with Rtools on R 4.2 and up.
