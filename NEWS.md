@@ -1,3 +1,5 @@
+# svglite (development version)
+
 # svglite 2.1.3
 
 * Fix a stack imbalance bug
