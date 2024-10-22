@@ -1,5 +1,6 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' class='svglite' width='288.00pt' height='288.00pt' viewBox='0 0 288.00 288.00'>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='288.00pt' height='288.00pt' viewBox='0 0 288.00 288.00'>
+<g class='svglite'>
 <defs>
   <style type='text/css'><![CDATA[
     .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
@@ -30,5 +31,6 @@
 <g clip-path='url(#cpNTkuMDR8MjU3Ljc2fDU5LjA0fDIxNC41Ng==)'>
 <text x='158.40' y='140.11' text-anchor='middle' style='font-size: 12.00px; font-family: "Bitstream Vera Sans";' textLength='87.39px' lengthAdjust='spacingAndGlyphs'>This is a string</text>
 <rect x='114.71' y='132.43' width='87.39' height='8.75' style='stroke-width: 0.75;' />
+</g>
 </g>
 </svg>
