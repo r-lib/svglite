@@ -16,3 +16,5 @@
 ^pkgdown$
 ^CODE_OF_CONDUCT\.md$
 ^CRAN-SUBMISSION$
+^compile_commands\.json$
+^\.cache$
