@@ -125,13 +125,19 @@ public:
     if (!always_valid) {
       return;
     }
-
-    stream_ << "</g>\n</svg>";
 #ifdef _WIN32
-    stream_.seekp(-12, std::ios_base::cur);
+    int offset = -12;
 #else
-    stream_.seekp(-11, std::ios_base::cur);
+    int offset = -11;
 #endif
+
+    if (is_clipping()) {
+      // We don't do newline here just to avoid having to deal with windows
+      stream_ << "</g>";
+      offset -= 4;
+    }
+    stream_ << "</g>\n</svg>";
+    stream_.seekp(offset, std::ios_base::cur);
   }
 
   void finish(bool close) {
