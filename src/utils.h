@@ -1,5 +1,4 @@
-#ifndef __SVGLITE_UTILS__
-#define __SVGLITE_UTILS__
+#pragma once
 
 #include <limits>
 #include <cmath>
@@ -24,5 +23,3 @@ inline bool iequals(const std::string& a, const std::string& b) {
   }
   return true;
 }
-
-#endif

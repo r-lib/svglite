@@ -1,5 +1,4 @@
-#ifndef __SVG_STREAM__
-#define __SVG_STREAM__
+#pragma once
 
 #include <fstream>
 #include <sstream>
@@ -141,7 +140,7 @@ public:
     if (is_clipping()) {
       stream_ << "</g>\n";
     }
-    stream_ << "</svg>\n";
+    stream_ << "</g>\n</svg>\n";
     stream_.flush();
     clear_clip_ids();
 
@@ -211,6 +210,3 @@ public:
     return &stream_;
   }
 };
-
-
-#endif
