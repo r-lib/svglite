@@ -646,14 +646,17 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
     (*stream) << " xmlns:xlink='http://www.w3.org/1999/xlink'";
   }
 
-  if (!id.empty())
-    (*stream) << " id='" << id << "'";
-
-  (*stream) << " class='svglite'";
-
   (*stream) << " width='" << dd->right << "pt' height='" << dd->bottom << "pt'";
 
   (*stream) << " viewBox='0 0 " << dd->right << ' ' << dd->bottom << "'>\n";
+
+  (*stream) << "<g";
+
+  if (!id.empty())
+    (*stream) << " id='" << id << "'";
+
+  (*stream) << " class='svglite'>\n";
+
 
   // Setting default styles
   (*stream) << "<defs>\n";
