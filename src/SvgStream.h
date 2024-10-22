@@ -196,7 +196,7 @@ public:
       if (is_clipping()) {
         svgstr.append("</g>\n");
       }
-      svgstr.append("</svg>");
+      svgstr.append("</g>\n</svg>");
     }
     if (env_.exists("svg_string")) {
       cpp11::writable::strings str(env_["svg_string"]);
