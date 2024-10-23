@@ -95,6 +95,25 @@ One of the main reasons for the size difference between the size of the output o
 
 svglite uses systemfonts for font discovery which means that all installed fonts on your system is available to use. The systemfonts foundation means that fonts registered with `register_font()` or `register_variant()` will also be available. If any of these contains non-standard weights or OpenType features (e.g. ligatures or tabular numerics) this will be correctly encoded in the style block. systemfonts also allows you to embed webfont `@imports` in your file to ensure that the file looks as expected even on systems without the used font installed.
 
+## Building svglite
+
+_This section is only relevant for building svglite from scratch, as opposed to installing from a pre-built package on CRAN._
+
+Building vdiffr requires the system dependency libpng. As vdiffr doesn't have any build-time configuration, your R configuration must point to libpng's `include` and `lib` folders.
+
+For instance on macOS, install libpng with:
+
+```sh
+brew install libpng
+```
+
+And make sure your `~/.R/Makevars` knows about Homebrew's `include` and `lib` folders where libpng should now be installed. On arm64 hardware, this would be:
+
+```mk
+CPPFLAGS += -I/opt/homebrew/include
+LDFLAGS += -L/opt/homebrew/lib
+```
+
 ## Code of Conduct
 
 Please note that the svglite project is released with a [Contributor Code of Conduct](https://svglite.r-lib.org/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.

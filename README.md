@@ -62,8 +62,8 @@ bench::mark(svglite_test(), svg_test(), min_iterations = 250, check = FALSE)
 #> # A tibble: 2 × 6
 #>   expression          min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 svglite_test()   2.08ms   2.23ms      438.     691KB    7.13 
-#> 2 svg_test()       6.07ms   6.26ms      159.     179KB    0.638
+#> 1 svglite_test()   1.47ms   1.53ms      648.     587KB    6.15 
+#> 2 svg_test()       6.19ms   6.42ms      155.     192KB    0.623
 ```
 
 ### File size
@@ -78,7 +78,7 @@ fs::file_size(tmp1)
 
 # svg
 fs::file_size(tmp2)
-#> 321K
+#> 327K
 ```
 
 In both cases, compressing to make `.svgz` (gzipped svg) is worthwhile.
@@ -93,7 +93,7 @@ invisible(dev.off())
 
 # svglite - svgz
 fs::file_size(tmp3)
-#> 9.42K
+#> 9.45K
 ```
 
 ### Editability
@@ -119,6 +119,30 @@ numerics) this will be correctly encoded in the style block. systemfonts
 also allows you to embed webfont `@imports` in your file to ensure that
 the file looks as expected even on systems without the used font
 installed.
+
+## Building svglite
+
+*This section is only relevant for building svglite from scratch, as
+opposed to installing from a pre-built package on CRAN.*
+
+Building vdiffr requires the system dependency libpng. As vdiffr doesn’t
+have any build-time configuration, your R configuration must point to
+libpng’s `include` and `lib` folders.
+
+For instance on macOS, install libpng with:
+
+``` sh
+brew install libpng
+```
+
+And make sure your `~/.R/Makevars` knows about Homebrew’s `include` and
+`lib` folders where libpng should now be installed. On arm64 hardware,
+this would be:
+
+``` mk
+CPPFLAGS += -I/opt/homebrew/include
+LDFLAGS += -L/opt/homebrew/lib
+```
 
 ## Code of Conduct
 
