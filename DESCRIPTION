@@ -39,7 +39,7 @@ Suggests:
 LinkingTo:
     cpp11,
     systemfonts
-VignetteBuilder: 
+VignetteBuilder:
     knitr
 Config/Needs/website: tidyverse/tidytemplate
 Encoding: UTF-8
@@ -48,3 +48,4 @@ RoxygenNote: 7.2.3
 SystemRequirements: libpng
 Config/testthat/edition: 3
 Config/build/compilation-database: true
+Config/usethis/last-upkeep: 2024-10-23
