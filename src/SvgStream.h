@@ -2,6 +2,7 @@
 
 #include <fstream>
 #include <sstream>
+#include <iomanip>
 #include <cpp11/protect.hpp>
 #include <cpp11/environment.hpp>
 #include <cpp11/strings.hpp>
