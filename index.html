@@ -119,8 +119,8 @@
 <span><span class="co">#&gt; # A tibble: 2 × 6</span></span>
 <span><span class="co">#&gt;   expression          min   median `itr/sec` mem_alloc `gc/sec`</span></span>
 <span><span class="co">#&gt;   &lt;bch:expr&gt;     &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 svglite_test()   2.08ms   2.23ms      438.     691KB    7.13 </span></span>
-<span><span class="co">#&gt; 2 svg_test()       6.07ms   6.26ms      159.     179KB    0.638</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 svglite_test()   1.47ms   1.53ms      648.     587KB    6.15 </span></span>
+<span><span class="co">#&gt; 2 svg_test()       6.19ms   6.42ms      155.     192KB    0.623</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="file-size">File size<a class="anchor" aria-label="anchor" href="#file-size"></a>
@@ -133,7 +133,7 @@
 <span></span>
 <span><span class="co"># svg</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 321K</span></span></code></pre></div>
+<span><span class="co">#&gt; 327K</span></span></code></pre></div>
 <p>In both cases, compressing to make <code>.svgz</code> (gzipped svg) is worthwhile. svglite supports compressed output directly which will be triggered if the provided path has a <code>".svgz"</code> (or <code>".svg.gz"</code>) extension.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tmp3</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".svgz"</span><span class="op">)</span></span>
@@ -143,7 +143,7 @@
 <span></span>
 <span><span class="co"># svglite - svgz</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp3</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 9.42K</span></span></code></pre></div>
+<span><span class="co">#&gt; 9.45K</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="editability">Editability<a class="anchor" aria-label="anchor" href="#editability"></a>
@@ -155,6 +155,17 @@
 </h3>
 <p>svglite uses systemfonts for font discovery which means that all installed fonts on your system is available to use. The systemfonts foundation means that fonts registered with <code><a href="https://systemfonts.r-lib.org/reference/register_font.html" class="external-link">register_font()</a></code> or <code><a href="https://systemfonts.r-lib.org/reference/register_variant.html" class="external-link">register_variant()</a></code> will also be available. If any of these contains non-standard weights or OpenType features (e.g. ligatures or tabular numerics) this will be correctly encoded in the style block. systemfonts also allows you to embed webfont <code>@imports</code> in your file to ensure that the file looks as expected even on systems without the used font installed.</p>
 </div>
+</div>
+<div class="section level2">
+<h2 id="building-svglite">Building svglite<a class="anchor" aria-label="anchor" href="#building-svglite"></a>
+</h2>
+<p><em>This section is only relevant for building svglite from scratch, as opposed to installing from a pre-built package on CRAN.</em></p>
+<p>Building vdiffr requires the system dependency libpng. As vdiffr doesn’t have any build-time configuration, your R configuration must point to libpng’s <code>include</code> and <code>lib</code> folders.</p>
+<p>For instance on macOS, install libpng with:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="ex">brew</span> install libpng</span></code></pre></div>
+<p>And make sure your <code>~/.R/Makevars</code> knows about Homebrew’s <code>include</code> and <code>lib</code> folders where libpng should now be installed. On arm64 hardware, this would be:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode mk"><code class="sourceCode makefile"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="dt">CPPFLAGS</span> <span class="ch">+=</span><span class="st"> -I/opt/homebrew/include</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="dt">LDFLAGS</span> <span class="ch">+=</span><span class="st"> -L/opt/homebrew/lib</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
