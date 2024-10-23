@@ -114,9 +114,10 @@ validate_user_alias <- function(default_name, family) {
 #' `web_fonts` argument in [svglite()] and [svgstring()] functions.
 #'
 #' @param family The font family name this font should respond to.
-#' @param woff2,woff,ttf,otf,eot,svg URLs to the font in different formats. At
+#' @param woff2,woff,ttf,otf URLs to the font in different formats. At
 #'   least one must be given. Best browser support is provided by the woff
 #'   format.
+#' @param eot,svg Deprecated
 #' @param local One or more font names that local installations of the font may
 #'   have. If a local font is found with either of the given names it will be
 #'   used and no download will happen.
@@ -145,20 +146,50 @@ validate_user_alias <- function(default_name, family) {
 font_face <- function(family, woff2 = NULL, woff = NULL, ttf = NULL, otf = NULL,
                       eot = NULL, svg = NULL, local = NULL, weight = NULL,
                       style = NULL, range = NULL, variant = NULL, stretch = NULL,
-                      feature_setting = NULL, variation_setting = NULL) {
-  sources <- c(
-    if (!is.null(local)) paste0('local("', local, '")'),
-    if (!is.null(woff2)) paste0('url("', woff2, '") format("woff2")'),
-    if (!is.null(woff)) paste0('url("', woff, '") format("woff")'),
-    if (!is.null(otf)) paste0('url("', otf, '") format("opentype")'),
-    if (!is.null(ttf)) paste0('url("', ttf, '") format("truetype")'),
-    if (!is.null(eot)) paste0('url("', eot, '") format("embedded-opentype")'),
-    if (!is.null(svg)) paste0('url("', svg, '") format("woff")')
+                      feature_setting = NULL, variation_setting = NULL, embed = FALSE) {
+  if (!is.null(eot)) {
+    stop("`eot` has been deprecated due to poor viewer support", call. = FALSE)
+  }
+  if (!is.null(svg)) {
+    stop("`svg` has been deprecated due to poor viewer support", call. = FALSE)
+  }
+  type <- c("local", "woff2", "woff", "otf", "ttf")[lengths(list(local, woff2, woff, otf, ttf)) != 0][1]
+
+  sources <- switch(type,
+    local = paste0('local("', local, '")'),
+    woff2 = paste0('url("', woff2, '") format("woff2")'),
+    woff = paste0('url("', woff, '") format("woff")'),
+    otf = paste0('url("', otf, '") format("opentype")'),
+    ttf = paste0('url("', ttf, '") format("truetype")')
   )
   if (length(sources) == 0) {
     stop("At least one font source must be given")
   }
 
+  if (embed) {
+    ext <- type
+    if (ext == "local") {
+      ext <- tolower(tools::file_ext(local))
+      if (!ext %in% c("woff2", "woff", "otf", "ttf")) {
+        stop(paste0("Unsupported file type for embedding: ", ext))
+      }
+    }
+    mime <- switch(ext,
+      woff2 = "font/woff2",
+      woff = "font/woff",
+      otf = "font/otf",
+      ttf = "font/ttf"
+    )
+    sources <- switch(type,
+      local = paste0('local("', local, '")'),
+      woff2 = paste0('url("', woff2, '") format("woff2")'),
+      woff = paste0('url("', woff, '") format("woff")'),
+      otf = paste0('url("', otf, '") format("opentype")'),
+      ttf = paste0('url("', ttf, '") format("truetype")'),
+      eot = paste0('url("', eot, '") format("embedded-opentype")'),
+      svg = paste0('url("', svg, '") format("woff")')
+    )
+  }
   x <- c(
     '    @font-face {\n',
     '      font-family: "', family, '";\n',
