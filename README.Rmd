@@ -4,7 +4,8 @@ output: github_document
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-```{r, include = FALSE}
+```{r}
+#| include: false
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -28,7 +29,8 @@ svglite is a graphics device that produces clean svg output, suitable for use on
 
 svglite is available on CRAN using `install.packages("svglite")`. You can install the development version from github with:
 
-```{r, eval=FALSE}
+```{r}
+#| eval: false
 # install.packages("pak")
 pak::pak("r-lib/svglite")
 ```
@@ -41,7 +43,8 @@ The grDevices package bundled with R already comes with an SVG device (using the
 
 `svglite()` is considerably faster than `svg()`. If you are rendering SVGs dynamically to serve over the web this can be quite important:
 
-```{r, message=FALSE}
+```{r}
+#| message: false
 library(svglite)
 
 x <- runif(1e3)

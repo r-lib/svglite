@@ -3,7 +3,6 @@
 \docType{package}
 \name{svglite-package}
 \alias{svglite-package}
-\alias{_PACKAGE}
 \title{svglite: An 'SVG' Graphics Device}
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}

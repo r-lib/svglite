@@ -84,7 +84,7 @@ svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
     filename <- file
   }
   if (invalid_filename(filename)) {
-    stop("invalid 'file': ", filename)
+    cli::cli_abort("{.arg filename} does not provide a valid name ({.val {filename}}): ")
   }
   aliases <- validate_aliases(system_fonts, user_fonts)
   web_fonts <- validate_web_fonts(web_fonts)

@@ -8,7 +8,9 @@ vignette: >
   \usepackage[utf8]{inputenc}
 ---
 
-```{r, echo = FALSE, message = FALSE}
+```{r}
+#| echo: false
+#| message: false
 knitr::opts_chunk$set(collapse = T, comment = "#>")
 library("svglite")
 ```
@@ -48,7 +50,8 @@ control over which fonts to use during SVG generation and rendering.
 names typically correspond to standard R faces but they can also alias
 non-standard families (though this is less useful):
 
-```{r, eval=FALSE}
+```{r}
+#| eval: false
 fonts <- list(
   sans = "Helvetica",
   mono = "Consolas",
@@ -69,7 +72,8 @@ coverage that is available on macOS and Windows systems (on the
 latter, only if MS Office is installed). Note that this font does not
 support kerning and has no bold or italic faces.
 
-```{r, eval=FALSE}
+```{r}
+#| eval: false
 svglite("Rplots.svg", system_fonts = list(sans = "Arial Unicode MS"))
 plot.new()
 text(0.5, 0.5, "正規分布")
@@ -97,7 +101,8 @@ list of families as argument, `user_fonts` takes a named tree of lists
 of families (`sans`, `serif`, `mono` and `symbol`) and faces (`plain`,
 `italic`, `bold`, `bolditalic`, `symbol`):
 
-```{r, eval=FALSE}
+```{r}
+#| eval: false
 # Using ttf files from fontquiver here, but it could be any ttf
 some_file <- fontquiver::font("Liberation", "Sans", "Regular")$ttf
 other_file <- fontquiver::font("Liberation", "Sans", "Italic")$ttf
@@ -125,7 +130,8 @@ You can also control which font gets written in the `font-family`
 fields of SVGs by supplying a list containing `alias` and `file`
 elements:
 
-```{r, eval=FALSE}
+```{r}
+#| eval: false
 file_with_alias <- list(alias = "Foobar Font", file = other_file)
 fonts <- list(sans = list(plain = file_with_alias))
 
@@ -145,7 +151,8 @@ provides Symbola for the symbol font. The function
 `fontquiver::font_families()` produces a list with the appropriate
 structure and can be directly supplied to svglite:
 
-```{r, eval=FALSE}
+```{r}
+#| eval: false
 fonts <- fontquiver::font_families("Liberation")
 fonts$symbol$symbol <- fontquiver::font_symbol("Symbola")
 str(fonts, 2)

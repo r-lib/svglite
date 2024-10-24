@@ -21,7 +21,7 @@ test_that("intermediate outputs are always valid svg if always_valid=TRUE", {
   svglite(path, always_valid = TRUE)
 
   expect_valid_svg <- function() {
-    expect_error(xml2::read_xml(path), NA)
+    expect_no_error(xml2::read_xml(path))
   }
 
   mini_plot(1:10)
