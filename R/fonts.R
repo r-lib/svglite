@@ -68,8 +68,8 @@ validate_user_alias <- function(default_name, family) {
     cli::cli_abort("{.arg family} must can only include elements named {r_font_faces}")
   }
 
-  is_alias_object <- vapply_lgl(family, is_user_alias)
-  is_alias_plain <- vapply_lgl(family, is_scalar_character)
+  is_alias_object <- vapply(family, is_user_alias, logical(1))
+  is_alias_plain <- vapply(family, is_scalar_character, logical(1))
 
   is_valid_alias <- is_alias_object | is_alias_plain
   if (any(!is_valid_alias)) {
@@ -84,7 +84,7 @@ validate_user_alias <- function(default_name, family) {
     obj$file %||% obj$ttf
   })
 
-  file_exists <- vapply_lgl(files, file.exists)
+  file_exists <- vapply(files, file.exists, logical(1))
   if (any(!file_exists)) {
     missing <- unlist(files)[!file_exists]
     cli::cli_abort("Could not find the following font file{?s}: {missing}")
