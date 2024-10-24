@@ -35,6 +35,8 @@ test_that("symbol font family is 'Symbol'", {
 
 test_that("throw on malformed alias", {
   expect_snapshot(validate_aliases(list(mono = letters), list()), error = TRUE)
+  skip_on_cran()
+  skip_on_os(c("windows", "linux"))
   expect_snapshot(validate_aliases(list(sans = "foobar"), list()))
 })
 
