@@ -34,8 +34,8 @@ test_that("symbol font family is 'Symbol'", {
 })
 
 test_that("throw on malformed alias", {
-  expect_error(validate_aliases(list(mono = letters), list()), "must be scalar")
-  expect_warning(validate_aliases(list(sans = "foobar"), list()), "not found")
+  expect_snapshot(validate_aliases(list(mono = letters), list()), error = TRUE)
+  expect_snapshot(validate_aliases(list(sans = "foobar"), list()))
 })
 
 test_that("fonts are aliased", {

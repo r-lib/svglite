@@ -32,7 +32,9 @@ validate_aliases <- function(system_fonts, user_fonts) {
 
   aliases <- c(names(system_fonts), names(user_fonts))
   if (any(duplicated(aliases))) {
-    stop("Cannot supply both system and font alias", call. = FALSE)
+    cli::cli_abort(c("Cannot provided multiple fonts with the same alias",
+      i = "Problematic aliases: {unique(aliases[duplicated(aliases)])}"
+    ))
   }
 
   # Add missing system fonts for base families
@@ -46,17 +48,11 @@ validate_aliases <- function(system_fonts, user_fonts) {
 }
 
 validate_system_alias <- function(alias) {
-  if (!is_scalar_character(alias)) {
-    stop("System fonts must be scalar character vector", call. = FALSE)
-  }
+  check_string(alias, allow_empty = FALSE)
 
   matched <- match_family(alias)
   if (alias != matched) {
-    warning(
-      call. = FALSE,
-      "System font `", alias, "` not found. ",
-      "Closest match: `", matched, "`"
-    )
+    cli::cli_warn("System font {.val {alias}} not found.  Closest match is {.val {matched}}")
   }
   matched
 }
@@ -69,9 +65,7 @@ is_user_alias <- function(x) {
 
 validate_user_alias <- function(default_name, family) {
   if (!all(names(family) %in% r_font_faces)) {
-    stop("Faces must contain only: `plain`, `bold`, `italic`, `bolditalic`, `symbol`",
-      call. = FALSE
-    )
+    cli::cli_abort("{.arg family} must can only include elements named {r_font_faces}")
   }
 
   is_alias_object <- vapply_lgl(family, is_user_alias)
@@ -79,11 +73,7 @@ validate_user_alias <- function(default_name, family) {
 
   is_valid_alias <- is_alias_object | is_alias_plain
   if (any(!is_valid_alias)) {
-    stop(
-      call. = FALSE,
-      "The following faces are invalid for `", default_name, "`: ",
-      paste0(names(family)[!is_valid_alias], collapse = ", ")
-    )
+    cli::cli_abort("The following faces are invalid for {.val {default_name}}: {.val {names(family)[!is_valid_alias]}}")
   }
 
   names <- ifelse(is_alias_plain, default_name, family)
@@ -97,11 +87,7 @@ validate_user_alias <- function(default_name, family) {
   file_exists <- vapply_lgl(files, file.exists)
   if (any(!file_exists)) {
     missing <- unlist(files)[!file_exists]
-    stop(
-      call. = FALSE,
-      "Could not find font file: ",
-      paste0(missing, collapse = ", ")
-    )
+    cli::cli_abort("Could not find the following font file{?s}: {missing}")
   }
 
   zip(list(name = names, file = files))
@@ -156,7 +142,7 @@ font_face <- function(family, woff2 = NULL, woff = NULL, ttf = NULL, otf = NULL,
     if (!is.null(svg)) paste0('url("', svg, '") format("woff")')
   )
   if (length(sources) == 0) {
-    stop("At least one font source must be given")
+    cli::cli_abort("At least one font source must be given")
   }
 
   x <- c(

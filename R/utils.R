@@ -12,7 +12,7 @@ plot_dim <- function(dim = c(NA, NA)) {
     dim[is.na(dim)] <- default_dim[is.na(dim)]
     dim_f <- prettyNum(dim, digits = 3)
 
-    message("Saving ", dim_f[1], "\" x ", dim_f[2], "\" image")
+    cli::cli_inform("Saving {dim_f[1]}\" x {dim_f[2]}\" image")
   }
 
   dim
@@ -36,9 +36,6 @@ keep <- function(.x, .p, ...) {
 }
 compact <- function(x) {
   Filter(length, x)
-}
-`%||%` <- function(x, y) {
-  if (is.null(x)) y else x
 }
 is_scalar_character <- function(x) {
   is.character(x) && length(x) == 1
