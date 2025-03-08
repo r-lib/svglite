@@ -1333,6 +1333,23 @@ void svg_release_mask(SEXP ref, pDevDesc dd) {
   }
 }
 
+// Adapts stubs from `grDevices/src/devPS.c` as recommended by Paul Murrell
+// They quietly do nothing (without even a warning) but their existence
+// seems to prevent segfaults when users try to use these new features
+SEXP svg_define_group(SEXP source, int op, SEXP destination, pDevDesc dd) {
+    return R_NilValue;
+}
+
+void svg_use_group(SEXP ref, SEXP trans, pDevDesc dd) {}
+
+void svg_release_group(SEXP ref, pDevDesc dd) {}
+
+void svg_stroke(SEXP path, const pGEcontext gc, pDevDesc dd) {}
+
+void svg_fill(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {}
+
+void svg_fill_stroke(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {}
+
 SEXP svg_capabilities(SEXP capabilities) {
 #if R_GE_version >= 15
   // Pattern support
@@ -1438,6 +1455,11 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
 
   // Capabilities
 #if R_GE_version >= 15
+  dd->defineGroup = svg_define_group;
+  dd->useGroup = svg_use_group;
+  dd->releaseGroup = svg_release_group;
+  dd->stroke = svg_stroke;
+  dd->fillStroke = svg_fill_stroke;
   dd->capabilities = svg_capabilities;
 #endif
   dd->canClip = TRUE;
