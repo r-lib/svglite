@@ -1459,6 +1459,7 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->useGroup = svg_use_group;
   dd->releaseGroup = svg_release_group;
   dd->stroke = svg_stroke;
+  dd->fill = svg_fill;
   dd->fillStroke = svg_fill_stroke;
   dd->capabilities = svg_capabilities;
 #endif
