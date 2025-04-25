@@ -52,8 +52,8 @@ jobs:
           use-public-rspm: true
 
       - uses: r-hub/actions/setup-r-sysreqs@v1
-         with:
-           type: minimal
+        with:
+          type: minimal
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
