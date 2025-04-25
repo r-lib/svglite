@@ -10,6 +10,8 @@
 coverage](https://codecov.io/gh/r-lib/svglite/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r-lib/svglite?branch=main)
 [![CRAN Status
 Badge](http://www.r-pkg.org/badges/version/svglite)](https://cran.r-project.org/package=svglite)
+[![Codecov test
+coverage](https://codecov.io/gh/r-lib/svglite/graph/badge.svg)](https://app.codecov.io/gh/r-lib/svglite)
 <!-- badges: end -->
 
 svglite is a graphics device that produces clean svg output, suitable
@@ -62,8 +64,8 @@ bench::mark(svglite_test(), svg_test(), min_iterations = 250, check = FALSE)
 #> # A tibble: 2 × 6
 #>   expression          min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 svglite_test()   1.46ms   1.78ms      393.     577KB    3.17 
-#> 2 svg_test()       6.24ms   6.56ms      148.     192KB    0.593
+#> 1 svglite_test()   1.85ms   1.93ms      514.     610KB     4.06
+#> 2 svg_test()       6.19ms   6.31ms      158.     224KB     0
 ```
 
 ### File size
@@ -93,7 +95,7 @@ invisible(dev.off())
 
 # svglite - svgz
 fs::file_size(tmp3)
-#> 9.44K
+#> 9.43K
 ```
 
 ### Editability
