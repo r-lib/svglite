@@ -1282,7 +1282,15 @@ SEXP svg_set_mask(SEXP path, SEXP ref, pDevDesc dd) {
     svgd->set_clipping(false);
 
     (*stream) << "<defs>\n";
+#if R_GE_version >= 15
+    if (R_GE_maskType(path) == R_GE_alphaMask) {
+        (*stream) << "  <mask id='mask-" << key << "' style='mask-type:alpha'>\n";
+    } else {
+        (*stream) << "  <mask id='mask-" << key << "' style='mask-type:luminance'>\n";
+    }
+#else
     (*stream) << "  <mask id='mask-" << key << "' style='mask-type:alpha'>\n";
+#endif
 
     SEXP R_fcall = PROTECT(Rf_lang1(path));
     Rf_eval(R_fcall, R_GlobalEnv);
