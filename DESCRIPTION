@@ -17,7 +17,8 @@ Authors@R: c(
            comment = "Improved styles; polypath implementation"),
     person("Håkon", "Malmedal", role = "ctb",
            comment = "Opacity code"),
-    person("Posit, PBC", role = c("cph", "fnd"))
+    person("Posit Software, PBC", role = c("cph", "fnd"),
+           comment = c(ROR = "03wc8by49"))
   )
 Description: A graphics device for R that produces 'Scalable Vector
     Graphics'. 'svglite' is a fork of the older 'RSvgDevice' package.
