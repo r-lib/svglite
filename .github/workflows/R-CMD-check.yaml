@@ -8,7 +8,6 @@ on:
   push:
     branches: [main, master]
   pull_request:
-    branches: [main, master]
 
 name: R-CMD-check.yaml
 
@@ -51,10 +50,6 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
-
-      - uses: r-hub/actions/setup-r-sysreqs@v1
-        with:
-          type: minimal
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
