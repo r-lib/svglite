@@ -2,6 +2,7 @@
 
 * Added support for luminance masking (#174)
 * Fixed a bug in calculating text widths when using font features (#175)
+* Added support for path stroking and filling (#174)
 
 # svglite 2.1.3
 

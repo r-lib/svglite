@@ -1352,11 +1352,125 @@ void svg_use_group(SEXP ref, SEXP trans, pDevDesc dd) {}
 
 void svg_release_group(SEXP ref, pDevDesc dd) {}
 
-void svg_stroke(SEXP path, const pGEcontext gc, pDevDesc dd) {}
+void svg_stroke(SEXP path, const pGEcontext gc, pDevDesc dd) {
+  if (Rf_isNull(path)) {
+    return;
+  }
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-void svg_fill(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {}
+  SvgStreamPtr stream = svgd->stream;
 
-void svg_fill_stroke(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {}
+  // Create path data
+  if (!svgd->is_recording_clip) {
+    (*stream) << "<path d='";
+  }
+
+  // Reusing the clip flag for this because it essentially does the same
+  bool tmp_rec_clip = svgd->is_recording_clip;
+  svgd->is_recording_clip = true;
+
+  SEXP R_fcall = PROTECT(Rf_lang1(path));
+  Rf_eval(R_fcall, R_GlobalEnv);
+  UNPROTECT(1);
+
+  svgd->is_recording_clip = tmp_rec_clip;
+
+  if (svgd->is_recording_clip) {
+    return;
+  }
+
+  (*stream) << "'";
+
+  write_attr_mask(stream, svgd->current_mask);
+  write_style_begin(stream);
+  write_style_linetype(stream, gc, svgd->scaling, true);
+  write_style_end(stream);
+
+  (*stream) << " />\n";
+  stream->flush();
+}
+
+void svg_fill(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
+  if (Rf_isNull(path)) {
+    return;
+  }
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+
+  SvgStreamPtr stream = svgd->stream;
+
+  // Create path data
+  if (!svgd->is_recording_clip) {
+    (*stream) << "<path d='";
+  }
+
+  // Reusing the clip flag for this because it essentially does the same
+  bool tmp_rec_clip = svgd->is_recording_clip;
+  svgd->is_recording_clip = true;
+
+  SEXP R_fcall = PROTECT(Rf_lang1(path));
+  Rf_eval(R_fcall, R_GlobalEnv);
+  UNPROTECT(1);
+
+  svgd->is_recording_clip = tmp_rec_clip;
+
+  if (svgd->is_recording_clip) {
+    return;
+  }
+
+  (*stream) << "'";
+
+  write_attr_mask(stream, svgd->current_mask);
+  write_style_begin(stream);
+  // Specify fill rule
+  write_style_str(stream, "fill-rule", rule == R_GE_nonZeroWindingRule ? "nonzero" : "evenodd", true);
+  write_style_fill(stream, gc);
+  write_style_str(stream, "stroke", "none");
+  write_style_end(stream);
+
+  (*stream) << " />\n";
+  stream->flush();
+}
+
+void svg_fill_stroke(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
+  if (Rf_isNull(path)) {
+    return;
+  }
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+
+  SvgStreamPtr stream = svgd->stream;
+
+  // Create path data
+  if (!svgd->is_recording_clip) {
+    (*stream) << "<path d='";
+  }
+
+  // Reusing the clip flag for this because it essentially does the same
+  bool tmp_rec_clip = svgd->is_recording_clip;
+  svgd->is_recording_clip = true;
+
+  SEXP R_fcall = PROTECT(Rf_lang1(path));
+  Rf_eval(R_fcall, R_GlobalEnv);
+  UNPROTECT(1);
+
+  svgd->is_recording_clip = tmp_rec_clip;
+
+  if (svgd->is_recording_clip) {
+    return;
+  }
+
+  (*stream) << "'";
+
+  write_attr_mask(stream, svgd->current_mask);
+  write_style_begin(stream);
+  // Specify fill rule
+  write_style_str(stream, "fill-rule", rule == R_GE_nonZeroWindingRule ? "nonzero" : "evenodd", true);
+  write_style_fill(stream, gc);
+  write_style_linetype(stream, gc, svgd->scaling);
+  write_style_end(stream);
+
+  (*stream) << " />\n";
+  stream->flush();
+}
 
 SEXP svg_capabilities(SEXP capabilities) {
 #if R_GE_version >= 15
@@ -1385,7 +1499,7 @@ SEXP svg_capabilities(SEXP capabilities) {
   SET_VECTOR_ELT(capabilities, R_GE_capability_transformations, Rf_ScalarInteger(0));
 
   // Path stroking and filling
-  SET_VECTOR_ELT(capabilities, R_GE_capability_paths, Rf_ScalarInteger(0));
+  SET_VECTOR_ELT(capabilities, R_GE_capability_paths, Rf_ScalarInteger(1));
 
 #endif
   return capabilities;
