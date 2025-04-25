@@ -1448,7 +1448,8 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->canChangeGamma = FALSE;
   dd->displayListOn = FALSE;
   dd->haveTransparency = 2;
-  dd->haveTransparentBg = 2;
+  dd->haveRaster = 2;
+  dd->haveTransparentBg = 3; /* background can be semi-transparent */
 
 #if R_GE_version >= 13
   dd->deviceVersion = 15; //R_GE_group;
