@@ -1,4 +1,3 @@
-
 r_font_families <- c("sans", "serif", "mono", "symbol")
 r_font_faces <- c("plain", "bold", "italic", "bolditalic", "symbol")
 
@@ -32,14 +31,18 @@ validate_aliases <- function(system_fonts, user_fonts) {
 
   aliases <- c(names(system_fonts), names(user_fonts))
   if (any(duplicated(aliases))) {
-    cli::cli_abort(c("Cannot provided multiple fonts with the same alias",
+    cli::cli_abort(c(
+      "Cannot provided multiple fonts with the same alias",
       i = "Problematic aliases: {unique(aliases[duplicated(aliases)])}"
     ))
   }
 
   # Add missing system fonts for base families
   missing_aliases <- setdiff(r_font_families, aliases)
-  system_fonts[missing_aliases] <- lapply(alias_lookup()[missing_aliases], match_family)
+  system_fonts[missing_aliases] <- lapply(
+    alias_lookup()[missing_aliases],
+    match_family
+  )
 
   list(
     system = system_fonts,
@@ -52,7 +55,9 @@ validate_system_alias <- function(alias) {
 
   matched <- match_family(alias)
   if (alias != matched) {
-    cli::cli_warn("System font {.val {alias}} not found.  Closest match is {.val {matched}}")
+    cli::cli_warn(
+      "System font {.val {alias}} not found.  Closest match is {.val {matched}}"
+    )
   }
   matched
 }
@@ -65,7 +70,9 @@ is_user_alias <- function(x) {
 
 validate_user_alias <- function(default_name, family) {
   if (!all(names(family) %in% r_font_faces)) {
-    cli::cli_abort("{.arg family} must can only include elements named {r_font_faces}")
+    cli::cli_abort(
+      "{.arg family} must can only include elements named {r_font_faces}"
+    )
   }
 
   is_alias_object <- vapply(family, is_user_alias, logical(1))
@@ -73,7 +80,9 @@ validate_user_alias <- function(default_name, family) {
 
   is_valid_alias <- is_alias_object | is_alias_plain
   if (any(!is_valid_alias)) {
-    cli::cli_abort("The following faces are invalid for {.val {default_name}}: {.val {names(family)[!is_valid_alias]}}")
+    cli::cli_abort(
+      "The following faces are invalid for {.val {default_name}}: {.val {names(family)[!is_valid_alias]}}"
+    )
   }
 
   names <- ifelse(is_alias_plain, default_name, family)
@@ -128,10 +137,23 @@ validate_user_alias <- function(default_name, family) {
 #'   weight = "bold"
 #' )
 #'
-font_face <- function(family, woff2 = NULL, woff = NULL, ttf = NULL, otf = NULL,
-                      eot = NULL, svg = NULL, local = NULL, weight = NULL,
-                      style = NULL, range = NULL, variant = NULL, stretch = NULL,
-                      feature_setting = NULL, variation_setting = NULL) {
+font_face <- function(
+  family,
+  woff2 = NULL,
+  woff = NULL,
+  ttf = NULL,
+  otf = NULL,
+  eot = NULL,
+  svg = NULL,
+  local = NULL,
+  weight = NULL,
+  style = NULL,
+  range = NULL,
+  variant = NULL,
+  stretch = NULL,
+  feature_setting = NULL,
+  variation_setting = NULL
+) {
   sources <- c(
     if (!is.null(local)) paste0('local("', local, '")'),
     if (!is.null(woff2)) paste0('url("', woff2, '") format("woff2")'),
@@ -145,6 +167,7 @@ font_face <- function(family, woff2 = NULL, woff = NULL, ttf = NULL, otf = NULL,
     cli::cli_abort("At least one font source must be given")
   }
 
+  # fmt: skip
   x <- c(
     '    @font-face {\n',
     '      font-family: "', family, '";\n',
@@ -180,8 +203,15 @@ validate_web_fonts <- function(x) {
   if (length(x) == 0) {
     return("")
   }
-  paste0(paste(
-    ifelse(vapply(x, is_font_face, logical(1)), x, paste0('    @import url("', x, '");')),
-    collapse = "\n"
-  ), "\n")
+  paste0(
+    paste(
+      ifelse(
+        vapply(x, is_font_face, logical(1)),
+        x,
+        paste0('    @import url("', x, '");')
+      ),
+      collapse = "\n"
+    ),
+    "\n"
+  )
 }

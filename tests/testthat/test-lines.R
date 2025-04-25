@@ -15,7 +15,10 @@ test_that("lines don't have fill", {
     plot.new()
     lines(c(0.5, 1, 0.5), c(0.5, 1, 1))
   })
-  expect_equal(style_attr(xml_find_first(x, ".//polyline"), "fill"), NA_character_)
+  expect_equal(
+    style_attr(xml_find_first(x, ".//polyline"), "fill"),
+    NA_character_
+  )
 })
 
 test_that("polygons do have fill", {
@@ -56,7 +59,7 @@ test_that("lines lty becomes stroke-dasharray", {
 
 test_that("stroke-dasharray scales with lwd > 1", {
   expect_equal(dash_array(lty = 2, lwd = 1), c(4, 4))
-  expect_equal(dash_array(lty = 2, lwd = 1/2), c(4, 4))
+  expect_equal(dash_array(lty = 2, lwd = 1 / 2), c(4, 4))
   expect_equal(dash_array(lty = 2, lwd = 1.1), c(4.4, 4.4))
   expect_equal(dash_array(lty = 2, lwd = 2), c(8, 8))
 })
@@ -76,9 +79,18 @@ test_that("line end shapes", {
   })
   style <- xml_text(xml_find_first(x1, "//style"))
   expect_match(style, "stroke-linecap: round;")
-  expect_equal(style_attr(xml_find_first(x1, ".//polyline"), "stroke-linecap"), NA_character_)
-  expect_equal(style_attr(xml_find_first(x2, ".//polyline"), "stroke-linecap"), "butt")
-  expect_equal(style_attr(xml_find_first(x3, ".//polyline"), "stroke-linecap"), "square")
+  expect_equal(
+    style_attr(xml_find_first(x1, ".//polyline"), "stroke-linecap"),
+    NA_character_
+  )
+  expect_equal(
+    style_attr(xml_find_first(x2, ".//polyline"), "stroke-linecap"),
+    "butt"
+  )
+  expect_equal(
+    style_attr(xml_find_first(x3, ".//polyline"), "stroke-linecap"),
+    "square"
+  )
 })
 
 test_that("line join shapes", {
@@ -88,11 +100,23 @@ test_that("line join shapes", {
   })
   x2 <- xmlSVG({
     plot.new()
-    lines(c(0.3, 0.5, 0.7), c(0.1, 0.9, 0.1), lwd = 15, ljoin = "mitre", lmitre = 10)
+    lines(
+      c(0.3, 0.5, 0.7),
+      c(0.1, 0.9, 0.1),
+      lwd = 15,
+      ljoin = "mitre",
+      lmitre = 10
+    )
   })
   x3 <- xmlSVG({
     plot.new()
-    lines(c(0.3, 0.5, 0.7), c(0.1, 0.9, 0.1), lwd = 15, ljoin = "mitre", lmitre = 4)
+    lines(
+      c(0.3, 0.5, 0.7),
+      c(0.1, 0.9, 0.1),
+      lwd = 15,
+      ljoin = "mitre",
+      lmitre = 4
+    )
   })
   x4 <- xmlSVG({
     plot.new()
@@ -101,10 +125,28 @@ test_that("line join shapes", {
   style <- xml_text(xml_find_first(x1, "//style"))
   expect_match(style, "stroke-linejoin: round;")
   expect_match(style, "stroke-miterlimit: 10.00;")
-  expect_equal(style_attr(xml_find_all(x1, ".//polyline"), "stroke-linejoin"), NA_character_)
-  expect_equal(style_attr(xml_find_all(x2, ".//polyline"), "stroke-linejoin"), "miter")
-  expect_equal(style_attr(xml_find_all(x2, ".//polyline"), "stroke-miterlimit"), NA_character_)
-  expect_equal(style_attr(xml_find_all(x3, ".//polyline"), "stroke-linejoin"), "miter")
-  expect_equal(style_attr(xml_find_all(x3, ".//polyline"), "stroke-miterlimit"), "4.00")
-  expect_equal(style_attr(xml_find_all(x4, ".//polyline"), "stroke-linejoin"), "bevel")
+  expect_equal(
+    style_attr(xml_find_all(x1, ".//polyline"), "stroke-linejoin"),
+    NA_character_
+  )
+  expect_equal(
+    style_attr(xml_find_all(x2, ".//polyline"), "stroke-linejoin"),
+    "miter"
+  )
+  expect_equal(
+    style_attr(xml_find_all(x2, ".//polyline"), "stroke-miterlimit"),
+    NA_character_
+  )
+  expect_equal(
+    style_attr(xml_find_all(x3, ".//polyline"), "stroke-linejoin"),
+    "miter"
+  )
+  expect_equal(
+    style_attr(xml_find_all(x3, ".//polyline"), "stroke-miterlimit"),
+    "4.00"
+  )
+  expect_equal(
+    style_attr(xml_find_all(x4, ".//polyline"), "stroke-linejoin"),
+    "bevel"
+  )
 })

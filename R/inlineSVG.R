@@ -35,7 +35,9 @@ htmlSVG <- function(code, ...) {
 #'   xml_find_all(x, ".//text")
 #' }
 xmlSVG <- function(code, ..., standalone = FALSE, height = 7, width = 7) {
-  plot <- inlineSVG(code, ...,
+  plot <- inlineSVG(
+    code,
+    ...,
     standalone = standalone,
     height = height,
     width = width
@@ -61,9 +63,7 @@ editSVG <- function(code, ..., width = NA, height = NA) {
 
   tmp <- tempfile(fileext = ".svg")
   svglite(tmp, width = dim[1], height = dim[2], ...)
-  tryCatch(code,
-    finally = grDevices::dev.off()
-  )
+  tryCatch(code, finally = grDevices::dev.off())
 
   system(sprintf("open %s", shQuote(tmp)))
 }
@@ -87,9 +87,7 @@ inlineSVG <- function(code, ..., width = NA, height = NA) {
   dim <- plot_dim(c(width, height))
 
   svg <- svgstring(width = dim[1], height = dim[2], ...)
-  tryCatch(code,
-    finally = grDevices::dev.off()
-  )
+  tryCatch(code, finally = grDevices::dev.off())
 
   out <- svg()
   class(out) <- NULL

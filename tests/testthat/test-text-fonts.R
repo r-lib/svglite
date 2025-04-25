@@ -56,7 +56,9 @@ test_that("fonts are aliased", {
   families <- style_attr(text, "font-family")
 
   expect_false(families[[1]] == '"serif"')
-  expect_true(all(families[2:3] == paste0('"', c(matched, "Bitstream Vera Sans Mono"), '"')))
+  expect_true(all(
+    families[2:3] == paste0('"', c(matched, "Bitstream Vera Sans Mono"), '"')
+  ))
 })
 
 test_that("metrics are computed for different fonts", {
