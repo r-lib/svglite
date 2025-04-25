@@ -31,7 +31,8 @@ Imports:
     cli,
     lifecycle,
     rlang (>= 1.1.0),
-    systemfonts (>= 1.0.0)
+    systemfonts (>= 1.0.0),
+    textshaping (>= 0.3.0)
 Suggests:
     covr,
     fontquiver (>= 0.2.0),
@@ -42,7 +43,8 @@ Suggests:
     xml2 (>= 1.0.0)
 LinkingTo:
     cpp11,
-    systemfonts
+    systemfonts,
+    textshaping
 VignetteBuilder:
     knitr
 Config/build/compilation-database: true

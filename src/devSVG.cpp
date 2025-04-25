@@ -28,6 +28,7 @@ extern "C" {
 #include <cpp11/external_pointer.hpp>
 #include <cpp11/protect.hpp>
 #include <systemfonts.h>
+#include <textshaping.h>
 #include <string>
 #include <cstring>
 #include <cstdint>
@@ -830,14 +831,13 @@ double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   FontSettings font = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
 
   double width = 0.0;
-
-  int error = string_width(str, font.file, font.index, gc->ps * gc->cex * svgd->scaling, 1e4, 1, &width);
+  int error = textshaping::string_width(str, font, gc->ps * gc->cex * svgd->scaling, 72.0, 1, &width);
 
   if (error != 0) {
     width = 0.0;
   }
 
-  return width * 72. / 1e4;
+  return width;
 }
 
 void svg_rect(double x0, double y0, double x1, double y1,
