@@ -187,7 +187,6 @@ specifying fonts.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/g&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/svg&gt;</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="st">"Hi!"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in text.default(0.5, 0.5, "Hi!"):</span> function 'ts_string_width' not provided by package 'textshaping'</span>
 <span class="r-in"><span><span class="fu">s</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;?xml version='1.0' encoding='UTF-8' ?&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'&gt;</span>
@@ -220,6 +219,7 @@ specifying fonts.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   &lt;/clipPath&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/defs&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;g clip-path='url(#cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng==)'&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text x='374.40' y='285.36' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='17.17px' lengthAdjust='spacingAndGlyphs'&gt;Hi!&lt;/text&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/g&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/svg&gt;</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span></span>
@@ -228,7 +228,6 @@ specifying fonts.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu">svgstring</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">5</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in axis(side = side, at = at, labels = labels, ...):</span> function 'ts_string_width' not provided by package 'textshaping'</span>
 <span class="r-in"><span><span class="fu">s</span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;?xml version='1.0' encoding='UTF-8' ?&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='720.00pt' height='576.00pt' viewBox='0 0 720.00 576.00'&gt;</span>
@@ -276,6 +275,29 @@ specifying fonts.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;line x1='452.27' y1='502.56' x2='452.27' y2='509.76' style='stroke-width: 0.75;' /&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;line x1='547.73' y1='502.56' x2='547.73' y2='509.76' style='stroke-width: 0.75;' /&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;line x1='643.19' y1='502.56' x2='643.19' y2='509.76' style='stroke-width: 0.75;' /&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text x='70.42' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'&gt;-2.5&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text x='165.88' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'&gt;-2.0&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text x='261.35' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'&gt;-1.5&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text x='356.81' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'&gt;-1.0&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text x='452.27' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'&gt;-0.5&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text x='547.73' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='19.09px' lengthAdjust='spacingAndGlyphs'&gt;0.0&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text x='643.19' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='19.09px' lengthAdjust='spacingAndGlyphs'&gt;0.5&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;line x1='59.04' y1='441.64' x2='59.04' y2='95.99' style='stroke-width: 0.75;' /&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;line x1='59.04' y1='441.64' x2='51.84' y2='441.64' style='stroke-width: 0.75;' /&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;line x1='59.04' y1='372.51' x2='51.84' y2='372.51' style='stroke-width: 0.75;' /&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;line x1='59.04' y1='303.38' x2='51.84' y2='303.38' style='stroke-width: 0.75;' /&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;line x1='59.04' y1='234.25' x2='51.84' y2='234.25' style='stroke-width: 0.75;' /&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;line x1='59.04' y1='165.12' x2='51.84' y2='165.12' style='stroke-width: 0.75;' /&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;line x1='59.04' y1='95.99' x2='51.84' y2='95.99' style='stroke-width: 0.75;' /&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text transform='translate(41.76,441.64) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'&gt;-1.5&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text transform='translate(41.76,372.51) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'&gt;-1.0&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text transform='translate(41.76,303.38) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'&gt;-0.5&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text transform='translate(41.76,234.25) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='19.09px' lengthAdjust='spacingAndGlyphs'&gt;0.0&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text transform='translate(41.76,165.12) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='19.09px' lengthAdjust='spacingAndGlyphs'&gt;0.5&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text transform='translate(41.76,95.99) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='19.09px' lengthAdjust='spacingAndGlyphs'&gt;1.0&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;polygon points='59.04,502.56 689.76,502.56 689.76,59.04 59.04,59.04 ' style='stroke-width: 0.75;' /&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text x='374.40' y='557.28' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='53.12px' lengthAdjust='spacingAndGlyphs'&gt;rnorm(5)&lt;/text&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;text transform='translate(12.96,280.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='53.12px' lengthAdjust='spacingAndGlyphs'&gt;rnorm(5)&lt;/text&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/g&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;/svg&gt;</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html" class="external-link">dev.off</a></span><span class="op">(</span><span class="op">)</span></span></span>
