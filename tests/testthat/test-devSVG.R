@@ -2,7 +2,8 @@ library(xml2)
 
 style_attr <- function(nodes, attr) {
   style <- xml_attr(nodes, "style")
-  ifelse(grepl(sprintf("%s: [^;]*;", attr), style),
+  ifelse(
+    grepl(sprintf("%s: [^;]*;", attr), style),
     gsub(sprintf(".*%s: ([^;]*);.*", attr), "\\1", style),
     NA_character_
   )
@@ -27,10 +28,13 @@ test_that("default background respects par", {
 })
 
 test_that("if bg is transparent in par(), use device driver background", {
-  x <- xmlSVG({
-    par(bg = NA)
-    plot.new()
-  }, bg = "blue")
+  x <- xmlSVG(
+    {
+      par(bg = NA)
+      plot.new()
+    },
+    bg = "blue"
+  )
   style <- xml_text(xml_find_first(x, "//style"))
   expect_match(style, "fill: none;")
   expect_equal(style_attr(xml_find_first(x, ".//rect"), "fill"), rgb(0, 0, 1))
@@ -82,8 +86,16 @@ test_that("creating multiple pages is identical to creating multiple individual 
   plot_two()
   dev.off()
 
-  expect_identical(readLines(f_multiple_1), readLines(f_single_1), label = "svglite first plot")
-  expect_identical(readLines(f_multiple_2), readLines(f_single_2), label = "svglite second plot")
+  expect_identical(
+    readLines(f_multiple_1),
+    readLines(f_single_1),
+    label = "svglite first plot"
+  )
+  expect_identical(
+    readLines(f_multiple_2),
+    readLines(f_single_2),
+    label = "svglite second plot"
+  )
 })
 
 test_that("ensure text leading white space will be rendered", {

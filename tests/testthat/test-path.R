@@ -3,9 +3,11 @@ library(xml2)
 test_that("paths with winding fill mode", {
   x <- xmlSVG({
     plot.new()
-    polypath(c(.1, .1, .9, .9, NA, .2, .2, .8, .8),
+    polypath(
+      c(.1, .1, .9, .9, NA, .2, .2, .8, .8),
       c(.1, .9, .9, .1, NA, .2, .8, .8, .2),
-      col = rgb(0.5, 0.5, 0.5, 0.3), border = rgb(1, 0, 0, 0.3),
+      col = rgb(0.5, 0.5, 0.5, 0.3),
+      border = rgb(1, 0, 0, 0.3),
       rule = "winding"
     )
   })
@@ -20,9 +22,11 @@ test_that("paths with winding fill mode", {
 test_that("paths with evenodd fill mode", {
   x <- xmlSVG({
     plot.new()
-    polypath(c(.1, .1, .9, .9, NA, .2, .2, .8, .8),
+    polypath(
+      c(.1, .1, .9, .9, NA, .2, .2, .8, .8),
       c(.1, .9, .9, .1, NA, .2, .8, .8, .2),
-      col = rgb(0.5, 0.5, 0.5, 0.3), border = rgb(1, 0, 0, 0.3),
+      col = rgb(0.5, 0.5, 0.5, 0.3),
+      border = rgb(1, 0, 0, 0.3),
       rule = "evenodd"
     )
   })
@@ -37,9 +41,11 @@ test_that("paths with evenodd fill mode", {
 test_that("paths with no filling color", {
   x <- xmlSVG({
     plot.new()
-    polypath(c(.1, .1, .9, .9, NA, .2, .2, .8, .8),
+    polypath(
+      c(.1, .1, .9, .9, NA, .2, .2, .8, .8),
       c(.1, .9, .9, .1, NA, .2, .8, .8, .2),
-      col = NA, border = rgb(1, 0, 0, 0.3),
+      col = NA,
+      border = rgb(1, 0, 0, 0.3),
       rule = "winding"
     )
   })

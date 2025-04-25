@@ -1,5 +1,5 @@
-
-mini_plot <- function(...) graphics::plot(..., axes = FALSE, xlab = "", ylab = "")
+mini_plot <- function(...)
+  graphics::plot(..., axes = FALSE, xlab = "", ylab = "")
 
 plot_dim <- function(dim = c(NA, NA)) {
   if (any(is.na(dim))) {
