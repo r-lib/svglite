@@ -36,7 +36,7 @@ Other contributors:
   \item David Gohel (Line dashing code and early raster code) [contributor]
   \item Yixuan Qiu (Improved styles; polypath implementation) [contributor]
   \item Håkon Malmedal (Opacity code) [contributor]
-  \item Posit, PBC [copyright holder, funder]
+  \item Posit Software, PBC (03wc8by49) [copyright holder, funder]
 }
 
 }
