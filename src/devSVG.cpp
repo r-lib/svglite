@@ -1344,7 +1344,68 @@ void svg_release_mask(SEXP ref, pDevDesc dd) {
 // Adapts stubs from `grDevices/src/devPS.c` as recommended by Paul Murrell
 // They quietly do nothing (without even a warning) but their existence
 // seems to prevent segfaults when users try to use these new features
+inline std::string composite_operator(int op) {
+  std::string comp_op = "normal";
+#if R_GE_version >= 15
+  switch(op) {
+  case R_GE_compositeClear:
+  case R_GE_compositeSource:
+  case R_GE_compositeDest:
+  case R_GE_compositeDestOver:
+  case R_GE_compositeDestIn:
+  case R_GE_compositeDestOut:
+  case R_GE_compositeDestAtop: cpp11::warning("Unsupported composition operator. Fallowing back to `over`");
+  case R_GE_compositeOver: comp_op = "normal"; break;
+  case R_GE_compositeIn: comp_op = "in"; break;
+  case R_GE_compositeOut: comp_op = "out"; break;
+  case R_GE_compositeAtop: comp_op = "atop"; break;
+  case R_GE_compositeXor: comp_op = "xor"; break;
+  case R_GE_compositeAdd: comp_op = "plus-lighter"; break;
+  case R_GE_compositeSaturate: comp_op = "saturation"; break;
+  case R_GE_compositeMultiply: comp_op = "multiply"; break;
+  case R_GE_compositeScreen: comp_op = "screen"; break;
+  case R_GE_compositeOverlay: comp_op = "overlay"; break;
+  case R_GE_compositeDarken: comp_op = "darken"; break;
+  case R_GE_compositeLighten: comp_op = "lighten"; break;
+  case R_GE_compositeColorDodge: comp_op = "color-dodge"; break;
+  case R_GE_compositeColorBurn: comp_op = "color-burn"; break;
+  case R_GE_compositeHardLight: comp_op = "hard-light"; break;
+  case R_GE_compositeSoftLight: comp_op = "soft-light"; break;
+  case R_GE_compositeDifference: comp_op = "difference"; break;
+  case R_GE_compositeExclusion: comp_op = "exclusion"; break;
+  }
+#endif
+  return comp_op;
+}
+
+inline bool composite_is_blend(int op) {
+  bool is_blend = true;
+#if R_GE_version >= 15
+  switch(op) {
+  case R_GE_compositeClear:
+  case R_GE_compositeSource:
+  case R_GE_compositeDest:
+  case R_GE_compositeDestOver:
+  case R_GE_compositeDestIn:
+  case R_GE_compositeDestOut:
+  case R_GE_compositeDestAtop:
+  case R_GE_compositeIn:
+  case R_GE_compositeOut:
+  case R_GE_compositeAtop:
+  case R_GE_compositeXor: is_blend = false; break;
+  default: is_blend = true;
+  }
+#endif
+  return is_blend;
+}
+
 SEXP svg_define_group(SEXP source, int op, SEXP destination, pDevDesc dd) {
+  if (composite_is_blend(op)) {
+    std::string blend_op = composite_operator(op);
+
+  } else {
+
+  }
     return R_NilValue;
 }
 
@@ -1421,8 +1482,10 @@ void svg_fill(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
 
   write_attr_mask(stream, svgd->current_mask);
   write_style_begin(stream);
+#if R_GE_version >= 15
   // Specify fill rule
   write_style_str(stream, "fill-rule", rule == R_GE_nonZeroWindingRule ? "nonzero" : "evenodd", true);
+#endif
   write_style_fill(stream, gc);
   write_style_str(stream, "stroke", "none");
   write_style_end(stream);
@@ -1462,8 +1525,10 @@ void svg_fill_stroke(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
 
   write_attr_mask(stream, svgd->current_mask);
   write_style_begin(stream);
+#if R_GE_version >= 15
   // Specify fill rule
   write_style_str(stream, "fill-rule", rule == R_GE_nonZeroWindingRule ? "nonzero" : "evenodd", true);
+#endif
   write_style_fill(stream, gc);
   write_style_linetype(stream, gc, svgd->scaling);
   write_style_end(stream);
