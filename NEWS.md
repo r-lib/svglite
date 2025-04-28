@@ -3,6 +3,8 @@
 * Added support for luminance masking (#174)
 * Fixed a bug in calculating text widths when using font features (#175)
 * Added support for path stroking and filling (#174)
+* Added support for groups along with affine transformation and color blending.
+  No support for Porter-Duff composition as it is porly supported in SVG (#174)
 
 # svglite 2.1.3
 

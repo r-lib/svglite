@@ -77,6 +77,9 @@ public:
   std::unordered_set<unsigned int> pattern_cache;
   unsigned int pattern_cache_next_id;
 
+  std::unordered_set<unsigned int> group_cache;
+  unsigned int group_cache_next_id;
+
   SVGDesc(SvgStreamPtr stream_, bool standalone_, cpp11::list aliases_,
           const std::string webfonts_, const std::string& file_, cpp11::strings ids_,
           bool fix_text_size_, double scaling_, bool always_valid_):
@@ -98,7 +101,8 @@ public:
       is_recording_clip(false),
       mask_cache_next_id(0),
       current_mask(-1),
-      pattern_cache_next_id(0) {
+      pattern_cache_next_id(0),
+      group_cache_next_id(0) {
   }
 
   void nextFile() {
@@ -630,6 +634,7 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   svgd->clip_cache_next_id = 0;
   svgd->mask_cache_next_id = 0;
   svgd->pattern_cache_next_id = 0;
+  svgd->group_cache_next_id = 0;
 
   if (svgd->pageno > 0) {
     // close existing file, create a new one, and update stream
@@ -1348,70 +1353,182 @@ inline std::string composite_operator(int op) {
   std::string comp_op = "normal";
 #if R_GE_version >= 15
   switch(op) {
-  case R_GE_compositeClear:
-  case R_GE_compositeSource:
-  case R_GE_compositeDest:
-  case R_GE_compositeDestOver:
-  case R_GE_compositeDestIn:
-  case R_GE_compositeDestOut:
-  case R_GE_compositeDestAtop: cpp11::warning("Unsupported composition operator. Fallowing back to `over`");
-  case R_GE_compositeOver: comp_op = "normal"; break;
-  case R_GE_compositeIn: comp_op = "in"; break;
-  case R_GE_compositeOut: comp_op = "out"; break;
-  case R_GE_compositeAtop: comp_op = "atop"; break;
-  case R_GE_compositeXor: comp_op = "xor"; break;
-  case R_GE_compositeAdd: comp_op = "plus-lighter"; break;
-  case R_GE_compositeSaturate: comp_op = "saturation"; break;
-  case R_GE_compositeMultiply: comp_op = "multiply"; break;
-  case R_GE_compositeScreen: comp_op = "screen"; break;
-  case R_GE_compositeOverlay: comp_op = "overlay"; break;
-  case R_GE_compositeDarken: comp_op = "darken"; break;
-  case R_GE_compositeLighten: comp_op = "lighten"; break;
-  case R_GE_compositeColorDodge: comp_op = "color-dodge"; break;
-  case R_GE_compositeColorBurn: comp_op = "color-burn"; break;
-  case R_GE_compositeHardLight: comp_op = "hard-light"; break;
-  case R_GE_compositeSoftLight: comp_op = "soft-light"; break;
-  case R_GE_compositeDifference: comp_op = "difference"; break;
-  case R_GE_compositeExclusion: comp_op = "exclusion"; break;
+    case R_GE_compositeDestOver:
+    case R_GE_compositeDestIn:
+    case R_GE_compositeDestOut:
+    case R_GE_compositeIn:
+    case R_GE_compositeOut:
+    case R_GE_compositeAtop:
+    case R_GE_compositeXor:
+    case R_GE_compositeSource:
+    case R_GE_compositeDestAtop: cpp11::warning("Unsupported composition operator. Fallowing back to `over`");
+    case R_GE_compositeOver: comp_op = "normal"; break;
+    case R_GE_compositeDest: comp_op = "destination"; break; // We can fake this as a blend mode
+    case R_GE_compositeClear: comp_op = "clear"; break; // We can fake this as a blend mode
+    case R_GE_compositeAdd: comp_op = "plus-lighter"; break;
+    case R_GE_compositeSaturate: comp_op = "saturation"; break;
+    case R_GE_compositeMultiply: comp_op = "multiply"; break;
+    case R_GE_compositeScreen: comp_op = "screen"; break;
+    case R_GE_compositeOverlay: comp_op = "overlay"; break;
+    case R_GE_compositeDarken: comp_op = "darken"; break;
+    case R_GE_compositeLighten: comp_op = "lighten"; break;
+    case R_GE_compositeColorDodge: comp_op = "color-dodge"; break;
+    case R_GE_compositeColorBurn: comp_op = "color-burn"; break;
+    case R_GE_compositeHardLight: comp_op = "hard-light"; break;
+    case R_GE_compositeSoftLight: comp_op = "soft-light"; break;
+    case R_GE_compositeDifference: comp_op = "difference"; break;
+    case R_GE_compositeExclusion: comp_op = "exclusion"; break;
   }
 #endif
   return comp_op;
 }
 
-inline bool composite_is_blend(int op) {
-  bool is_blend = true;
-#if R_GE_version >= 15
-  switch(op) {
-  case R_GE_compositeClear:
-  case R_GE_compositeSource:
-  case R_GE_compositeDest:
-  case R_GE_compositeDestOver:
-  case R_GE_compositeDestIn:
-  case R_GE_compositeDestOut:
-  case R_GE_compositeDestAtop:
-  case R_GE_compositeIn:
-  case R_GE_compositeOut:
-  case R_GE_compositeAtop:
-  case R_GE_compositeXor: is_blend = false; break;
-  default: is_blend = true;
-  }
-#endif
-  return is_blend;
-}
-
 SEXP svg_define_group(SEXP source, int op, SEXP destination, pDevDesc dd) {
-  if (composite_is_blend(op)) {
-    std::string blend_op = composite_operator(op);
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  SvgStreamPtr stream = svgd->stream;
 
-  } else {
+  int key = -1;
 
+#if R_GE_version >= 15
+  key = svgd->group_cache_next_id;
+  svgd->group_cache_next_id++;
+
+  // Cache current clipping and break out of clipping group
+  bool was_clipping = svgd->is_clipping;
+  std::string old_clipid = svgd->clipid;
+  double clipx0 = svgd->clipx0;
+  double clipx1 = svgd->clipx1;
+  double clipy0 = svgd->clipy0;
+  double clipy1 = svgd->clipy1;
+  int temp_mask = svgd->current_mask;
+  svgd->current_mask = -1;
+  if (was_clipping) {
+    (*stream) << "</g>\n";
   }
-    return R_NilValue;
+  svgd->set_clipping(false);
+
+  (*stream) << "<defs>\n";
+
+  if (op == R_GE_compositeClear) {
+    source = R_NilValue;
+    destination = R_NilValue;
+    op = R_GE_compositeOver;
+  } else if (op == R_GE_compositeDest) {
+    source = R_NilValue;
+    op = R_GE_compositeOver;
+  }
+
+  bool is_simple = op == R_GE_compositeOver;
+
+  std::string blend_op = composite_operator(op);
+  (*stream) << "  <g id='group-" << key << (is_simple ? "'" : "' style='isolation:isolate;'") << ">\n";
+
+  if (destination != R_NilValue) {
+    SEXP R_fcall = PROTECT(Rf_lang1(destination));
+    Rf_eval(R_fcall, R_GlobalEnv);
+    UNPROTECT(1);
+
+    // Clipping may have happened above. End it before terminating mask
+    if (svgd->is_clipping) {
+      (*stream) << "</g>\n";
+    }
+    svgd->set_clipping(false);
+  }
+
+  if (source != R_NilValue) {
+    if (!is_simple) {
+      (*stream) << "  <g style='mix-blend-mode:" << blend_op << ";'>\n";
+    }
+    SEXP R_fcall1 = PROTECT(Rf_lang1(source));
+    Rf_eval(R_fcall1, R_GlobalEnv);
+    UNPROTECT(1);
+    // Clipping may have happened above. End it before terminating mask
+    if (svgd->is_clipping) {
+      (*stream) << "</g>\n";
+    }
+    svgd->set_clipping(false);
+
+    if (!is_simple) {
+      (*stream) << "  </g>\n";
+    }
+  }
+
+  (*stream) << "  </g>\n";
+
+  (*stream) << "</defs>\n";
+
+  // Resume old clipping if it was happening
+  if (was_clipping) {
+    (*stream) << "<g";
+    svgd->clipid = old_clipid;
+    svgd->clipx0 = clipx0;
+    svgd->clipx1 = clipx1;
+    svgd->clipy0 = clipy0;
+    svgd->clipy1 = clipy1;
+    write_attr_clip(stream, svgd->clipid);
+    (*stream) << ">\n";
+    svgd->set_clipping(true);
+  }
+  svgd->current_mask = temp_mask;
+
+  svgd->group_cache.insert(key);
+#endif
+
+  return Rf_ScalarInteger(key);
 }
 
-void svg_use_group(SEXP ref, SEXP trans, pDevDesc dd) {}
+void svg_use_group(SEXP ref, SEXP trans, pDevDesc dd) {
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  SvgStreamPtr stream = svgd->stream;
+  if (Rf_isNull(ref)) {
+    return;
+  }
+  int key = INTEGER(ref)[0];
+  if (key < 0) {
+    cpp11::warning("Unknown group, %i", key);
+    return;
+  }
+  auto it = svgd->group_cache.find(key);
+  if (it == svgd->group_cache.end()) {
+    cpp11::warning("Unknown group, %i", key);
+    return;
+  }
 
-void svg_release_group(SEXP ref, pDevDesc dd) {}
+  bool has_transform = trans != R_NilValue;
+  if (has_transform) {
+    (*stream) << "  <g style='transform:matrix(" <<
+      REAL(trans)[0] << "," <<
+      REAL(trans)[3] << "," <<
+      REAL(trans)[1] << "," <<
+      REAL(trans)[4] << "," <<
+      REAL(trans)[2] << "," <<
+      REAL(trans)[5] << ");'>\n";
+  }
+
+  (*stream) << "  <use href='#group-" << key << "' />\n";
+
+  if (has_transform) {
+    (*stream) << "  </g>\n";
+  }
+
+  return;
+}
+
+void svg_release_group(SEXP ref, pDevDesc dd) {
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  if (Rf_isNull(ref)) {
+    svgd->group_cache.clear();
+    return;
+  }
+
+  unsigned int key = INTEGER(ref)[0];
+
+  auto it = svgd->group_cache.find(key);
+  // Check if path exists
+  if (it != svgd->group_cache.end()) {
+    svgd->group_cache.erase(it);
+  }
+}
 
 void svg_stroke(SEXP path, const pGEcontext gc, pDevDesc dd) {
   if (Rf_isNull(path)) {
@@ -1558,10 +1675,28 @@ SEXP svg_capabilities(SEXP capabilities) {
   UNPROTECT(1);
 
   // Group composition
-  SET_VECTOR_ELT(capabilities, R_GE_capability_compositing, Rf_ScalarInteger(0));
+  SEXP compositing = PROTECT(Rf_allocVector(INTSXP, 16));
+  INTEGER(compositing)[0] = R_GE_compositeMultiply;
+  INTEGER(compositing)[1] = R_GE_compositeScreen;
+  INTEGER(compositing)[2] = R_GE_compositeOverlay;
+  INTEGER(compositing)[3] = R_GE_compositeDarken;
+  INTEGER(compositing)[4] = R_GE_compositeLighten;
+  INTEGER(compositing)[5] = R_GE_compositeColorDodge;
+  INTEGER(compositing)[6] = R_GE_compositeColorBurn;
+  INTEGER(compositing)[7] = R_GE_compositeHardLight;
+  INTEGER(compositing)[8] = R_GE_compositeSoftLight;
+  INTEGER(compositing)[9] = R_GE_compositeDifference;
+  INTEGER(compositing)[10] = R_GE_compositeExclusion;
+  INTEGER(compositing)[11] = R_GE_compositeAdd;
+  INTEGER(compositing)[12] = R_GE_compositeSaturate;
+  INTEGER(compositing)[13] = R_GE_compositeOver;
+  INTEGER(compositing)[14] = R_GE_compositeClear;
+  INTEGER(compositing)[15] = R_GE_compositeDest;
+  SET_VECTOR_ELT(capabilities, R_GE_capability_compositing, compositing);
+  UNPROTECT(1);
 
   // Group transformation
-  SET_VECTOR_ELT(capabilities, R_GE_capability_transformations, Rf_ScalarInteger(0));
+  SET_VECTOR_ELT(capabilities, R_GE_capability_transformations, Rf_ScalarInteger(1));
 
   // Path stroking and filling
   SET_VECTOR_ELT(capabilities, R_GE_capability_paths, Rf_ScalarInteger(1));
