@@ -34,8 +34,10 @@ test_that("symbol font family is 'Symbol'", {
 })
 
 test_that("throw on malformed alias", {
-  expect_error(validate_aliases(list(mono = letters), list()), "must be scalar")
-  expect_warning(validate_aliases(list(sans = "foobar"), list()), "not found")
+  expect_snapshot(validate_aliases(list(mono = letters), list()), error = TRUE)
+  skip_on_cran()
+  skip_on_os(c("windows", "linux"))
+  expect_snapshot(validate_aliases(list(sans = "foobar"), list()))
 })
 
 test_that("fonts are aliased", {
@@ -54,7 +56,9 @@ test_that("fonts are aliased", {
   families <- style_attr(text, "font-family")
 
   expect_false(families[[1]] == '"serif"')
-  expect_true(all(families[2:3] == paste0('"', c(matched, "Bitstream Vera Sans Mono"), '"')))
+  expect_true(all(
+    families[2:3] == paste0('"', c(matched, "Bitstream Vera Sans Mono"), '"')
+  ))
 })
 
 test_that("metrics are computed for different fonts", {

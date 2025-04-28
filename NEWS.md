@@ -1,5 +1,11 @@
 # svglite (development version)
 
+* Added support for luminance masking (#174)
+* Fixed a bug in calculating text widths when using font features (#175)
+* Added support for path stroking and filling (#174)
+* Added support for groups along with affine transformation and color blending.
+  No support for Porter-Duff composition as it is porly supported in SVG (#174)
+
 # svglite 2.1.3
 
 * Fix a stack imbalance bug
@@ -26,19 +32,19 @@
 
 # svglite 2.0.0
 
-* svglite now uses systemfonts for text metric calculations and font family 
+* svglite now uses systemfonts for text metric calculations and font family
   lookup.
-  
+
 * svglite can now encode OpenType font features into the CSS if the used font
   contains registered features
-  
-* svglite now directly encodes raster data into png instead of rendering it 
+
+* svglite now directly encodes raster data into png instead of rendering it
   through cairo. If the provided raster is smaller than the final requested size
   it will be resized.
-  
-* SVG's can now get a top-level id so that style definitions doesn't spill into 
+
+* SVG's can now get a top-level id so that style definitions doesn't spill into
   the surrounding HTML (#91)
-  
+
 * Dimensions are now encoded into the top-level `<svg>` tag (#90)
 
 * Starting a new page creates a new file if the filename supports it (#98, @vandenman).
@@ -64,7 +70,7 @@
 * svg files that are being written are now only valid at all times if `always_valid`
   is set to `TRUE` in the `svglite()` call.
 
-* svglite now guards against attempts at writing to the device before a new page 
+* svglite now guards against attempts at writing to the device before a new page
   has been requested (#126)
 
 
@@ -158,22 +164,22 @@ This release makes svglite compatible with gdtools 0.1.6
 
 svglite is fully featured svg graphics device that works on all platforms, forked from RSvgDevice. It supports all graphics device features:
 
-* All types of line dashing are supported (#15). All line end and line join 
+* All types of line dashing are supported (#15). All line end and line join
   styles are supported (#24).
 
-* Text is now coloured, and uses the same default fonts as R (Arial, 
-  Times New Roman, and Courier). Font metrics are computed using the 
+* Text is now coloured, and uses the same default fonts as R (Arial,
+  Times New Roman, and Courier). Font metrics are computed using the
   gdtools package so that `plotmath()` and `strwidth()` now work.
 
-* Transparent colours are now generated with `rgba()` rather than using 
-  `stroke-opacity` and `fill-opacity` styles (#16). NA fills and colours are 
+* Transparent colours are now generated with `rgba()` rather than using
+  `stroke-opacity` and `fill-opacity` styles (#16). NA fills and colours are
   translated to "none".
 
 * `par(bg)` affects the background colour (#8).
 
 * Rasters are supported by embedding base64-encoded pngs in a data url (#2).
 
-* `polypath()` is now supported, which also allows the `showtext` package to 
+* `polypath()` is now supported, which also allows the `showtext` package to
   render fonts correctly with this device (#36).
 
 We also made a few other tweaks to the rendered SVG:
@@ -192,7 +198,7 @@ We also made a few other tweaks to the rendered SVG:
 
 And added some helper functions:
 
-* `xmlSVG()` and `htmlSVG()` make it easier to view generated SVG, either as 
-  raw XML or in RStudio/the browser. 
-  
+* `xmlSVG()` and `htmlSVG()` make it easier to view generated SVG, either as
+  raw XML or in RStudio/the browser.
+
 * `editSVG()` opens the SVG in the default SVG viewer/editor.

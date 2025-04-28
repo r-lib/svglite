@@ -18,7 +18,7 @@ test_that("ids are assigned as expecter", {
   sd <- svgstring(id = c("test", "test2"))
   plot(1:10, 1:10)
   plot(1:10, 1:10)
-  expect_warning(plot(1:10, 1:10), regexp = "No id supplied for page no")
+  expect_snapshot_warning(plot(1:10, 1:10))
   dev.off()
   svg <- sd()
 

@@ -76,15 +76,29 @@
 #' @useDynLib svglite, .registration = TRUE
 #' @importFrom systemfonts match_font
 #' @export
-svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
-                    bg = "white", pointsize = 12, standalone = TRUE,
-                    system_fonts = list(), user_fonts = list(), web_fonts = list(), id = NULL,
-                    fix_text_size = TRUE, scaling = 1, always_valid = FALSE, file) {
+svglite <- function(
+  filename = "Rplot%03d.svg",
+  width = 10,
+  height = 8,
+  bg = "white",
+  pointsize = 12,
+  standalone = TRUE,
+  system_fonts = list(),
+  user_fonts = list(),
+  web_fonts = list(),
+  id = NULL,
+  fix_text_size = TRUE,
+  scaling = 1,
+  always_valid = FALSE,
+  file
+) {
   if (!missing(file)) {
     filename <- file
   }
   if (invalid_filename(filename)) {
-    stop("invalid 'file': ", filename)
+    cli::cli_abort(
+      "{.arg filename} does not provide a valid name ({.val {filename}}): "
+    )
   }
   aliases <- validate_aliases(system_fonts, user_fonts)
   web_fonts <- validate_web_fonts(web_fonts)
@@ -92,7 +106,20 @@ svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
     id <- character(0)
   }
   id <- as.character(id)
-  invisible(svglite_(filename, bg, width, height, pointsize, standalone, aliases, web_fonts, id, fix_text_size, scaling, always_valid))
+  invisible(svglite_(
+    filename,
+    bg,
+    width,
+    height,
+    pointsize,
+    standalone,
+    aliases,
+    web_fonts,
+    id,
+    fix_text_size,
+    scaling,
+    always_valid
+  ))
 }
 
 #' Access current SVG as a string.
@@ -121,11 +148,19 @@ svglite <- function(filename = "Rplot%03d.svg", width = 10, height = 8,
 #' dev.off()
 #' @inheritParams svglite
 #' @export
-svgstring <- function(width = 10, height = 8, bg = "white",
-                      pointsize = 12, standalone = TRUE,
-                      system_fonts = list(), user_fonts = list(),
-                      web_fonts = list(), id = NULL, fix_text_size = TRUE,
-                      scaling = 1) {
+svgstring <- function(
+  width = 10,
+  height = 8,
+  bg = "white",
+  pointsize = 12,
+  standalone = TRUE,
+  system_fonts = list(),
+  user_fonts = list(),
+  web_fonts = list(),
+  id = NULL,
+  fix_text_size = TRUE,
+  scaling = 1
+) {
   aliases <- validate_aliases(system_fonts, user_fonts)
   web_fonts <- validate_web_fonts(web_fonts)
   if (is.null(id)) {
@@ -134,10 +169,18 @@ svgstring <- function(width = 10, height = 8, bg = "white",
   id <- as.character(id)
 
   env <- new.env(parent = emptyenv())
-  string_src <- svgstring_(env,
-    width = width, height = height, bg = bg,
-    pointsize = pointsize, standalone = standalone, aliases = aliases,
-    webfonts = web_fonts, id = id, fix_text_size, scaling
+  string_src <- svgstring_(
+    env,
+    width = width,
+    height = height,
+    bg = bg,
+    pointsize = pointsize,
+    standalone = standalone,
+    aliases = aliases,
+    webfonts = web_fonts,
+    id = id,
+    fix_text_size,
+    scaling
   )
 
   function() {
