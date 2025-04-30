@@ -678,6 +678,10 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   (*stream) << "    .svglite text {\n";
   (*stream) << "      white-space: pre;\n";
   (*stream) << "    }\n";
+  (*stream) << "    .svglite g.glyphgroup path {\n";
+  (*stream) << "      fill: inherit;\n";
+  (*stream) << "      stroke: none;\n";
+  (*stream) << "    }\n";
   (*stream) << "  ]]></style>\n";
   (*stream) << "</defs>\n";
 
@@ -902,13 +906,94 @@ void svg_circle(double x, double y, double r, const pGEcontext gc,
   stream->flush();
 }
 
+inline void mat_mult(double* t, double a, double b, double c, double d, double tx, double ty) {
+  double a_ = t[0] * a + t[2] * b;
+  double b_ = t[1] * a + t[3] * b;
+  double c_ = t[0] * c + t[2] * d;
+  double d_ = t[1] * c + t[3] * d;
+  t[4] = t[0] * tx + t[2] * ty + t[4];
+  t[5] = t[1] * tx + t[3] * ty + t[5];
+  t[0] = a_;
+  t[1] = b_;
+  t[2] = c_;
+  t[3] = d_;
+}
+
 void svg_text(double x, double y, const char *str, double rot,
               double hadj, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  if (!svgd->is_inited || svgd->is_recording_clip) {
+  if (!svgd->is_inited) {
     return;
   }
   SvgStreamPtr stream = svgd->stream;
+
+  if (svgd->is_recording_clip) {
+    FontSettings font = get_font_file(
+      gc->fontfamily,
+      gc->fontface,
+      svgd->user_aliases
+    );
+    std::vector<textshaping::Point> loc_buffer;
+    std::vector<uint32_t> id_buffer;
+    std::vector<int> cluster_buffer;
+    std::vector<unsigned int> font_buffer;
+    std::vector<FontSettings> fallback_buffer;
+    std::vector<double> scaling_buffer;
+    int err = textshaping::string_shape(
+      str,
+      font,
+      gc->ps * gc->cex * svgd->scaling,
+      72.0,
+      loc_buffer,
+      id_buffer,
+      cluster_buffer,
+      font_buffer,
+      fallback_buffer,
+      scaling_buffer
+    );
+    if (err == 0) {
+      double x_adj = 0;
+      if (hadj != 0) {
+        textshaping::string_width(
+          str,
+          font,
+          gc->ps * gc->cex * svgd->scaling,
+          72.0,
+          1,
+          &x_adj
+        );
+        x_adj *= -hadj;
+      }
+      // transformation to apply:
+      // Apply x_adj
+      // Reflect along x
+      // Apply rotation
+      // translate by x, y
+      double transform[6] = {1, 0, 0, 1, x, y};
+      if (rot != 0.0) {
+        rot = -6.2831853072 * rot / 360.0;
+        mat_mult(transform, std::cos(rot), std::sin(rot), -std::sin(rot), std::cos(rot), 0.0, 0.0);
+      }
+      if (x_adj != 0.0) {
+        mat_mult(transform, 1.0, 0.0, 0.0, 1.0, x_adj, 0.0);
+      }
+      mat_mult(transform, 1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
+      for (size_t i = 0; i < loc_buffer.size(); ++i) {
+        mat_mult(transform, 1.0, 0.0, 0.0, 1.0, loc_buffer[i].x, loc_buffer[i].y);
+        bool no_outline = true;
+        std::string p = get_glyph_path(
+          id_buffer[i],
+          transform,
+          fallback_buffer[font_buffer[i]].file,
+          fallback_buffer[font_buffer[i]].index,
+          gc->ps * gc->cex * svgd->scaling,
+          &no_outline
+        );
+        mat_mult(transform, 1.0, 0.0, 0.0, 1.0, -loc_buffer[i].x, -loc_buffer[i].y);
+      }
+    }
+    return;
+  }
 
   (*stream) << "<text";
 
@@ -1654,6 +1739,107 @@ void svg_fill_stroke(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
   stream->flush();
 }
 
+void svg_glyph(int n, int *glyphs, double *x, double *y, SEXP font, double size, int colour, double rot, pDevDesc dd) {
+#if R_GE_version >= 16
+
+  SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
+  double cos_rot = 1.0;
+  double sin_rot = 0.0;
+  if (rot != 0.0) {
+    double rot_rad = -6.2831853072 * rot / 360.0;
+    cos_rot = std::cos(rot_rad);
+    sin_rot = std::sin(rot_rad);
+  }
+  SvgStreamPtr stream = svgd->stream;
+  size *= svgd->scaling;
+  bool no_outline = false;
+
+  if (!svgd->is_recording_clip) {
+    (*stream) << "<g class='glyphgroup'";
+    write_attr_mask(stream, svgd->current_mask);
+    write_style_begin(stream);
+    write_style_col(stream, "fill", colour);
+    write_style_end(stream);
+
+    (*stream) << ">\n";
+  }
+
+
+  for (int i = 0; i < n; ++i) {
+    // Create path data
+    double transform[6] = {1.0, 0.0, 0.0, 1.0, x[i], y[i]};
+    if (rot != 0) {
+      mat_mult(transform, cos_rot, sin_rot, -sin_rot, cos_rot, 0.0, 0.0);
+    }
+    mat_mult(transform, 1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
+    std::string p = get_glyph_path(
+      glyphs[i],
+      transform,
+      R_GE_glyphFontFile(font),
+      R_GE_glyphFontIndex(font),
+      size,
+      &no_outline
+    );
+
+    if (no_outline) {
+      if (svgd->is_recording_clip) continue;
+
+      SEXP raster = PROTECT(get_glyph_raster(
+        glyphs[i],
+        R_GE_glyphFontFile(font),
+        R_GE_glyphFontIndex(font),
+        size,
+        300.0,
+        colour
+      ));
+
+      if (!Rf_isNull(raster)) {
+        SEXP r_size = PROTECT(Rf_getAttrib(raster, Rf_mkString("size")));
+        SEXP offset = PROTECT(Rf_getAttrib(raster, Rf_mkString("offset")));
+        double x_off = cos_rot * REAL(offset)[1] - sin_rot * (REAL(r_size)[0] - REAL(offset)[0]);
+        double y_off = sin_rot * REAL(offset)[1] + cos_rot * (REAL(r_size)[0] - REAL(offset)[0]);
+        svg_raster(
+          (unsigned int*) (INTEGER(raster)),
+          Rf_ncols(raster),
+          Rf_nrows(raster),
+          x[i] + x_off,
+          y[i] + y_off,
+          REAL(r_size)[1],
+          REAL(r_size)[0],
+          rot,
+          (Rboolean) true,
+          nullptr,
+          dd
+        );
+        UNPROTECT(2);
+      }
+      UNPROTECT(1);
+    } else {
+      if (p.empty()) continue;
+
+      if (!svgd->is_recording_clip) {
+        (*stream) << "<path d='";
+      }
+
+      (*stream) << p;
+
+      if (svgd->is_recording_clip) {
+        return;
+      }
+      // Finish path data
+      (*stream) << "' />\n";
+    }
+  }
+
+  if (!svgd->is_recording_clip) {
+    (*stream) << "</g>\n";
+  }
+
+  stream->flush();
+
+#endif
+}
+
 SEXP svg_capabilities(SEXP capabilities) {
 #if R_GE_version >= 15
   // Pattern support
@@ -1700,8 +1886,13 @@ SEXP svg_capabilities(SEXP capabilities) {
 
   // Path stroking and filling
   SET_VECTOR_ELT(capabilities, R_GE_capability_paths, Rf_ScalarInteger(1));
-
 #endif
+
+#if R_GE_version >= 16
+  // Glyph rendering
+  SET_VECTOR_ELT(capabilities, R_GE_capability_glyphs, Rf_ScalarInteger(1));
+#endif
+
   return capabilities;
 }
 
@@ -1785,6 +1976,9 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->fillStroke = svg_fill_stroke;
   dd->capabilities = svg_capabilities;
 #endif
+#if R_GE_version >= 16
+  dd->glyph = svg_glyph;
+#endif
   dd->canClip = TRUE;
 #if R_GE_version >= 14
   dd->deviceClip = TRUE;
@@ -1797,7 +1991,7 @@ pDevDesc svg_driver_new(SvgStreamPtr stream, int bg, double width,
   dd->haveTransparentBg = 3; /* background can be semi-transparent */
 
 #if R_GE_version >= 13
-  dd->deviceVersion = 15; //R_GE_group;
+  dd->deviceVersion = 16; //R_GE_glyph;
 #endif
 
   dd->deviceSpecific = new SVGDesc(stream, standalone, aliases, webfonts, file,

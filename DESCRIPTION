@@ -28,6 +28,7 @@ BugReports: https://github.com/r-lib/svglite/issues
 Depends:
     R (>= 4.1)
 Imports:
+    base64enc,
     cli,
     lifecycle,
     rlang (>= 1.1.0),
