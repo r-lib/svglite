@@ -6,8 +6,6 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/r-lib/svglite/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/r-lib/svglite/actions/workflows/R-CMD-check.yaml)
-[![Codecov test
-coverage](https://codecov.io/gh/r-lib/svglite/branch/main/graph/badge.svg)](https://app.codecov.io/gh/r-lib/svglite?branch=main)
 [![CRAN Status
 Badge](http://www.r-pkg.org/badges/version/svglite)](https://cran.r-project.org/package=svglite)
 [![Codecov test
@@ -64,8 +62,8 @@ bench::mark(svglite_test(), svg_test(), min_iterations = 250, check = FALSE)
 #> # A tibble: 2 × 6
 #>   expression          min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 svglite_test()   2.64ms   2.71ms      367.     627KB    2.96 
-#> 2 svg_test()       6.12ms   6.28ms      158.     224KB    0.633
+#> 1 svglite_test()   2.64ms   2.73ms      362.     627KB    2.92 
+#> 2 svg_test()       6.11ms   6.26ms      159.     224KB    0.638
 ```
 
 ### File size
@@ -95,7 +93,7 @@ invisible(dev.off())
 
 # svglite - svgz
 fs::file_size(tmp3)
-#> 9.48K
+#> 9.46K
 ```
 
 ### Editability
