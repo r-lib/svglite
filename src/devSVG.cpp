@@ -667,7 +667,7 @@ void svg_new_page(const pGEcontext gc, pDevDesc dd) {
   // Setting default styles
   (*stream) << "<defs>\n";
   (*stream) << "  <style type='text/css'><![CDATA[\n";
-  (*stream) <<      svgd->webfonts;
+  (*stream) <<      svgd->webfonts << "\n";
   (*stream) << "    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {\n";
   (*stream) << "      fill: none;\n";
   (*stream) << "      stroke: #000000;\n";
