@@ -40,7 +40,10 @@ font. Web fonts can either be specified using \code{\link[=font_face]{font_face(
 single string in which case they are taken to be URL's for an \verb{@import}
 directive to e.g. Google Fonts. For the latter, you can use
 \code{\link[=fonts_as_import]{fonts_as_import()}} to automatically generate the string, optionally
-embedding the font data in it.}
+embedding the font data in it. If the passed in string is not in the form
+of a URL or \verb{@import} statement then it is considered a font family name
+and \code{\link[=fonts_as_import]{fonts_as_import()}} will be called to convert it to an import
+automatically, using the default arguments.}
 
 \item{id}{A character vector of ids to assign to the generated SVG's. If
 creating more SVG files than supplied ids the exceeding SVG's will not have

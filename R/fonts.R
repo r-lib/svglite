@@ -261,7 +261,10 @@ validate_web_fonts <- function(x) {
       return(paste0('    @import url("', f, '");'))
     }
     if (grepl("^<link", f)) {
-      cli::cli_warn(c("Web fonts should not be specified as link tags.", i = "Use either `@import` or a bare URL"))
+      cli::cli_warn(c(
+        "Web fonts should not be specified as link tags.",
+        i = "Use either `@import` or a bare URL"
+      ))
       return()
     }
     x <- fonts_as_import(x, type = "import")
@@ -271,6 +274,65 @@ validate_web_fonts <- function(x) {
   paste0(unlist(x), collapse = "\n")
 }
 
+#' Add web font imports to an already created SVG file
+#'
+#' This function allows you to add web fonts after creation. The result is the
+#' same as using the `web_fonts` argument in [svglite()]. Only SVGs created with
+#' svglite can get web fonts added.
+#'
+#' @param filename The svgfile(s) or `svg` object(s) (as created by
+#' [svgstring()]) to edit
+#' @inheritParams svglite
+#'
+#' @return Invisibly returns `filename`. If any of elements of this were inline
+#' SVGs then these have been modified to include the imports
+#'
 #' @export
-#' @importFrom systemfonts fonts_as_import
-systemfonts::fonts_as_import
+#'
+add_web_fonts <- function(filename, web_fonts) {
+  web_fonts <- validate_web_fonts(web_fonts)
+  for (i in seq_along(filename)) {
+    f <- filename[[i]]
+    is_string <- grepl("^<(\\?xml|svg)", f)
+    if (is_string) {
+      svg <- strsplit(f, "\n")[[1]]
+    } else {
+      if (!grepl("\\.svg(z|\\.gz)?$", f)) {
+        cli::cli_abort("{.file {f}} is not an SVG file")
+      }
+      svg <- readLines(f)
+    }
+    if (!any(grepl("<g.*class='svglite'>", svg))) {
+      if (is_string) {
+        cli::cli_warn(
+          "SVG was not created by svglite. Not inserting font import"
+        )
+      } else {
+        cli::cli_warn(
+          "{.file {f}} was not created by svglite. Not inserting font import"
+        )
+      }
+      next
+    }
+    style <- grep("<style type='text/css'><![CDATA[", svg, fixed = TRUE)
+    if (length(style) == 0) {
+      if (is_string) {
+        cli::cli_warn("Can't find style tag in SVG. Not inserting font import")
+      } else {
+        cli::cli_warn(
+          "Can't find style tag in {.file {f}}. Not inserting font import"
+        )
+      }
+      next
+    }
+    svg <- c(svg[seq_len(style[1])], web_fonts, svg[-seq_len(style[1])])
+    if (is_string) {
+      filename[[i]][] <- paste0(svg, collapse = "\n")
+    } else {
+      out <- if (grepl("\\.(gz|svgz)$", f)) gzfile(f, "w") else file(f, "w")
+      writeLines(svg, out)
+      close(out)
+    }
+  }
+  invisible(filename)
+}
