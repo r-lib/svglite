@@ -179,12 +179,12 @@ font_face <- function(
       if (type == "local") {
         location <- systemfonts::font_info(location)$path[1]
         type <- tolower(tools::file_ext(location))
-        if (!ext %in% c("woff2", "woff", "otf", "ttf")) {
+        if (!type %in% c("woff2", "woff", "otf", "ttf")) {
           stop(paste0("Unsupported file type for embedding: ", type))
         }
       }
       mime <- switch(
-        ext,
+        type,
         woff2 = "font/woff2",
         woff = "font/woff",
         otf = "font/otf",
