@@ -64,8 +64,8 @@ at-rule. <code>font_face()</code> helps you create a valid <code>@font-face</cod
 <span>  woff <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ttf <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  otf <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  eot <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  svg <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  eot <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  svg <span class="op">=</span> <span class="fu">deprecated</span><span class="op">(</span><span class="op">)</span>,</span>
 <span>  local <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  weight <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  style <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -73,7 +73,8 @@ at-rule. <code>font_face()</code> helps you create a valid <code>@font-face</cod
 <span>  variant <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  stretch <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  feature_setting <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  variation_setting <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  variation_setting <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  embed <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -85,10 +86,14 @@ at-rule. <code>font_face()</code> helps you create a valid <code>@font-face</cod
 <dd><p>The font family name this font should respond to.</p></dd>
 
 
-<dt id="arg-woff-woff-ttf-otf-eot-svg">woff2, woff, ttf, otf, eot, svg<a class="anchor" aria-label="anchor" href="#arg-woff-woff-ttf-otf-eot-svg"></a></dt>
+<dt id="arg-woff-woff-ttf-otf">woff2, woff, ttf, otf<a class="anchor" aria-label="anchor" href="#arg-woff-woff-ttf-otf"></a></dt>
 <dd><p>URLs to the font in different formats. At
 least one must be given. Best browser support is provided by the woff
 format.</p></dd>
+
+
+<dt id="arg-eot-svg">eot, svg<a class="anchor" aria-label="anchor" href="#arg-eot-svg"></a></dt>
+<dd><p><a href="https://lifecycle.r-lib.org/articles/stages.html#deprecated" class="external-link"><img src="figures/lifecycle-deprecated.svg" alt="[Deprecated]"></a></p></dd>
 
 
 <dt id="arg-local">local<a class="anchor" aria-label="anchor" href="#arg-local"></a></dt>
@@ -127,6 +132,10 @@ descriptor It is recommended to avoid using this if possible</p></dd>
 <dd><p>An optional value for the <code>font-variation-settings</code>
 descriptor.</p></dd>
 
+
+<dt id="arg-embed">embed<a class="anchor" aria-label="anchor" href="#arg-embed"></a></dt>
+<dd><p>Should the font data be embedded directly in the SVG</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -145,6 +154,9 @@ descriptor.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       font-family: "MyHelvetica";</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       src: local("Helvetica Neue Bold"),</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            local("HelveticaNeue-Bold"),</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            url("") format("woff2"),</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            url("") format("woff"),</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            url("") format("opentype"),</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>            url("MgOpenModernaBold.ttf") format("truetype");</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>       font-weight: bold;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>

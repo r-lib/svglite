@@ -118,8 +118,8 @@
 <span><span class="co">#&gt; # A tibble: 2 × 6</span></span>
 <span><span class="co">#&gt;   expression          min   median `itr/sec` mem_alloc `gc/sec`</span></span>
 <span><span class="co">#&gt;   &lt;bch:expr&gt;     &lt;bch:tm&gt; &lt;bch:tm&gt;     &lt;dbl&gt; &lt;bch:byt&gt;    &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1 svglite_test()   1.85ms   1.93ms      514.     610KB     4.06</span></span>
-<span><span class="co">#&gt; 2 svg_test()       6.19ms   6.31ms      158.     224KB     0</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 svglite_test()   2.64ms   2.71ms      367.     627KB    2.96 </span></span>
+<span><span class="co">#&gt; 2 svg_test()       6.12ms   6.28ms      158.     224KB    0.633</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="file-size">File size<a class="anchor" aria-label="anchor" href="#file-size"></a>
@@ -142,7 +142,7 @@
 <span></span>
 <span><span class="co"># svglite - svgz</span></span>
 <span><span class="fu">fs</span><span class="fu">::</span><span class="fu"><a href="https://fs.r-lib.org/reference/file_info.html" class="external-link">file_size</a></span><span class="op">(</span><span class="va">tmp3</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 9.43K</span></span></code></pre></div>
+<span><span class="co">#&gt; 9.48K</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="editability">Editability<a class="anchor" aria-label="anchor" href="#editability"></a>
@@ -152,14 +152,14 @@
 <div class="section level3">
 <h3 id="font-support">Font support<a class="anchor" aria-label="anchor" href="#font-support"></a>
 </h3>
-<p>svglite uses systemfonts for font discovery which means that all installed fonts on your system is available to use. The systemfonts foundation means that fonts registered with <code><a href="https://systemfonts.r-lib.org/reference/register_font.html" class="external-link">register_font()</a></code> or <code><a href="https://systemfonts.r-lib.org/reference/register_variant.html" class="external-link">register_variant()</a></code> will also be available. If any of these contains non-standard weights or OpenType features (e.g. ligatures or tabular numerics) this will be correctly encoded in the style block. systemfonts also allows you to embed webfont <code>@imports</code> in your file to ensure that the file looks as expected even on systems without the used font installed.</p>
+<p>svglite uses systemfonts for font discovery which means that all installed fonts on your system is available to use. The systemfonts foundation means that fonts registered with <code><a href="https://systemfonts.r-lib.org/reference/register_font.html" class="external-link">register_font()</a></code> or <code><a href="https://systemfonts.r-lib.org/reference/register_variant.html" class="external-link">register_variant()</a></code> will also be available, as will fonts added with <code><a href="https://systemfonts.r-lib.org/reference/add_fonts.html" class="external-link">add_fonts()</a></code> and <code><a href="https://systemfonts.r-lib.org/reference/require_font.html" class="external-link">require_font()</a></code>. If any of these contains non-standard weights or OpenType features (e.g. ligatures or tabular numerics) this will be correctly encoded in the style block. systemfonts also allows you to embed webfont <code>@imports</code> in your file to ensure that the file looks as expected even on systems without the used font installed. Using <code><a href="https://systemfonts.r-lib.org/reference/fonts_as_import.html" class="external-link">systemfonts::fonts_as_import()</a></code> you can generate these imports automatically, optionally embedding the font data directly in the file.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="building-svglite">Building svglite<a class="anchor" aria-label="anchor" href="#building-svglite"></a>
 </h2>
 <p><em>This section is only relevant for building svglite from scratch, as opposed to installing from a pre-built package on CRAN.</em></p>
-<p>Building vdiffr requires the system dependency libpng. As vdiffr doesn’t have any build-time configuration, your R configuration must point to libpng’s <code>include</code> and <code>lib</code> folders.</p>
+<p>Building svglite requires the system dependency libpng. As svglite doesn’t have any build-time configuration, your R configuration must point to libpng’s <code>include</code> and <code>lib</code> folders.</p>
 <p>For instance on macOS, install libpng with:</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="ex">brew</span> install libpng</span></code></pre></div>
 <p>And make sure your <code>~/.R/Makevars</code> knows about Homebrew’s <code>include</code> and <code>lib</code> folders where libpng should now be installed. On arm64 hardware, this would be:</p>
