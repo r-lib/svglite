@@ -10,8 +10,8 @@ font_face(
   woff = NULL,
   ttf = NULL,
   otf = NULL,
-  eot = NULL,
-  svg = NULL,
+  eot = deprecated(),
+  svg = deprecated(),
   local = NULL,
   weight = NULL,
   style = NULL,
@@ -19,15 +19,18 @@ font_face(
   variant = NULL,
   stretch = NULL,
   feature_setting = NULL,
-  variation_setting = NULL
+  variation_setting = NULL,
+  embed = FALSE
 )
 }
 \arguments{
 \item{family}{The font family name this font should respond to.}
 
-\item{woff2, woff, ttf, otf, eot, svg}{URLs to the font in different formats. At
+\item{woff2, woff, ttf, otf}{URLs to the font in different formats. At
 least one must be given. Best browser support is provided by the woff
 format.}
+
+\item{eot, svg}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#deprecated}{\figure{lifecycle-deprecated.svg}{options: alt='[Deprecated]'}}}{\strong{[Deprecated]}}}
 
 \item{local}{One or more font names that local installations of the font may
 have. If a local font is found with either of the given names it will be
@@ -49,6 +52,8 @@ descriptor It is recommended to avoid using this if possible}
 
 \item{variation_setting}{An optional value for the \code{font-variation-settings}
 descriptor.}
+
+\item{embed}{Should the font data be embedded directly in the SVG}
 }
 \value{
 A character string with the \verb{@font-face} block.

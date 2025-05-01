@@ -109,9 +109,10 @@ validate_user_alias <- function(default_name, family) {
 #' `web_fonts` argument in [svglite()] and [svgstring()] functions.
 #'
 #' @param family The font family name this font should respond to.
-#' @param woff2,woff,ttf,otf,eot,svg URLs to the font in different formats. At
+#' @param woff2,woff,ttf,otf URLs to the font in different formats. At
 #'   least one must be given. Best browser support is provided by the woff
 #'   format.
+#' @param eot,svg `r lifecycle::badge("deprecated")`
 #' @param local One or more font names that local installations of the font may
 #'   have. If a local font is found with either of the given names it will be
 #'   used and no download will happen.
@@ -125,6 +126,7 @@ validate_user_alias <- function(default_name, family) {
 #'   descriptor It is recommended to avoid using this if possible
 #' @param variation_setting An optional value for the `font-variation-settings`
 #'   descriptor.
+#' @param embed Should the font data be embedded directly in the SVG
 #'
 #' @return A character string with the `@font-face` block.
 #'
@@ -143,8 +145,8 @@ font_face <- function(
   woff = NULL,
   ttf = NULL,
   otf = NULL,
-  eot = NULL,
-  svg = NULL,
+  eot = deprecated(),
+  svg = deprecated(),
   local = NULL,
   weight = NULL,
   style = NULL,
@@ -152,17 +154,63 @@ font_face <- function(
   variant = NULL,
   stretch = NULL,
   feature_setting = NULL,
-  variation_setting = NULL
+  variation_setting = NULL,
+  embed = FALSE
 ) {
-  sources <- c(
-    if (!is.null(local)) paste0('local("', local, '")'),
-    if (!is.null(woff2)) paste0('url("', woff2, '") format("woff2")'),
-    if (!is.null(woff)) paste0('url("', woff, '") format("woff")'),
-    if (!is.null(otf)) paste0('url("', otf, '") format("opentype")'),
-    if (!is.null(ttf)) paste0('url("', ttf, '") format("truetype")'),
-    if (!is.null(eot)) paste0('url("', eot, '") format("embedded-opentype")'),
-    if (!is.null(svg)) paste0('url("', svg, '") format("woff")')
+  if (lifecycle::is_present(eot)) {
+    lifecycle::deprecate_stop("2.2.0", "font_face(eot)")
+  }
+  if (lifecycle::is_present(svg)) {
+    lifecycle::deprecate_stop("2.2.0", "font_face(svg)")
+  }
+
+  sources <- list(
+    local = local,
+    woff2 = woff2,
+    woff = woff,
+    otf = otf,
+    ttf = ttf
   )
+
+  sources <- lapply(seq_along(sources), function(i) {
+    location <- sources[[i]]
+    type <- names(sources)[i]
+    if (embed) {
+      if (type == "local") {
+        location <- systemfonts::font_info(location)$path[1]
+        type <- tolower(tools::file_ext(location))
+        if (!ext %in% c("woff2", "woff", "otf", "ttf")) {
+          stop(paste0("Unsupported file type for embedding: ", type))
+        }
+      }
+      mime <- switch(
+        ext,
+        woff2 = "font/woff2",
+        woff = "font/woff",
+        otf = "font/otf",
+        ttf = "font/ttf"
+      )
+      location <- paste0(
+        "data:",
+        mime,
+        ";charset=utf-8;base64,",
+        base64enc::base64encode(location)
+      )
+    } else {
+      location <- paste0('"', location, '"')
+    }
+    format <- switch(
+      type,
+      local = '',
+      woff2 = ' format("woff2")',
+      woff = ' format("woff")',
+      otf = ' format("opentype")',
+      ttf = ' format("truetype")'
+    )
+    prefix <- if (type == "local") "local" else "url"
+    paste0(prefix, "(", location, ")", format)
+  })
+  sources <- unlist(sources)
   if (length(sources) == 0) {
     cli::cli_abort("At least one font source must be given")
   }
@@ -203,15 +251,89 @@ validate_web_fonts <- function(x) {
   if (length(x) == 0) {
     return("")
   }
-  paste0(
-    paste(
-      ifelse(
-        vapply(x, is_font_face, logical(1)),
-        x,
-        paste0('    @import url("', x, '");')
-      ),
-      collapse = "\n"
-    ),
-    "\n"
-  )
+  x <- lapply(x, function(f) {
+    if (is_font_face(f)) {
+      return(f)
+    }
+    if (grepl("^\\s*@import", f)) {
+      return(sub("^\\s*@import", "    @import", f))
+    }
+    if (grepl("^https?://", f) || grepl("^data:", f)) {
+      return(paste0('    @import url("', f, '");'))
+    }
+    if (grepl("^<link", f)) {
+      cli::cli_warn(c(
+        "Web fonts should not be specified as link tags.",
+        i = "Use either `@import` or a bare URL"
+      ))
+      return()
+    }
+    x <- fonts_as_import(x, type = "import")
+    if (length(x) == 0) return()
+    paste0("    ", x)
+  })
+  paste0(unlist(x), collapse = "\n")
+}
+
+#' Add web font imports to an already created SVG file
+#'
+#' This function allows you to add web fonts after creation. The result is the
+#' same as using the `web_fonts` argument in [svglite()]. Only SVGs created with
+#' svglite can get web fonts added.
+#'
+#' @param filename The svgfile(s) or `svg` object(s) (as created by
+#' [svgstring()]) to edit
+#' @inheritParams svglite
+#'
+#' @return Invisibly returns `filename`. If any of elements of this were inline
+#' SVGs then these have been modified to include the imports
+#'
+#' @export
+#'
+add_web_fonts <- function(filename, web_fonts) {
+  web_fonts <- validate_web_fonts(web_fonts)
+  for (i in seq_along(filename)) {
+    f <- filename[[i]]
+    is_string <- grepl("^<(\\?xml|svg)", f)
+    if (is_string) {
+      svg <- strsplit(f, "\n")[[1]]
+    } else {
+      if (!grepl("\\.svg(z|\\.gz)?$", f)) {
+        cli::cli_abort("{.file {f}} is not an SVG file")
+      }
+      svg <- readLines(f)
+    }
+    if (!any(grepl("<g.*class='svglite'>", svg))) {
+      if (is_string) {
+        cli::cli_warn(
+          "SVG was not created by svglite. Not inserting font import"
+        )
+      } else {
+        cli::cli_warn(
+          "{.file {f}} was not created by svglite. Not inserting font import"
+        )
+      }
+      next
+    }
+    style <- grep("<style type='text/css'><![CDATA[", svg, fixed = TRUE)
+    if (length(style) == 0) {
+      if (is_string) {
+        cli::cli_warn("Can't find style tag in SVG. Not inserting font import")
+      } else {
+        cli::cli_warn(
+          "Can't find style tag in {.file {f}}. Not inserting font import"
+        )
+      }
+      next
+    }
+    svg <- c(svg[seq_len(style[1])], web_fonts, svg[-seq_len(style[1])])
+    if (is_string) {
+      filename[[i]][] <- paste0(svg, collapse = "\n")
+    } else {
+      out <- if (grepl("\\.(gz|svgz)$", f)) gzfile(f, "w") else file(f, "w")
+      writeLines(svg, out)
+      close(out)
+    }
+  }
+  invisible(filename)
 }

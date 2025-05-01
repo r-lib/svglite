@@ -11,14 +11,14 @@ svglite(
   bg = "white",
   pointsize = 12,
   standalone = TRUE,
-  system_fonts = list(),
-  user_fonts = list(),
   web_fonts = list(),
   id = NULL,
   fix_text_size = TRUE,
   scaling = 1,
   always_valid = FALSE,
-  file
+  file,
+  system_fonts = list(),
+  user_fonts = list()
 )
 }
 \arguments{
@@ -33,28 +33,17 @@ svglite(
 \item{standalone}{Produce a standalone svg file? If \code{FALSE}, omits
 xml header and default namespace.}
 
-\item{system_fonts}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} \emph{Consider using
-\code{\link[systemfonts:register_font]{systemfonts::register_font()}} instead}. Named list of font
-names to be aliased with fonts installed on your system. If unspecified,
-the R default families \code{sans}, \code{serif}, \code{mono} and
-\code{symbol} are aliased to the family returned by
-\code{\link[systemfonts]{font_info}()}.}
-
-\item{user_fonts}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} \emph{Consider using
-\code{\link[systemfonts:register_font]{systemfonts::register_font()}} instead}. Named list of fonts to
-be aliased with font files provided by the user rather than fonts properly
-installed on the system. The aliases can be fonts from the fontquiver
-package, strings containing a path to a font file, or a list containing
-\code{name} and \code{file} elements with \code{name} indicating
-the font alias in the SVG output and \code{file} the path to a
-font file.}
-
 \item{web_fonts}{A list containing web fonts to use in the SVG. The fonts
 will still need to be available locally on the computer running the code,
 but viewers of the final SVG will not need the font if specified as a web
 font. Web fonts can either be specified using \code{\link[=font_face]{font_face()}} or given as a
 single string in which case they are taken to be URL's for an \verb{@import}
-directive to e.g. Google Fonts.}
+directive to e.g. Google Fonts. For the latter, you can use
+\code{\link[=fonts_as_import]{fonts_as_import()}} to automatically generate the string, optionally
+embedding the font data in it. If the passed in string is not in the form
+of a URL or \verb{@import} statement then it is considered a font family name
+and \code{\link[=fonts_as_import]{fonts_as_import()}} will be called to convert it to an import
+automatically, using the default arguments.}
 
 \item{id}{A character vector of ids to assign to the generated SVG's. If
 creating more SVG files than supplied ids the exceeding SVG's will not have
@@ -80,6 +69,22 @@ hit (>50\% additional rendering time) so this should only be set to \code{TRUE}
 if the file is being parsed while it is still being written to.}
 
 \item{file}{Identical to \code{filename}. Provided for backward compatibility.}
+
+\item{system_fonts}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} \emph{Consider using
+\code{\link[systemfonts:register_font]{systemfonts::register_font()}} instead}. Named list of font
+names to be aliased with fonts installed on your system. If unspecified,
+the R default families \code{sans}, \code{serif}, \code{mono} and
+\code{symbol} are aliased to the family returned by
+\code{\link[systemfonts]{font_info}()}.}
+
+\item{user_fonts}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} \emph{Consider using
+\code{\link[systemfonts:register_font]{systemfonts::register_font()}} instead}. Named list of fonts to
+be aliased with font files provided by the user rather than fonts properly
+installed on the system. The aliases can be fonts from the fontquiver
+package, strings containing a path to a font file, or a list containing
+\code{name} and \code{file} elements with \code{name} indicating
+the font alias in the SVG output and \code{file} the path to a
+font file.}
 }
 \description{
 This function produces graphics compliant to the current w3 svg XML

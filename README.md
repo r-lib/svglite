@@ -64,8 +64,8 @@ bench::mark(svglite_test(), svg_test(), min_iterations = 250, check = FALSE)
 #> # A tibble: 2 × 6
 #>   expression          min   median `itr/sec` mem_alloc `gc/sec`
 #>   <bch:expr>     <bch:tm> <bch:tm>     <dbl> <bch:byt>    <dbl>
-#> 1 svglite_test()   1.85ms   1.93ms      514.     610KB     4.06
-#> 2 svg_test()       6.19ms   6.31ms      158.     224KB     0
+#> 1 svglite_test()   2.64ms   2.71ms      367.     627KB    2.96 
+#> 2 svg_test()       6.12ms   6.28ms      158.     224KB    0.633
 ```
 
 ### File size
@@ -95,7 +95,7 @@ invisible(dev.off())
 
 # svglite - svgz
 fs::file_size(tmp3)
-#> 9.43K
+#> 9.48K
 ```
 
 ### Editability
@@ -115,21 +115,24 @@ such as Inkscape or Illustrator and polish the output if you so choose.
 svglite uses systemfonts for font discovery which means that all
 installed fonts on your system is available to use. The systemfonts
 foundation means that fonts registered with `register_font()` or
-`register_variant()` will also be available. If any of these contains
+`register_variant()` will also be available, as will fonts added with
+`add_fonts()` and `require_font()`. If any of these contains
 non-standard weights or OpenType features (e.g. ligatures or tabular
 numerics) this will be correctly encoded in the style block. systemfonts
 also allows you to embed webfont `@imports` in your file to ensure that
 the file looks as expected even on systems without the used font
-installed.
+installed. Using `systemfonts::fonts_as_import()` you can generate these
+imports automatically, optionally embedding the font data directly in
+the file.
 
 ## Building svglite
 
 *This section is only relevant for building svglite from scratch, as
 opposed to installing from a pre-built package on CRAN.*
 
-Building vdiffr requires the system dependency libpng. As vdiffr doesn’t
-have any build-time configuration, your R configuration must point to
-libpng’s `include` and `lib` folders.
+Building svglite requires the system dependency libpng. As svglite
+doesn’t have any build-time configuration, your R configuration must
+point to libpng’s `include` and `lib` folders.
 
 For instance on macOS, install libpng with:
 

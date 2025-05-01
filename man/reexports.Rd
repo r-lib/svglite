@@ -6,6 +6,9 @@
 \alias{register_variant}
 \alias{register_font}
 \alias{font_feature}
+\alias{fonts_as_import}
+\alias{add_fonts}
+\alias{require_font}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -13,6 +16,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{systemfonts}{\code{\link[systemfonts]{font_feature}}, \code{\link[systemfonts]{register_font}}, \code{\link[systemfonts]{register_variant}}}
+  \item{systemfonts}{\code{\link[systemfonts]{add_fonts}}, \code{\link[systemfonts]{font_feature}}, \code{\link[systemfonts]{fonts_as_import}}, \code{\link[systemfonts]{register_font}}, \code{\link[systemfonts]{register_variant}}, \code{\link[systemfonts]{require_font}}}
 }}
 
