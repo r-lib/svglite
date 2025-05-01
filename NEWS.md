@@ -5,6 +5,7 @@
 * Added support for path stroking and filling (#174)
 * Added support for groups along with affine transformation and color blending.
   No support for Porter-Duff composition as it is porly supported in SVG (#174)
+* Added better support for specifying webfonts as embedded in the SVG (#182)
 * Added support for glyphs by rendering them as paths or rasters. This means the
   text is not editable in post-production but it is better than nothing.
 

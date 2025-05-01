@@ -49,7 +49,9 @@ will still need to be available locally on the computer running the code,
 but viewers of the final SVG will not need the font if specified as a web
 font. Web fonts can either be specified using \code{\link[=font_face]{font_face()}} or given as a
 single string in which case they are taken to be URL's for an \verb{@import}
-directive to e.g. Google Fonts.}
+directive to e.g. Google Fonts. For the latter, you can use
+\code{\link[=fonts_as_import]{fonts_as_import()}} to automatically generate the string, optionally
+embedding the font data in it.}
 
 \item{id}{A character vector of ids to assign to the generated SVG's. If
 creating more SVG files than supplied ids the exceeding SVG's will not have

@@ -112,7 +112,7 @@ validate_user_alias <- function(default_name, family) {
 #' @param woff2,woff,ttf,otf URLs to the font in different formats. At
 #'   least one must be given. Best browser support is provided by the woff
 #'   format.
-#' @param eot,svg Deprecated
+#' @param eot,svg `r lifecycle::badge("deprecated")`
 #' @param local One or more font names that local installations of the font may
 #'   have. If a local font is found with either of the given names it will be
 #'   used and no download will happen.
@@ -144,8 +144,8 @@ font_face <- function(
   woff = NULL,
   ttf = NULL,
   otf = NULL,
-  eot = NULL,
-  svg = NULL,
+  eot = deprecated(),
+  svg = deprecated(),
   local = NULL,
   weight = NULL,
   style = NULL,
@@ -156,54 +156,64 @@ font_face <- function(
   variation_setting = NULL,
   embed = FALSE
 ) {
-  if (!is.null(eot)) {
-    stop("`eot` has been deprecated due to poor viewer support", call. = FALSE)
+  if (lifecycle::is_present(eot)) {
+    lifecycle::deprecate_stop("2.2.0", "font_face(eot)")
   }
-  if (!is.null(svg)) {
-    stop("`svg` has been deprecated due to poor viewer support", call. = FALSE)
+  if (lifecycle::is_present(svg)) {
+    lifecycle::deprecate_stop("2.2.0", "font_face(svg)")
   }
-  type <- c("local", "woff2", "woff", "otf", "ttf")[
-    lengths(list(local, woff2, woff, otf, ttf)) != 0
-  ][1]
 
-  sources <- switch(
-    type,
-    local = paste0('local("', local, '")'),
-    woff2 = paste0('url("', woff2, '") format("woff2")'),
-    woff = paste0('url("', woff, '") format("woff")'),
-    otf = paste0('url("', otf, '") format("opentype")'),
-    ttf = paste0('url("', ttf, '") format("truetype")')
+  sources <- list(
+    local = local,
+    woff2 = woff2,
+    woff = woff,
+    otf = otf,
+    ttf = ttf
   )
+
+  sources <- lapply(seq_along(sources), function(i) {
+    location <- sources[[i]]
+    type <- names(sources)[i]
+    if (embed) {
+      if (type == "local") {
+        location <- systemfonts::font_info(location)$path[1]
+        type <- tolower(tools::file_ext(location))
+        if (!ext %in% c("woff2", "woff", "otf", "ttf")) {
+          stop(paste0("Unsupported file type for embedding: ", type))
+        }
+      }
+      mime <- switch(
+        ext,
+        woff2 = "font/woff2",
+        woff = "font/woff",
+        otf = "font/otf",
+        ttf = "font/ttf"
+      )
+      location <- paste0(
+        "data:",
+        mime,
+        ";charset=utf-8;base64,",
+        base64enc::base64encode(location)
+      )
+    } else {
+      location <- paste0('"', location, '"')
+    }
+    format <- switch(
+      type,
+      local = '',
+      woff2 = ' format("woff2")',
+      woff = ' format("woff")',
+      otf = ' format("opentype")',
+      ttf = ' format("truetype")'
+    )
+    prefix <- if (type == "local") "local" else "url"
+    paste0(prefix, "(", location, ")", format)
+  })
+  sources <- unlist(sources)
   if (length(sources) == 0) {
     cli::cli_abort("At least one font source must be given")
   }
 
-  if (embed) {
-    ext <- type
-    if (ext == "local") {
-      ext <- tolower(tools::file_ext(local))
-      if (!ext %in% c("woff2", "woff", "otf", "ttf")) {
-        stop(paste0("Unsupported file type for embedding: ", ext))
-      }
-    }
-    mime <- switch(
-      ext,
-      woff2 = "font/woff2",
-      woff = "font/woff",
-      otf = "font/otf",
-      ttf = "font/ttf"
-    )
-    sources <- switch(
-      type,
-      local = paste0('local("', local, '")'),
-      woff2 = paste0('url("', woff2, '") format("woff2")'),
-      woff = paste0('url("', woff, '") format("woff")'),
-      otf = paste0('url("', otf, '") format("opentype")'),
-      ttf = paste0('url("', ttf, '") format("truetype")'),
-      eot = paste0('url("', eot, '") format("embedded-opentype")'),
-      svg = paste0('url("', svg, '") format("woff")')
-    )
-  }
   # fmt: skip
   x <- c(
     '    @font-face {\n',
@@ -240,15 +250,27 @@ validate_web_fonts <- function(x) {
   if (length(x) == 0) {
     return("")
   }
-  paste0(
-    paste(
-      ifelse(
-        vapply(x, is_font_face, logical(1)),
-        x,
-        paste0('    @import url("', x, '");')
-      ),
-      collapse = "\n"
-    ),
-    "\n"
-  )
+  x <- lapply(x, function(f) {
+    if (is_font_face(f)) {
+      return(f)
+    }
+    if (grepl("^\\s*@import", f)) {
+      return(sub("^\\s*@import", "    @import", f))
+    }
+    if (grepl("^https?://", f) || grepl("^data:", f)) {
+      return(paste0('    @import url("', f, '");'))
+    }
+    if (grepl("^<link", f)) {
+      cli::cli_warn(c("Web fonts should not be specified as link tags.", i = "Use either `@import` or a bare URL"))
+      return()
+    }
+    x <- fonts_as_import(x, type = "import")
+    if (length(x) == 0) return()
+    paste0("    ", x)
+  })
+  paste0(unlist(x), collapse = "\n")
 }
+
+#' @export
+#' @importFrom systemfonts fonts_as_import
+systemfonts::fonts_as_import
