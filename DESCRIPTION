@@ -32,7 +32,7 @@ Imports:
     cli,
     lifecycle,
     rlang (>= 1.1.0),
-    systemfonts (>= 1.0.0),
+    systemfonts (>= 1.2.3),
     textshaping (>= 0.3.0)
 Suggests:
     covr,
