@@ -52,6 +52,8 @@ descriptor It is recommended to avoid using this if possible}
 
 \item{variation_setting}{An optional value for the \code{font-variation-settings}
 descriptor.}
+
+\item{embed}{Should the font data be embedded directly in the SVG}
 }
 \value{
 A character string with the \verb{@font-face} block.

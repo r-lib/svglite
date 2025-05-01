@@ -126,6 +126,7 @@ validate_user_alias <- function(default_name, family) {
 #'   descriptor It is recommended to avoid using this if possible
 #' @param variation_setting An optional value for the `font-variation-settings`
 #'   descriptor.
+#' @param embed Should the font data be embedded directly in the SVG
 #'
 #' @return A character string with the `@font-face` block.
 #'
