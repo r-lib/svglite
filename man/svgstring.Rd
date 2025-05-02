@@ -10,12 +10,12 @@ svgstring(
   bg = "white",
   pointsize = 12,
   standalone = TRUE,
-  system_fonts = list(),
-  user_fonts = list(),
   web_fonts = list(),
   id = NULL,
   fix_text_size = TRUE,
-  scaling = 1
+  scaling = 1,
+  system_fonts = list(),
+  user_fonts = list()
 )
 }
 \arguments{
@@ -27,22 +27,6 @@ svgstring(
 
 \item{standalone}{Produce a standalone svg file? If \code{FALSE}, omits
 xml header and default namespace.}
-
-\item{system_fonts}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} \emph{Consider using
-\code{\link[systemfonts:register_font]{systemfonts::register_font()}} instead}. Named list of font
-names to be aliased with fonts installed on your system. If unspecified,
-the R default families \code{sans}, \code{serif}, \code{mono} and
-\code{symbol} are aliased to the family returned by
-\code{\link[systemfonts]{font_info}()}.}
-
-\item{user_fonts}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} \emph{Consider using
-\code{\link[systemfonts:register_font]{systemfonts::register_font()}} instead}. Named list of fonts to
-be aliased with font files provided by the user rather than fonts properly
-installed on the system. The aliases can be fonts from the fontquiver
-package, strings containing a path to a font file, or a list containing
-\code{name} and \code{file} elements with \code{name} indicating
-the font alias in the SVG output and \code{file} the path to a
-font file.}
 
 \item{web_fonts}{A list containing web fonts to use in the SVG. The fonts
 will still need to be available locally on the computer running the code,
@@ -73,6 +57,22 @@ and background).}
 \item{scaling}{A scaling factor to apply to the rendered line width and text
 size. Useful for getting the right sizing at the dimension that you
 need.}
+
+\item{system_fonts}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} \emph{Consider using
+\code{\link[systemfonts:register_font]{systemfonts::register_font()}} instead}. Named list of font
+names to be aliased with fonts installed on your system. If unspecified,
+the R default families \code{sans}, \code{serif}, \code{mono} and
+\code{symbol} are aliased to the family returned by
+\code{\link[systemfonts]{font_info}()}.}
+
+\item{user_fonts}{\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}} \emph{Consider using
+\code{\link[systemfonts:register_font]{systemfonts::register_font()}} instead}. Named list of fonts to
+be aliased with font files provided by the user rather than fonts properly
+installed on the system. The aliases can be fonts from the fontquiver
+package, strings containing a path to a font file, or a list containing
+\code{name} and \code{file} elements with \code{name} indicating
+the font alias in the SVG output and \code{file} the path to a
+font file.}
 }
 \value{
 A function with no arguments: call the function to get the

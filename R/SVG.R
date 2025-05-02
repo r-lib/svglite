@@ -159,12 +159,12 @@ svgstring <- function(
   bg = "white",
   pointsize = 12,
   standalone = TRUE,
-  system_fonts = list(),
-  user_fonts = list(),
   web_fonts = list(),
   id = NULL,
   fix_text_size = TRUE,
-  scaling = 1
+  scaling = 1,
+  system_fonts = list(),
+  user_fonts = list()
 ) {
   aliases <- validate_aliases(system_fonts, user_fonts)
   web_fonts <- validate_web_fonts(web_fonts)
