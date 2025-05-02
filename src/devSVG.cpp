@@ -251,8 +251,7 @@ inline std::string raster_to_string(unsigned int *raster, int w, int h, double w
   return base64_encode(buffer.data(), buffer.size());
 }
 
-inline std::string find_alias_field(std::string family, cpp11::list& alias,
-                                    const char* face, const char* field) {
+inline std::string find_alias_field(cpp11::list& alias, const char* face, const char* field) {
   if (alias[face] != R_NilValue) {
     cpp11::list font(alias[face]);
     if (font[field] != R_NilValue)
@@ -261,92 +260,65 @@ inline std::string find_alias_field(std::string family, cpp11::list& alias,
   return std::string();
 }
 
-inline std::string find_user_alias(std::string family,
+inline std::string find_user_alias(const char * family,
                                    cpp11::list const& aliases,
                                    int face, const char* field) {
   std::string out;
-  if (aliases[family.c_str()] != R_NilValue) {
-    cpp11::list alias(aliases[family.c_str()]);
+  if (aliases[family] != R_NilValue) {
+    cpp11::list alias(aliases[family]);
     if (is_bolditalic(face))
-      out = find_alias_field(family, alias, "bolditalic", field);
+      out = find_alias_field(alias, "bolditalic", field);
     else if (is_bold(face))
-      out = find_alias_field(family, alias, "bold", field);
+      out = find_alias_field(alias, "bold", field);
     else if (is_italic(face))
-      out = find_alias_field(family, alias, "italic", field);
+      out = find_alias_field(alias, "italic", field);
     else if (is_symbol(face))
-      out = find_alias_field(family, alias, "symbol", field);
+      out = find_alias_field(alias, "symbol", field);
     else
-      out = find_alias_field(family, alias, "plain", field);
+      out = find_alias_field(alias, "plain", field);
   }
   return out;
 }
 
-inline std::string find_system_alias(std::string family,
+inline std::string find_system_alias(const char* family,
                                      cpp11::list const& aliases) {
   std::string out;
-  if (aliases[family.c_str()] != R_NilValue) {
-    cpp11::sexp alias = aliases[family.c_str()];
+  if (aliases[family] != R_NilValue) {
+    cpp11::sexp alias = aliases[family];
     if (TYPEOF(alias) == STRSXP && Rf_length(alias) == 1)
       out = cpp11::as_cpp<std::string>(alias);
   }
   return out;
 }
 
-inline std::string fontname(const char* family_, int face,
-                            cpp11::list const& system_aliases,
-                            cpp11::list const& user_aliases, FontSettings& font) {
-  std::string family(family_);
-  if (face == 5)
-    family = "symbol";
-  else if (family == "")
-    family = "sans";
-
-  std::string alias = find_system_alias(family, system_aliases);
-  if (alias.empty()) {
-    alias = find_user_alias(family, user_aliases, face, "name");
-  }
-
-  if (!alias.empty()) {
-    return alias;
-  }
-
-  std::string family_name = "";
-  family_name.resize(100);
-  if (get_font_family(font.file, font.index, &family_name[0], 100)) {
-    family_name.erase(family_name.find('\0'));
-    return family_name;
-  }
-  return family;
-}
-
-inline std::string fontfile(const char* family_, int face,
-                            cpp11::list user_aliases) {
-  std::string family(family_);
-  if (face == 5)
-    family = "symbol";
-  else if (family == "")
-    family = "sans";
-
-  return find_user_alias(family, user_aliases, face, "file");
-}
-
-inline FontSettings get_font_file(const char* family, int face, cpp11::list user_aliases) {
+inline FontSettings get_font(const char* family, int face, cpp11::list user_aliases, cpp11::list system_aliases, std::string& family_name) {
   const char* fontfamily = family;
   if (is_symbol(face)) {
     fontfamily = "symbol";
   } else if (strcmp(family, "") == 0) {
     fontfamily = "sans";
   }
-  std::string alias = fontfile(fontfamily, face, user_aliases);
+  std::string alias = find_system_alias(fontfamily, system_aliases);
   if (!alias.empty()) {
+    fontfamily = alias.c_str();
+  }
+
+  std::string user_alias = find_user_alias(fontfamily, user_aliases, face, "file");
+  if (!user_alias.empty()) {
     FontSettings result = {};
-    std::strncpy(result.file, alias.c_str(), PATH_MAX);
+    std::strncpy(result.file, user_alias.c_str(), PATH_MAX);
     result.index = 0;
     result.n_features = 0;
+    family_name = find_user_alias(fontfamily, user_aliases, face, "name");
     return result;
   }
 
-  return locate_font_with_features(fontfamily, is_italic(face), is_bold(face));
+  FontSettings font = locate_font_with_features(fontfamily, is_italic(face), is_bold(face));
+  family_name.resize(100);
+  if (get_font_family(font.file, font.index, &family_name[0], 100)) {
+    family_name.erase(family_name.find('\0'));
+  }
+  return font;
 }
 
 inline void write_escaped(SvgStreamPtr stream, const char* text) {
@@ -557,9 +529,25 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
     c = -c;
   }
 
-  FontSettings font = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
+  std::string family_name;
+  FontSettings font = get_font(
+    gc->fontfamily,
+    gc->fontface,
+    svgd->user_aliases,
+    svgd->system_aliases,
+    family_name
+  );
 
-  int error = glyph_metrics(c, font.file, font.index, gc->ps * gc->cex * svgd->scaling, 1e4, ascent, descent, width);
+  int error = glyph_metrics(
+    c,
+    font.file,
+    font.index,
+    gc->ps * gc->cex * svgd->scaling,
+    1e4,
+    ascent,
+    descent,
+    width
+  );
   if (error != 0) {
     *ascent = 0;
     *descent = 0;
@@ -839,10 +827,24 @@ void svg_path(double *x, double *y,
 double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
-  FontSettings font = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
+  std::string family_name;
+  FontSettings font = get_font(
+    gc->fontfamily,
+    gc->fontface,
+    svgd->user_aliases,
+    svgd->system_aliases,
+    family_name
+  );
 
   double width = 0.0;
-  int error = textshaping::string_width(str, font, gc->ps * gc->cex * svgd->scaling, 72.0, 1, &width);
+  int error = textshaping::string_width(
+    str,
+    font,
+    gc->ps * gc->cex * svgd->scaling,
+    72.0,
+    1,
+    &width
+  );
 
   if (error != 0) {
     width = 0.0;
@@ -929,12 +931,16 @@ void svg_text(double x, double y, const char *str, double rot,
   }
   SvgStreamPtr stream = svgd->stream;
 
+  std::string family_name;
+  FontSettings font = get_font(
+    gc->fontfamily,
+    gc->fontface,
+    svgd->user_aliases,
+    svgd->system_aliases,
+    family_name
+  );
+
   if (svgd->is_recording_clip) {
-    FontSettings font = get_font_file(
-      gc->fontfamily,
-      gc->fontface,
-      svgd->user_aliases
-    );
     std::vector<textshaping::Point> loc_buffer;
     std::vector<uint32_t> id_buffer;
     std::vector<int> cluster_buffer;
@@ -983,7 +989,7 @@ void svg_text(double x, double y, const char *str, double rot,
       for (size_t i = 0; i < loc_buffer.size(); ++i) {
         mat_mult(transform, 1.0, 0.0, 0.0, 1.0, loc_buffer[i].x, loc_buffer[i].y);
         bool no_outline = true;
-        std::string p = get_glyph_path(
+        (*stream) << get_glyph_path(
           id_buffer[i],
           transform,
           fallback_buffer[font_buffer[i]].file,
@@ -1019,8 +1025,7 @@ void svg_text(double x, double y, const char *str, double rot,
   write_style_begin(stream);
   write_style_fontsize(stream, fontsize * svgd->scaling, true);
 
-  FontSettings font_info = get_font_file(gc->fontfamily, gc->fontface, svgd->user_aliases);
-  int weight = get_font_weight(font_info.file, font_info.index);
+  int weight = get_font_weight(font.file, font.index);
 
   if (weight != 400) {
     if (weight == 700) {
@@ -1034,20 +1039,19 @@ void svg_text(double x, double y, const char *str, double rot,
   if (!is_black(gc->col))
     write_style_col(stream, "fill", gc->col);
 
-  std::string font = fontname(gc->fontfamily, gc->fontface, svgd->system_aliases, svgd->user_aliases, font_info);
-  font = "\"" + font + "\"";
-  write_style_str(stream, "font-family", font.c_str());
+  family_name = "\"" + family_name + "\"";
+  write_style_str(stream, "font-family", family_name.c_str());
 
-  if (font_info.n_features > 0) {
+  if (font.n_features > 0) {
     (*stream) << " font-feature-settings: ";
-    for (int i = 0; i < font_info.n_features; ++i) {
+    for (int i = 0; i < font.n_features; ++i) {
       std::string feature = "";
-      feature += font_info.features[i].feature[0];
-      feature += font_info.features[i].feature[1];
-      feature += font_info.features[i].feature[2];
-      feature += font_info.features[i].feature[3];
-      (*stream) << "\"" << feature << "\" " << font_info.features[i].setting;
-      (*stream) << (i == font_info.n_features - 1 ? ";" : ",");
+      feature += font.features[i].feature[0];
+      feature += font.features[i].feature[1];
+      feature += font.features[i].feature[2];
+      feature += font.features[i].feature[3];
+      (*stream) << "\"" << feature << "\" " << font.features[i].setting;
+      (*stream) << (i == font.n_features - 1 ? ";" : ",");
     }
   }
 
