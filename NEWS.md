@@ -1,4 +1,4 @@
-# svglite (development version)
+# svglite 2.2.0
 
 * Added support for luminance masking (#174)
 * Fixed a bug in calculating text widths when using font features (#175)
