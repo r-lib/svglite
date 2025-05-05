@@ -1,5 +1,9 @@
 This is a larger release bringing svglite up to date with the newest graphics
-engine features
+engine features.
+
+We see 3 failing reverse dependencies - all because they assume a certain
+structure of the produced svg that cannot be kept while adding new features.
+They have all been notified in advance of this submission
 
 ## revdepcheck results
 
