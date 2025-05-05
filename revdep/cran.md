@@ -1,12 +1,21 @@
 ## revdepcheck results
 
-We checked 47 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
+We checked 78 reverse dependencies, comparing R CMD check results across CRAN and dev versions of this package.
 
- * We saw 0 new problems
- * We failed to check 1 packages
+ * We saw 3 new problems
+ * We failed to check 0 packages
 
 Issues with CRAN packages are summarised below.
 
-### Failed to check
+### New problems
+(This reports the first line of each new failure)
 
-* SCpubr (NA)
+* ggfixest
+  checking tests ... ERROR
+
+* gtExtras
+  checking tests ... ERROR
+
+* parttree
+  checking tests ... ERROR
+
