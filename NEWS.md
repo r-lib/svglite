@@ -1,3 +1,5 @@
+# svglite (development version)
+
 # svglite 2.2.0
 
 * Added support for luminance masking (#174)
