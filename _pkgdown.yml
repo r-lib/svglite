@@ -10,5 +10,7 @@ template:
 
 news:
   releases:
+  - text: "Version 2.2.0"
+    href: "https://www.tidyverse.org/blog/2025/05/svglite-2-2-0/"
   - text: "Version 2.0.0"
     href: "https://www.tidyverse.org/blog/2021/02/svglite-2-0-0/"
