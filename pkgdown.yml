@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   fonts: fonts.html
   scaling: scaling.html
-last_built: 2025-05-07T12:19Z
+last_built: 2025-05-07T12:25Z
 urls:
   reference: https://svglite.r-lib.org/reference
   article: https://svglite.r-lib.org/articles
