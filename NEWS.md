@@ -1,3 +1,5 @@
+# svglite (development version)
+
 # svglite 2.2.1
 
 * Fix a compilation issue on Fedora
