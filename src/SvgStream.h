@@ -11,6 +11,7 @@
 #include <cpp11/function.hpp>
 #include <unordered_set>
 #include "utils.h"
+#include <cstdint>
 
 namespace svglite { namespace internal {
 
