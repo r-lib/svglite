@@ -19,7 +19,7 @@ alias_lookup <- function() {
 
 #' @importFrom systemfonts font_info
 match_family <- function(font, bold = FALSE, italic = FALSE) {
-  font_info(font, bold = bold, italic = italic)$family[1]
+  font_info(font, weight = if (bold) "bold" else "normal", italic = italic)$family[1]
 }
 
 validate_aliases <- function(system_fonts, user_fonts) {
