@@ -1,4 +1,4 @@
-# svglite (development version)
+# svglite 2.2.2
 
 * Avoid sanitizer error when calculating precision (#198)
 * Fix a test bug on newer versions of macOS
