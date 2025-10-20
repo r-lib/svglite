@@ -65,7 +65,7 @@
 #'   the font alias in the SVG output and \code{file} the path to a
 #'   font file.
 #' @references \emph{W3C Scalable Vector Graphics (SVG)}:
-#'   \url{https://www.w3.org/Graphics/SVG/}
+#'   \url{https://www.w3.org/groups/wg/svg/}
 #' @author This driver was written by T Jake Luciani
 #'   \email{jakeluciani@@yahoo.com} 2012: updated by Matthieu Decorde
 #'   \email{matthieu.decorde@@ens-lyon.fr}
