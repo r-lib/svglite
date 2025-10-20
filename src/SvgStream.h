@@ -18,7 +18,8 @@ namespace svglite { namespace internal {
 template <typename T>
 void write_double(T& stream, double data) {
   std::streamsize prec = stream.precision();
-  uint8_t newprec = std::fabs(data) >= 1 || data == 0. ? prec : std::ceil(-std::log10(std::fabs(data))) + 1;
+  int newprec = std::fabs(data) >= 1 || data == 0. ? prec : std::ceil(-std::log10(std::fabs(data))) + 1;
+  newprec = newprec > UINT8_MAX ? UINT8_MAX : newprec;
   stream << std::setprecision(newprec) << data << std::setprecision(prec);
 }
 

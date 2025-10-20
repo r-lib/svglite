@@ -1,5 +1,7 @@
 # svglite (development version)
 
+* Avoid sanitizer error when calculating precision (#198)
+
 # svglite 2.2.1
 
 * Fix a compilation issue on Fedora
