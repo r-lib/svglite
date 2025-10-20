@@ -1,10 +1,10 @@
 pandoc: 3.1.11
-pkgdown: 2.1.2
+pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   fonts: fonts.html
   scaling: scaling.html
-last_built: 2025-05-12T20:25Z
+last_built: 2025-10-20T07:39Z
 urls:
   reference: https://svglite.r-lib.org/reference
   article: https://svglite.r-lib.org/articles

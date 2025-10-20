@@ -75,7 +75,7 @@
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="../logo.svg" class="logo" alt=""><h1>Specifying fonts</h1>
             
-            <h4 data-toc-skip class="date">2025-05-12</h4>
+            <h4 data-toc-skip class="date">2025-10-20</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/r-lib/svglite/blob/main/vignettes/fonts.Rmd" class="external-link"><code>vignettes/fonts.Rmd</code></a></small>
       <div class="d-none name"><code>fonts.Rmd</code></div>
@@ -256,15 +256,22 @@ systemfonts:</p>
 <span><span class="co">#&gt; $features</span></span>
 <span><span class="co">#&gt; integer(0)</span></span>
 <span><span class="fu">systemfonts</span><span class="fu">::</span><span class="fu"><a href="https://systemfonts.r-lib.org/reference/font_info.html" class="external-link">font_info</a></span><span class="op">(</span><span class="st">"Helvetica"</span>, bold <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A data frame: 1 × 24</span></span></span>
-<span><span class="co">#&gt;   path   index family style italic bold  monospace weight width kerning</span></span>
-<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> /usr/…     0 Nimbu… Bold  FALSE  TRUE  FALSE     bold   norm… FALSE  </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 14 more variables: color &lt;lgl&gt;, scalable &lt;lgl&gt;, vertical &lt;lgl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   n_glyphs &lt;int&gt;, n_sizes &lt;int&gt;, n_charmaps &lt;int&gt;, bbox &lt;list&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   max_ascend &lt;dbl&gt;, max_descend &lt;dbl&gt;, max_advance_width &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   max_advance_height &lt;dbl&gt;, lineheight &lt;dbl&gt;, underline_pos &lt;dbl&gt;,</span></span></span>
-<span><span class="co">#&gt; <span style="color: #949494;">#   underline_size &lt;dbl&gt;</span></span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: The `bold` argument of `font_info()` is deprecated as of systemfonts</span></span>
+<span><span class="co">#&gt; 1.2.4.</span></span>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Please use the `weight` argument instead.</span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">This warning is displayed once every 8 hours.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">Call `lifecycle::last_lifecycle_warnings()` to see where this warning</span></span></span>
+<span><span class="co">#&gt; <span style="color: #555555;">was generated.</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A data frame: 1 × 27</span></span></span>
+<span><span class="co">#&gt;   path     index family style name  italic bold  monospace weight width</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span> <span style="color: #949494; font-style: italic;">&lt;lgl&gt;</span>     <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;ord&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> /usr/sh…     0 Nimbu… Bold  Nimb… FALSE  TRUE  FALSE     bold   norm…</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 17 more variables: kerning &lt;lgl&gt;, color &lt;lgl&gt;, scalable &lt;lgl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   vertical &lt;lgl&gt;, n_glyphs &lt;int&gt;, n_sizes &lt;int&gt;, n_charmaps &lt;int&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   charmaps &lt;list&gt;, bbox &lt;list&gt;, max_ascend &lt;dbl&gt;, max_descend &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   max_advance_width &lt;dbl&gt;, max_advance_height &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   lineheight &lt;dbl&gt;, underline_pos &lt;dbl&gt;, underline_size &lt;dbl&gt;,</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;">#   variation_axes &lt;list&gt;</span></span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
@@ -279,7 +286,7 @@ systemfonts:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.2.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
   </div></footer>
