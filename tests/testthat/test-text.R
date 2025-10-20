@@ -89,11 +89,3 @@ test_that("strwidth and height correctly computed", {
 
   rect(0.5 - w / 2, 0.5 - h / 2, 0.5 + w / 2, 0.5 + h / 2)
 })
-
-test_that("strwidth has fallback for unknown glyphs", {
-  xmlSVG(user_fonts = bitstream, {
-    plot.new()
-    w <- strwidth("正規分布")
-  })
-  expect_true(w > 0)
-})
