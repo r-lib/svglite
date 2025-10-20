@@ -4,7 +4,7 @@
 #' package.
 #'
 #' @param code Plotting code to execute.
-#' @param ... Other arguments passed on to \code{\link{svglite}}.
+#' @param ... Other arguments passed on to \code{\link{svgstring}}.
 #' @keywords internal
 #' @export
 #' @examples

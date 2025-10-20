@@ -9,7 +9,7 @@ editSVG(code, ..., width = NA, height = NA)
 \arguments{
 \item{code}{Plotting code to execute.}
 
-\item{...}{Other arguments passed on to \code{\link{svglite}}.}
+\item{...}{Other arguments passed on to \code{\link{svgstring}}.}
 
 \item{height, width}{Height and width in inches.}
 }

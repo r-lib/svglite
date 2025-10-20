@@ -9,7 +9,7 @@ stringSVG(code, ...)
 \arguments{
 \item{code}{Plotting code to execute.}
 
-\item{...}{Other arguments passed on to \code{\link{svglite}}.}
+\item{...}{Other arguments passed on to \code{\link{svgstring}}.}
 }
 \description{
 This is useful primarily for testing but can be used as an
