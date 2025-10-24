@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   scaling: scaling.html
-last_built: 2025-10-20T16:00Z
+last_built: 2025-10-24T09:16Z
 urls:
   reference: https://svglite.r-lib.org/reference
   article: https://svglite.r-lib.org/articles
