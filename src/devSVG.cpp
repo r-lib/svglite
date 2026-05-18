@@ -1593,13 +1593,15 @@ void svg_use_group(SEXP ref, SEXP trans, pDevDesc dd) {
       REAL(trans)[1] << "," <<
       REAL(trans)[4] << "," <<
       REAL(trans)[2] << "," <<
-      REAL(trans)[5] << ");'>\n";
-  }
-
-  (*stream) << "  <use href='#group-" << key << "' />\n";
-
-  if (has_transform) {
+      REAL(trans)[5] << ");'";
+    write_attr_mask(stream, svgd->current_mask);
+    (*stream) << ">\n";
+    (*stream) << "  <use href='#group-" << key << "' />\n";
     (*stream) << "  </g>\n";
+  } else {
+    (*stream) << "  <use href='#group-" << key << "'";
+    write_attr_mask(stream, svgd->current_mask);
+    (*stream) << " />\n";
   }
 
   return;
