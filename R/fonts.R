@@ -3,16 +3,25 @@ r_font_faces <- c("plain", "bold", "italic", "bolditalic", "symbol")
 
 alias_lookup <- function() {
   if (.Platform$OS.type == "windows") {
+    sans_font <- "Arial"
     serif_font <- "Times New Roman"
+    mono_font <- "Courier"
     symbol_font <- "Standard Symbols L"
-  } else {
+  } else if (Sys.info()[["sysname"]] == "Darwin") {
+    sans_font <- "Helvetica"
     serif_font <- "Times"
+    mono_font <- "Courier"
     symbol_font <- "Symbol"
+  } else {
+    sans_font <- "sans"
+    serif_font <- "serif"
+    mono_font <- "mono"
+    symbol_font <- "symbol"
   }
   c(
-    sans = "Arial",
+    sans = sans_font,
     serif = serif_font,
-    mono = "Courier",
+    mono = mono_font,
     symbol = symbol_font
   )
 }
