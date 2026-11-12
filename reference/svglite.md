@@ -153,6 +153,6 @@ updated by Matthieu Decorde <matthieu.decorde@ens-lyon.fr>
 svglite(tempfile("Rplots.svg"))
 plot(1:11, (-5:5)^2, type = "b", main = "Simple Example")
 dev.off()
-#> agg_record_197a6017b1 
-#>                     2 
+#> agg_record_1bd865ed6f7b 
+#>                       2 
 ```

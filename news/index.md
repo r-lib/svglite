@@ -2,6 +2,28 @@
 
 ## svglite (development version)
 
+- [`svglite()`](https://svglite.r-lib.org/reference/svglite.md) and
+  [`svgstring()`](https://svglite.r-lib.org/reference/svgstring.md) now
+  treat `bg = NA` as `bg = "transparent"` instead of failing with a
+  cryptic error, fixing `ggsave()` of plots with a transparent
+  background ([\#208](https://github.com/r-lib/svglite/issues/208))
+- Errors in pattern, mask, group, or clip path callbacks no longer leave
+  the device in a corrupted state; output from the failed callback is
+  discarded and the device remains usable
+- Fixed potential crashes from unterminated or oversized font family
+  buffers
+- Upscaling of non-interpolated rasters is now capped to avoid enormous
+  memory allocations when a small raster is drawn over a very large
+  region
+- Fixed malformed SVG output when using a linear or radial gradient with
+  `extend = "repeat"` (a missing closing quote in the `spreadMethod`
+  attribute)
+- Fixed clipping paths defined by glyphs only including the first glyph
+- Fixed fractional text and raster rotation angles being rounded to
+  whole degrees
+- [`svgstring()`](https://svglite.r-lib.org/reference/svgstring.md) now
+  returns valid XML when queried while a clip region is active
+- Support variable fonts throughout rendering
 - Masks are now correctly applied when using groups (`grid.group()` and
   `grid.use()`) ([\#206](https://github.com/r-lib/svglite/issues/206),
   [@trevorld](https://github.com/trevorld))

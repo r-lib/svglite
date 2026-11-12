@@ -150,6 +150,7 @@ s()
 #> </defs>
 #> <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw1NzYuMDA=)'>
 #> </g>
+#> </g>
 #> </svg>
 text(0.5, 0.5, "Hi!")
 s()
@@ -190,9 +191,10 @@ s()
 #> <g clip-path='url(#cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng==)'>
 #> <text x='374.40' y='285.15' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='14.67px' lengthAdjust='spacingAndGlyphs'>Hi!</text>
 #> </g>
+#> </g>
 #> </svg>
 dev.off()
-#> agg_record_197a19cfeaec 
+#> agg_record_1bd82b0230ff 
 #>                       2 
 
 s <- svgstring()
@@ -262,18 +264,19 @@ s()
 #> <line x1='59.04' y1='234.25' x2='51.84' y2='234.25' style='stroke-width: 0.75;' />
 #> <line x1='59.04' y1='165.12' x2='51.84' y2='165.12' style='stroke-width: 0.75;' />
 #> <line x1='59.04' y1='95.99' x2='51.84' y2='95.99' style='stroke-width: 0.75;' />
-#> <text transform='translate(41.76,441.64) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-1.5</text>
-#> <text transform='translate(41.76,372.51) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-1.0</text>
-#> <text transform='translate(41.76,303.38) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-0.5</text>
-#> <text transform='translate(41.76,234.25) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.0</text>
-#> <text transform='translate(41.76,165.12) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.5</text>
-#> <text transform='translate(41.76,95.99) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+#> <text transform='translate(41.76,441.64) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-1.5</text>
+#> <text transform='translate(41.76,372.51) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-1.0</text>
+#> <text transform='translate(41.76,303.38) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-0.5</text>
+#> <text transform='translate(41.76,234.25) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+#> <text transform='translate(41.76,165.12) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+#> <text transform='translate(41.76,95.99) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>1.0</text>
 #> <polygon points='59.04,502.56 689.76,502.56 689.76,59.04 59.04,59.04 ' style='stroke-width: 0.75;' />
 #> <text x='374.40' y='557.28' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='46.02px' lengthAdjust='spacingAndGlyphs'>rnorm(5)</text>
-#> <text transform='translate(12.96,280.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='46.02px' lengthAdjust='spacingAndGlyphs'>rnorm(5)</text>
+#> <text transform='translate(12.96,280.80) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='46.02px' lengthAdjust='spacingAndGlyphs'>rnorm(5)</text>
+#> </g>
 #> </g>
 #> </svg>
 dev.off()
-#> agg_record_197a19cfeaec 
+#> agg_record_1bd82b0230ff 
 #>                       2 
 ```

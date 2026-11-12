@@ -89,14 +89,14 @@ stringSVG(plot(1:10))
 #> <line x1='59.04' y1='214.92' x2='51.84' y2='214.92' style='stroke-width: 0.75;' />
 #> <line x1='59.04' y1='143.42' x2='51.84' y2='143.42' style='stroke-width: 0.75;' />
 #> <line x1='59.04' y1='71.91' x2='51.84' y2='71.91' style='stroke-width: 0.75;' />
-#> <text transform='translate(41.76,357.94) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>2</text>
-#> <text transform='translate(41.76,286.43) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>4</text>
-#> <text transform='translate(41.76,214.92) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>6</text>
-#> <text transform='translate(41.76,143.42) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>8</text>
-#> <text transform='translate(41.76,71.91) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>10</text>
+#> <text transform='translate(41.76,357.94) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>2</text>
+#> <text transform='translate(41.76,286.43) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>4</text>
+#> <text transform='translate(41.76,214.92) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>6</text>
+#> <text transform='translate(41.76,143.42) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>8</text>
+#> <text transform='translate(41.76,71.91) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='13.34px' lengthAdjust='spacingAndGlyphs'>10</text>
 #> <polygon points='59.04,406.56 449.76,406.56 449.76,59.04 59.04,59.04 ' style='stroke-width: 0.75;' />
 #> <text x='254.40' y='461.28' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='29.34px' lengthAdjust='spacingAndGlyphs'>Index</text>
-#> <text transform='translate(12.96,232.80) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>1:10</text>
+#> <text transform='translate(12.96,232.80) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>1:10</text>
 #> </g>
 #> </g>
 #> </svg>
