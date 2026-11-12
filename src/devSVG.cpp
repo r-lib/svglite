@@ -31,6 +31,7 @@ extern "C" {
 #include <textshaping.h>
 #include <string>
 #include <cstring>
+#include <cmath>
 #include <cstdint>
 #include <iomanip>
 #include <sstream>
@@ -121,6 +122,90 @@ public:
   }
 };
 
+// Machinery for handing control back to R (when recording patterns, masks,
+// clip paths, and groups) without corrupting the device state if the R
+// callback errors or is interrupted.
+//
+// svg_eval_begin() snapshots the mutable device state and redirects output
+// to a temporary buffer. The R callback is run through svg_eval_run(), which
+// uses R_UnwindProtect so that the snapshot is restored on both normal and
+// non-local exits. On success, svg_eval_end() folds the buffered output into
+// the real stream; on error the buffer is discarded as the jump continues,
+// leaving the device exactly as it was before.
+
+struct SvgEvalState {
+  SVGDesc* svgd;
+  SvgStreamPtr real_stream;
+  SvgStreamPtr buffer;
+  SEXP expr;
+  bool is_recording_clip;
+  bool is_clipping;
+  std::string clipid;
+  double clipx0, clipx1, clipy0, clipy1;
+  int current_mask;
+};
+
+static SvgEvalState svg_eval_begin(SVGDesc* svgd) {
+  SvgEvalState s;
+  s.svgd = svgd;
+  s.real_stream = svgd->stream;
+  s.buffer.reset(new SvgStreamBuffer());
+  s.is_recording_clip = svgd->is_recording_clip;
+  s.is_clipping = svgd->is_clipping;
+  s.clipid = svgd->clipid;
+  s.clipx0 = svgd->clipx0;
+  s.clipx1 = svgd->clipx1;
+  s.clipy0 = svgd->clipy0;
+  s.clipy1 = svgd->clipy1;
+  s.current_mask = svgd->current_mask;
+  svgd->stream = s.buffer;
+  return s;
+}
+
+static void svg_eval_apply_snapshot(SvgEvalState* s) {
+  SVGDesc* svgd = s->svgd;
+  svgd->stream = s->real_stream;
+  svgd->is_recording_clip = s->is_recording_clip;
+  svgd->clipid = s->clipid;
+  svgd->clipx0 = s->clipx0;
+  svgd->clipx1 = s->clipx1;
+  svgd->clipy0 = s->clipy0;
+  svgd->clipy1 = s->clipy1;
+  svgd->current_mask = s->current_mask;
+  svgd->set_clipping(s->is_clipping);
+}
+
+// The cleanup runs on both normal and non-local exits; only the jump case
+// needs the snapshot restored (the normal exit path continues writing to the
+// buffer and calls svg_eval_end() instead)
+static void svg_eval_restore(void* data, Rboolean jump) {
+  if (!jump) {
+    return;
+  }
+  svg_eval_apply_snapshot(static_cast<SvgEvalState*>(data));
+}
+
+static SEXP svg_eval_invoke(void* data) {
+  SvgEvalState* s = static_cast<SvgEvalState*>(data);
+  SEXP R_fcall = PROTECT(Rf_lang1(s->expr));
+  SEXP res = Rf_eval(R_fcall, R_GlobalEnv);
+  UNPROTECT(1);
+  return res;
+}
+
+static void svg_eval_run(SvgEvalState* s, SEXP expr) {
+  s->expr = expr;
+  R_UnwindProtect(svg_eval_invoke, s, svg_eval_restore, s, NULL);
+}
+
+static void svg_eval_end(SvgEvalState* s) {
+  svg_eval_apply_snapshot(s);
+  SvgStreamBuffer* buffer = static_cast<SvgStreamBuffer*>(s->buffer.get());
+  s->real_stream->write(buffer->str());
+  s->real_stream->merge_clip_ids_from(*s->buffer);
+  s->real_stream->flush();
+}
+
 inline bool is_black(int col) {
   return (R_RED(col) == 0) && (R_GREEN(col) == 0) && (R_BLUE(col) == 0) &&
     (R_ALPHA(col) == 255);
@@ -178,9 +263,16 @@ static void png_memory_write(png_structp  png_ptr, png_bytep data, png_size_t le
   std::vector<uint8_t> *p = (std::vector<uint8_t>*)png_get_io_ptr(png_ptr);
   p->insert(p->end(), data, data + length);
 }
+// Upper bound on the number of pixels in an upscaled raster. Beyond this the
+// extra resolution is wasteful, and the allocation could be enormous
+const static size_t MAX_RASTER_PIXELS = 16777216;  // 4096 * 4096
+
 inline std::string raster_to_string(unsigned int *raster, int w, int h, double width, double height, bool interpolate) {
   h = h < 0 ? -h : h;
   w = w < 0 ? -w : w;
+  if (w == 0 || h == 0) {
+    return "";
+  }
   bool resize = false;
   int w_fac = 1, h_fac = 1;
   std::vector<unsigned int> raster_resize;
@@ -195,23 +287,32 @@ inline std::string raster_to_string(unsigned int *raster, int w, int h, double w
   }
 
   if (resize) {
-    int w_new = w * w_fac;
-    int h_new = h * h_fac;
+    // Clamp the upscale factors so the resized raster stays within sane
+    // bounds; the factors derive from user-controlled sizes and can overflow
+    // int or trigger huge allocations otherwise
+    size_t pixels = (size_t)w * w_fac * h * h_fac;
+    if (pixels > MAX_RASTER_PIXELS) {
+      double shrink = std::sqrt((double)MAX_RASTER_PIXELS / pixels);
+      w_fac = std::max(1, (int)(w_fac * shrink));
+      h_fac = std::max(1, (int)(h_fac * shrink));
+    }
+    size_t w_new = (size_t)w * w_fac;
+    size_t h_new = (size_t)h * h_fac;
     raster_resize.reserve(w_new * h_new);
+    std::vector<unsigned int> row;
+    row.reserve(w_new);
     for (int i = 0; i < h; ++i) {
+      row.clear();
       for (int j = 0; j < w; ++j) {
-        unsigned int val = raster[i * w + j];
-        for (int wrep = 0; wrep < w_fac; ++wrep) {
-          raster_resize.push_back(val);
-        }
+        row.insert(row.end(), w_fac, raster[i * w + j]);
       }
-      for (int hrep = 1; hrep < h_fac; ++hrep) {
-        raster_resize.insert(raster_resize.end(), raster_resize.end() - w_new, raster_resize.end());
+      for (int hrep = 0; hrep < h_fac; ++hrep) {
+        raster_resize.insert(raster_resize.end(), row.begin(), row.end());
       }
     }
     raster = raster_resize.data();
-    w = w_new;
-    h = h_new;
+    w = (int)w_new;
+    h = (int)h_new;
   }
 
   png_structp png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
@@ -239,7 +340,7 @@ inline std::string raster_to_string(unsigned int *raster, int w, int h, double w
   );
   std::vector<uint8_t*> rows(h);
   for (int y = 0; y < h; ++y) {
-    rows[y] = (uint8_t*)raster + y * w * 4;
+    rows[y] = (uint8_t*)raster + (size_t)y * w * 4;
   }
 
   std::vector<std::uint8_t> buffer;
@@ -326,6 +427,7 @@ inline FontSettings2 get_font(const char* family, int face, cpp11::list user_ali
   if (!user_alias.empty()) {
     FontSettings2 result = {};
     std::strncpy(result.file, user_alias.c_str(), PATH_MAX);
+    result.file[PATH_MAX] = '\0';
     result.index = 0;
     result.n_features = 0;
     family_name = find_user_alias(fontfamily, user_aliases, face, "name");
@@ -345,7 +447,10 @@ inline FontSettings2 get_font(const char* family, int face, cpp11::list user_ali
   );
   family_name.resize(100);
   if (systemfonts::ver2::get_font_family(font, &family_name[0], 100)) {
-    family_name.erase(family_name.find('\0'));
+    size_t nul = family_name.find('\0');
+    if (nul != std::string::npos) {
+      family_name.erase(nul);
+    }
   }
   return font;
 }
@@ -592,6 +697,7 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
   if (!svgd->is_inited) {
     return;
   }
+
   SvgStreamPtr stream = svgd->stream;
 
   double xmin = std::min(x0, x1);
@@ -1036,7 +1142,7 @@ void svg_text(double x, double y, const char *str, double rot,
     write_attr_dbl(stream, "x", x);
     write_attr_dbl(stream, "y", y);
   } else {
-    (*stream) << tfm::format(" transform='translate(%0.2f,%0.2f) rotate(%0.0f)'",
+    (*stream) << tfm::format(" transform='translate(%0.2f,%0.2f) rotate(%0.2f)'",
       x, y, -1.0 * rot);
   }
 
@@ -1179,7 +1285,7 @@ void svg_raster(unsigned int *raster, int w, int h,
   }
 
   if( rot != 0 ){
-    (*stream) << tfm::format(" transform='rotate(%0.0f,%.2f,%.2f)'", -1.0 * rot, x, y);
+    (*stream) << tfm::format(" transform='rotate(%0.2f,%.2f,%.2f)'", -1.0 * rot, x, y);
   }
 
   (*stream) << " xlink:href='data:image/png;base64," << base64_str << '\'';
@@ -1199,6 +1305,9 @@ SEXP svg_set_pattern(SEXP pattern, pDevDesc dd) {
 
 #if R_GE_version >= 13
 
+  // Buffer output and snapshot device state so that an error in the tiling
+  // pattern's R callback leaves the device untouched
+  SvgEvalState s = svg_eval_begin(svgd);
   SvgStreamPtr stream = svgd->stream;
   std::string extend = "spreadMethod=";
 
@@ -1222,7 +1331,7 @@ SEXP svg_set_pattern(SEXP pattern, pDevDesc dd) {
     case R_GE_patternExtendNone: ;
     case R_GE_patternExtendPad: extend += "'pad'"; break;
     case R_GE_patternExtendReflect: extend += "'reflect'"; break;
-    case R_GE_patternExtendRepeat: extend += "'repeat"; break;
+    case R_GE_patternExtendRepeat: extend += "'repeat'"; break;
     }
     (*stream) << "<linearGradient id='pat-" << key << "' gradientUnits='userSpaceOnUse' " << extend;
     write_attr_dbl(stream, "x1", R_GE_linearGradientX1(pattern));
@@ -1243,7 +1352,7 @@ SEXP svg_set_pattern(SEXP pattern, pDevDesc dd) {
     case R_GE_patternExtendNone: ;
     case R_GE_patternExtendPad: extend += "'pad'"; break;
     case R_GE_patternExtendReflect: extend += "'reflect'"; break;
-    case R_GE_patternExtendRepeat: extend += "'repeat"; break;
+    case R_GE_patternExtendRepeat: extend += "'repeat'"; break;
     }
     (*stream) << "<radialGradient id='pat-" << key << "' gradientUnits='userSpaceOnUse' " << extend;
     write_attr_dbl(stream, "fx", R_GE_radialGradientCX1(pattern));
@@ -1273,9 +1382,7 @@ SEXP svg_set_pattern(SEXP pattern, pDevDesc dd) {
     int old_mask = svgd->current_mask;
     svgd->current_mask = -1;
 
-    SEXP R_fcall = PROTECT(Rf_lang1(R_GE_tilingPatternFunction(pattern)));
-    Rf_eval(R_fcall, R_GlobalEnv);
-    UNPROTECT(1);
+    svg_eval_run(&s, R_GE_tilingPatternFunction(pattern));
 
     svgd->current_mask = old_mask;
 
@@ -1292,15 +1399,13 @@ SEXP svg_set_pattern(SEXP pattern, pDevDesc dd) {
   // Resume old clipping if it was happening
   if (was_clipping) {
     (*stream) << "<g";
-    svgd->clipid = old_clipid;
-    svgd->clipx0 = clipx0;
-    svgd->clipx1 = clipx1;
-    svgd->clipy0 = clipy0;
-    svgd->clipy1 = clipy1;
-    write_attr_clip(stream, svgd->clipid);
+    write_attr_clip(stream, old_clipid);
     (*stream) << ">\n";
-    svgd->set_clipping(true);
   }
+
+  // Restore the snapshotted state and fold the buffered output into the
+  // real stream
+  svg_eval_end(&s);
 
 #endif
 
@@ -1340,6 +1445,9 @@ SEXP svg_set_clip_path(SEXP path, SEXP ref, pDevDesc dd) {
     }
   }
 
+  // Buffer output and snapshot device state so that an error in the clip
+  // path's R callback leaves the device untouched
+  SvgEvalState s = svg_eval_begin(svgd);
   SvgStreamPtr stream = svgd->stream;
   if (svgd->is_clipping) {
     (*stream) << "</g>\n";
@@ -1361,9 +1469,7 @@ SEXP svg_set_clip_path(SEXP path, SEXP ref, pDevDesc dd) {
 
     svgd->is_recording_clip = true;
 
-    SEXP R_fcall = PROTECT(Rf_lang1(path));
-    Rf_eval(R_fcall, R_GlobalEnv);
-    UNPROTECT(1);
+    svg_eval_run(&s, path);
 
     svgd->is_recording_clip = false;
 
@@ -1377,15 +1483,21 @@ SEXP svg_set_clip_path(SEXP path, SEXP ref, pDevDesc dd) {
     svgd->clip_cache.insert(key);
   }
 
-  svgd->clipid = "-" + std::to_string(key);
+  std::string new_clipid = "-" + std::to_string(key);
+
+  (*stream) << "<g";
+  write_attr_clip(stream, new_clipid);
+  (*stream) << ">\n";
+
+  // Restore the snapshotted state and fold the buffered output into the
+  // real stream, then apply the new clipping state
+  svg_eval_end(&s);
+
+  svgd->clipid = new_clipid;
   svgd->clipx0 = 0;
   svgd->clipx1 = 0;
   svgd->clipy0 = 0;
   svgd->clipy1 = 0;
-
-  (*stream) << "<g";
-  write_attr_clip(stream, svgd->clipid);
-  (*stream) << ">\n";
   svgd->set_clipping(true);
 
   return Rf_ScalarInteger(key);
@@ -1429,19 +1541,18 @@ SEXP svg_set_mask(SEXP path, SEXP ref, pDevDesc dd) {
     }
   }
 
-  SvgStreamPtr stream = svgd->stream;
-
   auto mask_cache_iter = svgd->mask_cache.find(key);
   // Check if path exists
   if (mask_cache_iter == svgd->mask_cache.end()) {
 
-    // Cache current clipping and break out of clipping group
+    // Buffer output and snapshot device state so that an error in the mask's
+    // R callback leaves the device untouched
+    SvgEvalState s = svg_eval_begin(svgd);
+    SvgStreamPtr stream = svgd->stream;
+
+    // Break out of clipping group if it was happening
     bool was_clipping = svgd->is_clipping;
     std::string old_clipid = svgd->clipid;
-    double clipx0 = svgd->clipx0;
-    double clipx1 = svgd->clipx1;
-    double clipy0 = svgd->clipy0;
-    double clipy1 = svgd->clipy1;
     if (was_clipping) {
       (*stream) << "</g>\n";
     }
@@ -1458,9 +1569,7 @@ SEXP svg_set_mask(SEXP path, SEXP ref, pDevDesc dd) {
     (*stream) << "  <mask id='mask-" << key << "' style='mask-type:alpha'>\n";
 #endif
 
-    SEXP R_fcall = PROTECT(Rf_lang1(path));
-    Rf_eval(R_fcall, R_GlobalEnv);
-    UNPROTECT(1);
+    svg_eval_run(&s, path);
 
     // Clipping may have happened above. End it before terminating mask
     if (svgd->is_clipping) {
@@ -1473,15 +1582,13 @@ SEXP svg_set_mask(SEXP path, SEXP ref, pDevDesc dd) {
     // Resume old clipping if it was happening
     if (was_clipping) {
       (*stream) << "<g";
-      svgd->clipid = old_clipid;
-      svgd->clipx0 = clipx0;
-      svgd->clipx1 = clipx1;
-      svgd->clipy0 = clipy0;
-      svgd->clipy1 = clipy1;
-      write_attr_clip(stream, svgd->clipid);
+      write_attr_clip(stream, old_clipid);
       (*stream) << ">\n";
-      svgd->set_clipping(true);
     }
+
+    // Restore the snapshotted state and fold the buffered output into the
+    // real stream
+    svg_eval_end(&s);
 
     svgd->mask_cache.insert(key);
   }
@@ -1546,7 +1653,6 @@ inline std::string composite_operator(int op) {
 
 SEXP svg_define_group(SEXP source, int op, SEXP destination, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
-  SvgStreamPtr stream = svgd->stream;
 
   int key = -1;
 
@@ -1554,14 +1660,14 @@ SEXP svg_define_group(SEXP source, int op, SEXP destination, pDevDesc dd) {
   key = svgd->group_cache_next_id;
   svgd->group_cache_next_id++;
 
-  // Cache current clipping and break out of clipping group
+  // Buffer output and snapshot device state so that an error in the group's
+  // R callbacks leaves the device untouched
+  SvgEvalState s = svg_eval_begin(svgd);
+  SvgStreamPtr stream = svgd->stream;
+
+  // Break out of clipping group if it was happening
   bool was_clipping = svgd->is_clipping;
   std::string old_clipid = svgd->clipid;
-  double clipx0 = svgd->clipx0;
-  double clipx1 = svgd->clipx1;
-  double clipy0 = svgd->clipy0;
-  double clipy1 = svgd->clipy1;
-  int temp_mask = svgd->current_mask;
   svgd->current_mask = -1;
   if (was_clipping) {
     (*stream) << "</g>\n";
@@ -1585,9 +1691,7 @@ SEXP svg_define_group(SEXP source, int op, SEXP destination, pDevDesc dd) {
   (*stream) << "  <g id='group-" << key << (is_simple ? "'" : "' style='isolation:isolate;'") << ">\n";
 
   if (destination != R_NilValue) {
-    SEXP R_fcall = PROTECT(Rf_lang1(destination));
-    Rf_eval(R_fcall, R_GlobalEnv);
-    UNPROTECT(1);
+    svg_eval_run(&s, destination);
 
     // Clipping may have happened above. End it before terminating mask
     if (svgd->is_clipping) {
@@ -1600,9 +1704,7 @@ SEXP svg_define_group(SEXP source, int op, SEXP destination, pDevDesc dd) {
     if (!is_simple) {
       (*stream) << "  <g style='mix-blend-mode:" << blend_op << ";'>\n";
     }
-    SEXP R_fcall1 = PROTECT(Rf_lang1(source));
-    Rf_eval(R_fcall1, R_GlobalEnv);
-    UNPROTECT(1);
+    svg_eval_run(&s, source);
     // Clipping may have happened above. End it before terminating mask
     if (svgd->is_clipping) {
       (*stream) << "</g>\n";
@@ -1621,16 +1723,13 @@ SEXP svg_define_group(SEXP source, int op, SEXP destination, pDevDesc dd) {
   // Resume old clipping if it was happening
   if (was_clipping) {
     (*stream) << "<g";
-    svgd->clipid = old_clipid;
-    svgd->clipx0 = clipx0;
-    svgd->clipx1 = clipx1;
-    svgd->clipy0 = clipy0;
-    svgd->clipy1 = clipy1;
-    write_attr_clip(stream, svgd->clipid);
+    write_attr_clip(stream, old_clipid);
     (*stream) << ">\n";
-    svgd->set_clipping(true);
   }
-  svgd->current_mask = temp_mask;
+
+  // Restore the snapshotted state (including the old mask) and fold the
+  // buffered output into the real stream
+  svg_eval_end(&s);
 
   svgd->group_cache.insert(key);
 #endif
@@ -1697,6 +1796,9 @@ void svg_stroke(SEXP path, const pGEcontext gc, pDevDesc dd) {
   }
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
+  // Buffer output and snapshot device state so that an error in the path's
+  // R callback leaves the device untouched
+  SvgEvalState s = svg_eval_begin(svgd);
   SvgStreamPtr stream = svgd->stream;
 
   // Create path data
@@ -1708,13 +1810,12 @@ void svg_stroke(SEXP path, const pGEcontext gc, pDevDesc dd) {
   bool tmp_rec_clip = svgd->is_recording_clip;
   svgd->is_recording_clip = true;
 
-  SEXP R_fcall = PROTECT(Rf_lang1(path));
-  Rf_eval(R_fcall, R_GlobalEnv);
-  UNPROTECT(1);
+  svg_eval_run(&s, path);
 
   svgd->is_recording_clip = tmp_rec_clip;
 
-  if (svgd->is_recording_clip) {
+  if (tmp_rec_clip) {
+    svg_eval_end(&s);
     return;
   }
 
@@ -1726,7 +1827,7 @@ void svg_stroke(SEXP path, const pGEcontext gc, pDevDesc dd) {
   write_style_end(stream);
 
   (*stream) << " />\n";
-  stream->flush();
+  svg_eval_end(&s);
 }
 
 void svg_fill(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
@@ -1735,6 +1836,9 @@ void svg_fill(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
   }
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
+  // Buffer output and snapshot device state so that an error in the path's
+  // R callback leaves the device untouched
+  SvgEvalState s = svg_eval_begin(svgd);
   SvgStreamPtr stream = svgd->stream;
 
   // Create path data
@@ -1746,13 +1850,12 @@ void svg_fill(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
   bool tmp_rec_clip = svgd->is_recording_clip;
   svgd->is_recording_clip = true;
 
-  SEXP R_fcall = PROTECT(Rf_lang1(path));
-  Rf_eval(R_fcall, R_GlobalEnv);
-  UNPROTECT(1);
+  svg_eval_run(&s, path);
 
   svgd->is_recording_clip = tmp_rec_clip;
 
-  if (svgd->is_recording_clip) {
+  if (tmp_rec_clip) {
+    svg_eval_end(&s);
     return;
   }
 
@@ -1769,7 +1872,7 @@ void svg_fill(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
   write_style_end(stream);
 
   (*stream) << " />\n";
-  stream->flush();
+  svg_eval_end(&s);
 }
 
 void svg_fill_stroke(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
@@ -1778,6 +1881,9 @@ void svg_fill_stroke(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
   }
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
+  // Buffer output and snapshot device state so that an error in the path's
+  // R callback leaves the device untouched
+  SvgEvalState s = svg_eval_begin(svgd);
   SvgStreamPtr stream = svgd->stream;
 
   // Create path data
@@ -1789,13 +1895,12 @@ void svg_fill_stroke(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
   bool tmp_rec_clip = svgd->is_recording_clip;
   svgd->is_recording_clip = true;
 
-  SEXP R_fcall = PROTECT(Rf_lang1(path));
-  Rf_eval(R_fcall, R_GlobalEnv);
-  UNPROTECT(1);
+  svg_eval_run(&s, path);
 
   svgd->is_recording_clip = tmp_rec_clip;
 
-  if (svgd->is_recording_clip) {
+  if (tmp_rec_clip) {
+    svg_eval_end(&s);
     return;
   }
 
@@ -1812,7 +1917,7 @@ void svg_fill_stroke(SEXP path, int rule, const pGEcontext gc, pDevDesc dd) {
   write_style_end(stream);
 
   (*stream) << " />\n";
-  stream->flush();
+  svg_eval_end(&s);
 }
 
 void svg_glyph(int n, int *glyphs, double *x, double *y, SEXP font, double size, int colour, double rot, pDevDesc dd) {
@@ -1926,7 +2031,7 @@ void svg_glyph(int n, int *glyphs, double *x, double *y, SEXP font, double size,
       (*stream) << p;
 
       if (svgd->is_recording_clip) {
-        return;
+        continue;
       }
       // Finish path data
       (*stream) << "' />\n";
@@ -2141,7 +2246,7 @@ bool svglite_(std::string file, std::string bg, double width, double height,
 }
 
 [[cpp11::register]]
-cpp11::external_pointer<std::stringstream> svgstring_(cpp11::environment env, std::string bg,
+cpp11::external_pointer<SvgStreamString> svgstring_(cpp11::environment env, std::string bg,
                                          double width, double height, double pointsize,
                                          bool standalone, cpp11::list aliases,
                                          std::string webfonts, cpp11::strings id,
@@ -2153,18 +2258,11 @@ cpp11::external_pointer<std::stringstream> svgstring_(cpp11::environment env, st
 
   SvgStreamString* strstream = static_cast<SvgStreamString*>(stream.get());
 
-  return {strstream->string_src(), false};
+  return {strstream, false};
 }
 
 [[cpp11::register]]
-std::string get_svg_content(cpp11::external_pointer<std::stringstream> p) {
-  p->flush();
-  std::string svgstr = p->str();
-  // If the current SVG is empty, we also make the string empty
-  // Otherwise append "</svg>" to make it a valid SVG
-  if(!svgstr.empty()) {
-    svgstr.append("</g>\n</svg>");
-  }
-  return svgstr;
+std::string get_svg_content(cpp11::external_pointer<SvgStreamString> p) {
+  return p->get_content();
 }
 

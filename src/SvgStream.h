@@ -44,6 +44,9 @@ class SvgStream {
   void clear_clip_ids() {
     clip_ids.clear();
   }
+  void merge_clip_ids_from(SvgStream& other) {
+    clip_ids.insert(other.clip_ids.begin(), other.clip_ids.end());
+  }
   bool is_clipping() {return clipping;}
 
   virtual ~SvgStream() {};
@@ -157,6 +160,37 @@ public:
 };
 
 
+// A plain in-memory stream used to buffer output while control is handed
+// back to R (e.g. when recording patterns, masks, clip paths, and groups).
+// The buffered output is only folded into the real stream once the R
+// callback has completed without error.
+class SvgStreamBuffer : public SvgStream {
+  std::stringstream stream_;
+
+public:
+  SvgStreamBuffer() {
+    stream_ << std::fixed << std::setprecision(2);
+  }
+
+  void write(int data)                { stream_ << data; }
+  void write(double data)             { svglite::internal::write_double(stream_, data); }
+  void write(const char* data)        { stream_ << data; }
+  void write(char data)               { stream_ << data; }
+  void write(const std::string& data) { stream_ << data; }
+  bool is_file_stream() {return false; }
+
+  void flush() {
+  }
+
+  void finish(bool close) {
+  }
+
+  std::string str() {
+    return stream_.str();
+  }
+};
+
+
 class SvgStreamString : public SvgStream {
   std::stringstream stream_;
   cpp11::environment env_;
@@ -208,7 +242,18 @@ public:
     clear_clip_ids();
   }
 
-  std::stringstream* string_src() {
-    return &stream_;
+  // Current SVG content, closed off so that it is valid XML
+  std::string get_content() {
+    stream_.flush();
+    std::string svgstr = stream_.str();
+    // If the current svg is empty, we also make the string empty
+    // Otherwise append "</svg>" to make it a valid SVG
+    if (!svgstr.empty()) {
+      if (is_clipping()) {
+        svgstr.append("</g>\n");
+      }
+      svgstr.append("</g>\n</svg>");
+    }
+    return svgstr;
   }
 };

@@ -13,17 +13,17 @@ extern "C" SEXP _svglite_svglite_(SEXP file, SEXP bg, SEXP width, SEXP height, S
   END_CPP11
 }
 // devSVG.cpp
-cpp11::external_pointer<std::stringstream> svgstring_(cpp11::environment env, std::string bg, double width, double height, double pointsize, bool standalone, cpp11::list aliases, std::string webfonts, cpp11::strings id, bool fix_text_size, double scaling);
+cpp11::external_pointer<SvgStreamString> svgstring_(cpp11::environment env, std::string bg, double width, double height, double pointsize, bool standalone, cpp11::list aliases, std::string webfonts, cpp11::strings id, bool fix_text_size, double scaling);
 extern "C" SEXP _svglite_svgstring_(SEXP env, SEXP bg, SEXP width, SEXP height, SEXP pointsize, SEXP standalone, SEXP aliases, SEXP webfonts, SEXP id, SEXP fix_text_size, SEXP scaling) {
   BEGIN_CPP11
     return cpp11::as_sexp(svgstring_(cpp11::as_cpp<cpp11::decay_t<cpp11::environment>>(env), cpp11::as_cpp<cpp11::decay_t<std::string>>(bg), cpp11::as_cpp<cpp11::decay_t<double>>(width), cpp11::as_cpp<cpp11::decay_t<double>>(height), cpp11::as_cpp<cpp11::decay_t<double>>(pointsize), cpp11::as_cpp<cpp11::decay_t<bool>>(standalone), cpp11::as_cpp<cpp11::decay_t<cpp11::list>>(aliases), cpp11::as_cpp<cpp11::decay_t<std::string>>(webfonts), cpp11::as_cpp<cpp11::decay_t<cpp11::strings>>(id), cpp11::as_cpp<cpp11::decay_t<bool>>(fix_text_size), cpp11::as_cpp<cpp11::decay_t<double>>(scaling)));
   END_CPP11
 }
 // devSVG.cpp
-std::string get_svg_content(cpp11::external_pointer<std::stringstream> p);
+std::string get_svg_content(cpp11::external_pointer<SvgStreamString> p);
 extern "C" SEXP _svglite_get_svg_content(SEXP p) {
   BEGIN_CPP11
-    return cpp11::as_sexp(get_svg_content(cpp11::as_cpp<cpp11::decay_t<cpp11::external_pointer<std::stringstream>>>(p)));
+    return cpp11::as_sexp(get_svg_content(cpp11::as_cpp<cpp11::decay_t<cpp11::external_pointer<SvgStreamString>>>(p)));
   END_CPP11
 }
 

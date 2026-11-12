@@ -1,1 +1,3 @@
 #include <sstream>
+
+class SvgStreamString;
