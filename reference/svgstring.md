@@ -194,7 +194,7 @@ s()
 #> </g>
 #> </svg>
 dev.off()
-#> agg_record_1bd82b0230ff 
+#> agg_record_184b6d216590 
 #>                       2 
 
 s <- svgstring()
@@ -277,6 +277,6 @@ s()
 #> </g>
 #> </svg>
 dev.off()
-#> agg_record_1bd82b0230ff 
+#> agg_record_184b6d216590 
 #>                       2 
 ```

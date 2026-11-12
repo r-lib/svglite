@@ -7,6 +7,10 @@
   treat `bg = NA` as `bg = "transparent"` instead of failing with a
   cryptic error, fixing `ggsave()` of plots with a transparent
   background ([\#208](https://github.com/r-lib/svglite/issues/208))
+- The scaling vignette now correctly describes that svglite output
+  includes `width` and `height` attributes on the `<svg>` tag, and
+  explains how to override them for fluid scaling
+  ([\#204](https://github.com/r-lib/svglite/issues/204))
 - Errors in pattern, mask, group, or clip path callbacks no longer leave
   the device in a corrupted state; output from the failed callback is
   discarded and the device remains usable

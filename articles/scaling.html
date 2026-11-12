@@ -84,13 +84,15 @@
 <div class="section level2">
 <h2 id="scaling-svg-outputs">Scaling SVG outputs<a class="anchor" aria-label="anchor" href="#scaling-svg-outputs"></a>
 </h2>
-<p>The SVG files produced by svglite do not include <code>width</code>
-and <code>height</code> properties. This is a deliberate choice intended
-to make it easier to fit fluidly a SVG figure to its enclosing
-container. The scaling straightforward but requires some understanding
-of the <code>viewBox</code> SVG attribute which is included in all SVGs
-produced by svglite. This property defines the aspect ratio of the plot
-(as well as a <em>user coordinate system</em>, see next section).</p>
+<p>The SVG files produced by svglite include <code>width</code> and
+<code>height</code> attributes on the <code>&lt;svg&gt;</code> tag,
+given in points (<code>pt</code>), alongside a <code>viewBox</code>
+attribute. The <code>width</code> and <code>height</code> record the
+natural dimensions of the figure so that it displays at its intended
+size by default. The <code>viewBox</code> defines the aspect ratio of
+the plot (as well as a <em>user coordinate system</em>, see next
+section) and is the key to making the figure scale fluidly, as described
+below.</p>
 <div class="section level3">
 <h3 id="fluid-scaling">Fluid scaling<a class="anchor" aria-label="anchor" href="#fluid-scaling"></a>
 </h3>
@@ -98,10 +100,20 @@ produced by svglite. This property defines the aspect ratio of the plot
 <code>height</code> arguments of svglite’s device functions (with 10’’ x
 8’’ the default). Although those dimensions are supplied in inches, the
 viewBox’s user coordinate system is completely unit agnostic. The main
-effect is thus to determine an aspect ratio. Since dimensions are not
-provided, the dimensions of the enclosing container are used instead and
-the SVG is rescaled to fit the container (although Internet Explorer
-currently requires some CSS tricks to get this behaviour, see <a href="https://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/" class="external-link uri">https://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/</a>).</p>
+effect is thus to determine an aspect ratio.</p>
+<p>Because svglite also records absolute <code>width</code> and
+<code>height</code> attributes, the figure will by default display at
+its natural size rather than rescale to its container. To get fluid
+scaling, you need to override these attributes. One option is to remove
+them from the generated SVG, e.g. with a post-processing step. Another
+option is to override them with CSS, which takes precedence over the
+attributes:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode css"><code class="sourceCode css"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a>svg {</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="kw">width</span><span class="ch">:</span> <span class="dv">100</span><span class="dt">%</span><span class="op">;</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a>  <span class="kw">height</span><span class="ch">:</span> <span class="bu">auto</span><span class="op">;</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a>}</span></code></pre></div>
+<p>(Internet Explorer additionally requires some CSS tricks to get this
+behaviour, see <a href="https://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/" class="external-link uri">https://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/</a>.)</p>
 <p>Aspect ratio is preserved by default when the figure is scaled up or
 down. The details of how the aspect ratio is preserved can be adjusted
 in multiple ways via the <code>preserveAspectRatio</code> attribute. See
@@ -124,33 +136,29 @@ points and is determined by the <code>width</code> and
 <code>height</code> arguments that you supply to the device functions
 (10’’ x 8’’ being the default). Although those dimensions are specified
 in inches, the coordinate system is scaled in points. Counting 72 points
-per inch, the default SVG surface is thus 720 x 576 pt. Note that the
-CSS standard defines 12pt to be equal to 16px, the default size of text
-in most browsers. Since 12pt is the default text size in svglite as
-well, a SVG scaled to its natural dimensions will appear seamless with
-web text of 16px. If the text in your web page has another size, you
-will have to compute a scale factor and adjust the dimensions of the SVG
-accordingly.</p>
-<p>To sum up, displaying a plot according to its natural dimensions
-requires providing the user agent with information about what the
-lengths defined within the SVG actually mean. There are several ways to
-achieve this. First you can edit the SVG and enclose it in another pair
-of <code>&lt;svg&gt;</code> tags that defines <code>height</code> and
-<code>width</code>. The root <code>&lt;svg&gt;</code> element determines
-the final dimensions of the figure.</p>
-<p>A second way is to enclose the figure in a <code>&lt;div&gt;</code>
-tag with appropriate dimensions and let the SVG figure rescale itself to
-that container (cf. the section on fluid scaling):</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> style</span><span class="op">=</span><span class="st">"width: 720pt; height: 576pt"</span><span class="dt">&gt;</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"figure.svg"</span><span class="dt">&gt;</span></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span></code></pre></div>
-<p>Finally, you can directly specify the dimensions in the
+per inch, the default SVG surface is thus 720 x 576 pt, which is what
+the <code>width</code> and <code>height</code> attributes on the
+<code>&lt;svg&gt;</code> tag record. Note that the CSS standard defines
+12pt to be equal to 16px, the default size of text in most browsers.
+Since 12pt is the default text size in svglite as well, a SVG scaled to
+its natural dimensions will appear seamless with web text of 16px. If
+the text in your web page has another size, you will have to compute a
+scale factor and adjust the dimensions of the SVG accordingly.</p>
+<p>Since the natural dimensions are already recorded in the SVG,
+displaying a plot at its natural dimensions requires no extra work when
+the file is used as-is. If you have overridden the dimensions for fluid
+scaling, you can restore natural scaling by enclosing the figure in a
+<code>&lt;div&gt;</code> tag with appropriate dimensions:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">div</span><span class="ot"> style</span><span class="op">=</span><span class="st">"width: 720pt; height: 576pt"</span><span class="dt">&gt;</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a>  <span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"figure.svg"</span><span class="dt">&gt;</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">div</span><span class="dt">&gt;</span></span></code></pre></div>
+<p>Alternatively, you can directly specify the dimensions in the
 <code>&lt;img&gt;</code> or <code>&lt;object&gt;</code> tag that is
 embedding the figure. Note that the dimension attributes of those tags
 do not accept arbitrary units, so you will have to supply the dimensions
 in pixels. Just multiply the width and height measured in points with a
 factor of 16/12:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"figure.svg"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"960"</span><span class="ot"> height</span><span class="op">=</span><span class="st">"768"</span><span class="dt">&gt;</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"figure.svg"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"960"</span><span class="ot"> height</span><span class="op">=</span><span class="st">"768"</span><span class="dt">&gt;</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
