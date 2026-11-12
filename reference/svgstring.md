@@ -189,12 +189,12 @@ s()
 #>   </clipPath>
 #> </defs>
 #> <g clip-path='url(#cpNTkuMDR8Njg5Ljc2fDU5LjA0fDUwMi41Ng==)'>
-#> <text x='374.40' y='285.15' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='14.67px' lengthAdjust='spacingAndGlyphs'>Hi!</text>
+#> <text x='374.40' y='285.36' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='17.17px' lengthAdjust='spacingAndGlyphs'>Hi!</text>
 #> </g>
 #> </g>
 #> </svg>
 dev.off()
-#> agg_record_184b6d216590 
+#> agg_record_192b67877180 
 #>                       2 
 
 s <- svgstring()
@@ -250,13 +250,13 @@ s()
 #> <line x1='452.27' y1='502.56' x2='452.27' y2='509.76' style='stroke-width: 0.75;' />
 #> <line x1='547.73' y1='502.56' x2='547.73' y2='509.76' style='stroke-width: 0.75;' />
 #> <line x1='643.19' y1='502.56' x2='643.19' y2='509.76' style='stroke-width: 0.75;' />
-#> <text x='70.42' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-2.5</text>
-#> <text x='165.88' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-2.0</text>
-#> <text x='261.35' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-1.5</text>
-#> <text x='356.81' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-1.0</text>
-#> <text x='452.27' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-0.5</text>
-#> <text x='547.73' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.0</text>
-#> <text x='643.19' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+#> <text x='70.42' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'>-2.5</text>
+#> <text x='165.88' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'>-2.0</text>
+#> <text x='261.35' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'>-1.5</text>
+#> <text x='356.81' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'>-1.0</text>
+#> <text x='452.27' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'>-0.5</text>
+#> <text x='547.73' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='19.09px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+#> <text x='643.19' y='528.48' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='19.09px' lengthAdjust='spacingAndGlyphs'>0.5</text>
 #> <line x1='59.04' y1='441.64' x2='59.04' y2='95.99' style='stroke-width: 0.75;' />
 #> <line x1='59.04' y1='441.64' x2='51.84' y2='441.64' style='stroke-width: 0.75;' />
 #> <line x1='59.04' y1='372.51' x2='51.84' y2='372.51' style='stroke-width: 0.75;' />
@@ -264,19 +264,19 @@ s()
 #> <line x1='59.04' y1='234.25' x2='51.84' y2='234.25' style='stroke-width: 0.75;' />
 #> <line x1='59.04' y1='165.12' x2='51.84' y2='165.12' style='stroke-width: 0.75;' />
 #> <line x1='59.04' y1='95.99' x2='51.84' y2='95.99' style='stroke-width: 0.75;' />
-#> <text transform='translate(41.76,441.64) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-1.5</text>
-#> <text transform='translate(41.76,372.51) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-1.0</text>
-#> <text transform='translate(41.76,303.38) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-0.5</text>
-#> <text transform='translate(41.76,234.25) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.0</text>
-#> <text transform='translate(41.76,165.12) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.5</text>
-#> <text transform='translate(41.76,95.99) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+#> <text transform='translate(41.76,441.64) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'>-1.5</text>
+#> <text transform='translate(41.76,372.51) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'>-1.0</text>
+#> <text transform='translate(41.76,303.38) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='23.42px' lengthAdjust='spacingAndGlyphs'>-0.5</text>
+#> <text transform='translate(41.76,234.25) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='19.09px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+#> <text transform='translate(41.76,165.12) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='19.09px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+#> <text transform='translate(41.76,95.99) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='19.09px' lengthAdjust='spacingAndGlyphs'>1.0</text>
 #> <polygon points='59.04,502.56 689.76,502.56 689.76,59.04 59.04,59.04 ' style='stroke-width: 0.75;' />
-#> <text x='374.40' y='557.28' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='46.02px' lengthAdjust='spacingAndGlyphs'>rnorm(5)</text>
-#> <text transform='translate(12.96,280.80) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "Liberation Sans";' textLength='46.02px' lengthAdjust='spacingAndGlyphs'>rnorm(5)</text>
+#> <text x='374.40' y='557.28' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='53.12px' lengthAdjust='spacingAndGlyphs'>rnorm(5)</text>
+#> <text transform='translate(12.96,280.80) rotate(-90.00)' text-anchor='middle' style='font-size: 12.00px; font-family: "DejaVu Sans";' textLength='53.12px' lengthAdjust='spacingAndGlyphs'>rnorm(5)</text>
 #> </g>
 #> </g>
 #> </svg>
 dev.off()
-#> agg_record_184b6d216590 
+#> agg_record_192b67877180 
 #>                       2 
 ```
