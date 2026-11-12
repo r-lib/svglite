@@ -11,13 +11,13 @@ vignette: >
 
 ## Scaling SVG outputs
 
-The SVG files produced by svglite do not include `width` and `height`
-properties. This is a deliberate choice intended to make it easier to
-fit fluidly a SVG figure to its enclosing container. The scaling
-straightforward but requires some understanding of the `viewBox` SVG
-attribute which is included in all SVGs produced by svglite. This
-property defines the aspect ratio of the plot (as well as a *user
-coordinate system*, see next section).
+The SVG files produced by svglite include `width` and `height`
+attributes on the `<svg>` tag, given in points (`pt`), alongside a
+`viewBox` attribute. The `width` and `height` record the natural
+dimensions of the figure so that it displays at its intended size by
+default. The `viewBox` defines the aspect ratio of the plot (as well
+as a *user coordinate system*, see next section) and is the key to
+making the figure scale fluidly, as described below.
 
 
 ### Fluid scaling
@@ -26,11 +26,25 @@ The viewBox is determined by the `width` and `height` arguments of
 svglite's device functions (with 10'' x 8'' the default). Although
 those dimensions are supplied in inches, the viewBox's user coordinate
 system is completely unit agnostic. The main effect is thus to
-determine an aspect ratio. Since dimensions are not provided, the
-dimensions of the enclosing container are used instead and the SVG is
-rescaled to fit the container (although Internet Explorer currently
-requires some CSS tricks to get this behaviour, see
-<https://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/>).
+determine an aspect ratio.
+
+Because svglite also records absolute `width` and `height` attributes,
+the figure will by default display at its natural size rather than
+rescale to its container. To get fluid scaling, you need to override
+these attributes. One option is to remove them from the generated SVG,
+e.g. with a post-processing step. Another option is to override them
+with CSS, which takes precedence over the attributes:
+
+```css
+svg {
+  width: 100%;
+  height: auto;
+}
+```
+
+(Internet Explorer additionally requires some CSS tricks to get this
+behaviour, see
+<https://tympanus.net/codrops/2014/08/19/making-svgs-responsive-with-css/>.)
 
 Aspect ratio is preserved by default when the figure is scaled up or
 down. The details of how the aspect ratio is preserved can be adjusted
@@ -56,24 +70,20 @@ points and is determined by the `width` and `height` arguments that
 you supply to the device functions (10'' x 8'' being the
 default). Although those dimensions are specified in inches, the
 coordinate system is scaled in points. Counting 72 points per inch,
-the default SVG surface is thus 720 x 576 pt. Note that the CSS standard
-defines 12pt to be equal to 16px, the default size of text in most
-browsers. Since 12pt is the default text size in svglite as well, a
-SVG scaled to its natural dimensions will appear seamless with web
-text of 16px. If the text in your web page has another size, you will
-have to compute a scale factor and adjust the dimensions of the SVG
-accordingly.
+the default SVG surface is thus 720 x 576 pt, which is what the
+`width` and `height` attributes on the `<svg>` tag record. Note that
+the CSS standard defines 12pt to be equal to 16px, the default size of
+text in most browsers. Since 12pt is the default text size in svglite
+as well, a SVG scaled to its natural dimensions will appear seamless
+with web text of 16px. If the text in your web page has another size,
+you will have to compute a scale factor and adjust the dimensions of
+the SVG accordingly.
 
-To sum up, displaying a plot according to its natural dimensions
-requires providing the user agent with information about what the
-lengths defined within the SVG actually mean. There are several ways
-to achieve this. First you can edit the SVG and enclose it in another
-pair of `<svg>` tags that defines `height` and `width`. The root
-`<svg>` element determines the final dimensions of the figure.
-
-A second way is to enclose the figure in a `<div>` tag with
-appropriate dimensions and let the SVG figure rescale itself to that
-container (cf. the section on fluid scaling):
+Since the natural dimensions are already recorded in the SVG,
+displaying a plot at its natural dimensions requires no extra work
+when the file is used as-is. If you have overridden the dimensions for
+fluid scaling, you can restore natural scaling by enclosing the figure
+in a `<div>` tag with appropriate dimensions:
 
 ```html
 <div style="width: 720pt; height: 576pt">
@@ -81,7 +91,7 @@ container (cf. the section on fluid scaling):
 </div>
 ```
 
-Finally, you can directly specify the dimensions in the `<img>` or
+Alternatively, you can directly specify the dimensions in the `<img>` or
 `<object>` tag that is embedding the figure. Note that the dimension
 attributes of those tags do not accept arbitrary units, so you will
 have to supply the dimensions in pixels. Just multiply the width and
