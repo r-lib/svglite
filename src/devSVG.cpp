@@ -42,7 +42,6 @@ extern "C" {
 
 #include "SvgStream.h"
 #include "utils.h"
-#include "tinyformat.h"
 
 typedef std::shared_ptr<SvgStream> SvgStreamPtr;
 
@@ -500,6 +499,20 @@ inline void write_style_end(SvgStreamPtr stream) {
   (*stream) << "'";
 }
 
+// Writing #RRGGBB hex colors
+inline void write_hex_col(SvgStreamPtr stream, int col) {
+  const static char hex[] = "0123456789ABCDEF";
+  char buf[7];
+  buf[0] = hex[(R_RED(col) >> 4) & 15];
+  buf[1] = hex[R_RED(col) & 15];
+  buf[2] = hex[(R_GREEN(col) >> 4) & 15];
+  buf[3] = hex[R_GREEN(col) & 15];
+  buf[4] = hex[(R_BLUE(col) >> 4) & 15];
+  buf[5] = hex[R_BLUE(col) & 15];
+  buf[6] = '\0';
+  (*stream) << buf;
+}
+
 // Writing style attributes related to colors
 inline void write_style_col(SvgStreamPtr stream, const char* attr, int col) {
   int alpha = R_ALPHA(col);
@@ -507,7 +520,9 @@ inline void write_style_col(SvgStreamPtr stream, const char* attr, int col) {
     (*stream) << attr << ": none;";
     return;
   } else {
-    (*stream) << tfm::format("%s: #%02X%02X%02X;", attr, R_RED(col), R_GREEN(col), R_BLUE(col));
+    (*stream) << attr << ": #";
+    write_hex_col(stream, col);
+    stream->put(';');
     if (alpha != 255)
       (*stream) << ' ' << attr << "-opacity: " << alpha / 255.0 << ';';
   }
@@ -712,13 +727,14 @@ void svg_clip(double x0, double x1, double y0, double y1, pDevDesc dd) {
       std::abs(ymax - svgd->clipy1) < 0.01)
     return;
 
-  std::ostringstream s;
-  s << std::fixed << std::setprecision(2);
-  s << dbl_format(xmin) << "|" << dbl_format(xmax) << "|" <<
-    dbl_format(ymin) << "|" << dbl_format(ymax);
-  std::string str = s.str();
-  const std::uint8_t* buffer = reinterpret_cast<const std::uint8_t*>(str.data());
-  std::string clipid = base64_encode(buffer, str.size());
+  // Same formatting as std::fixed with precision 2 (used historically)
+  char clip_buf[160];
+  int clip_len = std::snprintf(
+    clip_buf, sizeof(clip_buf), "%.2f|%.2f|%.2f|%.2f",
+    dbl_format(xmin), dbl_format(xmax), dbl_format(ymin), dbl_format(ymax)
+  );
+  const std::uint8_t* buffer = reinterpret_cast<const std::uint8_t*>(clip_buf);
+  std::string clipid = base64_encode(buffer, clip_len);
 
   svgd->clipid = clipid;
   svgd->clipx0 = xmin;
@@ -1142,8 +1158,10 @@ void svg_text(double x, double y, const char *str, double rot,
     write_attr_dbl(stream, "x", x);
     write_attr_dbl(stream, "y", y);
   } else {
-    (*stream) << tfm::format(" transform='translate(%0.2f,%0.2f) rotate(%0.2f)'",
+    char buf[100];
+    std::snprintf(buf, sizeof(buf), " transform='translate(%.2f,%.2f) rotate(%.2f)'",
       x, y, -1.0 * rot);
+    (*stream) << buf;
   }
 
   double fontsize = gc->cex * gc->ps;
@@ -1285,7 +1303,9 @@ void svg_raster(unsigned int *raster, int w, int h,
   }
 
   if( rot != 0 ){
-    (*stream) << tfm::format(" transform='rotate(%0.2f,%.2f,%.2f)'", -1.0 * rot, x, y);
+    char buf[100];
+    std::snprintf(buf, sizeof(buf), " transform='rotate(%.2f,%.2f,%.2f)'", -1.0 * rot, x, y);
+    (*stream) << buf;
   }
 
   (*stream) << " xlink:href='data:image/png;base64," << base64_str << '\'';
@@ -1342,8 +1362,9 @@ SEXP svg_set_pattern(SEXP pattern, pDevDesc dd) {
     for (int i = 0; i < R_GE_linearGradientNumStops(pattern); ++i) {
       int col = R_GE_linearGradientColour(pattern, i);
       (*stream) << "  <stop offset='" << R_GE_linearGradientStop(pattern, i);
-      (*stream) << tfm::format("' stop-color='#%02X%02X%02X'", R_RED(col), R_GREEN(col), R_BLUE(col));
-      (*stream) << " stop-opacity='" << double(R_ALPHA(col))/255.0 << "'/>\n";
+      (*stream) << "' stop-color='#";
+      write_hex_col(stream, col);
+      (*stream) << "' stop-opacity='" << double(R_ALPHA(col))/255.0 << "'/>\n";
     }
     (*stream) << "</linearGradient>\n";
     break;
@@ -1365,8 +1386,9 @@ SEXP svg_set_pattern(SEXP pattern, pDevDesc dd) {
     for (int i = 0; i < R_GE_radialGradientNumStops(pattern); ++i) {
       int col = R_GE_radialGradientColour(pattern, i);
       (*stream) << "  <stop offset='" << R_GE_radialGradientStop(pattern, i);
-      (*stream) << tfm::format("' stop-color='#%02X%02X%02X'", R_RED(col), R_GREEN(col), R_BLUE(col));
-      (*stream) << " stop-opacity='" << double(R_ALPHA(col))/255.0 << "'/>\n";
+      (*stream) << "' stop-color='#";
+      write_hex_col(stream, col);
+      (*stream) << "' stop-opacity='" << double(R_ALPHA(col))/255.0 << "'/>\n";
     }
     (*stream) << "</radialGradient>\n";
     break;
