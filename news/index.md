@@ -2,6 +2,10 @@
 
 ## svglite (development version)
 
+- Masks are now correctly applied when using groups (`grid.group()` and
+  `grid.use()`) ([\#206](https://github.com/r-lib/svglite/issues/206),
+  [@trevorld](https://github.com/trevorld))
+
 ## svglite 2.2.2
 
 CRAN release: 2025-10-21
