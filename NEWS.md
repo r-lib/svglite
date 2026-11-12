@@ -1,5 +1,8 @@
 # svglite (development version)
 
+* Masks are now correctly applied when using groups (`grid.group()` and
+  `grid.use()`) (#206, @trevorld)
+
 # svglite 2.2.2
 
 * Avoid sanitizer error when calculating precision (#198)

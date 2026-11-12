@@ -1586,7 +1586,14 @@ void svg_use_group(SEXP ref, SEXP trans, pDevDesc dd) {
   }
 
   bool has_transform = trans != R_NilValue;
+  bool has_mask = svgd->current_mask >= 0;
   if (has_transform) {
+	// Separate mask onto a wrapper so it resolves in parent coordinate space.
+    if (has_mask) {
+      (*stream) << "  <g";
+      write_attr_mask(stream, svgd->current_mask);
+      (*stream) << ">\n";
+    }
     (*stream) << "  <g style='transform:matrix(" <<
       REAL(trans)[0] << "," <<
       REAL(trans)[3] << "," <<
@@ -1594,12 +1601,15 @@ void svg_use_group(SEXP ref, SEXP trans, pDevDesc dd) {
       REAL(trans)[4] << "," <<
       REAL(trans)[2] << "," <<
       REAL(trans)[5] << ");'>\n";
-  }
-
-  (*stream) << "  <use href='#group-" << key << "' />\n";
-
-  if (has_transform) {
+    (*stream) << "  <use href='#group-" << key << "' />\n";
     (*stream) << "  </g>\n";
+    if (has_mask) {
+      (*stream) << "  </g>\n";
+    }
+  } else {
+    (*stream) << "  <use href='#group-" << key << "'";
+    write_attr_mask(stream, svgd->current_mask);
+    (*stream) << " />\n";
   }
 
   return;
