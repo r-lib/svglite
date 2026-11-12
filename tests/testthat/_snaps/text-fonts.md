@@ -22,7 +22,7 @@
       [1] "Times"
       
       $system$mono
-      [1] "Courier"
+      [1] "Courier New"
       
       $system$symbol
       [1] "Symbol"
