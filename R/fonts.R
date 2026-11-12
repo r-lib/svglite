@@ -1,25 +1,13 @@
 r_font_families <- c("sans", "serif", "mono", "symbol")
 r_font_faces <- c("plain", "bold", "italic", "bolditalic", "symbol")
 
-alias_lookup <- function() {
-  if (.Platform$OS.type == "windows") {
-    serif_font <- "Times New Roman"
-    symbol_font <- "Standard Symbols L"
-  } else {
-    serif_font <- "Times"
-    symbol_font <- "Symbol"
-  }
-  c(
-    sans = "Arial",
-    serif = serif_font,
-    mono = "Courier",
-    symbol = symbol_font
-  )
-}
-
 #' @importFrom systemfonts font_info
 match_family <- function(font, bold = FALSE, italic = FALSE) {
-  font_info(font, weight = if (bold) "bold" else "normal", italic = italic)$family[1]
+  font_info(
+    font,
+    weight = if (bold) "bold" else "normal",
+    italic = italic
+  )$family[1]
 }
 
 validate_aliases <- function(system_fonts, user_fonts) {
@@ -37,12 +25,11 @@ validate_aliases <- function(system_fonts, user_fonts) {
     ))
   }
 
-  # Add missing system fonts for base families
+  # Add missing system fonts for base families. systemfonts resolves the
+  # generic aliases on all platforms (fontconfig on Linux, Core Text on
+  # macOS, and built-in defaults on Windows)
   missing_aliases <- setdiff(r_font_families, aliases)
-  system_fonts[missing_aliases] <- lapply(
-    alias_lookup()[missing_aliases],
-    match_family
-  )
+  system_fonts[missing_aliases] <- lapply(missing_aliases, match_family)
 
   list(
     system = system_fonts,
@@ -269,7 +256,9 @@ validate_web_fonts <- function(x) {
       return()
     }
     x <- fonts_as_import(x, type = "import")
-    if (length(x) == 0) return()
+    if (length(x) == 0) {
+      return()
+    }
     paste0("    ", x)
   })
   paste0(unlist(x), collapse = "\n")
