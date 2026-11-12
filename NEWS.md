@@ -1,7 +1,6 @@
 # svglite (development version)
 
 * `svglite()` and `svgstring()` now treat `bg = NA` as `bg = "transparent"` instead of failing with a cryptic error, fixing `ggsave()` of plots with a transparent background (#208)
-
 * Errors in pattern, mask, group, or clip path callbacks no longer leave the device in a corrupted state; output from the failed callback is discarded and the device remains usable
 * Fixed potential crashes from unterminated or oversized font family buffers
 * Upscaling of non-interpolated rasters is now capped to avoid enormous memory allocations when a small raster is drawn over a very large region
@@ -10,6 +9,8 @@
 * Fixed fractional text and raster rotation angles being rounded to whole degrees
 * `svgstring()` now returns valid XML when queried while a clip region is active
 * Support variable fonts throughout rendering
+* Masks are now correctly applied when using groups (`grid.group()` and
+  `grid.use()`) (#206, @trevorld)
 
 # svglite 2.2.2
 
