@@ -194,8 +194,8 @@ s()
 #> </g>
 #> </svg>
 dev.off()
-#> agg_record_192b67877180 
-#>                       2 
+#> agg_record_1846e79f790 
+#>                      2 
 
 s <- svgstring()
 plot(rnorm(5), rnorm(5))
@@ -277,6 +277,6 @@ s()
 #> </g>
 #> </svg>
 dev.off()
-#> agg_record_192b67877180 
-#>                       2 
+#> agg_record_1846e79f790 
+#>                      2 
 ```
