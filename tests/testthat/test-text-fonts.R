@@ -1,3 +1,32 @@
+test_that("variable font axes are reflected in output", {
+  # Find an installed variable font; skip if the system has none
+  families <- systemfonts::system_fonts()$family
+  var_family <- NULL
+  for (fam in families) {
+    axes <- tryCatch(
+      systemfonts::font_info(fam)$variation_axes[[1]],
+      error = function(e) NULL
+    )
+    if (length(axes) > 0 && "wght" %in% names(axes)) {
+      var_family <- fam
+      break
+    }
+  }
+  skip_if(is.null(var_family), "No variable font with a wght axis installed")
+
+  x <- xmlSVG(system_fonts = list(sans = var_family), {
+    plot.new()
+    text(0.5, 0.3, "a", family = "sans")
+    text(0.5, 0.7, "a", family = "sans", font = 2)
+  })
+  text <- xml_find_all(x, ".//text")
+  variations <- style_attr(text, "font-variation-settings")
+  expect_match(variations[1], '"wght" 400')
+  expect_match(variations[2], '"wght" 700')
+  # Weight is carried by the variation axis, not font-weight
+  expect_true(is.na(style_attr(text[2], "font-weight")))
+})
+
 test_that("font sets weight/style", {
   x <- xmlSVG({
     plot.new()

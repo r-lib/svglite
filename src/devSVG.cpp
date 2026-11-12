@@ -291,7 +291,26 @@ inline std::string find_system_alias(const char* family,
   return out;
 }
 
-inline FontSettings get_font(const char* family, int face, cpp11::list user_aliases, cpp11::list system_aliases, std::string& family_name) {
+inline void check_font_api_version() {
+  // The ver2 wrappers resolve their entry points lazily through R_GetCCallable
+  // and would segfault on a NULL pointer if an older systemfonts/textshaping
+  // is loaded at runtime, so probe for them once and fail with a clear message
+  static bool checked = false;
+  if (checked) {
+    return;
+  }
+  if (R_GetCCallable("systemfonts", "locate_font_with_features2") == NULL ||
+      R_GetCCallable("systemfonts", "glyph_metrics2") == NULL ||
+      R_GetCCallable("textshaping", "ts_string_width2") == NULL ||
+      R_GetCCallable("textshaping", "ts_string_shape2") == NULL) {
+    cpp11::stop(
+      "This version of svglite requires newer versions of the systemfonts and textshaping packages. Please update them and restart R."
+    );
+  }
+  checked = true;
+}
+
+inline FontSettings2 get_font(const char* family, int face, cpp11::list user_aliases, cpp11::list system_aliases, std::string& family_name) {
   const char* fontfamily = family;
   if (is_symbol(face)) {
     fontfamily = "symbol";
@@ -305,7 +324,7 @@ inline FontSettings get_font(const char* family, int face, cpp11::list user_alia
 
   std::string user_alias = find_user_alias(fontfamily, user_aliases, face, "file");
   if (!user_alias.empty()) {
-    FontSettings result = {};
+    FontSettings2 result = {};
     std::strncpy(result.file, user_alias.c_str(), PATH_MAX);
     result.index = 0;
     result.n_features = 0;
@@ -313,9 +332,19 @@ inline FontSettings get_font(const char* family, int face, cpp11::list user_alia
     return result;
   }
 
-  FontSettings font = locate_font_with_features(fontfamily, is_italic(face), is_bold(face));
+  // Font matching may return variable font axis settings which we let travel
+  // through metrics and shaping
+  FontSettings2 font = systemfonts::ver2::locate_font(
+    fontfamily,
+    is_italic(face) ? 1.0 : 0.0,
+    is_bold(face) ? 700.0 : 400.0,
+    0.0,
+    NULL,
+    NULL,
+    0
+  );
   family_name.resize(100);
-  if (get_font_family(font.file, font.index, &family_name[0], 100)) {
+  if (systemfonts::ver2::get_font_family(font, &family_name[0], 100)) {
     family_name.erase(family_name.find('\0'));
   }
   return font;
@@ -530,7 +559,7 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
   }
 
   std::string family_name;
-  FontSettings font = get_font(
+  FontSettings2 font = get_font(
     gc->fontfamily,
     gc->fontface,
     svgd->user_aliases,
@@ -538,10 +567,9 @@ void svg_metric_info(int c, const pGEcontext gc, double* ascent,
     family_name
   );
 
-  int error = glyph_metrics(
+  int error = systemfonts::ver2::glyph_metrics(
     c,
-    font.file,
-    font.index,
+    font,
     gc->ps * gc->cex * svgd->scaling,
     1e4,
     ascent,
@@ -828,7 +856,7 @@ double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   SVGDesc *svgd = (SVGDesc*) dd->deviceSpecific;
 
   std::string family_name;
-  FontSettings font = get_font(
+  FontSettings2 font = get_font(
     gc->fontfamily,
     gc->fontface,
     svgd->user_aliases,
@@ -837,7 +865,7 @@ double svg_strwidth(const char *str, const pGEcontext gc, pDevDesc dd) {
   );
 
   double width = 0.0;
-  int error = textshaping::string_width(
+  int error = textshaping::ver2::string_width(
     str,
     font,
     gc->ps * gc->cex * svgd->scaling,
@@ -932,7 +960,7 @@ void svg_text(double x, double y, const char *str, double rot,
   SvgStreamPtr stream = svgd->stream;
 
   std::string family_name;
-  FontSettings font = get_font(
+  FontSettings2 font = get_font(
     gc->fontfamily,
     gc->fontface,
     svgd->user_aliases,
@@ -945,9 +973,9 @@ void svg_text(double x, double y, const char *str, double rot,
     std::vector<uint32_t> id_buffer;
     std::vector<int> cluster_buffer;
     std::vector<unsigned int> font_buffer;
-    std::vector<FontSettings> fallback_buffer;
+    std::vector<FontSettings2> fallback_buffer;
     std::vector<double> scaling_buffer;
-    int err = textshaping::string_shape(
+    int err = textshaping::ver2::string_shape(
       str,
       font,
       gc->ps * gc->cex * svgd->scaling,
@@ -962,7 +990,7 @@ void svg_text(double x, double y, const char *str, double rot,
     if (err == 0) {
       double x_adj = 0;
       if (hadj != 0) {
-        textshaping::string_width(
+        textshaping::ver2::string_width(
           str,
           font,
           gc->ps * gc->cex * svgd->scaling,
@@ -989,11 +1017,10 @@ void svg_text(double x, double y, const char *str, double rot,
       for (size_t i = 0; i < loc_buffer.size(); ++i) {
         mat_mult(transform, 1.0, 0.0, 0.0, 1.0, loc_buffer[i].x, loc_buffer[i].y);
         bool no_outline = true;
-        (*stream) << get_glyph_path(
+        (*stream) << systemfonts::ver2::get_glyph_path(
           id_buffer[i],
           transform,
-          fallback_buffer[font_buffer[i]].file,
-          fallback_buffer[font_buffer[i]].index,
+          fallback_buffer[font_buffer[i]],
           gc->ps * gc->cex * svgd->scaling,
           &no_outline
         );
@@ -1025,7 +1052,19 @@ void svg_text(double x, double y, const char *str, double rot,
   write_style_begin(stream);
   write_style_fontsize(stream, fontsize * svgd->scaling, true);
 
-  int weight = get_font_weight(font.file, font.index);
+  // When the weight is set through a variation axis the axis setting takes
+  // precedence, and get_font_weight() may report the font's internal clamped
+  // value rather than a CSS weight, so we leave font-weight out
+  bool has_wght_axis = false;
+  for (int i = 0; i < font.n_axes; ++i) {
+    if (font.coords[i] != 0 &&
+        font.axes[i] == (int) (((uint32_t)'w' << 24) | ((uint32_t)'g' << 16) | ((uint32_t)'h' << 8) | (uint32_t)'t')) {
+      has_wght_axis = true;
+      break;
+    }
+  }
+
+  int weight = has_wght_axis ? 400 : systemfonts::ver2::get_font_weight(font);
 
   if (weight != 400) {
     if (weight == 700) {
@@ -1052,6 +1091,37 @@ void svg_text(double x, double y, const char *str, double rot,
       feature += font.features[i].feature[3];
       (*stream) << "\"" << feature << "\" " << font.features[i].setting;
       (*stream) << (i == font.n_features - 1 ? ";" : ",");
+    }
+  }
+
+  // Reflect any variable font axis settings from font matching so that the
+  // rendered text matches the metrics used during layout
+  if (font.n_axes > 0) {
+    // 0 is not a valid CSS value for the wght and wdth axes; matching uses it
+    // to signal "unset", so we drop these axes from the output
+    const int wght_tag = (int) (((uint32_t)'w' << 24) | ((uint32_t)'g' << 16) | ((uint32_t)'h' << 8) | (uint32_t)'t');
+    const int wdth_tag = (int) (((uint32_t)'w' << 24) | ((uint32_t)'d' << 16) | ((uint32_t)'t' << 8) | (uint32_t)'h');
+    bool first_axis = true;
+    for (int i = 0; i < font.n_axes; ++i) {
+      int tag = font.axes[i];
+      if (font.coords[i] == 0 && (tag == wght_tag || tag == wdth_tag)) {
+        continue;
+      }
+      if (first_axis) {
+        (*stream) << " font-variation-settings: ";
+        first_axis = false;
+      } else {
+        (*stream) << ", ";
+      }
+      std::string axis(4, ' ');
+      axis[0] = (char)((tag >> 24) & 0xFF);
+      axis[1] = (char)((tag >> 16) & 0xFF);
+      axis[2] = (char)((tag >> 8) & 0xFF);
+      axis[3] = (char)(tag & 0xFF);
+      (*stream) << "\"" << axis << "\" " << font.coords[i] / 65536.0;
+    }
+    if (!first_axis) {
+      (*stream) << ";";
     }
   }
 
@@ -1760,6 +1830,34 @@ void svg_glyph(int n, int *glyphs, double *x, double *y, SEXP font, double size,
   size *= svgd->scaling;
   bool no_outline = false;
 
+  // Set up font settings, including any variable font axis settings
+  FontSettings2 glyph_font = {};
+  std::strncpy(glyph_font.file, R_GE_glyphFontFile(font), PATH_MAX);
+  glyph_font.file[PATH_MAX] = '\0';
+  glyph_font.index = R_GE_glyphFontIndex(font);
+  std::vector<int> var_axes;
+  std::vector<int> var_coords;
+#if R_GE_version >= 17
+  int n_var = R_GE_glyphFontNumVar(font);
+  var_axes.reserve(n_var);
+  var_coords.reserve(n_var);
+  for (int i = 0; i < n_var; ++i) {
+    // Pack the axis name into a big-endian OpenType tag
+    std::string axis = R_GE_glyphFontVarAxis(font, i);
+    if (axis.size() < 4) {
+      axis.append(4 - axis.size(), ' ');
+    }
+    var_axes.push_back(
+      (int) (((uint32_t)(unsigned char)axis[0] << 24) | ((uint32_t)(unsigned char)axis[1] << 16) |
+             ((uint32_t)(unsigned char)axis[2] << 8) | (uint32_t)(unsigned char)axis[3])
+    );
+    var_coords.push_back((int) (R_GE_glyphFontVarValue(font, i) * 65536.0));
+  }
+  glyph_font.axes = var_axes.data();
+  glyph_font.coords = var_coords.data();
+  glyph_font.n_axes = n_var;
+#endif
+
   if (!svgd->is_recording_clip) {
     (*stream) << "<g class='glyphgroup'";
     write_attr_mask(stream, svgd->current_mask);
@@ -1778,11 +1876,10 @@ void svg_glyph(int n, int *glyphs, double *x, double *y, SEXP font, double size,
       mat_mult(transform, cos_rot, sin_rot, -sin_rot, cos_rot, 0.0, 0.0);
     }
     mat_mult(transform, 1.0, 0.0, 0.0, -1.0, 0.0, 0.0);
-    std::string p = get_glyph_path(
+    std::string p = systemfonts::ver2::get_glyph_path(
       glyphs[i],
       transform,
-      R_GE_glyphFontFile(font),
-      R_GE_glyphFontIndex(font),
+      glyph_font,
       size,
       &no_outline
     );
@@ -1790,10 +1887,9 @@ void svg_glyph(int n, int *glyphs, double *x, double *y, SEXP font, double size,
     if (no_outline) {
       if (svgd->is_recording_clip) continue;
 
-      SEXP raster = PROTECT(get_glyph_raster(
+      SEXP raster = PROTECT(systemfonts::ver2::get_glyph_raster(
         glyphs[i],
-        R_GE_glyphFontFile(font),
-        R_GE_glyphFontIndex(font),
+        glyph_font,
         size,
         300.0,
         colour
@@ -2012,6 +2108,8 @@ void makeDevice(SvgStreamPtr stream, std::string bg_, double width, double heigh
                 bool always_valid) {
 
   int bg = R_GE_str2col(bg_.c_str());
+
+  check_font_api_version();
 
   R_GE_checkVersionOrDie(R_GE_version);
   R_CheckDeviceAvailable();
