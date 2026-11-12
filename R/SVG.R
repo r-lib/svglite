@@ -107,6 +107,7 @@ svglite <- function(
   }
   aliases <- validate_aliases(system_fonts, user_fonts)
   web_fonts <- validate_web_fonts(web_fonts)
+  bg <- validate_bg(bg)
   if (is.null(id)) {
     id <- character(0)
   }
@@ -168,6 +169,7 @@ svgstring <- function(
 ) {
   aliases <- validate_aliases(system_fonts, user_fonts)
   web_fonts <- validate_web_fonts(web_fonts)
+  bg <- validate_bg(bg)
   if (is.null(id)) {
     id <- character(0)
   }

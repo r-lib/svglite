@@ -1,5 +1,6 @@
-mini_plot <- function(...)
+mini_plot <- function(...) {
   graphics::plot(..., axes = FALSE, xlab = "", ylab = "")
+}
 
 plot_dim <- function(dim = c(NA, NA)) {
   if (any(is.na(dim))) {
@@ -75,6 +76,17 @@ invalid_filename <- function(filename) {
   # matching leftover % indicates multiple patterns or a single incorrect pattern (e.g., %s)
   return(grepl("%", stripped_file))
 }
+validate_bg <- function(bg) {
+  # NA arises e.g. from ggsave() when the ggplot background is transparent
+  if (length(bg) == 1 && is.atomic(bg) && is.na(bg)) {
+    return("transparent")
+  }
+  if (!is.character(bg) || length(bg) != 1) {
+    cli::cli_abort("{.arg bg} must be a single string naming a colour.")
+  }
+  bg
+}
+
 #' Convert an svg file to svgz, overwriting the old file
 #' @param file the path to the file to convert
 #' @keywords internal

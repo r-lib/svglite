@@ -36,3 +36,23 @@ test_that("intermediate outputs are always valid svg if always_valid=TRUE", {
   dev.off()
   expect_valid_svg()
 })
+
+test_that("bg is validated before opening the device", {
+  expect_snapshot(svglite(tempfile(), bg = 1), error = TRUE)
+  expect_snapshot(svgstring(bg = 1), error = TRUE)
+})
+
+test_that("bg = NA is treated as transparent", {
+  f <- tempfile()
+  svglite(f, bg = NA)
+  plot(1)
+  dev.off()
+  from_file <- readLines(f)
+
+  s <- svgstring(bg = NA)
+  plot(1)
+  dev.off()
+
+  expect_false(any(grepl("fill: white", from_file, fixed = TRUE)))
+  expect_identical(from_file, strsplit(s(), "\n")[[1]])
+})
